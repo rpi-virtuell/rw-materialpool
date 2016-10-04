@@ -1,0 +1,47 @@
+<?php
+/**
+ *
+ * @since      0.0.1
+ * @package    Materialpool
+ * @author     Frank Staude <frank@staude.net>
+ */
+
+
+class Materialpool_Konfession {
+
+	/**
+	 *
+	 * @since 1.0.0
+	 * @access	public
+	 * @filters materialpool_konfession_taxonomy_label
+	 * @filters materialpool_konfession_taxonomy_args
+	 */
+	static public function register_taxonomy() {
+		$labels = array(
+			"name" => __( 'Konfessionen', Materialpool::$textdomain ),
+			"singular_name" => __( 'Konfession', Materialpool::$textdomain ),
+		);
+
+		$args = array(
+			"label" => __( 'Konfessionen', Materialpool::$textdomain ),
+			"labels" => apply_filters( 'materialpool_konfession_taxonomy_label', $labels ),
+			"public" => true,
+			"hierarchical" => false,
+			"label" => "Konfessionen",
+			"show_ui" => true,
+			"show_in_menu" => true,
+			"show_in_nav_menus" => true,
+			"query_var" => true,
+			"rewrite" => array( 'slug' => 'konfession', 'with_front' => true, ),
+			"show_admin_column" => true,
+			"show_in_rest" => false,
+			"rest_base" => "",
+			"show_in_quick_edit" => false,
+		);
+		register_taxonomy( "konfession", array( "organisation" ), apply_filters( 'materialpool_konfession_taxonomy_args', $args ) );
+
+	}
+
+
+
+}
