@@ -15,8 +15,8 @@ class Materialpool_Organisation {
 	 * @access	public
 	 * @filters materialpool_organisation_posttype_label
 	 * @filters materialpool_organisation_posttype_args
+	 *
 	 */
-
 	static public function register_post_type() {
 		$labels = array(
 			"name" => __( 'Organisationen', Materialpool::$textdomain ),
@@ -46,7 +46,12 @@ class Materialpool_Organisation {
 
 	}
 
-
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
 	static public function register_meta_fields() {
 		$cmb_organisation = new_cmb2_box( array(
 			'id'            => 'cmb_organisation',
