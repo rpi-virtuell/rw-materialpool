@@ -112,15 +112,20 @@ class Materialpool {
 		// Load the textdomain
 		$this->load_plugin_textdomain();
 
+		// Add Filter & Actions for Dashboard
+		add_action( 'admin_menu', array( 'Materialpool_Dashboard', 'register_dashboard_page' ), 8 );
+		add_action( 'admin_menu', array( 'Materialpool_Dashboard', 'register_settings_page' ) );
+
+
 		// Add Filter & Actions for Organisation
 		add_action( 'init', array( 'Materialpool_Organisation', 'register_post_type' ) );
 		add_action( 'cmb2_admin_init', array( 'Materialpool_Organisation', 'register_meta_fields' ) );
 
 		// Add Filter & Actions for Konfession
-		add_action( 'init', array( 'Materialpool_Material', 'register_post_type' ) );
+		add_action( 'init', array( 'Materialpool_Konfession', 'register_taxonomy' ) );
 
 		// Add Filter & Actions for Material
-
+		add_action( 'init', array( 'Materialpool_Material', 'register_post_type' ) );
 
 		do_action( 'materialpool_init' );
 	}

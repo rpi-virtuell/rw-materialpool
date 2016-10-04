@@ -29,7 +29,7 @@ class Materialpool_Konfession {
 			"hierarchical" => false,
 			"label" => "Konfessionen",
 			"show_ui" => true,
-			"show_in_menu" => true,
+			"show_in_menu" => 'materialpool',
 			"show_in_nav_menus" => true,
 			"query_var" => true,
 			"rewrite" => array( 'slug' => 'konfession', 'with_front' => true, ),
@@ -37,8 +37,10 @@ class Materialpool_Konfession {
 			"show_in_rest" => false,
 			"rest_base" => "",
 			"show_in_quick_edit" => false,
+			"meta_box_cb" => false,
 		);
 		register_taxonomy( "konfession", array( "organisation" ), apply_filters( 'materialpool_konfession_taxonomy_args', $args ) );
+
 
 	}
 

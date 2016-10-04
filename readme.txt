@@ -21,6 +21,7 @@ materialpool_organisation_posttype_label
 materialpool_organisation_posttype_args
 materialpool_konfession_taxonomy_label
 materialpool_konfession_taxonomy_args
+materialpool_dashboard_page_args
 
 
 = Actions =
