@@ -117,8 +117,9 @@ class Materialpool {
 		add_action( 'cmb2_admin_init', array( 'Materialpool_Organisation', 'register_meta_fields' ) );
 
 		// Add Filter & Actions for Konfession
-		add_action( 'init', array( 'Materialpool_Konfession', 'register_taxonomy' ) );
+		add_action( 'init', array( 'Materialpool_Material', 'register_post_type' ) );
 
+		// Add Filter & Actions for Material
 
 
 		do_action( 'materialpool_init' );

@@ -40,8 +40,8 @@ class Materialpool_Organisation {
 			"hierarchical" => false,
 			"rewrite" => array( "slug" => "organisation", "with_front" => true ),
 			"query_var" => true,
-
-			"supports" => array( "title" ),					);
+			"supports" => array( "title" ),
+		);
 		register_post_type( "organisation", apply_filters( 'materialpool_organisation_posttype_args', $args ) );
 
 	}
