@@ -133,6 +133,10 @@ class Materialpool {
         // Add Filter & Actions for Lizenz
         add_action( 'init', array( 'Materialpool_Lizenz', 'register_taxonomy' ) );
 
+        // Add Filter & Actions for Zugänglichkeit
+        add_action( 'init', array( 'Materialpool_Zugaenglichkeit', 'register_taxonomy' ) );
+
+        
         do_action( 'materialpool_init' );
 	}
 

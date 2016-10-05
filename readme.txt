@@ -26,6 +26,8 @@ materialpool_inklusives_material_taxonomy_label
 materialpool_inklusives_material_taxonomy_args
 materialpool_lizenz_taxonomy_label
 materialpool_lizemz_taxonomy_args
+materialpool_zugaenglichkeit_taxonomy_label
+materialpool_zugaenglichkeit_taxonomy_args
 
 = Actions =
 
