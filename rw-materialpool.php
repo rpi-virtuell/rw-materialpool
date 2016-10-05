@@ -136,7 +136,9 @@ class Materialpool {
         // Add Filter & Actions for Zugänglichkeit
         add_action( 'init', array( 'Materialpool_Zugaenglichkeit', 'register_taxonomy' ) );
 
-        
+        // Add Filter & Actions for Verfügbarkeit
+        add_action( 'init', array( 'Materialpool_Verfuegbarkeit', 'register_taxonomy' ) );
+
         do_action( 'materialpool_init' );
 	}
 
