@@ -142,6 +142,9 @@ class Materialpool {
         // Add Filter & Actions for Altersstufe
         add_action( 'init', array( 'Materialpool_Altersstufe', 'register_taxonomy' ) );
 
+        // Add Filter & Actions for Altersstufe
+        add_action( 'init', array( 'Materialpool_Medientyp', 'register_taxonomy' ) );
+
         do_action( 'materialpool_init' );
 	}
 

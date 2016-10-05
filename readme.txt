@@ -32,6 +32,8 @@ materialpool_verfuegbarkeit_taxonomy_label
 materialpool_verfuegbarkeit_taxonomy_args
 materialpool_altersstufe_taxonomy_label
 materialpool_altersstufe_taxonomy_args
+materialpool_medientyp_taxonomy_label
+materialpool_medientyp_taxonomy_args
 
 
 = Actions =
