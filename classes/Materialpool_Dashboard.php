@@ -40,6 +40,14 @@ class Materialpool_Dashboard {
 			$args[ 'icon' ],
 			$args[ 'menu_position' ]
 		);
+        add_submenu_page(
+            $args[ 'menu_slug' ],
+            $args[ 'page_title' ],
+            $args[ 'menu_title' ],
+            $args[ 'capability' ],
+            $args[ 'menu_slug' ],
+            $args[ 'callback' ]
+        );
 	}
 
 	/**

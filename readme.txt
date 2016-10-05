@@ -22,7 +22,10 @@ materialpool_organisation_posttype_args
 materialpool_konfession_taxonomy_label
 materialpool_konfession_taxonomy_args
 materialpool_dashboard_page_args
-
+materialpool_inklusives_material_taxonomy_label
+materialpool_inklusives_material_taxonomy_args
+materialpool_lizenz_taxonomy_label
+materialpool_lizemz_taxonomy_args
 
 = Actions =
 

@@ -113,8 +113,8 @@ class Materialpool {
 		$this->load_plugin_textdomain();
 
 		// Add Filter & Actions for Dashboard
-		add_action( 'admin_menu', array( 'Materialpool_Dashboard', 'register_dashboard_page' ), 8 );
-		add_action( 'admin_menu', array( 'Materialpool_Dashboard', 'register_settings_page' ) );
+//		add_action( 'admin_menu', array( 'Materialpool_Dashboard', 'register_dashboard_page' ), 8 );
+//		add_action( 'admin_menu', array( 'Materialpool_Dashboard', 'register_settings_page' ) );
 
 
 		// Add Filter & Actions for Organisation
@@ -127,7 +127,13 @@ class Materialpool {
 		// Add Filter & Actions for Material
 		add_action( 'init', array( 'Materialpool_Material', 'register_post_type' ) );
 
-		do_action( 'materialpool_init' );
+        // Add Filter & Actions for Inklusives Material
+        add_action( 'init', array( 'Materialpool_Inklusives_Material', 'register_taxonomy' ) );
+
+        // Add Filter & Actions for Lizenz
+        add_action( 'init', array( 'Materialpool_Lizenz', 'register_taxonomy' ) );
+
+        do_action( 'materialpool_init' );
 	}
 
 	/**

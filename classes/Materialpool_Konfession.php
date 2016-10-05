@@ -27,9 +27,8 @@ class Materialpool_Konfession {
 			"labels" => apply_filters( 'materialpool_konfession_taxonomy_label', $labels ),
 			"public" => true,
 			"hierarchical" => false,
-			"label" => "Konfessionen",
 			"show_ui" => true,
-			"show_in_menu" => 'materialpool',
+			"show_in_menu" => true,
 			"show_in_nav_menus" => true,
 			"query_var" => true,
 			"rewrite" => array( 'slug' => 'konfession', 'with_front' => true, ),
@@ -41,9 +40,5 @@ class Materialpool_Konfession {
 		);
 		register_taxonomy( "konfession", array( "organisation" ), apply_filters( 'materialpool_konfession_taxonomy_args', $args ) );
 
-
 	}
-
-
-
 }
