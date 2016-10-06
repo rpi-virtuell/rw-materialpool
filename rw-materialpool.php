@@ -116,6 +116,9 @@ class Materialpool {
 //		add_action( 'admin_menu', array( 'Materialpool_Dashboard', 'register_dashboard_page' ), 8 );
 //		add_action( 'admin_menu', array( 'Materialpool_Dashboard', 'register_settings_page' ) );
 
+        // Add Filter & Actions for Autor
+        add_action( 'init', array( 'Materialpool_Autor', 'register_post_type' ) );
+        add_action( 'cmb2_admin_init', array( 'Materialpool_Autor', 'register_meta_fields' ) );
 
 		// Add Filter & Actions for Organisation
 		add_action( 'init', array( 'Materialpool_Organisation', 'register_post_type' ) );
@@ -144,6 +147,12 @@ class Materialpool {
 
         // Add Filter & Actions for Altersstufe
         add_action( 'init', array( 'Materialpool_Medientyp', 'register_taxonomy' ) );
+
+        // Add Filter & Actions for Bildungsstufe
+        add_action( 'init', array( 'Materialpool_Bildungsstufe', 'register_taxonomy' ) );
+
+        // Add Filter & Actions for Sprache
+        add_action( 'init', array( 'Materialpool_Sprache', 'register_taxonomy' ) );
 
         do_action( 'materialpool_init' );
 	}

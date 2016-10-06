@@ -10,10 +10,10 @@
 class Materialpool_Lizenz {
     /**
      *
-     * @since 1.0.0
+     * @since 0.0.1
      * @access	public
      * @filters materialpool_lizenz_taxonomy_label
-     * @filters materialpool_lizemz_taxonomy_args
+     * @filters materialpool_lizenz_taxonomy_args
      */
     static public function register_taxonomy() {
         $labels = array(
