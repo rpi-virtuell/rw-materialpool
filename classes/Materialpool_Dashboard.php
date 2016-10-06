@@ -28,7 +28,7 @@ class Materialpool_Dashboard {
 				'dashboard_page_content'
 			),
 			'icon' => 'dashicons-images-alt2',
-			'menu_position' => 35
+			'menu_position' => 25
 		);
 		$args = apply_filters( 'materialpool_dashboard_page_args', $args );
 		add_menu_page(
@@ -40,14 +40,6 @@ class Materialpool_Dashboard {
 			$args[ 'icon' ],
 			$args[ 'menu_position' ]
 		);
-        add_submenu_page(
-            $args[ 'menu_slug' ],
-            $args[ 'page_title' ],
-            $args[ 'menu_title' ],
-            $args[ 'capability' ],
-            $args[ 'menu_slug' ],
-            $args[ 'callback' ]
-        );
 	}
 
 	/**

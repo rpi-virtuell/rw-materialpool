@@ -42,6 +42,8 @@ materialpool_bildungsstufe_taxonomy_label
 materialpool_bildungsstufe_taxonomy_args
 materialpool_sprache_taxonomy_label
 materialpool_sprache_taxonomy_args
+materialpool_material_meta_field
+
 
 
 = Actions =

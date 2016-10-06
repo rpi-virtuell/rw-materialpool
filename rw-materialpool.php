@@ -113,22 +113,23 @@ class Materialpool {
 		$this->load_plugin_textdomain();
 
 		// Add Filter & Actions for Dashboard
-//		add_action( 'admin_menu', array( 'Materialpool_Dashboard', 'register_dashboard_page' ), 8 );
-//		add_action( 'admin_menu', array( 'Materialpool_Dashboard', 'register_settings_page' ) );
+		add_action( 'admin_menu', array( 'Materialpool_Dashboard', 'register_dashboard_page' ), 8 );
+		add_action( 'admin_menu', array( 'Materialpool_Dashboard', 'register_settings_page' ) );
+
+        // Add Filter & Actions for Material
+        add_action( 'init', array( 'Materialpool_Material', 'register_post_type' ) );
+        add_action( 'cmb2_admin_init', array( 'Materialpool_Material', 'register_meta_fields' ) );
+
+        // Add Filter & Actions for Organisation
+        add_action( 'init', array( 'Materialpool_Organisation', 'register_post_type' ) );
+        add_action( 'cmb2_admin_init', array( 'Materialpool_Organisation', 'register_meta_fields' ) );
 
         // Add Filter & Actions for Autor
         add_action( 'init', array( 'Materialpool_Autor', 'register_post_type' ) );
         add_action( 'cmb2_admin_init', array( 'Materialpool_Autor', 'register_meta_fields' ) );
 
-		// Add Filter & Actions for Organisation
-		add_action( 'init', array( 'Materialpool_Organisation', 'register_post_type' ) );
-		add_action( 'cmb2_admin_init', array( 'Materialpool_Organisation', 'register_meta_fields' ) );
-
 		// Add Filter & Actions for Konfession
 		add_action( 'init', array( 'Materialpool_Konfession', 'register_taxonomy' ) );
-
-		// Add Filter & Actions for Material
-		add_action( 'init', array( 'Materialpool_Material', 'register_post_type' ) );
 
         // Add Filter & Actions for Inklusives Material
         add_action( 'init', array( 'Materialpool_Inklusives_Material', 'register_taxonomy' ) );
@@ -153,6 +154,10 @@ class Materialpool {
 
         // Add Filter & Actions for Sprache
         add_action( 'init', array( 'Materialpool_Sprache', 'register_taxonomy' ) );
+
+        // CMB2 Enhancement
+        add_filter( 'cmb2_render_cpt_select', array( 'Materialpool_CMB2_CPT_Select', 'render_cpt_select' ), 10, 5 );
+        add_filter( 'cmb2_sanitize_cpt_select', array( 'Materialpool_CMB2_CPT_Select', 'sanitize_cpt_select' ), 10, 4 );
 
         do_action( 'materialpool_init' );
 	}
