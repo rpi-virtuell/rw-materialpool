@@ -19,6 +19,7 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 materialpool_translationpath
 materialpool_organisation_posttype_label
 materialpool_organisation_posttype_args
+materialpool_organisation_meta_field
 materialpool_konfession_taxonomy_label
 materialpool_konfession_taxonomy_args
 materialpool_dashboard_page_args
@@ -36,6 +37,7 @@ materialpool_medientyp_taxonomy_label
 materialpool_medientyp_taxonomy_args
 materialpool_autor_posttype_label
 materialpool_autor_posttype_args
+materialpool_autor_meta_field
 materialpool_bildungsstufe_taxonomy_label
 materialpool_bildungsstufe_taxonomy_args
 materialpool_sprache_taxonomy_label

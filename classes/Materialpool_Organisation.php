@@ -4,6 +4,8 @@
  * @since      0.0.1
  * @package    Materialpool
  * @author     Frank Staude <frank@staude.net>
+ *
+ * @todo cpt auflistung anpassen
  */
 
 
@@ -50,6 +52,7 @@ class Materialpool_Organisation {
 	 *
 	 * @since 0.0.1
 	 * @access	public
+     * @filters materialpool_organisation_meta_field
 	 *
 	 */
 	static public function register_meta_fields() {
@@ -102,6 +105,22 @@ class Materialpool_Organisation {
 			'taxonomy' => 'konfession',
 			'type'     => 'taxonomy_select',
 		) );
+
+        $cmb_organisation->add_field( array(
+            'name' => 'Autor',
+            'desc' => 'Hier fehlt die zuordnung zu Autoren',
+            'type' => 'title',
+            'id'   => 'organisation_autor'
+        ) );
+
+        $cmb_organisation->add_field( array(
+            'name' => 'Material',
+            'desc' => 'Hier fehlt die Auflistung von Materialien des Autors',
+            'type' => 'title',
+            'id'   => 'organisation_material'
+        ) );
+
+        $cmb_organisation = apply_filters( 'materialpool_organisation_meta_field', $cmb_organisation);
 	}
 
 }

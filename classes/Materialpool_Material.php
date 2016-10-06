@@ -4,6 +4,8 @@
  * @since      0.0.1
  * @package    Materialpool
  * @author     Frank Staude <frank@staude.net>
+ *
+ * @todo cpt auflistung anpassen
  */
 
 

@@ -4,6 +4,9 @@
  * @since      0.0.1
  * @package    Materialpool
  * @author     Frank Staude <frank@staude.net>
+ *
+ * @todo post_title beim Speichern aus VornameNachname generieren
+ * @todo cpt auflistung anpassen
  */
 
 
@@ -50,6 +53,7 @@ class Materialpool_Autor {
      *
      * @since 0.0.1
      * @access	public
+     * @filters materialpool_autor_meta_field
      *
      */
     static public function register_meta_fields() {
@@ -90,6 +94,14 @@ class Materialpool_Autor {
         ) );
 
         $cmb_author->add_field( array(
+            'name'    => _x( 'RPI BuddyPress Username', 'Author Editpage Fieldname', Materialpool::get_textdomain() ),
+            'desc'    => _x( 'username of author on rpi buddypress', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain() ),
+            'default' => '',
+            'id'      => 'autor_buddypress',
+            'type'    => 'text',
+        ) );
+
+        $cmb_author->add_field( array(
             'name'    => _x( 'Email', 'Author Editpage Fieldname', Materialpool::get_textdomain() ),
             'desc'    => _x( 'email of author (for gravatar)', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain() ),
             'default' => '',
@@ -125,6 +137,8 @@ class Materialpool_Autor {
             'type' => 'title',
             'id'   => 'autor_material'
         ) );
+
+        $cmb_author = apply_filters( 'materialpool_autor_meta_field', $cmb_author);
     }
 
 }
