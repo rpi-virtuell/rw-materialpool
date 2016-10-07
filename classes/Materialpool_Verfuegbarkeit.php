@@ -19,12 +19,26 @@ class Materialpool_Verfuegbarkeit {
      */
     static public function register_taxonomy() {
         $labels = array(
-            "name" => __( 'Verfügbarkeit', Materialpool::$textdomain ),
-            "singular_name" => __( 'Verfügbarkeit', Materialpool::$textdomain ),
+            "name"                          => __( 'Disposability', Materialpool::$textdomain ),
+            "singular_name"                 => __( 'Disposability', Materialpool::$textdomain ),
+            'search_items'                  => __( 'Search disposabilitys', Materialpool::$textdomain ),
+            'popular_items'                 => __( 'Popular disposabilitys', Materialpool::$textdomain ),
+            'all_items'                     => __( 'All disposabilitys', Materialpool::$textdomain ),
+            'parent_item'                   => null,
+            'parent_item_colon'             => null,
+            'edit_item'                     => __( 'Edit disposability', Materialpool::$textdomain ),
+            'update_item'                   => __( 'Update disposability', Materialpool::$textdomain ),
+            'add_new_item'                  => __( 'Add New disposability', Materialpool::$textdomain ),
+            'new_item_name'                 => __( 'New disposability Name', Materialpool::$textdomain ),
+            'separate_items_with_commas'    => __( 'Separate disposability with commas', Materialpool::$textdomain ),
+            'add_or_remove_items'           => __( 'Add or remove disposability', Materialpool::$textdomain ),
+            'choose_from_most_used'         => __( 'Choose from the most used disposabilitys', Materialpool::$textdomain ),
+            'not_found'                     => __( 'No disposabilitys found.', Materialpool::$textdomain ),
+            'menu_name'                     => __( 'Disposabilitys', Materialpool::$textdomain ),
         );
 
         $args = array(
-            "label" => __( 'Verfügbarkeit', Materialpool::$textdomain ),
+            "label" => __( 'Disposability', Materialpool::$textdomain ),
             "labels" => apply_filters( 'materialpool_verfuegbarkeit_taxonomy_label', $labels ),
             "public" => true,
             "hierarchical" => false,

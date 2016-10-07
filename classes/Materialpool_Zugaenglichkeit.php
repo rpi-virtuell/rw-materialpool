@@ -19,12 +19,26 @@ class Materialpool_Zugaenglichkeit {
      */
     static public function register_taxonomy() {
         $labels = array(
-            "name" => __( 'Zugänglichkeit', Materialpool::$textdomain ),
-            "singular_name" => __( 'Zugänglichkeit', Materialpool::$textdomain ),
+            "name"                          => __( 'Accessibility', Materialpool::$textdomain ),
+            "singular_name"                 => __( 'Accessibility', Materialpool::$textdomain ),
+            'search_items'                  => __( 'Search accessibility', Materialpool::$textdomain ),
+            'popular_items'                 => __( 'Popular accessibility', Materialpool::$textdomain ),
+            'all_items'                     => __( 'All accessibility', Materialpool::$textdomain ),
+            'parent_item'                   => null,
+            'parent_item_colon'             => null,
+            'edit_item'                     => __( 'Edit accessibility', Materialpool::$textdomain ),
+            'update_item'                   => __( 'Update accessibility', Materialpool::$textdomain ),
+            'add_new_item'                  => __( 'Add New accessibility', Materialpool::$textdomain ),
+            'new_item_name'                 => __( 'New accessibility Name', Materialpool::$textdomain ),
+            'separate_items_with_commas'    => __( 'Separate accessibility with commas', Materialpool::$textdomain ),
+            'add_or_remove_items'           => __( 'Add or remove accessibility', Materialpool::$textdomain ),
+            'choose_from_most_used'         => __( 'Choose from the most used accessibility', Materialpool::$textdomain ),
+            'not_found'                     => __( 'No accessibility found.', Materialpool::$textdomain ),
+            'menu_name'                     => __( 'Accessibility', Materialpool::$textdomain ),
         );
 
         $args = array(
-            "label" => __( 'Zugänglichkeit', Materialpool::$textdomain ),
+            "label" => __( 'Accessibility', Materialpool::$textdomain ),
             "labels" => apply_filters( 'materialpool_zugaenglichkeit_taxonomy_label', $labels ),
             "public" => true,
             "hierarchical" => false,

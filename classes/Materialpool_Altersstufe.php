@@ -19,12 +19,26 @@ class Materialpool_Altersstufe {
      */
     static public function register_taxonomy() {
         $labels = array(
-            "name" => __( 'Altersstufe', Materialpool::$textdomain ),
-            "singular_name" => __( 'Altersstufe', Materialpool::$textdomain ),
+            "name"                          => __( 'Age brackets', Materialpool::$textdomain ),
+            "singular_name"                 => __( 'Age bracket', Materialpool::$textdomain ),
+            'search_items'                  => __( 'Search age brackets', Materialpool::$textdomain ),
+            'popular_items'                 => __( 'Popular age brackets', Materialpool::$textdomain ),
+            'all_items'                     => __( 'All age brackets', Materialpool::$textdomain ),
+            'parent_item'                   => null,
+            'parent_item_colon'             => null,
+            'edit_item'                     => __( 'Edit age bracket', Materialpool::$textdomain ),
+            'update_item'                   => __( 'Update age bracket', Materialpool::$textdomain ),
+            'add_new_item'                  => __( 'Add New age bracket', Materialpool::$textdomain ),
+            'new_item_name'                 => __( 'New age bracket Name', Materialpool::$textdomain ),
+            'separate_items_with_commas'    => __( 'Separate age bracket with commas', Materialpool::$textdomain ),
+            'add_or_remove_items'           => __( 'Add or remove age bracket', Materialpool::$textdomain ),
+            'choose_from_most_used'         => __( 'Choose from the most used age brackets', Materialpool::$textdomain ),
+            'not_found'                     => __( 'No age brackets found.', Materialpool::$textdomain ),
+            'menu_name'                     => __( 'Age brackets', Materialpool::$textdomain ),
         );
 
         $args = array(
-            "label" => __( 'Altersstufe', Materialpool::$textdomain ),
+            "label" => __( 'Age bracket', Materialpool::$textdomain ),
             "labels" => apply_filters( 'materialpool_altersstufe_taxonomy_label', $labels ),
             "public" => true,
             "hierarchical" => false,

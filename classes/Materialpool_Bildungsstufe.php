@@ -19,12 +19,26 @@ class Materialpool_Bildungsstufe {
      */
     static public function register_taxonomy() {
         $labels = array(
-            "name" => __( 'Bildungsstufen', Materialpool::$textdomain ),
-            "singular_name" => __( 'Bildungsstufe', Materialpool::$textdomain ),
+            "name"                          => __( 'Educational levels', Materialpool::$textdomain ),
+            "singular_name"                 => __( 'Educational level', Materialpool::$textdomain ),
+            'search_items'                  => __( 'Search educational level', Materialpool::$textdomain ),
+            'popular_items'                 => __( 'Popular educational level', Materialpool::$textdomain ),
+            'all_items'                     => __( 'All educational levels', Materialpool::$textdomain ),
+            'parent_item'                   => null,
+            'parent_item_colon'             => null,
+            'edit_item'                     => __( 'Edit educational level', Materialpool::$textdomain ),
+            'update_item'                   => __( 'Update educational level', Materialpool::$textdomain ),
+            'add_new_item'                  => __( 'Add New educational level', Materialpool::$textdomain ),
+            'new_item_name'                 => __( 'New language Name', Materialpool::$textdomain ),
+            'separate_items_with_commas'    => __( 'Separate educational level with commas', Materialpool::$textdomain ),
+            'add_or_remove_items'           => __( 'Add or remove educational level', Materialpool::$textdomain ),
+            'choose_from_most_used'         => __( 'Choose from the most used educational levels', Materialpool::$textdomain ),
+            'not_found'                     => __( 'No educational level found.', Materialpool::$textdomain ),
+            'menu_name'                     => __( 'Educational levels', Materialpool::$textdomain ),
         );
 
         $args = array(
-            "label" => __( 'Bildungsstufe', Materialpool::$textdomain ),
+            "label" => __( 'Educational level', Materialpool::$textdomain ),
             "labels" => apply_filters( 'materialpool_bildungsstufe_taxonomy_label', $labels ),
             "public" => true,
             "hierarchical" => true,

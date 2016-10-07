@@ -21,8 +21,20 @@ class Materialpool_Material {
 	 */
 	static public function register_post_type() {
 		$labels = array(
-			"name" => __( 'Material', Materialpool::$textdomain ),
-			"singular_name" => __( 'Material', 'twentyfourteen' ),
+			"name"                  => __( 'Material', Materialpool::$textdomain ),
+			"singular_name"         => __( 'Material', Materialpool::$textdomain ),
+            'menu_name'             => _x( 'Material', 'admin menu', Materialpool::$textdomain ),
+            'name_admin_bar'        => _x( 'Material', 'add new on admin bar', Materialpool::$textdomain ),
+            'add_new'               => _x( 'Add New', 'Material', Materialpool::$textdomain ),
+            'add_new_item'          => __( 'Add New Material', Materialpool::$textdomain ),
+            'new_item'              => __( 'New Material', Materialpool::$textdomain ),
+            'edit_item'             => __( 'Edit Material', Materialpool::$textdomain ),
+            'view_item'             => __( 'View Material', Materialpool::$textdomain ),
+            'all_items'             => __( 'All Material', Materialpool::$textdomain ),
+            'search_items'          => __( 'Search Material', Materialpool::$textdomain ),
+            'parent_item_colon'     => __( 'Parent Material:', Materialpool::$textdomain ),
+            'not_found'             => __( 'No Material found.', Materialpool::$textdomain ),
+            'not_found_in_trash'    => __( 'No Material found in Trash.', Materialpool::$textdomain )
 		);
 
 		$args = array(

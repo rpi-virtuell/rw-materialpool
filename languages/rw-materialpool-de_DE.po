@@ -1,0 +1,868 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: RW Materialpool\n"
+"POT-Creation-Date: 2016-10-07 14:12+0200\n"
+"PO-Revision-Date: 2016-10-07 15:05+0200\n"
+"Language-Team: Frank Staude <frank@staude.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.8.9\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-WPHeader: rw-materialpool.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;"
+"_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"Last-Translator: Frank Staude <frank@staude.net>\n"
+"Language: de_DE\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+"X-Poedit-SearchPathExcluded-1: vendor\n"
+
+#: classes/Materialpool_Altersstufe.php:22
+#: classes/Materialpool_Altersstufe.php:37
+msgid "Age brackets"
+msgstr "Altersstufen"
+
+#: classes/Materialpool_Altersstufe.php:23
+#: classes/Materialpool_Altersstufe.php:41
+msgid "Age bracket"
+msgstr "Altersstufe"
+
+#: classes/Materialpool_Altersstufe.php:24
+msgid "Search age brackets"
+msgstr "Altersstufe suchen"
+
+#: classes/Materialpool_Altersstufe.php:25
+msgid "Popular age brackets"
+msgstr "Häufig benutzte Altersstufen"
+
+#: classes/Materialpool_Altersstufe.php:26
+msgid "All age brackets"
+msgstr "Alle Altersstufen"
+
+#: classes/Materialpool_Altersstufe.php:29
+msgid "Edit age bracket"
+msgstr "Altersstufe bearbeiten"
+
+#: classes/Materialpool_Altersstufe.php:30
+msgid "Update age bracket"
+msgstr "Altersstufe aktualisieren"
+
+#: classes/Materialpool_Altersstufe.php:31
+msgid "Add New age bracket"
+msgstr "Neue Altersstufe erstellen"
+
+#: classes/Materialpool_Altersstufe.php:32
+msgid "New age bracket Name"
+msgstr "Neue Altersstufe"
+
+#: classes/Materialpool_Altersstufe.php:33
+msgid "Separate age bracket with commas"
+msgstr "Altersstufen durch Kommas trennen."
+
+#: classes/Materialpool_Altersstufe.php:34
+msgid "Add or remove age bracket"
+msgstr ""
+
+#: classes/Materialpool_Altersstufe.php:35
+msgid "Choose from the most used age brackets"
+msgstr "Wähle aus den häufig genutzten Altersstufen"
+
+#: classes/Materialpool_Altersstufe.php:36
+msgid "No age brackets found."
+msgstr "Keine Altersstufe gefunden"
+
+#: classes/Materialpool_Autor.php:25 classes/Materialpool_Autor.php:30
+msgid "Autoren"
+msgstr ""
+
+#: classes/Materialpool_Autor.php:26 classes/Materialpool_Autor.php:62
+msgid "Autor"
+msgstr ""
+
+#: classes/Materialpool_Autor.php:73
+msgctxt "Author Editpage Fieldname"
+msgid "Firstname"
+msgstr "Vorname"
+
+#: classes/Materialpool_Autor.php:74
+msgctxt "Organisation Editpage Fielddescription"
+msgid "firstname of author"
+msgstr "Vorname des Autoren"
+
+#: classes/Materialpool_Autor.php:81
+msgctxt "Author Editpage Fieldname"
+msgid "lastname"
+msgstr "Nachname"
+
+#: classes/Materialpool_Autor.php:82
+msgctxt "Organisation Editpage Fielddescription"
+msgid "lastname of author"
+msgstr "Nachname des Autoren"
+
+#: classes/Materialpool_Autor.php:89
+msgctxt "Author Editpage Fieldname"
+msgid "URL"
+msgstr "URL"
+
+#: classes/Materialpool_Autor.php:90
+msgctxt "Organisation Editpage Fielddescription"
+msgid "Website of author"
+msgstr "Webseite des Autoren"
+
+#: classes/Materialpool_Autor.php:97
+msgctxt "Author Editpage Fieldname"
+msgid "RPI BuddyPress Username"
+msgstr "RPI BuddyPress Benutzername"
+
+#: classes/Materialpool_Autor.php:98
+msgctxt "Organisation Editpage Fielddescription"
+msgid "username of author on rpi buddypress"
+msgstr "Benutzername des Autoren auf dem RPI BuddyPress"
+
+#: classes/Materialpool_Autor.php:105
+msgctxt "Author Editpage Fieldname"
+msgid "Email"
+msgstr "E-Mail"
+
+#: classes/Materialpool_Autor.php:106
+msgctxt "Organisation Editpage Fielddescription"
+msgid "email of author (for gravatar)"
+msgstr "E-Mail des Autoren (für Gravatar)"
+
+#: classes/Materialpool_Autor.php:113
+msgctxt "Author Editpage Fieldname"
+msgid "Picture"
+msgstr "Bild"
+
+#: classes/Materialpool_Autor.php:114
+msgctxt "Author Editpage Fielddescription"
+msgid "Picture from author"
+msgstr "Bild des Autoren"
+
+#: classes/Materialpool_Bildungsstufe.php:22
+#: classes/Materialpool_Bildungsstufe.php:37
+msgid "Educational levels"
+msgstr "Bildungsstufen"
+
+#: classes/Materialpool_Bildungsstufe.php:23
+#: classes/Materialpool_Bildungsstufe.php:41
+msgid "Educational level"
+msgstr "Bildungsstufe"
+
+#: classes/Materialpool_Bildungsstufe.php:24
+msgid "Search educational level"
+msgstr "Bildungsstufe suchen"
+
+#: classes/Materialpool_Bildungsstufe.php:25
+msgid "Popular educational level"
+msgstr "Häufig benutzte Bildungsstufen"
+
+#: classes/Materialpool_Bildungsstufe.php:26
+msgid "All educational levels"
+msgstr "Alle Bildungsstufen"
+
+#: classes/Materialpool_Bildungsstufe.php:29
+msgid "Edit educational level"
+msgstr "Bildungsstufe bearbeiten"
+
+#: classes/Materialpool_Bildungsstufe.php:30
+msgid "Update educational level"
+msgstr "Bildungslevel aktualisieren"
+
+#: classes/Materialpool_Bildungsstufe.php:31
+msgid "Add New educational level"
+msgstr "Neue Bildungsstufe erstellen"
+
+#: classes/Materialpool_Bildungsstufe.php:32
+#: classes/Materialpool_Sprache.php:32
+msgid "New language Name"
+msgstr "Neue Sprache"
+
+#: classes/Materialpool_Bildungsstufe.php:33
+msgid "Separate educational level with commas"
+msgstr "Bildungsstufen durch Kommas trennen."
+
+#: classes/Materialpool_Bildungsstufe.php:34
+msgid "Add or remove educational level"
+msgstr ""
+
+#: classes/Materialpool_Bildungsstufe.php:35
+msgid "Choose from the most used educational levels"
+msgstr "Wähle aus den häufig genutzten Bildungsstufen"
+
+#: classes/Materialpool_Bildungsstufe.php:36
+msgid "No educational level found."
+msgstr "Keine Bildungsstufe gefunden"
+
+#: classes/Materialpool_CMB2_CPT_Select.php:23
+msgid "Please select"
+msgstr "Bitte auswählen"
+
+#: classes/Materialpool_Dashboard.php:22
+msgctxt "Page title"
+msgid "Materialpool"
+msgstr "Materialpool"
+
+#: classes/Materialpool_Dashboard.php:23
+msgctxt "Menu title"
+msgid "Materialpool"
+msgstr "Materialpool"
+
+#: classes/Materialpool_Dashboard.php:66
+msgctxt "Page title"
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: classes/Materialpool_Dashboard.php:67
+msgctxt "Menu title"
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: classes/Materialpool_Inklusives_Material.php:22
+#: classes/Materialpool_Inklusives_Material.php:23
+#: classes/Materialpool_Inklusives_Material.php:37
+#: classes/Materialpool_Inklusives_Material.php:41
+msgid "Inclusion"
+msgstr "Inklusion"
+
+#: classes/Materialpool_Inklusives_Material.php:24
+msgid "Search inclusion"
+msgstr "Inklusion suchen"
+
+#: classes/Materialpool_Inklusives_Material.php:25
+msgid "Popular inclusion"
+msgstr "Häufig benutzte Inklusionen"
+
+#: classes/Materialpool_Inklusives_Material.php:26
+msgid "All inclusions"
+msgstr "Alle Inklusionen"
+
+#: classes/Materialpool_Inklusives_Material.php:29
+msgid "Edit inclusion"
+msgstr "Inklusion bearbeiten"
+
+#: classes/Materialpool_Inklusives_Material.php:30
+msgid "Update inclusion"
+msgstr "Inklusion aktualisieren"
+
+#: classes/Materialpool_Inklusives_Material.php:31
+msgid "Add New inclusion"
+msgstr "Neue Inklusion erstellen"
+
+#: classes/Materialpool_Inklusives_Material.php:32
+msgid "New inclusion Name"
+msgstr "Neue Inklusion"
+
+#: classes/Materialpool_Inklusives_Material.php:33
+msgid "Separate inclusion with commas"
+msgstr "Inklusionen durch Kommas trennen."
+
+#: classes/Materialpool_Inklusives_Material.php:34
+msgid "Add or remove inclusion"
+msgstr ""
+
+#: classes/Materialpool_Inklusives_Material.php:35
+msgid "Choose from the most used inclusion"
+msgstr "Wähle aus den häufig genutzten Inklusionen"
+
+#: classes/Materialpool_Inklusives_Material.php:36
+msgid "No inclusion found."
+msgstr "Keine Inklusion gefunden"
+
+#: classes/Materialpool_Installation.php:30
+msgid "This plugin requires WordPress 4.0 or newer to work"
+msgstr "Dieses Plugin benötigt Wordpress 4.0 oder neuer."
+
+#: classes/Materialpool_Installation.php:43
+#, php-format
+msgid ""
+"This plugin requires PHP 5.3 or newer to work. Your current PHP version is "
+"%1s, please update."
+msgstr ""
+"Dieses Plugin benötigt PHP 5.3 oder höher. Deine aktuellen PHP-Version ist"
+"% 1s, bitte aktualisieren."
+
+#: classes/Materialpool_Konfession.php:23
+#: classes/Materialpool_Konfession.php:28
+msgid "Konfessionen"
+msgstr ""
+
+#: classes/Materialpool_Konfession.php:24
+msgid "Konfession"
+msgstr ""
+
+#: classes/Materialpool_Lizenz.php:22 classes/Materialpool_Lizenz.php:23
+#: classes/Materialpool_Lizenz.php:37 classes/Materialpool_Lizenz.php:41
+msgid "License"
+msgstr "Lizenz"
+
+#: classes/Materialpool_Lizenz.php:24
+msgid "Search license"
+msgstr "Lizenz suchen"
+
+#: classes/Materialpool_Lizenz.php:25
+msgid "Popular license"
+msgstr "Häufig benutzte Lizenzen"
+
+#: classes/Materialpool_Lizenz.php:26
+msgid "All license"
+msgstr "Alle Lizenzen"
+
+#: classes/Materialpool_Lizenz.php:29
+msgid "Edit license"
+msgstr "Lizenz bearbeiten"
+
+#: classes/Materialpool_Lizenz.php:30
+msgid "Update license"
+msgstr "Lizenz aktualisieren"
+
+#: classes/Materialpool_Lizenz.php:31
+msgid "Add New license"
+msgstr "Neue Lizenz hinzufügen"
+
+#: classes/Materialpool_Lizenz.php:32
+msgid "New license Name"
+msgstr "Neue Lizenz"
+
+#: classes/Materialpool_Lizenz.php:33
+msgid "Separate license with commas"
+msgstr "Lizenzen durch Kommas trennen."
+
+#: classes/Materialpool_Lizenz.php:34
+msgid "Add or remove license"
+msgstr ""
+
+#: classes/Materialpool_Lizenz.php:35
+msgid "Choose from the most used license"
+msgstr "Wähle aus den häufig genutzten Lizenzen"
+
+#: classes/Materialpool_Lizenz.php:36
+msgid "No license found."
+msgstr "Keine Lizenzen gefunden"
+
+#: classes/Materialpool_Material.php:24 classes/Materialpool_Material.php:25
+#: classes/Materialpool_Material.php:41
+msgid "Material"
+msgstr ""
+
+#: classes/Materialpool_Material.php:26
+msgctxt "admin menu"
+msgid "Material"
+msgstr ""
+
+#: classes/Materialpool_Material.php:27
+msgctxt "add new on admin bar"
+msgid "Material"
+msgstr ""
+
+#: classes/Materialpool_Material.php:28
+msgctxt "Material"
+msgid "Add New"
+msgstr "Erstellen"
+
+#: classes/Materialpool_Material.php:29
+msgid "Add New Material"
+msgstr "Neues Material hinzufügen"
+
+#: classes/Materialpool_Material.php:30
+msgid "New Material"
+msgstr "Neues Material"
+
+#: classes/Materialpool_Material.php:31
+msgid "Edit Material"
+msgstr "Material bearbeiten"
+
+#: classes/Materialpool_Material.php:32
+msgid "View Material"
+msgstr "Material ansehen"
+
+#: classes/Materialpool_Material.php:33
+msgid "All Material"
+msgstr "Alle Materialien"
+
+#: classes/Materialpool_Material.php:34
+msgid "Search Material"
+msgstr "Material suchen"
+
+#: classes/Materialpool_Material.php:35
+msgid "Parent Material:"
+msgstr "Werk (übergeordnetes Material)"
+
+#: classes/Materialpool_Material.php:36
+msgid "No Material found."
+msgstr "Kein Material gefunden"
+
+#: classes/Materialpool_Material.php:37
+msgid "No Material found in Trash."
+msgstr "Kein Material im Papierkorb gefunden"
+
+#: classes/Materialpool_Material.php:74
+msgid "Materialdata"
+msgstr ""
+
+#: classes/Materialpool_Material.php:84
+msgctxt "Material Editpage Fieldname"
+msgid "Shortdescription"
+msgstr "Kurzbeschreibung"
+
+#: classes/Materialpool_Material.php:85
+msgctxt "Organisation Editpage Fielddescription"
+msgid "Shortdescription of material"
+msgstr "Kurzbeschreibung des Materials"
+
+#: classes/Materialpool_Material.php:92
+msgctxt "Material Editpage Fieldname"
+msgid "Description"
+msgstr "Beschreibung"
+
+#: classes/Materialpool_Material.php:93
+msgctxt "Organisation Editpage Fielddescription"
+msgid "Description of material"
+msgstr "Beschreibung des Materials"
+
+#: classes/Materialpool_Material.php:100
+msgctxt "Material Editpage Fieldname"
+msgid "Release Date"
+msgstr "Veröffentlichungsdatum"
+
+#: classes/Materialpool_Material.php:101
+msgctxt "Organisation Editpage Fielddescription"
+msgid "Release Date of material"
+msgstr "Veröffentlichungsdatum des Materials"
+
+#: classes/Materialpool_Material.php:109
+msgctxt "Material Editpage Fieldname"
+msgid "Depublication Date"
+msgstr "Depublizierungsdatum"
+
+#: classes/Materialpool_Material.php:110
+msgctxt "Organisation Editpage Fielddescription"
+msgid "Depublicarion Date of material"
+msgstr "Depublizierungsdatum des Materials"
+
+#: classes/Materialpool_Material.php:118
+msgctxt "Material Editpage Fieldname"
+msgid "Review Date"
+msgstr "Wiedervorlagedatum"
+
+#: classes/Materialpool_Material.php:119
+msgctxt "Organisation Editpage Fielddescription"
+msgid "Review Date of material"
+msgstr "Datum, wann das Material zum erneuten Review vorgelegt wird."
+
+#: classes/Materialpool_Material.php:127
+msgctxt "Material Editpage Fieldname"
+msgid "Create Date"
+msgstr ""
+
+#: classes/Materialpool_Material.php:128
+msgctxt "Organisation Editpage Fielddescription"
+msgid "Create Date of material"
+msgstr ""
+
+#: classes/Materialpool_Material.php:136
+msgctxt "Material Editpage Fieldname"
+msgid "Material URL"
+msgstr "URL unter der das Material erreichbar ist."
+
+#: classes/Materialpool_Material.php:137
+msgctxt "Organisation Editpage Fielddescription"
+msgid "URL of material"
+msgstr "URL unter der das Material erreichbar ist."
+
+#: classes/Materialpool_Material.php:144
+msgctxt "Material Editpage Fieldname"
+msgid "Picture"
+msgstr "Bild"
+
+#: classes/Materialpool_Material.php:145
+msgctxt "Material Editpage Fielddescription"
+msgid "Picture from material"
+msgstr "Bild des Materials"
+
+#: classes/Materialpool_Material.php:173
+msgctxt "Material Editpage Fieldname"
+msgid "Werk"
+msgstr ""
+
+#: classes/Materialpool_Material.php:174
+msgctxt "Material Editpage Fielddescription"
+msgid "Werk from material"
+msgstr "Dieses Material ist einem Werk zugeordnet."
+
+#: classes/Materialpool_Material.php:181
+msgctxt "Material Editpage Fieldname"
+msgid "Reference"
+msgstr "Referenzen"
+
+#: classes/Materialpool_Material.php:182
+msgctxt "Material Editpage Fielddescription"
+msgid "Reference to material"
+msgstr "Materialreferenzen (Erscheinen als Verweise beim Material)"
+
+#: classes/Materialpool_Material.php:190
+msgctxt "Material Editpage Fieldname"
+msgid "Mediatyp"
+msgstr ""
+
+#: classes/Materialpool_Material.php:191
+msgctxt "Material Editpage Fielddescription"
+msgid "Mediatyp of material"
+msgstr "Medientyp des Materials"
+
+#: classes/Materialpool_Material.php:201
+msgctxt "Material Editpage Fieldname"
+msgid "Verfügbarkeit"
+msgstr ""
+
+#: classes/Materialpool_Material.php:202
+msgctxt "Material Editpage Fielddescription"
+msgid "Verfügbarkeit of material"
+msgstr ""
+
+#: classes/Materialpool_Material.php:209
+msgctxt "Material Editpage Fieldname"
+msgid "Bildungsstufe"
+msgstr ""
+
+#: classes/Materialpool_Material.php:210
+msgctxt "Material Editpage Fielddescription"
+msgid "Bildungsstuge of material"
+msgstr ""
+
+#: classes/Materialpool_Material.php:220
+msgctxt "Material Editpage Fieldname"
+msgid "Zugänglichkeit"
+msgstr ""
+
+#: classes/Materialpool_Material.php:221
+msgctxt "Material Editpage Fielddescription"
+msgid "Zugänglichkeit of material"
+msgstr "Zugänglichkeit des Materials"
+
+#: classes/Materialpool_Material.php:231
+msgctxt "Material Editpage Fieldname"
+msgid "Inklusion"
+msgstr ""
+
+#: classes/Materialpool_Material.php:232
+msgctxt "Material Editpage Fielddescription"
+msgid "Inklusion of material"
+msgstr ""
+
+#: classes/Materialpool_Material.php:242
+msgctxt "Material Editpage Fieldname"
+msgid "Language"
+msgstr "Sprache"
+
+#: classes/Materialpool_Material.php:243
+msgctxt "Material Editpage Fielddescription"
+msgid "Language of material"
+msgstr "Sprache des Materials"
+
+#: classes/Materialpool_Material.php:253
+msgctxt "Material Editpage Fieldname"
+msgid "Lizenz"
+msgstr "Lizenz"
+
+#: classes/Materialpool_Material.php:254
+msgctxt "Material Editpage Fielddescription"
+msgid "Lizenz of material"
+msgstr "Lizenz des Materials"
+
+#: classes/Materialpool_Material.php:261
+msgctxt "Material Editpage Fieldname"
+msgid "Altersstufe"
+msgstr ""
+
+#: classes/Materialpool_Material.php:262
+msgctxt "Material Editpage Fielddescription"
+msgid "Altersstufe of material"
+msgstr ""
+
+#: classes/Materialpool_Medientyp.php:22 classes/Materialpool_Medientyp.php:23
+#: classes/Materialpool_Medientyp.php:41
+msgid "Mediatype"
+msgstr "Medientyp"
+
+#: classes/Materialpool_Medientyp.php:24
+msgid "Search mediatype"
+msgstr "Medientyp suchen"
+
+#: classes/Materialpool_Medientyp.php:25
+msgid "Popular mediatype"
+msgstr "Häufig benutzte Medientypen"
+
+#: classes/Materialpool_Medientyp.php:26
+msgid "All mediatypes"
+msgstr "Alle Medientypen"
+
+#: classes/Materialpool_Medientyp.php:29
+msgid "Edit mediatype"
+msgstr "Medientyp bearbeiten"
+
+#: classes/Materialpool_Medientyp.php:30
+msgid "Update mediatype"
+msgstr "Medientyp aktualisieren"
+
+#: classes/Materialpool_Medientyp.php:31
+msgid "Add New mediatype"
+msgstr "Neuen Medientyp hinzufügen"
+
+#: classes/Materialpool_Medientyp.php:32
+msgid "New mediatype Name"
+msgstr "Neuer Medientyp"
+
+#: classes/Materialpool_Medientyp.php:33
+msgid "Separat emediatypes with commas"
+msgstr "Medientypen durch Kommas trennen."
+
+#: classes/Materialpool_Medientyp.php:34
+msgid "Add or remove mediatype"
+msgstr ""
+
+#: classes/Materialpool_Medientyp.php:35
+msgid "Choose from the most used mediatypes"
+msgstr "Wähle aus den häufig genutzten Medientypen"
+
+#: classes/Materialpool_Medientyp.php:36
+msgid "No mediatype found."
+msgstr "Kein Medientyp gefunden"
+
+#: classes/Materialpool_Medientyp.php:37
+msgid "Mediatypes"
+msgstr "Medientypen"
+
+#: classes/Materialpool_Organisation.php:24
+#: classes/Materialpool_Organisation.php:29
+msgid "Organisationen"
+msgstr ""
+
+#: classes/Materialpool_Organisation.php:25
+msgid "Organisation"
+msgstr ""
+
+#: classes/Materialpool_Organisation.php:61
+msgid "Organisationdata"
+msgstr "Organisationsdaten"
+
+#: classes/Materialpool_Organisation.php:71
+msgctxt "Organisation Editpage Fieldname"
+msgid "URL"
+msgstr "URL"
+
+#: classes/Materialpool_Organisation.php:72
+msgctxt "Organisation Editpage Fielddescription"
+msgid "Website of organisation"
+msgstr "Webseite der Organisation"
+
+#: classes/Materialpool_Organisation.php:79
+msgctxt "Organisation Editpage Fieldname"
+msgid "Logo"
+msgstr "Logo"
+
+#: classes/Materialpool_Organisation.php:80
+msgctxt "Organisation Editpage Fielddescription"
+msgid "Logo from organisation"
+msgstr "Logo"
+
+#: classes/Materialpool_Organisation.php:94
+msgctxt "Organisation Editpage Fieldname"
+msgid "ALPIKA"
+msgstr ""
+
+#: classes/Materialpool_Organisation.php:95
+msgctxt "Organisation Editpage Fielddescription"
+msgid "Organisation is ALPIKA"
+msgstr "Organisation ist ein ALPIKA Institut"
+
+#: classes/Materialpool_Organisation.php:102
+msgctxt "Organisation Editpage Fieldname"
+msgid "Konfession"
+msgstr ""
+
+#: classes/Materialpool_Organisation.php:103
+msgctxt "Organisation Editpage Fielddescription"
+msgid "Konfession of organisation"
+msgstr ""
+
+#: classes/Materialpool_Sprache.php:22 classes/Materialpool_Sprache.php:37
+msgid "Languages"
+msgstr "Sprachen"
+
+#: classes/Materialpool_Sprache.php:23
+msgid "Language"
+msgstr "Sprache"
+
+#: classes/Materialpool_Sprache.php:24
+msgid "Search languages"
+msgstr "Sprache suchen"
+
+#: classes/Materialpool_Sprache.php:25
+msgid "Popular languages"
+msgstr "Häufig benutzte Sprachen"
+
+#: classes/Materialpool_Sprache.php:26
+msgid "All languages"
+msgstr "Alle Sprachen"
+
+#: classes/Materialpool_Sprache.php:29
+msgid "Edit language"
+msgstr "Sprache bearbeiten"
+
+#: classes/Materialpool_Sprache.php:30
+msgid "Update language"
+msgstr "Sprache aktualisieren"
+
+#: classes/Materialpool_Sprache.php:31
+msgid "Add New language"
+msgstr "Neue Sprache hinzufügen"
+
+#: classes/Materialpool_Sprache.php:33
+msgid "Separate language with commas"
+msgstr "Sprachen durch Kommas trennen."
+
+#: classes/Materialpool_Sprache.php:34
+msgid "Add or remove language"
+msgstr ""
+
+#: classes/Materialpool_Sprache.php:35
+msgid "Choose from the most used languages"
+msgstr "Wähle aus den häufig genutzten Sprachen"
+
+#: classes/Materialpool_Sprache.php:36
+msgid "No languages found."
+msgstr "Keine Sprachen gefunden"
+
+#: classes/Materialpool_Sprache.php:41
+msgid "Sprachen"
+msgstr ""
+
+#: classes/Materialpool_Verfuegbarkeit.php:22
+#: classes/Materialpool_Verfuegbarkeit.php:23
+#: classes/Materialpool_Verfuegbarkeit.php:41
+msgid "Disposability"
+msgstr "Verfügbarkeit"
+
+#: classes/Materialpool_Verfuegbarkeit.php:24
+msgid "Search disposabilitys"
+msgstr "Verfügbarkeit suchen"
+
+#: classes/Materialpool_Verfuegbarkeit.php:25
+msgid "Popular disposabilitys"
+msgstr "Häufig benutzte Verfügbarkeiten"
+
+#: classes/Materialpool_Verfuegbarkeit.php:26
+msgid "All disposabilitys"
+msgstr "Alle Verfügbarkeiten"
+
+#: classes/Materialpool_Verfuegbarkeit.php:29
+msgid "Edit disposability"
+msgstr "Verfügbarkeit bearbeiten"
+
+#: classes/Materialpool_Verfuegbarkeit.php:30
+msgid "Update disposability"
+msgstr "Verfügbarkeit aktualisieren"
+
+#: classes/Materialpool_Verfuegbarkeit.php:31
+msgid "Add New disposability"
+msgstr "Neue Verfügbarkeit erstellen"
+
+#: classes/Materialpool_Verfuegbarkeit.php:32
+msgid "New disposability Name"
+msgstr "Neue Verfügbarkeit"
+
+#: classes/Materialpool_Verfuegbarkeit.php:33
+msgid "Separate disposability with commas"
+msgstr "Verfügbarkeiten durch Kommas trennen."
+
+#: classes/Materialpool_Verfuegbarkeit.php:34
+msgid "Add or remove disposability"
+msgstr ""
+
+#: classes/Materialpool_Verfuegbarkeit.php:35
+msgid "Choose from the most used disposabilitys"
+msgstr "Wähle aus den häufig genutzten Verfügbarkeiten"
+
+#: classes/Materialpool_Verfuegbarkeit.php:36
+msgid "No disposabilitys found."
+msgstr "Keine Verfügbarkeit gefunden"
+
+#: classes/Materialpool_Verfuegbarkeit.php:37
+msgid "Disposabilitys"
+msgstr "Verfügbarkeiten"
+
+#: classes/Materialpool_Zugaenglichkeit.php:22
+#: classes/Materialpool_Zugaenglichkeit.php:23
+#: classes/Materialpool_Zugaenglichkeit.php:37
+#: classes/Materialpool_Zugaenglichkeit.php:41
+msgid "Accessibility"
+msgstr "Zugänglichkeit"
+
+#: classes/Materialpool_Zugaenglichkeit.php:24
+msgid "Search accessibility"
+msgstr "Zugänglichkeit suchen"
+
+#: classes/Materialpool_Zugaenglichkeit.php:25
+msgid "Popular accessibility"
+msgstr "Häufig benutzte Inklusionen"
+
+#: classes/Materialpool_Zugaenglichkeit.php:26
+msgid "All accessibility"
+msgstr "Alle Zugänglichkeiten"
+
+#: classes/Materialpool_Zugaenglichkeit.php:29
+msgid "Edit accessibility"
+msgstr "Zugänglichkeit bearbeiten"
+
+#: classes/Materialpool_Zugaenglichkeit.php:30
+msgid "Update accessibility"
+msgstr "Zugänglichkeit aktualisieren"
+
+#: classes/Materialpool_Zugaenglichkeit.php:31
+msgid "Add New accessibility"
+msgstr "Neue Zugänglichkeit erstellen"
+
+#: classes/Materialpool_Zugaenglichkeit.php:32
+msgid "New accessibility Name"
+msgstr "Neue Zugängllichkeit"
+
+#: classes/Materialpool_Zugaenglichkeit.php:33
+msgid "Separate accessibility with commas"
+msgstr "Zugänglichkeiten durch Kommas trennen."
+
+#: classes/Materialpool_Zugaenglichkeit.php:34
+msgid "Add or remove accessibility"
+msgstr ""
+
+#: classes/Materialpool_Zugaenglichkeit.php:35
+msgid "Choose from the most used accessibility"
+msgstr "Wähle aus den häufig genutzten  Zugänglichkeiten"
+
+#: classes/Materialpool_Zugaenglichkeit.php:36
+msgid "No accessibility found."
+msgstr "Keine Zugänglichkeit gefunden"
+
+#. Plugin Name of the plugin/theme
+msgid "RW Materialpool"
+msgstr "RW Materialpool"
+
+#. Plugin URI of the plugin/theme
+msgid "https://github.com/rpi-virtuell/rw-materialpool"
+msgstr "https://github.com/rpi-virtuell/rw-materialpool"
+
+#. Description of the plugin/theme
+msgid "RPI Virtuell Materialpool"
+msgstr "RPI Virtuell Materialpool"
+
+#. Author of the plugin/theme
+msgid "Frank Staude"
+msgstr "Frank Staude"
+
+#. Author URI of the plugin/theme
+msgid "https://staude.net"
+msgstr "https://staude.net"

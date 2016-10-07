@@ -19,8 +19,22 @@ class Materialpool_Sprache {
      */
     static public function register_taxonomy() {
         $labels = array(
-            "name" => __( 'Sprachen', Materialpool::$textdomain ),
-            "singular_name" => __( 'Sprache', Materialpool::$textdomain ),
+            "name"                          => __( 'Languages', Materialpool::$textdomain ),
+            "singular_name"                 => __( 'Language', Materialpool::$textdomain ),
+            'search_items'                  => __( 'Search languages', Materialpool::$textdomain ),
+            'popular_items'                 => __( 'Popular languages', Materialpool::$textdomain ),
+            'all_items'                     => __( 'All languages', Materialpool::$textdomain ),
+            'parent_item'                   => null,
+            'parent_item_colon'             => null,
+            'edit_item'                     => __( 'Edit language', Materialpool::$textdomain ),
+            'update_item'                   => __( 'Update language', Materialpool::$textdomain ),
+            'add_new_item'                  => __( 'Add New language', Materialpool::$textdomain ),
+            'new_item_name'                 => __( 'New language Name', Materialpool::$textdomain ),
+            'separate_items_with_commas'    => __( 'Separate language with commas', Materialpool::$textdomain ),
+            'add_or_remove_items'           => __( 'Add or remove language', Materialpool::$textdomain ),
+            'choose_from_most_used'         => __( 'Choose from the most used languages', Materialpool::$textdomain ),
+            'not_found'                     => __( 'No languages found.', Materialpool::$textdomain ),
+            'menu_name'                     => __( 'Languages', Materialpool::$textdomain ),
         );
 
         $args = array(
