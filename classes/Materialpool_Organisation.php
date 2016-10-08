@@ -123,4 +123,27 @@ class Materialpool_Organisation {
         $cmb_organisation = apply_filters( 'materialpool_organisation_meta_field', $cmb_organisation);
 	}
 
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     * @filters materialpool_autor_meta_field
+     *
+     */
+    static public function load_template($template) {
+        global $post;
+
+        if ($post->post_type == "organisation"){
+            if ( is_single() ) {
+                if ( $theme_file = locate_template( array ( 'materialpool/single-organisation.php' ) ) ) {
+                    $template_path = $theme_file;
+                } else {
+                    $template_path = Materialpool::$plugin_base_dir . 'templates/single-organisation.php';
+                }
+            }
+            return $template_path;
+        }
+        return $template;
+    }
+
 }

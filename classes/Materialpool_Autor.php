@@ -141,4 +141,26 @@ class Materialpool_Autor {
         $cmb_author = apply_filters( 'materialpool_autor_meta_field', $cmb_author);
     }
 
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     * @filters materialpool_autor_meta_field
+     *
+     */
+    static public function load_template($template) {
+        global $post;
+
+        if ($post->post_type == "autor"){
+            if ( is_single() ) {
+                if ( $theme_file = locate_template( array ( 'materialpool/single-autor.php' ) ) ) {
+                    $template_path = $theme_file;
+                } else {
+                    $template_path = Materialpool::$plugin_base_dir . 'templates/single-autor.php';
+                }
+            }
+            return $template_path;
+        }
+        return $template;
+    }
 }

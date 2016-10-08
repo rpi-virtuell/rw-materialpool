@@ -271,5 +271,26 @@ class Materialpool_Material {
         $cmb_material = apply_filters( 'materialpool_material_meta_field', $cmb_material);
     }
 
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     * @filters materialpool_autor_meta_field
+     *
+     */
+    static public function load_template($template) {
+        global $post;
 
+        if ($post->post_type == "material"){
+            if ( is_single() ) {
+                if ( $theme_file = locate_template( array ( 'materialpool/single-material.php' ) ) ) {
+                    $template_path = $theme_file;
+                } else {
+                    $template_path = Materialpool::$plugin_base_dir . 'templates/single-material.php';
+                }
+            }
+            return $template_path;
+        }
+        return $template;
+    }
 }

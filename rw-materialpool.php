@@ -66,6 +66,13 @@ class Materialpool {
 	 */
 	static public $plugin_base_name = NULL;
 
+    /**
+     * @var     mixed
+     * @since   0.0.1
+     * @access  public
+     */
+    static public $plugin_base_dir = NULL;
+
 	/**
 	 * @var     mixed
 	 * @since   0.0.1
@@ -106,6 +113,9 @@ class Materialpool {
 		// The Plugins Basename
 		self::$plugin_base_name = plugin_basename( __FILE__ );
 
+        // The Plugin Dir Path
+        self::$plugin_base_dir = plugin_dir_path( __FILE__ );
+
 		// The Plugins Version
 		self::$plugin_version = $this->get_plugin_header( 'Version' );
 
@@ -119,14 +129,17 @@ class Materialpool {
         // Add Filter & Actions for Material
         add_action( 'init', array( 'Materialpool_Material', 'register_post_type' ) );
         add_action( 'cmb2_admin_init', array( 'Materialpool_Material', 'register_meta_fields' ) );
+        add_filter( 'single_template', array( 'Materialpool_Material', 'load_template' ) );
 
         // Add Filter & Actions for Organisation
         add_action( 'init', array( 'Materialpool_Organisation', 'register_post_type' ) );
         add_action( 'cmb2_admin_init', array( 'Materialpool_Organisation', 'register_meta_fields' ) );
+        add_filter( 'single_template', array( 'Materialpool_Organisation', 'load_template' ) );
 
         // Add Filter & Actions for Autor
         add_action( 'init', array( 'Materialpool_Autor', 'register_post_type' ) );
         add_action( 'cmb2_admin_init', array( 'Materialpool_Autor', 'register_meta_fields' ) );
+        add_filter( 'single_template', array( 'Materialpool_Autor', 'load_template' ) );
 
 		// Add Filter & Actions for Konfession
 		add_action( 'init', array( 'Materialpool_Konfession', 'register_taxonomy' ) );
