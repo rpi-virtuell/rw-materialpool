@@ -46,7 +46,7 @@ class Materialpool_Material {
 			"show_ui" => true,
 			"show_in_rest" => false,
 			"rest_base" => "",
-			"has_archive" => false,
+			"has_archive" => 'material',
 			"show_in_menu" => true, //'materialpool',
 			"exclude_from_search" => false,
 			"capability_type" => "post",
@@ -275,7 +275,6 @@ class Materialpool_Material {
      *
      * @since 0.0.1
      * @access	public
-     * @filters materialpool_autor_meta_field
      *
      */
     static public function load_template($template) {
@@ -287,6 +286,13 @@ class Materialpool_Material {
                     $template_path = $theme_file;
                 } else {
                     $template_path = Materialpool::$plugin_base_dir . 'templates/single-material.php';
+                }
+            }
+            if ( is_archive() ) {
+                if ( $theme_file = locate_template( array ( 'materialpool/archive-material.php' ) ) ) {
+                    $template_path = $theme_file;
+                } else {
+                    $template_path = Materialpool::$plugin_base_dir . 'templates/archive-material.php';
                 }
             }
             return $template_path;

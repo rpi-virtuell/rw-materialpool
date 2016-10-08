@@ -1,6 +1,6 @@
 <?php
 /**
- * The Template for displaying all single organisation
+ * The Template for displaying a single organisation
  *
  * This template can be overridden by copying it to yourtheme/materialpool/single-organisation.php.
  *

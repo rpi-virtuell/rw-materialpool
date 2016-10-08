@@ -34,7 +34,7 @@ class Materialpool_Organisation {
 			"show_ui" => true,
 			"show_in_rest" => false,
 			"rest_base" => "",
-			"has_archive" => false,
+			"has_archive" => "organisation",
 			"show_in_menu" => true,
 			"exclude_from_search" => false,
 			"capability_type" => "post",
@@ -127,7 +127,6 @@ class Materialpool_Organisation {
      *
      * @since 0.0.1
      * @access	public
-     * @filters materialpool_autor_meta_field
      *
      */
     static public function load_template($template) {
@@ -139,6 +138,13 @@ class Materialpool_Organisation {
                     $template_path = $theme_file;
                 } else {
                     $template_path = Materialpool::$plugin_base_dir . 'templates/single-organisation.php';
+                }
+            }
+            if ( is_archive() ) {
+                if ( $theme_file = locate_template( array ( 'materialpool/archive-organisation.php' ) ) ) {
+                    $template_path = $theme_file;
+                } else {
+                    $template_path = Materialpool::$plugin_base_dir . 'templates/archive-organisation.php';
                 }
             }
             return $template_path;

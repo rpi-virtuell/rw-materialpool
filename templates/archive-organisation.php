@@ -1,8 +1,8 @@
 <?php
 /**
- * The Template for displaying s single author
+ * The Template for displaying all single organisations aka archive
  *
- * This template can be overridden by copying it to yourtheme/materialpool/single-autor.php.
+ * This template can be overridden by copying it to yourtheme/materialpool/archive-organisation.php.
  *
  * @since      0.0.1
  * @package    Materialpool
@@ -17,7 +17,7 @@ get_header( 'materialpool' ); ?>
 <section id="primary" class="content-area">
     <div id="content" class="site-content" role="main">
 
-Template for Autor
+        Template for Organisation Archive
 
     </div>
 </section>
