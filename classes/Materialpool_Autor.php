@@ -168,4 +168,185 @@ class Materialpool_Autor {
         }
         return $template;
     }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function firstname() {
+        echo Materialpool_Autor::get_firstname();
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_firstname() {
+        global $post;
+
+        return get_metadata( 'post', $post->ID, 'autor_firstname', true );
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function lastname() {
+        echo Materialpool_Autor::get_lastname();
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_lastname() {
+        global $post;
+
+        return get_metadata( 'post', $post->ID, 'autor_lastname', true );
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function url() {
+        echo Materialpool_Autor::get_url();
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     * @filters materialpool-template-autor-url
+     */
+    static public function url_html() {
+        $url = Materialpool_Autor::get_url();
+        echo '<a href="' . $url . '" class="'. apply_filters( '', 'materialpool-template-autor-url' ) .'">' . $url . '</a>';
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_url() {
+        global $post;
+
+        return get_metadata( 'post', $post->ID, 'autor_url', true );
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function buddypress() {
+        echo Materialpool_Autor::get_buddypress();
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     * @filters materialpool-buddypress-member-url
+     * @filters materialpool-template-autor-buddypress-url
+     */
+    static public function buddypress_html() {
+        $name = Materialpool_Autor::get_buddypress();
+        echo '<a href="' . apply_filters( 'materialpool-buddypress-member-url', Materialpool::$buddypress_member_url ) . $name  . '" class="'. apply_filters( 'materialpool-template-autor-buddypress-url', 'materialpool-autor-buddypress-url' ) .'">' . $name . '</a>';
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_buddypress() {
+        global $post;
+
+        return get_metadata( 'post', $post->ID, 'autor_buddypress', true );
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function email() {
+        echo Materialpool_Autor::get_email();
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     * @filters materialpool-template-autor-email
+     */
+    static public function email_html() {
+        $email = Materialpool_Autor::get_email();
+        echo '<a href="mailto:' . $email . '" class="'. apply_filters( 'materialpool-template-autor-email', 'materialpool-autor-email' ) .'">' . $email . '</a>';
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_email() {
+        global $post;
+
+        return get_metadata( 'post', $post->ID, 'autor_email', true );
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function picture() {
+        echo Materialpool_Autor::get_picture();
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     * @filters materialpool-template-autor-pic
+     *
+     */
+    static public function picture_html() {
+        $url = Materialpool_Autor::get_picture();
+        echo '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-autor-pic', 'materialpool-autor-pic' ) .'"/>';
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_picture() {
+        global $post;
+
+        return get_metadata( 'post', $post->ID, 'autor_picture', true );
+    }
+
+
+
 }

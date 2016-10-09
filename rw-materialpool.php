@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Emergency Report
+ * RW Materialpool
  *
  * @package   Materialpool
  * @author    Frank Staude
@@ -93,6 +93,15 @@ class Materialpool {
 	 * @access  public
 	 */
 	static public $plugin_version = '';
+
+    /**
+     * Plugin version
+     *
+     * @var     string
+     * @since   0.0.1
+     * @access  public
+     */
+    static public $buddypress_member_url = "http://gruppen.rpi-virtuell.de/members/";
 
 	/**
 	 * Plugin constructor.

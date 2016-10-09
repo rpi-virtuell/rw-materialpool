@@ -44,7 +44,12 @@ materialpool_sprache_taxonomy_label
 materialpool_sprache_taxonomy_args
 materialpool_material_meta_field
 
+materialpool-template-autor-url
+materialpool-template-autor-email
+materialpool-template-autor-buddypress-url
 
+
+materialpool-buddypress-member-url
 
 = Actions =
 
