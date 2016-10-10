@@ -116,6 +116,7 @@ class Materialpool {
 		// set the textdomain variable
 		self::$textdomain = self::get_textdomain();
 
+        self::$plugin_url = plugin_dir_url( __FILE__ );
 		// The Plugins Name
 		self::$plugin_name = $this->get_plugin_header( 'Name' );
 
@@ -144,6 +145,9 @@ class Materialpool {
         add_action( 'init', array( 'Materialpool_Organisation', 'register_post_type' ) );
         add_action( 'cmb2_admin_init', array( 'Materialpool_Organisation', 'register_meta_fields' ) );
         add_filter( 'template_include', array( 'Materialpool_Organisation', 'load_template' ) );
+        add_action( 'manage_organisation_posts_columns', array( 'Materialpool_Organisation', 'cpt_list_head') );
+        add_action( 'manage_organisation_posts_custom_column', array( 'Materialpool_Organisation', 'cpt_list_column'), 10,2 );
+        add_action( 'manage_edit-organisation_sortable_columns', array( 'Materialpool_Organisation', 'cpt_sort_column') );
 
         // Add Filter & Actions for Autor
         add_action( 'init', array( 'Materialpool_Autor', 'register_post_type' ) );
@@ -152,7 +156,7 @@ class Materialpool {
         add_action( 'manage_autor_posts_columns', array( 'Materialpool_Autor', 'cpt_list_head') );
         add_action( 'manage_autor_posts_custom_column', array( 'Materialpool_Autor', 'cpt_list_column'), 10,2 );
         add_action( 'manage_edit-autor_sortable_columns', array( 'Materialpool_Autor', 'cpt_sort_column') );
-        add_action( 'pre_get_posts',  array( 'Materialpool_Autor', 'column_order_by') );
+
 
         // Add Filter & Actions for Konfession
 		add_action( 'init', array( 'Materialpool_Konfession', 'register_taxonomy' ) );

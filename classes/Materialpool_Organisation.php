@@ -152,4 +152,83 @@ class Materialpool_Organisation {
         return $template;
     }
 
+    /**
+     * Change the columns for list table
+     *
+     * @since   0.0.1
+     * @access	public
+     * @var     array    $columns    Array with columns
+     * @return  array
+     */
+    static public function cpt_list_head( $columns ) {
+        unset( $columns );
+        $columns = array(
+            'organisation-id' => _x( 'ID', 'Organisation list field',  Materialpool::$textdomain ),
+            'title' => _x( 'Organisation', 'Organisation list field',  Materialpool::$textdomain ),
+            'organisation-logo' => _x( 'Logo', 'Organisation list field', Materialpool::$textdomain ),
+            'organisation-url' => _x( 'URL', 'Organisation list field', Materialpool::$textdomain ),
+            'organisation-konfession' => _x( 'Konfession', 'Organisation list field', Materialpool::$textdomain ),
+            'organisation-alpika' => _x( 'ALPIKA', 'Organisation list field', Materialpool::$textdomain ),
+            'date' => __('Date'),
+        );
+        return $columns;
+    }
+
+    /**
+     * Add content for the custom columns in list table
+     *
+     * @since   0.0.1
+     * @access	public
+     * @var     string  $column_name    name of the current column
+     * @var     int     $post_id        ID of the current post
+     */
+    static public function cpt_list_column( $column_name, $post_id ) {
+        if ( $column_name == 'organisation-id' ) {
+            $data = $post_id;
+        }
+        if ( $column_name == 'organisation-logo' ) {
+            $icon_ID = get_metadata( 'post', $post_id, 'organisation_logo_id', true );
+            $url = wp_get_attachment_image_src( $icon_ID, 'materialpool-autor-size' );
+            if ( $url !== false ) {
+                $data = "<img src='". $url[ 0 ] ."'>";
+            }
+        }
+        if ( $column_name == 'organisation-url' ) {
+            $data = get_metadata( 'post', $post_id, 'organisation_url', true );
+        }
+        if ( $column_name == 'organisation-alpika' ) {
+            $alpiika = get_metadata( 'post', $post_id, 'organisation_alpika', true );
+            if ( $alpiika == 'on' ) {
+                $data = "<img src='". Materialpool::$plugin_url ."/assets/alpika.png'>";
+            }
+        }
+        if ( $column_name == 'organisation-konfession' ) {
+            $terms = get_the_terms( $post_id, 'konfession' );
+            $term = array();
+            if ( is_array( $termns ) ) {
+                foreach ( $terms as $termObj ) {
+                    $term[] = $termObj->name;
+                }
+            }
+            $data = implode( ', ', $term );
+        }
+        echo $data;
+    }
+
+    /**
+     * Set the sortable columns
+     *
+     * @since   0.0.1
+     * @access	public
+     * @param   array   $columns    array with the default sortable columns
+     * @return  array   Array with sortable columns
+     */
+    static public function cpt_sort_column( $columns ) {
+        return array_merge( $columns, array(
+            'organisation-url' => 'organisation-url',
+            'organisation-alpika' => 'organisation-alpika',
+            'organisation-konfession' => 'organisation-konfession',
+        ) );
+    }
+
 }
