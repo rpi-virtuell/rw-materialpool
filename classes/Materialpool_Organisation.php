@@ -205,7 +205,7 @@ class Materialpool_Organisation {
         if ( $column_name == 'organisation-konfession' ) {
             $terms = get_the_terms( $post_id, 'konfession' );
             $term = array();
-            if ( is_array( $termns ) ) {
+            if ( is_array( $terms ) ) {
                 foreach ( $terms as $termObj ) {
                     $term[] = $termObj->name;
                 }
@@ -230,5 +230,140 @@ class Materialpool_Organisation {
             'organisation-konfession' => 'organisation-konfession',
         ) );
     }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function title() {
+        echo Materialpool_Organisation::get_title();
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_title() {
+        global $post;
+
+        return $post->post_title;
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function url() {
+        echo Materialpool_Organisation::get_url();
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     * @filters materialpool-template-organisation-url
+     */
+    static public function url_html() {
+        $url = Materialpool_Organisation::get_url();
+        echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-organisation-url', 'materialpool-template-organisation-url' ) .'">' . $url . '</a>';
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_url() {
+        global $post;
+
+        return get_metadata( 'post', $post->ID, 'organisation_url', true );
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function logo() {
+        echo Materialpool_Organisation::get_logo();
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     * @filters materialpool-template-organisation-logo
+     *
+     */
+    static public function logo_html() {
+        $url = Materialpool_Organisation::get_logo();
+        echo '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-organisation-logo', 'materialpool-template-organisation-logo' ) .'"/>';
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_logo() {
+        global $post;
+
+        return get_metadata( 'post', $post->ID, 'organisation_logo', true );
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function is_alpika() {
+        global $post;
+
+        $alpika = get_metadata( 'post', $post->ID, 'organisation_alpika', true );
+        if ( $alpika == 'on' ) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function konfession() {
+        echo Materialpool_Organisation::get_konfession();
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_konfession() {
+        global $post;
+
+            $terms = get_the_terms( $post_id, 'konfession' );
+            $term = array();
+            if ( is_array( $terms ) ) {
+                foreach ( $terms as $termObj ) {
+                    $term[] = $termObj->name;
+                }
+            }
+            return ( implode( ', ', $term ) );
+    }
+
 
 }

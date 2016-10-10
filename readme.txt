@@ -48,6 +48,9 @@ materialpool-template-autor-url
 materialpool-template-autor-email
 materialpool-template-autor-buddypress-url
 
+materialpool-template-organisation-url
+materialpool-template-organisation-logo
+
 
 materialpool-buddypress-member-url
 

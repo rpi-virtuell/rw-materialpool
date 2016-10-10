@@ -16,8 +16,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 get_header( 'materialpool' ); ?>
 <section id="primary" class="content-area">
     <div id="content" class="site-content" role="main">
-
-        Template for Organisation
+        <H1>Organisationsseite</H1>
+        <h2>Name</h2>
+        <?php Materialpool_Organisation::title(); ?><br>
+        <h2>Daten</h2>
+        Web: <?php Materialpool_Organisation::url_html(); ?><br>
+        Bild: <?php Materialpool_Organisation::logo_html(); ?><br>
+        ALPIKA: <?php if ( Materialpool_Organisation::is_alpika() ) { echo 'Ja'; } else { echo "Nein"; } ?><br>
+        Konfession: <?php Materialpool_Organisation::konfession(); ?><br>
 
     </div>
 </section>
