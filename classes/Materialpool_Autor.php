@@ -185,6 +185,9 @@ class Materialpool_Autor {
             'autor-picture' => _x( 'Picture', 'Autor list field', Materialpool::$textdomain ),
             'autor-lastname' => _x( 'Lastname', 'Autor list field', Materialpool::$textdomain ),
             'autor-firstname' => _x( 'Firstname', 'Autor list field', Materialpool::$textdomain ),
+            'autor-buddypress' => _x( 'BuddyPress', 'Autor list field', Materialpool::$textdomain ),
+            'autor-email' => _x( 'Email', 'Autor list field', Materialpool::$textdomain ),
+            'date' => __('Date'),
         );
         return $columns;
     }
@@ -215,6 +218,12 @@ class Materialpool_Autor {
         if ( $column_name == 'autor-lastname' ) {
             $data = get_metadata( 'post', $post_id, 'autor_lastname', true );
         }
+        if ( $column_name == 'autor-buddypress' ) {
+            $data = get_metadata( 'post', $post_id, 'autor_buddypress', true );
+        }
+        if ( $column_name == 'autor-email' ) {
+            $data = get_metadata( 'post', $post_id, 'autor_email', true );
+        }
         echo $data;
     }
 
@@ -228,7 +237,10 @@ class Materialpool_Autor {
      */
     static public function cpt_sort_column( $columns ) {
         return array_merge( $columns, array(
-            'author-id' => 'id'
+            'autor-lastname' => 'autor-lastname',
+            'autor-firstname' => 'autor-firstname',
+            'autor-buddypress' => 'autor-buddypress',
+            'autor-email' => 'autor-email',
         ) );
     }
 

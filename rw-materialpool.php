@@ -152,6 +152,7 @@ class Materialpool {
         add_action( 'manage_autor_posts_columns', array( 'Materialpool_Autor', 'cpt_list_head') );
         add_action( 'manage_autor_posts_custom_column', array( 'Materialpool_Autor', 'cpt_list_column'), 10,2 );
         add_action( 'manage_edit-autor_sortable_columns', array( 'Materialpool_Autor', 'cpt_sort_column') );
+        add_action( 'pre_get_posts',  array( 'Materialpool_Autor', 'column_order_by') );
 
         // Add Filter & Actions for Konfession
 		add_action( 'init', array( 'Materialpool_Konfession', 'register_taxonomy' ) );
