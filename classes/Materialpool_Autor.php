@@ -169,6 +169,69 @@ class Materialpool_Autor {
         return $template;
     }
 
+
+    /**
+     * Change the columns for list table
+     *
+     * @since   0.0.1
+     * @access	public
+     * @var     array    $columns    Array with columns
+     * @return  array
+     */
+    static public function cpt_list_head( $columns ) {
+        unset( $columns );
+        $columns = array(
+            'autor-id' => _x( 'ID', 'Autor list field',  Materialpool::$textdomain ),
+            'autor-picture' => _x( 'Picture', 'Autor list field', Materialpool::$textdomain ),
+            'autor-lastname' => _x( 'Lastname', 'Autor list field', Materialpool::$textdomain ),
+            'autor-firstname' => _x( 'Firstname', 'Autor list field', Materialpool::$textdomain ),
+        );
+        return $columns;
+    }
+
+    /**
+     * Add content for the custom columns in list table
+     *
+     * @since   0.0.1
+     * @access	public
+     * @var     string  $column_name    name of the current column
+     * @var     int     $post_id        ID of the current post
+     */
+    static public function cpt_list_column( $column_name, $post_id ) {
+        $data = '';
+        if ( $column_name == 'autor-id' ) {
+            $data = $post_id;
+        }
+        if ( $column_name == 'autor-picture' ) {
+            $icon_ID = get_metadata( 'post', $post_id, 'autor_picture_id', true );
+            $url = wp_get_attachment_image_src( $icon_ID, 'materialpool-autor-size' );
+            if ( $url !== false ) {
+                $data = "<img src='". $url[ 0 ] ."'>";
+            }
+        }
+        if ( $column_name == 'autor-firstname' ) {
+            $data = get_metadata( 'post', $post_id, 'autor_firstname', true );
+        }
+        if ( $column_name == 'autor-lastname' ) {
+            $data = get_metadata( 'post', $post_id, 'autor_lastname', true );
+        }
+        echo $data;
+    }
+
+    /**
+     * Set the sortable columns
+     *
+     * @since   0.0.1
+     * @access	public
+     * @param   array   $columns    array with the default sortable columns
+     * @return  array   Array with sortable columns
+     */
+    static public function cpt_sort_column( $columns ) {
+        return array_merge( $columns, array(
+            'author-id' => 'id'
+        ) );
+    }
+
     /**
      *
      * @since 0.0.1

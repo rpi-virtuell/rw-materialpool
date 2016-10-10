@@ -149,8 +149,11 @@ class Materialpool {
         add_action( 'init', array( 'Materialpool_Autor', 'register_post_type' ) );
         add_action( 'cmb2_admin_init', array( 'Materialpool_Autor', 'register_meta_fields' ) );
         add_filter( 'template_include', array( 'Materialpool_Autor', 'load_template' ) );
+        add_action( 'manage_autor_posts_columns', array( 'Materialpool_Autor', 'cpt_list_head') );
+        add_action( 'manage_autor_posts_custom_column', array( 'Materialpool_Autor', 'cpt_list_column'), 10,2 );
+        add_action( 'manage_edit-autor_sortable_columns', array( 'Materialpool_Autor', 'cpt_sort_column') );
 
-		// Add Filter & Actions for Konfession
+        // Add Filter & Actions for Konfession
 		add_action( 'init', array( 'Materialpool_Konfession', 'register_taxonomy' ) );
 
         // Add Filter & Actions for Inklusives Material
@@ -180,6 +183,8 @@ class Materialpool {
         // CMB2 Enhancement
         add_filter( 'cmb2_render_cpt_select', array( 'Materialpool_CMB2_CPT_Select', 'render_cpt_select' ), 10, 5 );
         add_filter( 'cmb2_sanitize_cpt_select', array( 'Materialpool_CMB2_CPT_Select', 'sanitize_cpt_select' ), 10, 4 );
+
+        add_image_size( 'materialpool-autor-size', 110, 90 );
 
         do_action( 'materialpool_init' );
 	}
