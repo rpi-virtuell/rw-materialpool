@@ -22,7 +22,7 @@ class Materialpool_Organisation {
 	static public function register_post_type() {
 		$labels = array(
 			"name" => __( 'Organisationen', Materialpool::$textdomain ),
-			"singular_name" => __( 'Organisation', 'twentyfourteen' ),
+			"singular_name" => __( 'Organisation', Materialpool::$textdomain ),
 		);
 
 		$args = array(
