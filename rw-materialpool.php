@@ -140,6 +140,9 @@ class Materialpool {
         add_action( 'init', array( 'Materialpool_Material', 'register_post_type' ) );
         add_action( 'cmb2_admin_init', array( 'Materialpool_Material', 'register_meta_fields' ) );
         add_filter( 'template_include', array( 'Materialpool_Material', 'load_template' ) );
+        add_action( 'manage_material_posts_columns', array( 'Materialpool_Material', 'cpt_list_head') );
+        add_action( 'manage_material_posts_custom_column', array( 'Materialpool_Material', 'cpt_list_column'), 10,2 );
+        add_action( 'manage_edit-material_sortable_columns', array( 'Materialpool_Material', 'cpt_sort_column') );
 
         // Add Filter & Actions for Organisation
         add_action( 'init', array( 'Materialpool_Organisation', 'register_post_type' ) );

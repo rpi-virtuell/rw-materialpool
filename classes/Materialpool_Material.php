@@ -143,7 +143,7 @@ class Materialpool_Material {
         $cmb_material->add_field( array(
             'name' => _x( 'Picture', 'Material Editpage Fieldname', Materialpool::get_textdomain() ),
             'desc' => _x( 'Picture from material', 'Material Editpage Fielddescription', Materialpool::get_textdomain() ),
-            'id'   => 'maerial_picture',
+            'id'   => 'material_picture',
             'type' => 'file',
             'preview_size' => array( 350, 550 ),
             'options' => array(
@@ -299,4 +299,368 @@ class Materialpool_Material {
         }
         return $template;
     }
+
+    /**
+     * Change the columns for list table
+     *
+     * @since   0.0.1
+     * @access	public
+     * @var     array    $columns    Array with columns
+     * @return  array
+     */
+    static public function cpt_list_head( $columns ) {
+        $columns[ 'organisation-name' ] = _x( 'Organisation', 'Organisation list field',  Materialpool::$textdomain );
+        $columns[ 'autor-name' ] = _x( 'Autoren', 'Organisation list field',  Materialpool::$textdomain );
+        return $columns;
+    }
+
+    /**
+     * Add content for the custom columns in list table
+     *
+     * @since   0.0.1
+     * @access	public
+     * @var     string  $column_name    name of the current column
+     * @var     int     $post_id        ID of the current post
+     */
+    static public function cpt_list_column( $column_name, $post_id ) {
+        if ( $column_name == 'organisation-name' ) {
+            $data = "name der zugeordneten Orgas";
+        }
+        if ( $column_name == 'autor-name' ) {
+            $data = "name der zugeordneten Autoren";
+        }
+        echo $data;
+    }
+
+    /**
+     * Set the sortable columns
+     *
+     * @since   0.0.1
+     * @access	public
+     * @param   array   $columns    array with the default sortable columns
+     * @return  array   Array with sortable columns
+     */
+    static public function cpt_sort_column( $columns ) {
+        var_dump("hier");
+        return array_merge( $columns, array(
+            'taxonomy-lizenz' => 'taxonomy-lizenz',
+            'taxonomy-verfuegbarkeit' => 'taxonomy-verfuegbarkeit',
+        ) );
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function title() {
+        echo Materialpool_Material::get_title();
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_title() {
+        global $post;
+
+        return $post->post_title;
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function shortdecription() {
+        echo Materialpool_Material::get_shortdescription();
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_shortdescription() {
+        global $post;
+
+        return get_metadata( 'post', $post->ID, 'material_shortdescription', true );
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function decription() {
+        echo Materialpool_Material::get_description();
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_description() {
+        global $post;
+
+        return get_metadata( 'post', $post->ID, 'material_description', true );
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function releasedate() {
+        echo Materialpool_Material::get_releasedate();
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_releasedate() {
+        global $post;
+
+        return get_metadata( 'post', $post->ID, 'material_releasedate', true );
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function depublicationdate() {
+        echo Materialpool_Material::get_depublicationdate();
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_depublicationdate() {
+        global $post;
+
+        return get_metadata( 'post', $post->ID, 'material_depublicationdate', true );
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function reviewdate() {
+        echo Materialpool_Material::get_reviewdate();
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_reviewdate() {
+        global $post;
+
+        return get_metadata( 'post', $post->ID, 'material_reviewdate', true );
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function createdate() {
+        echo Materialpool_Material::get_createdate();
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_createdate() {
+        global $post;
+
+        return get_metadata( 'post', $post->ID, 'material_createdate', true );
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function url() {
+        echo Materialpool_Material::get_url();
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     * @filters materialpool-template-material-url
+     */
+    static public function url_html() {
+        $url = Materialpool_Material::get_url();
+        echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-url', 'materialpool-template-material-url' ) .'">' . $url . '</a>';
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_url() {
+        global $post;
+
+        return get_metadata( 'post', $post->ID, 'material_url', true );
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function picture() {
+        echo Materialpool_Material::get_picture();
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     * @filters materialpool-template-material-picture
+     *
+     */
+    static public function picture_html() {
+        $url = Materialpool_Material::get_picture();
+        echo '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'materialpool-template-material-picture' ) .'"/>';
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_picture() {
+        global $post;
+
+        return get_metadata( 'post', $post->ID, 'material_picture', true );
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function werk() {
+        $werkID =  Materialpool_Material::get_werk_id();
+        $werk = get_post( $werkID );
+        echo $werk->post_title;
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access public
+     * @filters materialpool-template-material-werk
+     *
+     */
+    static public function werk_html() {
+        $werkID =  Materialpool_Material::get_werk_id();
+        if ( $werkID != '' ) {
+            $werk = get_post( $werkID );
+            $url = get_permalink( $werkID );
+            echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-werk', 'materialpool-template-material-werk' ) .'">' . $werk->post_title . '</a>';
+        }
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_werk_id() {
+        global $post;
+
+        return get_metadata( 'post', $post->ID, 'material_werk', true );
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access public
+     *
+     * @todo
+     */
+    static public function is_werk() {
+        global $post;
+        global $wpdb;
+
+        //$wpdb->num_rows( )
+
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access public
+     *
+     * @todo
+     */
+    static public function is_part_of_werk() {
+
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access public
+     *
+     * @todo
+     */
+    static public function volumes ( $selfinclude = false ) {
+
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access public
+     *
+     * @todo
+     */
+    static public function sibling_volumes ( $selfinclude = false ) {
+        global $wpdb;
+
+        if ( self::is_part_of_werk() ) {
+            $werk = self::get_werk_id();
+            // sql
+        }
+    }
+
+
 }

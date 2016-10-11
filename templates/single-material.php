@@ -16,8 +16,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 get_header( 'materialpool' ); ?>
 <section id="primary" class="content-area">
     <div id="content" class="site-content" role="main">
+        <H1>Materialseite</H1>
+        Titel: <?php Materialpool_Material::title(); ?> <br>
+        Kurzbeschreibung: <p><?php Materialpool_Material::shortdecription(); ?> </p><br>
+        Beschreibung: <p><?php Materialpool_Material::decription(); ?> </p><br>
+        Veröffentlichungsdatum: <?php Materialpool_Material::releasedate(); ?><br>
+        Depublizierungsdatum: <?php Materialpool_Material::depublicationdate(); ?><br>
+        Wiedervorlagedatum: <?php Materialpool_Material::reviewdate(); ?><br>
+        Erstellungsdatum: <?php Materialpool_Material::createdate(); ?><br>
+        Cover: <?php Materialpool_Material::picture_html(); ?><br>
+        Bestandteil eines Werks: <?php Materialpool_Material::werk_html(); ?><br>
+        Weitere Bände des Werks: <?php Materialpool_Material::sibling_volumes(); ?><br>
 
-        Template for Material
+
+
+
 
     </div>
 </section>

@@ -6,7 +6,6 @@
  * @author     Frank Staude <frank@staude.net>
  *
  * @todo post_title beim Speichern aus VornameNachname generieren
- * @todo cpt auflistung anpassen
  */
 
 
