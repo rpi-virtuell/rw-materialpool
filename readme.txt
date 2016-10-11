@@ -53,6 +53,8 @@ materialpool-template-organisation-logo
 
 materialpool-template-material-url
 materialpool-template-material-werk
+materialpool-template-material-sibling
+materialpool-template-material-volumes
 
 
 materialpool-buddypress-member-url

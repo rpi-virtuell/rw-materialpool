@@ -25,12 +25,21 @@ get_header( 'materialpool' ); ?>
         Wiedervorlagedatum: <?php Materialpool_Material::reviewdate(); ?><br>
         Erstellungsdatum: <?php Materialpool_Material::createdate(); ?><br>
         Cover: <?php Materialpool_Material::picture_html(); ?><br>
+<hr>
         Bestandteil eines Werks: <?php Materialpool_Material::werk_html(); ?><br>
-        Weitere Bände des Werks: <?php Materialpool_Material::sibling_volumes(); ?><br>
+        Weitere Bände des Werks (ohne den aktuellen Band) : <?php Materialpool_Material::sibling_volumes_html(); ?><br>
+<hr>
+
+        <?php if ( Materialpool_Material::is_werk() ) { ?>
+        Dies ist ein Werk. Folgende Bände sind zugeordnet<br>
+            <?php Materialpool_Material::volumes_html( true ); ?><br>
+        <?php } ?>
 
 
-
-
+        <?php if ( Materialpool_Material::is_part_of_werk() ) { ?>
+            Dieser Band ist teil eines Werks. Folgende Bände umfasst das Werk.<br>
+            <?php Materialpool_Material::sibling_volumes_html( true ); ?><br>
+        <?php } ?>
 
     </div>
 </section>

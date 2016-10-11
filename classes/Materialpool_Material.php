@@ -619,9 +619,12 @@ class Materialpool_Material {
     static public function is_werk() {
         global $post;
         global $wpdb;
-
-        //$wpdb->num_rows( )
-
+        $result = $wpdb->get_row( $wpdb->prepare("SELECT count(post_id) as count FROM $wpdb->postmeta WHERE meta_key = %s and meta_value = %s", 'material_werk', $post->ID ) );
+        if ( is_object( $result)  && $result->count == 0 ) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -632,7 +635,14 @@ class Materialpool_Material {
      * @todo
      */
     static public function is_part_of_werk() {
-
+        global $post;
+        global $wpdb;
+        $result = $wpdb->get_row( $wpdb->prepare("SELECT count(post_id) as count FROM $wpdb->postmeta WHERE meta_key = %s and post_id = %s", 'material_werk', $post->ID ) );
+        if ( is_object( $result)  && $result->count == 0 ) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -642,8 +652,37 @@ class Materialpool_Material {
      *
      * @todo
      */
-    static public function volumes ( $selfinclude = false ) {
+    static public function volumes() {
+        global $wpdb;
+        global $post;
 
+        if ( self::is_werk() ) {
+            $result = $wpdb->get_results( $wpdb->prepare( "SELECT $wpdb->posts.*  FROM $wpdb->posts, $wpdb->postmeta WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id AND  $wpdb->postmeta.meta_key = %s AND $wpdb->postmeta.meta_value = %s order by post_title asc" , 'material_werk', $post->ID ) );
+            foreach ( $result as $material ) {
+                echo $material->post_title . '<br>';
+            }
+        }
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access public
+     * @filters materialpool-template-material-volumes
+     *
+     * @todo
+     */
+    static public function volumes_html() {
+        global $wpdb;
+        global $post;
+
+        if ( self::is_werk() ) {
+            $result = $wpdb->get_results( $wpdb->prepare( "SELECT $wpdb->posts.*  FROM $wpdb->posts, $wpdb->postmeta WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id AND  $wpdb->postmeta.meta_key = %s AND $wpdb->postmeta.meta_value = %s order by post_title asc" , 'material_werk', $post->ID ) );
+            foreach ( $result as $material ) {
+                $url = get_permalink( $material->ID );
+                echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-volumes', 'materialpool-template-material-volumes' ) .'">' . $material->post_title . '</a><br>';
+            }
+        }
     }
 
     /**
@@ -651,14 +690,48 @@ class Materialpool_Material {
      * @since 0.0.1
      * @access public
      *
-     * @todo
      */
     static public function sibling_volumes ( $selfinclude = false ) {
         global $wpdb;
+        global $post;
 
         if ( self::is_part_of_werk() ) {
             $werk = self::get_werk_id();
-            // sql
+            $result = $wpdb->get_results( $wpdb->prepare( "SELECT $wpdb->posts.*  FROM $wpdb->posts, $wpdb->postmeta WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id AND  $wpdb->postmeta.meta_key = %s AND $wpdb->postmeta.meta_value = %s order by post_title asc" , 'material_werk', $werk ) );
+            foreach ( $result as $material ) {
+                if ( ! $selfinclude ) {
+                    if ( $material->ID == $post->ID ) {
+                        break;
+                    }
+                }
+                echo $material->post_title . '<br>';
+            }
+        }
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access public
+     * @filters materialpool-template-material-sibling
+     *
+     */
+    static public function sibling_volumes_html ( $selfinclude = false ) {
+        global $wpdb;
+        global $post;
+
+        if ( self::is_part_of_werk() ) {
+            $werk = self::get_werk_id();
+            $result = $wpdb->get_results( $wpdb->prepare( "SELECT $wpdb->posts.*  FROM $wpdb->posts, $wpdb->postmeta WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id AND  $wpdb->postmeta.meta_key = %s AND $wpdb->postmeta.meta_value = %s order by post_title asc" , 'material_werk', $werk ) );
+            foreach ( $result as $material ) {
+                if ( ! $selfinclude ) {
+                    if ( $material->ID == $post->ID ) {
+                        break;
+                    }
+                }
+                $url = get_permalink( $material->ID );
+                echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-sibling', 'materialpool-template-material-sibling' ) .'">' . $material->post_title . '</a><br>';
+            }
         }
     }
 
