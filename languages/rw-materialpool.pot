@@ -1,7 +1,8 @@
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: RW Materialpool\n"
-"POT-Creation-Date: 2016-10-07 14:11+0200\n"
+"POT-Creation-Date: 2016-10-11 11:10+0200\n"
 "PO-Revision-Date: 2016-10-07 14:11+0200\n"
 "Last-Translator: Frank Staude <frank@staude.net>\n"
 "Language-Team: Frank Staude <frank@staude.net>\n"
@@ -74,72 +75,107 @@ msgstr ""
 msgid "No age brackets found."
 msgstr ""
 
-#: classes/Materialpool_Autor.php:25 classes/Materialpool_Autor.php:30
+#: classes/Materialpool_Autor.php:24 classes/Materialpool_Autor.php:29
 msgid "Autoren"
 msgstr ""
 
-#: classes/Materialpool_Autor.php:26 classes/Materialpool_Autor.php:62
+#: classes/Materialpool_Autor.php:25 classes/Materialpool_Autor.php:61
 msgid "Autor"
 msgstr ""
 
-#: classes/Materialpool_Autor.php:73
+#: classes/Materialpool_Autor.php:72
 msgctxt "Author Editpage Fieldname"
 msgid "Firstname"
 msgstr ""
 
-#: classes/Materialpool_Autor.php:74
+#: classes/Materialpool_Autor.php:73
 msgctxt "Organisation Editpage Fielddescription"
 msgid "firstname of author"
 msgstr ""
 
-#: classes/Materialpool_Autor.php:81
+#: classes/Materialpool_Autor.php:80
 msgctxt "Author Editpage Fieldname"
 msgid "lastname"
 msgstr ""
 
-#: classes/Materialpool_Autor.php:82
+#: classes/Materialpool_Autor.php:81
 msgctxt "Organisation Editpage Fielddescription"
 msgid "lastname of author"
 msgstr ""
 
-#: classes/Materialpool_Autor.php:89
+#: classes/Materialpool_Autor.php:88
 msgctxt "Author Editpage Fieldname"
 msgid "URL"
 msgstr ""
 
-#: classes/Materialpool_Autor.php:90
+#: classes/Materialpool_Autor.php:89
 msgctxt "Organisation Editpage Fielddescription"
 msgid "Website of author"
 msgstr ""
 
-#: classes/Materialpool_Autor.php:97
+#: classes/Materialpool_Autor.php:96
 msgctxt "Author Editpage Fieldname"
 msgid "RPI BuddyPress Username"
 msgstr ""
 
-#: classes/Materialpool_Autor.php:98
+#: classes/Materialpool_Autor.php:97
 msgctxt "Organisation Editpage Fielddescription"
 msgid "username of author on rpi buddypress"
 msgstr ""
 
-#: classes/Materialpool_Autor.php:105
+#: classes/Materialpool_Autor.php:104
 msgctxt "Author Editpage Fieldname"
 msgid "Email"
 msgstr ""
 
-#: classes/Materialpool_Autor.php:106
+#: classes/Materialpool_Autor.php:105
 msgctxt "Organisation Editpage Fielddescription"
 msgid "email of author (for gravatar)"
 msgstr ""
 
-#: classes/Materialpool_Autor.php:113
+#: classes/Materialpool_Autor.php:112
 msgctxt "Author Editpage Fieldname"
 msgid "Picture"
 msgstr ""
 
-#: classes/Materialpool_Autor.php:114
+#: classes/Materialpool_Autor.php:113
 msgctxt "Author Editpage Fielddescription"
 msgid "Picture from author"
+msgstr ""
+
+#: classes/Materialpool_Autor.php:183
+msgctxt "Autor list field"
+msgid "ID"
+msgstr ""
+
+#: classes/Materialpool_Autor.php:184
+msgctxt "Autor list field"
+msgid "Picture"
+msgstr ""
+
+#: classes/Materialpool_Autor.php:185
+msgctxt "Autor list field"
+msgid "Lastname"
+msgstr ""
+
+#: classes/Materialpool_Autor.php:186
+msgctxt "Autor list field"
+msgid "Firstname"
+msgstr ""
+
+#: classes/Materialpool_Autor.php:187
+msgctxt "Autor list field"
+msgid "BuddyPress"
+msgstr ""
+
+#: classes/Materialpool_Autor.php:188
+msgctxt "Autor list field"
+msgid "Email"
+msgstr ""
+
+#: classes/Materialpool_Autor.php:189
+#: classes/Materialpool_Organisation.php:172
+msgid "Date"
 msgstr ""
 
 #: classes/Materialpool_Bildungsstufe.php:22
@@ -581,6 +617,17 @@ msgctxt "Material Editpage Fielddescription"
 msgid "Altersstufe of material"
 msgstr ""
 
+#: classes/Materialpool_Material.php:312
+#: classes/Materialpool_Organisation.php:167
+msgctxt "Organisation list field"
+msgid "Organisation"
+msgstr ""
+
+#: classes/Materialpool_Material.php:313
+msgctxt "Organisation list field"
+msgid "Autoren"
+msgstr ""
+
 #: classes/Materialpool_Medientyp.php:22 classes/Materialpool_Medientyp.php:23
 #: classes/Materialpool_Medientyp.php:41
 msgid "Mediatype"
@@ -685,6 +732,31 @@ msgstr ""
 #: classes/Materialpool_Organisation.php:103
 msgctxt "Organisation Editpage Fielddescription"
 msgid "Konfession of organisation"
+msgstr ""
+
+#: classes/Materialpool_Organisation.php:166
+msgctxt "Organisation list field"
+msgid "ID"
+msgstr ""
+
+#: classes/Materialpool_Organisation.php:168
+msgctxt "Organisation list field"
+msgid "Logo"
+msgstr ""
+
+#: classes/Materialpool_Organisation.php:169
+msgctxt "Organisation list field"
+msgid "URL"
+msgstr ""
+
+#: classes/Materialpool_Organisation.php:170
+msgctxt "Organisation list field"
+msgid "Konfession"
+msgstr ""
+
+#: classes/Materialpool_Organisation.php:171
+msgctxt "Organisation list field"
+msgid "ALPIKA"
 msgstr ""
 
 #: classes/Materialpool_Sprache.php:22 classes/Materialpool_Sprache.php:37
