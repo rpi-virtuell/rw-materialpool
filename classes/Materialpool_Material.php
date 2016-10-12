@@ -93,7 +93,7 @@ class Materialpool_Material {
             'desc' => _x('Description of material', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain()),
             'default' => '',
             'id' => 'material_description',
-            'type' => 'textarea',
+            'type' => 'wysiwyg',
         ) );
 
         $cmb_material->add_field(array(

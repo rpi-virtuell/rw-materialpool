@@ -55,6 +55,75 @@ class Materialpool_Inklusives_Material {
         );
         register_taxonomy( "inklusion", array( "material" ), apply_filters( 'materialpool_inklusives_material_taxonomy_args', $args ) );
     }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function add_taxonomy_metadata() {
+        $cmb = new_cmb2_box( array(
+            'id'            => 'cmb_inklusion',
+            'title'         => __( 'Inklusion', Materialpool::get_textdomain() ),
+            'object_types'     => array( 'term' ),
+            'taxonomies'       => array( 'inklusion' ),
+            'context'       => 'normal',
+            'priority'      => 'high',
+            'show_names'    => true,
+        ) );
+
+        // Regular text field
+        $cmb->add_field( array(
+            'name'    => _x( 'Sortorder', 'Inklusion Editpage Fieldname', Materialpool::get_textdomain() ),
+            'desc'    => _x( 'sortorder for taxonomy', 'Inklusion Editpage Fielddescription', Materialpool::get_textdomain() ),
+            'id'         =>  'inklusion_sort',
+            'type'       => 'text',
+            'show_on_cb' => 'cmb2_hide_if_no_cats',
+        ) );
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function taxonomy_column( $columns ) {
+        $columns[ 'inklusion_sort' ] = __( 'Sort order', Materialpool::get_textdomain() );
+        return $columns;
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function taxonomy_column_data( $out, $column_name, $term_id ) {
+        switch ($column_name) {
+            case 'inklusion_sort':
+                $out .= get_term_meta(  $term_id, 'inklusion_sort', true );
+                break;
+
+            default:
+                break;
+        }
+        return $out;
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function taxonomy_sort_column( $sortable ) {
+        $sortable[ 'inklusion_sort' ] = 'inklusion_sort';
+        return $sortable;
+
+    }
+
 }
 
 

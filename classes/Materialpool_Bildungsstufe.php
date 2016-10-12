@@ -56,4 +56,72 @@ class Materialpool_Bildungsstufe {
         register_taxonomy( "bildungsstufe", array( "material" ), apply_filters( 'materialpool_bildungsstufe_taxonomy_args', $args ) );
 
     }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function add_taxonomy_metadata() {
+        $cmb = new_cmb2_box( array(
+            'id'            => 'cmb_bildungsstufe',
+            'title'         => __( 'Bildungsstufe', Materialpool::get_textdomain() ),
+            'object_types'     => array( 'term' ),
+            'taxonomies'       => array( 'bildungsstufe' ),
+            'context'       => 'normal',
+            'priority'      => 'high',
+            'show_names'    => true,
+        ) );
+
+        // Regular text field
+        $cmb->add_field( array(
+            'name'    => _x( 'Sortorder', 'Bildungsstufe Editpage Fieldname', Materialpool::get_textdomain() ),
+            'desc'    => _x( 'sortorder for taxonomy', 'Bildungsstufe Editpage Fielddescription', Materialpool::get_textdomain() ),
+            'id'         =>  'bildungsstufe_sort',
+            'type'       => 'text',
+            'show_on_cb' => 'cmb2_hide_if_no_cats',
+        ) );
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function taxonomy_column( $columns ) {
+        $columns[ 'bildungsstufe_sort' ] = __( 'Sort order', Materialpool::get_textdomain() );
+        return $columns;
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function taxonomy_column_data( $out, $column_name, $term_id ) {
+        switch ($column_name) {
+            case 'bildungsstufe_sort':
+                $out .= get_term_meta(  $term_id, 'bildungsstufe_sort', true );
+                break;
+
+            default:
+                break;
+        }
+        return $out;
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function taxonomy_sort_column( $sortable ) {
+        $sortable[ 'bildungsstufe_sort' ] = 'bildungsstufe_sort';
+        return $sortable;
+
+    }
 }
