@@ -242,6 +242,25 @@ class Materialpool_Autor {
      * @access	public
      *
      */
+    static public function generate_title( $post_id ) {
+        $firstname = get_metadata( 'post', $post_id, 'autor_firstname', true );
+        $lastname = get_metadata( 'post', $post_id, 'autor_lastname', true );
+        $name = $firstname . ' ' . $lastname;
+        remove_action( 'save_post', array( 'Materialpool_Autor', 'generate_title') );
+        wp_update_post( array(
+            'ID' => $post_id,
+            'post_title' => $name,
+            'post_name' => $name,
+        ));
+        add_action( 'save_post', array( 'Materialpool_Autor', 'generate_title') );
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
     static public function firstname() {
         echo Materialpool_Autor::get_firstname();
     }
