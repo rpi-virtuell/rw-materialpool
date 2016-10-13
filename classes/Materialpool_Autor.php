@@ -109,18 +109,11 @@ class Materialpool_Autor {
         ) );
 
         $cmb_author->add_field( array(
-            'name' => _x( 'Picture', 'Author Editpage Fieldname', Materialpool::get_textdomain() ),
-            'desc' => _x( 'Picture from author', 'Author Editpage Fielddescription', Materialpool::get_textdomain() ),
-            'id'   => 'autor_picture',
-            'type' => 'file',
-            'preview_size' => array( 350, 550 ),
-            'options' => array(
-                'add_upload_files_text' => 'Replacement',
-                'remove_image_text' => 'Replacement',
-                'file_text' => 'Replacement',
-                'file_download_text' => 'Replacement',
-                'remove_text' => 'Replacement',
-            ),
+            'name'    => _x( 'Picture URL', 'Author Editpage Fieldname', Materialpool::get_textdomain() ),
+            'desc'    => _x( 'URL of author picture', 'Author Editpage Fielddescription', Materialpool::get_textdomain() ),
+            'default' => '',
+            'id'      => 'autor_picture_url',
+            'type'    => 'text_url',
         ) );
 
         $cmb_author->add_field( array(
@@ -181,7 +174,7 @@ class Materialpool_Autor {
         unset( $columns );
         $columns = array(
             'autor-id' => _x( 'ID', 'Autor list field',  Materialpool::$textdomain ),
-            'autor-picture' => _x( 'Picture', 'Autor list field', Materialpool::$textdomain ),
+            'autor_picture_url' => _x( 'Picture', 'Autor list field', Materialpool::$textdomain ),
             'autor-lastname' => _x( 'Lastname', 'Autor list field', Materialpool::$textdomain ),
             'autor-firstname' => _x( 'Firstname', 'Autor list field', Materialpool::$textdomain ),
             'autor-buddypress' => _x( 'BuddyPress', 'Autor list field', Materialpool::$textdomain ),
@@ -204,11 +197,10 @@ class Materialpool_Autor {
         if ( $column_name == 'autor-id' ) {
             $data = $post_id;
         }
-        if ( $column_name == 'autor-picture' ) {
-            $icon_ID = get_metadata( 'post', $post_id, 'autor_picture_id', true );
-            $url = wp_get_attachment_image_src( $icon_ID, 'materialpool-autor-size' );
+        if ( $column_name == 'autor_picture_url' ) {
+            $url = get_metadata( 'post', $post_id, 'autor_picture_url', true );
             if ( $url !== false ) {
-                $data = "<img src='". $url[ 0 ] ."'>";
+                $data = "<img src='". $url ."'>";
             }
         }
         if ( $column_name == 'autor-firstname' ) {
@@ -418,7 +410,7 @@ class Materialpool_Autor {
     static public function get_picture() {
         global $post;
 
-        return get_metadata( 'post', $post->ID, 'autor_picture', true );
+        return get_metadata( 'post', $post->ID, 'autor_picture_url', true );
     }
 
 

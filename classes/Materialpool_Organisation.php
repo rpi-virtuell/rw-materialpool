@@ -75,20 +75,14 @@ class Materialpool_Organisation {
 			'type'    => 'text_url',
 		) );
 
-		$cmb_organisation->add_field( array(
-			'name' => _x( 'Logo', 'Organisation Editpage Fieldname', Materialpool::get_textdomain() ),
-			'desc' => _x( 'Logo from organisation', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain() ),
-			'id'   => 'organisation_logo',
-			'type' => 'file',
-			'preview_size' => array( 350, 550 ),
-			'options' => array(
-				'add_upload_files_text' => 'Replacement',
-				'remove_image_text' => 'Replacement',
-				'file_text' => 'Replacement',
-				'file_download_text' => 'Replacement',
-				'remove_text' => 'Replacement',
-			),
-		) );
+
+        $cmb_organisation->add_field( array(
+            'name'    => _x( 'Logo URL', 'Organisation Editpage Fieldname', Materialpool::get_textdomain() ),
+            'desc'    => _x( 'URL of organisation logo', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain() ),
+            'default' => '',
+            'id'      => 'organisation_logo_url',
+            'type'    => 'text_url',
+        ) );
 
 		$cmb_organisation->add_field( array(
 			'name'    => _x( 'ALPIKA', 'Organisation Editpage Fieldname', Materialpool::get_textdomain() ),
@@ -165,7 +159,7 @@ class Materialpool_Organisation {
         $columns = array(
             'organisation-id' => _x( 'ID', 'Organisation list field',  Materialpool::$textdomain ),
             'title' => _x( 'Organisation', 'Organisation list field',  Materialpool::$textdomain ),
-            'organisation-logo' => _x( 'Logo', 'Organisation list field', Materialpool::$textdomain ),
+            'organisation_logo_url' => _x( 'Logo', 'Organisation list field', Materialpool::$textdomain ),
             'organisation-url' => _x( 'URL', 'Organisation list field', Materialpool::$textdomain ),
             'organisation-konfession' => _x( 'Konfession', 'Organisation list field', Materialpool::$textdomain ),
             'organisation-alpika' => _x( 'ALPIKA', 'Organisation list field', Materialpool::$textdomain ),
@@ -183,14 +177,14 @@ class Materialpool_Organisation {
      * @var     int     $post_id        ID of the current post
      */
     static public function cpt_list_column( $column_name, $post_id ) {
+        $data = '';
         if ( $column_name == 'organisation-id' ) {
             $data = $post_id;
         }
-        if ( $column_name == 'organisation-logo' ) {
-            $icon_ID = get_metadata( 'post', $post_id, 'organisation_logo_id', true );
-            $url = wp_get_attachment_image_src( $icon_ID, 'materialpool-autor-size' );
+        if ( $column_name == 'organisation_logo_url' ) {
+            $url = get_metadata( 'post', $post_id, 'organisation_logo_url', true );
             if ( $url !== false ) {
-                $data = "<img src='". $url[ 0 ] ."'>";
+                $data = "<img src='". $url ."'>";
             }
         }
         if ( $column_name == 'organisation-url' ) {
@@ -317,7 +311,7 @@ class Materialpool_Organisation {
     static public function get_logo() {
         global $post;
 
-        return get_metadata( 'post', $post->ID, 'organisation_logo', true );
+        return get_metadata( 'post', $post->ID, 'organisation_logo_url', true );
     }
 
     /**
