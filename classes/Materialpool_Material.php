@@ -359,7 +359,6 @@ class Materialpool_Material {
      * @return  array   Array with sortable columns
      */
     static public function cpt_sort_column( $columns ) {
-        var_dump("hier");
         return array_merge( $columns, array(
             'taxonomy-lizenz' => 'taxonomy-lizenz',
             'taxonomy-verfuegbarkeit' => 'taxonomy-verfuegbarkeit',

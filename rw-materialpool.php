@@ -116,6 +116,7 @@ class Materialpool {
 		self::$textdomain = self::get_textdomain();
 
         self::$plugin_url = plugin_dir_url( __FILE__ );
+
 		// The Plugins Name
 		self::$plugin_name = $this->get_plugin_header( 'Name' );
 
@@ -131,7 +132,10 @@ class Materialpool {
 		// Load the textdomain
 		$this->load_plugin_textdomain();
 
-		// Add Filter & Actions for Dashboard
+		// Register Stylesheets
+        add_action( 'admin_enqueue_scripts', array( 'Materialpool', 'register_admin_plugin_styles' ) );
+
+        // Add Filter & Actions for Dashboard
 		add_action( 'admin_menu', array( 'Materialpool_Dashboard', 'register_dashboard_page' ), 8 );
 		add_action( 'admin_menu', array( 'Materialpool_Dashboard', 'register_settings_page' ) );
 
@@ -159,14 +163,11 @@ class Materialpool {
         add_action( 'manage_autor_posts_custom_column', array( 'Materialpool_Autor', 'cpt_list_column'), 10,2 );
         add_action( 'manage_edit-autor_sortable_columns', array( 'Materialpool_Autor', 'cpt_sort_column') );
 
-
         // Add Filter & Actions for Konfession
 		add_action( 'init', array( 'Materialpool_Konfession', 'register_taxonomy' ) );
 
         // Add Filter & Actions for Inklusives Material
         add_action( 'init', array( 'Materialpool_Inklusives_Material', 'register_taxonomy' ) );
-
-
 
         // Add Filter & Actions for Lizenz
         add_action( 'init', array( 'Materialpool_Lizenz', 'register_taxonomy' ) );
@@ -209,7 +210,6 @@ class Materialpool {
         add_filter( 'manage_edit-bildungsstufe_columns', array( 'Materialpool_Bildungsstufe', 'taxonomy_column' ) );
         add_filter( 'manage_bildungsstufe_custom_column', array( 'Materialpool_Bildungsstufe', 'taxonomy_column_data' ), 10, 3);
         add_filter( 'manage_edit-bildungsstufe_sortable_columns', array( 'Materialpool_Bildungsstufe', 'taxonomy_sort_column' ) );
-
 
         // Add Filter & Actions for Sprache
         add_action( 'init', array( 'Materialpool_Sprache', 'register_taxonomy' ) );
@@ -322,6 +322,14 @@ class Materialpool {
 
 		return $plugin_value;
 	}
+
+    /**
+     * Register and enqueue style sheet.
+     */
+    public function register_admin_plugin_styles() {
+        wp_register_style( 'rw-materialpool', Materialpool::$plugin_url . 'css/backend.css' );
+        wp_enqueue_style( 'rw-materialpool' );
+    }
 }
 
 

@@ -191,6 +191,7 @@ class Materialpool_Autor {
      * @access	public
      * @var     string  $column_name    name of the current column
      * @var     int     $post_id        ID of the current post
+     * @filters materialpool-admin-autor-pic-class
      */
     static public function cpt_list_column( $column_name, $post_id ) {
         $data = '';
@@ -200,7 +201,7 @@ class Materialpool_Autor {
         if ( $column_name == 'autor_picture_url' ) {
             $url = get_metadata( 'post', $post_id, 'autor_picture_url', true );
             if ( $url !== false ) {
-                $data = "<img src='". $url ."'>";
+                $data = "<img src='". $url ."' class='". apply_filters( 'materialpool-admin-autor-pic-class', 'materialpool-admin-autor-pic' ) ."'>";
             }
         }
         if ( $column_name == 'autor-firstname' ) {
