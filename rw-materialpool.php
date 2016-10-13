@@ -214,6 +214,9 @@ class Materialpool {
         // Add Filter & Actions for Sprache
         add_action( 'init', array( 'Materialpool_Sprache', 'register_taxonomy' ) );
 
+        // Add Filter & Actions for Keywords
+        add_action( 'init', array( 'Materialpool_Keywords', 'register_taxonomy' ) );
+
         // CMB2 Enhancement
         add_filter( 'cmb2_render_cpt_select', array( 'Materialpool_CMB2_CPT_Select', 'render_cpt_select' ), 10, 5 );
         add_filter( 'cmb2_sanitize_cpt_select', array( 'Materialpool_CMB2_CPT_Select', 'sanitize_cpt_select' ), 10, 4 );

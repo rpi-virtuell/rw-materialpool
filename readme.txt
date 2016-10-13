@@ -43,6 +43,8 @@ materialpool_bildungsstufe_taxonomy_args
 materialpool_sprache_taxonomy_label
 materialpool_sprache_taxonomy_args
 materialpool_material_meta_field
+materialpool_keywords_taxonomy_label
+materialpool_keyword_taxonomy_args
 
 materialpool-template-autor-url
 materialpool-template-autor-email

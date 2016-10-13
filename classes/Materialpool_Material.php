@@ -96,6 +96,24 @@ class Materialpool_Material {
             'type' => 'wysiwyg',
         ) );
 
+        $cmb_material->add_field( array(
+            'name' => _x('Keywords', 'Material Editpage Fieldname', Materialpool::get_textdomain()),
+            'desc' => _x('Keywords of material', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain()),
+            'id' => 'material_keywords',
+            'taxonomy'  => 'keywords',
+            'type'      => 'taxonomy_multicheck',
+            'text'      => array(
+                'no_terms_text' => _x('Sorry, no terms could be found.', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain()),
+            ),
+        ) );
+
+        $cmb_material->add_field( array(
+            'name' => 'Schlagwort Vorschläge',
+            'desc' => 'Die Schlagwortdialog oben muss noch umgebaut werden, liste der zugeordneten Keywords und texteingabe mit vorschlägen beim tippen. Hier ercheinen die Schlagwortvorschläge und mann kann sie als Schlagwort übernehmen oder in die Synonymliste aufnehmen.',
+            'type' => 'title',
+            'id'   => 'wiki_test_title'
+        ) );
+
         $cmb_material->add_field(array(
             'name' => _x('Release Date', 'Material Editpage Fieldname', Materialpool::get_textdomain()),
             'desc' => _x('Release Date of material', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain()),
@@ -193,7 +211,7 @@ class Materialpool_Material {
             'taxonomy'  => 'medientyp',
             'type'      => 'taxonomy_multicheck',
             'text'      => array(
-                'no_terms_text' => 'Sorry, no terms could be found.' // Change default text. Default: "No terms"
+                'no_terms_text' => _x('Sorry, no terms could be found.', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain()),
             ),
         ) );
 
@@ -212,7 +230,7 @@ class Materialpool_Material {
             'taxonomy'  => 'bildungsstufe',
             'type'      => 'taxonomy_multicheck',
             'text'      => array(
-                'no_terms_text' => 'Sorry, no terms could be found.' // Change default text. Default: "No terms"
+                'no_terms_text' => _x('Sorry, no terms could be found.', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain()),
             ),
         ) );
 
@@ -223,7 +241,7 @@ class Materialpool_Material {
             'taxonomy'  => 'zugaenglichkeit',
             'type'      => 'taxonomy_multicheck',
             'text'      => array(
-                'no_terms_text' => 'Sorry, no terms could be found.' // Change default text. Default: "No terms"
+                'no_terms_text' => _x('Sorry, no terms could be found.', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain()),
             ),
         ) );
 
@@ -234,7 +252,7 @@ class Materialpool_Material {
             'taxonomy'  => 'inklusion',
             'type'      => 'taxonomy_multicheck',
             'text'      => array(
-                'no_terms_text' => 'Sorry, no terms could be found.' // Change default text. Default: "No terms"
+                'no_terms_text' => _x('Sorry, no terms could be found.', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain()),
             ),
         ) );
 
@@ -245,7 +263,7 @@ class Materialpool_Material {
             'taxonomy'  => 'sprache',
             'type'      => 'taxonomy_multicheck',
             'text'      => array(
-                'no_terms_text' => 'Sorry, no terms could be found.' // Change default text. Default: "No terms"
+                'no_terms_text' => _x('Sorry, no terms could be found.', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain()),
             ),
         ) );
 
@@ -264,7 +282,7 @@ class Materialpool_Material {
             'taxonomy'  => 'altersstufe',
             'type'      => 'taxonomy_multicheck',
             'text'      => array(
-                'no_terms_text' => 'Sorry, no terms could be found.' // Change default text. Default: "No terms"
+                'no_terms_text' => _x('Sorry, no terms could be found.', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain()),
             ),
         ) );
 
