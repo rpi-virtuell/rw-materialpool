@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: RW Materialpool\n"
-"POT-Creation-Date: 2016-10-11 11:11+0200\n"
-"PO-Revision-Date: 2016-10-11 11:12+0200\n"
+"POT-Creation-Date: 2016-10-13 10:20+0200\n"
+"PO-Revision-Date: 2016-10-13 10:31+0200\n"
 "Last-Translator: Frank Staude <frank@staude.net>\n"
 "Language-Team: Frank Staude <frank@staude.net>\n"
 "Language: de_DE\n"
@@ -75,13 +75,36 @@ msgstr "Wähle aus den häufig genutzten Altersstufen"
 msgid "No age brackets found."
 msgstr "Keine Altersstufe gefunden"
 
+#: classes/Materialpool_Altersstufe.php:69
+msgid "Altersstufe"
+msgstr "Altersstufe"
+
+#: classes/Materialpool_Altersstufe.php:79
+msgctxt "Altersstufe Editpage Fieldname"
+msgid "Sortorder"
+msgstr "Sortierreihenfolge"
+
+#: classes/Materialpool_Altersstufe.php:80
+msgctxt "Altersstufe Editpage Fielddescription"
+msgid "sortorder for taxonomy"
+msgstr "Sortierreihenfolge der Altersstufe. Ist ein Textfeld, kein integer. "
+
+#: classes/Materialpool_Altersstufe.php:94
+#: classes/Materialpool_Bildungsstufe.php:94
+#: classes/Materialpool_Inklusives_Material.php:93
+#: classes/Materialpool_Lizenz.php:94 classes/Materialpool_Medientyp.php:94
+#: classes/Materialpool_Verfuegbarkeit.php:94
+#: classes/Materialpool_Zugaenglichkeit.php:94
+msgid "Sort order"
+msgstr "Sortierreihenfolge"
+
 #: classes/Materialpool_Autor.php:24 classes/Materialpool_Autor.php:29
 msgid "Autoren"
-msgstr ""
+msgstr "Autoren"
 
 #: classes/Materialpool_Autor.php:25 classes/Materialpool_Autor.php:61
 msgid "Autor"
-msgstr ""
+msgstr "Autor"
 
 #: classes/Materialpool_Autor.php:72
 msgctxt "Author Editpage Fieldname"
@@ -135,45 +158,45 @@ msgstr "E-Mail des Autoren (für Gravatar)"
 
 #: classes/Materialpool_Autor.php:112
 msgctxt "Author Editpage Fieldname"
-msgid "Picture"
-msgstr "Bild"
+msgid "Picture URL"
+msgstr "Bild URL"
 
 #: classes/Materialpool_Autor.php:113
 msgctxt "Author Editpage Fielddescription"
-msgid "Picture from author"
-msgstr "Bild des Autoren"
+msgid "URL of author picture"
+msgstr "URL des Autorenbildes"
 
-#: classes/Materialpool_Autor.php:183
+#: classes/Materialpool_Autor.php:176
 msgctxt "Autor list field"
 msgid "ID"
 msgstr "ID"
 
-#: classes/Materialpool_Autor.php:184
+#: classes/Materialpool_Autor.php:177
 msgctxt "Autor list field"
 msgid "Picture"
 msgstr "Bild"
 
-#: classes/Materialpool_Autor.php:185
+#: classes/Materialpool_Autor.php:178
 msgctxt "Autor list field"
 msgid "Lastname"
 msgstr "Nachname"
 
-#: classes/Materialpool_Autor.php:186
+#: classes/Materialpool_Autor.php:179
 msgctxt "Autor list field"
 msgid "Firstname"
 msgstr "Vorname"
 
-#: classes/Materialpool_Autor.php:187
+#: classes/Materialpool_Autor.php:180
 msgctxt "Autor list field"
 msgid "BuddyPress"
 msgstr "BuddyPress"
 
-#: classes/Materialpool_Autor.php:188
+#: classes/Materialpool_Autor.php:181
 msgctxt "Autor list field"
 msgid "Email"
 msgstr "E-Mail"
 
-#: classes/Materialpool_Autor.php:189 classes/Materialpool_Organisation.php:172
+#: classes/Materialpool_Autor.php:182 classes/Materialpool_Organisation.php:166
 msgid "Date"
 msgstr "Datum"
 
@@ -231,6 +254,20 @@ msgstr "Wähle aus den häufig genutzten Bildungsstufen"
 #: classes/Materialpool_Bildungsstufe.php:36
 msgid "No educational level found."
 msgstr "Keine Bildungsstufe gefunden"
+
+#: classes/Materialpool_Bildungsstufe.php:69
+msgid "Bildungsstufe"
+msgstr "Bildungsstufe"
+
+#: classes/Materialpool_Bildungsstufe.php:79
+msgctxt "Bildungsstufe Editpage Fieldname"
+msgid "Sortorder"
+msgstr "Sortierreihenfolge"
+
+#: classes/Materialpool_Bildungsstufe.php:80
+msgctxt "Bildungsstufe Editpage Fielddescription"
+msgid "sortorder for taxonomy"
+msgstr "Sortierreihenfolge der Bildungsstufe. Ist ein Textfeld, kein integer. "
 
 #: classes/Materialpool_CMB2_CPT_Select.php:23
 msgid "Please select"
@@ -307,6 +344,20 @@ msgstr "Wähle aus den häufig genutzten Inklusionen"
 msgid "No inclusion found."
 msgstr "Keine Inklusion gefunden"
 
+#: classes/Materialpool_Inklusives_Material.php:68
+msgid "Inklusion"
+msgstr "Inklusion"
+
+#: classes/Materialpool_Inklusives_Material.php:78
+msgctxt "Inklusion Editpage Fieldname"
+msgid "Sortorder"
+msgstr "Sortierreihenfolge"
+
+#: classes/Materialpool_Inklusives_Material.php:79
+msgctxt "Inklusion Editpage Fielddescription"
+msgid "sortorder for taxonomy"
+msgstr "Sortierreihenfolge der Inklusionen. Ist ein Textfeld, kein integer. "
+
 #: classes/Materialpool_Installation.php:30
 msgid "This plugin requires WordPress 4.0 or newer to work"
 msgstr "Dieses Plugin benötigt Wordpress 4.0 oder neuer."
@@ -319,6 +370,11 @@ msgid ""
 msgstr ""
 "Dieses Plugin benötigt PHP 5.3 oder höher. Deine aktuellen PHP-Version ist"
 "% 1s, bitte aktualisieren."
+
+#: classes/Materialpool_Keywords.php:23 classes/Materialpool_Keywords.php:24
+#: classes/Materialpool_Keywords.php:28
+msgid "Keywords"
+msgstr "Schlagworte"
 
 #: classes/Materialpool_Konfession.php:23
 #: classes/Materialpool_Konfession.php:28
@@ -378,20 +434,34 @@ msgstr "Wähle aus den häufig genutzten Lizenzen"
 msgid "No license found."
 msgstr "Keine Lizenzen gefunden"
 
+#: classes/Materialpool_Lizenz.php:69
+msgid "Lizenz"
+msgstr "Lizenz"
+
+#: classes/Materialpool_Lizenz.php:79
+msgctxt "Lizenz Editpage Fieldname"
+msgid "Sortorder"
+msgstr "Sortierreihenfolge"
+
+#: classes/Materialpool_Lizenz.php:80
+msgctxt "Lizenz Editpage Fielddescription"
+msgid "sortorder for taxonomy"
+msgstr "Sortierreihenfolge der Lizenzen. Ist ein Textfeld, kein integer. "
+
 #: classes/Materialpool_Material.php:24 classes/Materialpool_Material.php:25
 #: classes/Materialpool_Material.php:41
 msgid "Material"
-msgstr ""
+msgstr "Material"
 
 #: classes/Materialpool_Material.php:26
 msgctxt "admin menu"
 msgid "Material"
-msgstr ""
+msgstr "Material"
 
 #: classes/Materialpool_Material.php:27
 msgctxt "add new on admin bar"
 msgid "Material"
-msgstr ""
+msgstr "Material"
 
 #: classes/Materialpool_Material.php:28
 msgctxt "Material"
@@ -436,7 +506,7 @@ msgstr "Kein Material im Papierkorb gefunden"
 
 #: classes/Materialpool_Material.php:74
 msgid "Materialdata"
-msgstr ""
+msgstr "Materialdaten"
 
 #: classes/Materialpool_Material.php:84
 msgctxt "Material Editpage Fieldname"
@@ -460,174 +530,194 @@ msgstr "Beschreibung des Materials"
 
 #: classes/Materialpool_Material.php:100
 msgctxt "Material Editpage Fieldname"
+msgid "Keywords"
+msgstr "Schlagworte"
+
+#: classes/Materialpool_Material.php:101
+msgctxt "Organisation Editpage Fielddescription"
+msgid "Keywords of material"
+msgstr "Schlagworte die das Material beschrieben"
+
+#: classes/Materialpool_Material.php:106 classes/Materialpool_Material.php:214
+#: classes/Materialpool_Material.php:233 classes/Materialpool_Material.php:244
+#: classes/Materialpool_Material.php:255 classes/Materialpool_Material.php:266
+#: classes/Materialpool_Material.php:285
+msgctxt "Organisation Editpage Fielddescription"
+msgid "Sorry, no terms could be found."
+msgstr "Keine Einträge zugeordnet."
+
+#: classes/Materialpool_Material.php:118
+msgctxt "Material Editpage Fieldname"
 msgid "Release Date"
 msgstr "Veröffentlichungsdatum"
 
-#: classes/Materialpool_Material.php:101
+#: classes/Materialpool_Material.php:119
 msgctxt "Organisation Editpage Fielddescription"
 msgid "Release Date of material"
 msgstr "Veröffentlichungsdatum des Materials"
 
-#: classes/Materialpool_Material.php:109
+#: classes/Materialpool_Material.php:127
 msgctxt "Material Editpage Fieldname"
 msgid "Depublication Date"
 msgstr "Depublizierungsdatum"
 
-#: classes/Materialpool_Material.php:110
+#: classes/Materialpool_Material.php:128
 msgctxt "Organisation Editpage Fielddescription"
 msgid "Depublicarion Date of material"
 msgstr "Depublizierungsdatum des Materials"
 
-#: classes/Materialpool_Material.php:118
+#: classes/Materialpool_Material.php:136
 msgctxt "Material Editpage Fieldname"
 msgid "Review Date"
 msgstr "Wiedervorlagedatum"
 
-#: classes/Materialpool_Material.php:119
+#: classes/Materialpool_Material.php:137
 msgctxt "Organisation Editpage Fielddescription"
 msgid "Review Date of material"
 msgstr "Datum, wann das Material zum erneuten Review vorgelegt wird."
 
-#: classes/Materialpool_Material.php:127
+#: classes/Materialpool_Material.php:145
 msgctxt "Material Editpage Fieldname"
 msgid "Create Date"
-msgstr ""
+msgstr "Erstellungsdatum"
 
-#: classes/Materialpool_Material.php:128
+#: classes/Materialpool_Material.php:146
 msgctxt "Organisation Editpage Fielddescription"
 msgid "Create Date of material"
 msgstr ""
+"Datum wann das Material erstellt wurde. Muss nicht mit dem "
+"Veröffentlichungsdatum auf der Webseite übereinstimmen."
 
-#: classes/Materialpool_Material.php:136
+#: classes/Materialpool_Material.php:154
 msgctxt "Material Editpage Fieldname"
 msgid "Material URL"
 msgstr "URL unter der das Material erreichbar ist."
 
-#: classes/Materialpool_Material.php:137
+#: classes/Materialpool_Material.php:155
 msgctxt "Organisation Editpage Fielddescription"
 msgid "URL of material"
 msgstr "URL unter der das Material erreichbar ist."
 
-#: classes/Materialpool_Material.php:144
+#: classes/Materialpool_Material.php:162
 msgctxt "Material Editpage Fieldname"
 msgid "Picture"
 msgstr "Bild"
 
-#: classes/Materialpool_Material.php:145
+#: classes/Materialpool_Material.php:163
 msgctxt "Material Editpage Fielddescription"
 msgid "Picture from material"
 msgstr "Bild des Materials"
 
-#: classes/Materialpool_Material.php:173
+#: classes/Materialpool_Material.php:191
 msgctxt "Material Editpage Fieldname"
 msgid "Werk"
-msgstr ""
+msgstr "Werk"
 
-#: classes/Materialpool_Material.php:174
+#: classes/Materialpool_Material.php:192
 msgctxt "Material Editpage Fielddescription"
 msgid "Werk from material"
 msgstr "Dieses Material ist einem Werk zugeordnet."
 
-#: classes/Materialpool_Material.php:181
+#: classes/Materialpool_Material.php:199
 msgctxt "Material Editpage Fieldname"
 msgid "Reference"
 msgstr "Referenzen"
 
-#: classes/Materialpool_Material.php:182
+#: classes/Materialpool_Material.php:200
 msgctxt "Material Editpage Fielddescription"
 msgid "Reference to material"
 msgstr "Materialreferenzen (Erscheinen als Verweise beim Material)"
 
-#: classes/Materialpool_Material.php:190
+#: classes/Materialpool_Material.php:208
 msgctxt "Material Editpage Fieldname"
 msgid "Mediatyp"
-msgstr ""
+msgstr "Medientyp"
 
-#: classes/Materialpool_Material.php:191
+#: classes/Materialpool_Material.php:209
 msgctxt "Material Editpage Fielddescription"
 msgid "Mediatyp of material"
 msgstr "Medientyp des Materials"
 
-#: classes/Materialpool_Material.php:201
+#: classes/Materialpool_Material.php:219
 msgctxt "Material Editpage Fieldname"
 msgid "Verfügbarkeit"
-msgstr ""
-
-#: classes/Materialpool_Material.php:202
-msgctxt "Material Editpage Fielddescription"
-msgid "Verfügbarkeit of material"
-msgstr ""
-
-#: classes/Materialpool_Material.php:209
-msgctxt "Material Editpage Fieldname"
-msgid "Bildungsstufe"
-msgstr ""
-
-#: classes/Materialpool_Material.php:210
-msgctxt "Material Editpage Fielddescription"
-msgid "Bildungsstuge of material"
-msgstr ""
+msgstr "Verfügbarkeit"
 
 #: classes/Materialpool_Material.php:220
+msgctxt "Material Editpage Fielddescription"
+msgid "Verfügbarkeit of material"
+msgstr "Verfügbarkeit des Material."
+
+#: classes/Materialpool_Material.php:227
+msgctxt "Material Editpage Fieldname"
+msgid "Bildungsstufe"
+msgstr "Bildungsstufe"
+
+#: classes/Materialpool_Material.php:228
+msgctxt "Material Editpage Fielddescription"
+msgid "Bildungsstuge of material"
+msgstr "Bildungsstufe für die das Material geeignet ist."
+
+#: classes/Materialpool_Material.php:238
 msgctxt "Material Editpage Fieldname"
 msgid "Zugänglichkeit"
-msgstr ""
+msgstr "Zugänglichkeit"
 
-#: classes/Materialpool_Material.php:221
+#: classes/Materialpool_Material.php:239
 msgctxt "Material Editpage Fielddescription"
 msgid "Zugänglichkeit of material"
 msgstr "Zugänglichkeit des Materials"
 
-#: classes/Materialpool_Material.php:231
+#: classes/Materialpool_Material.php:249
 msgctxt "Material Editpage Fieldname"
 msgid "Inklusion"
-msgstr ""
+msgstr "Inklusion"
 
-#: classes/Materialpool_Material.php:232
+#: classes/Materialpool_Material.php:250
 msgctxt "Material Editpage Fielddescription"
 msgid "Inklusion of material"
-msgstr ""
+msgstr "Ist das Material für Inklusion geeignet."
 
-#: classes/Materialpool_Material.php:242
+#: classes/Materialpool_Material.php:260
 msgctxt "Material Editpage Fieldname"
 msgid "Language"
 msgstr "Sprache"
 
-#: classes/Materialpool_Material.php:243
+#: classes/Materialpool_Material.php:261
 msgctxt "Material Editpage Fielddescription"
 msgid "Language of material"
 msgstr "Sprache des Materials"
 
-#: classes/Materialpool_Material.php:253
+#: classes/Materialpool_Material.php:271
 msgctxt "Material Editpage Fieldname"
 msgid "Lizenz"
 msgstr "Lizenz"
 
-#: classes/Materialpool_Material.php:254
+#: classes/Materialpool_Material.php:272
 msgctxt "Material Editpage Fielddescription"
 msgid "Lizenz of material"
 msgstr "Lizenz des Materials"
 
-#: classes/Materialpool_Material.php:261
+#: classes/Materialpool_Material.php:279
 msgctxt "Material Editpage Fieldname"
 msgid "Altersstufe"
-msgstr ""
+msgstr "Altersstufe"
 
-#: classes/Materialpool_Material.php:262
+#: classes/Materialpool_Material.php:280
 msgctxt "Material Editpage Fielddescription"
 msgid "Altersstufe of material"
-msgstr ""
+msgstr "Für welche Altersstufen ist das Material geeignet."
 
-#: classes/Materialpool_Material.php:312
-#: classes/Materialpool_Organisation.php:167
+#: classes/Materialpool_Material.php:330
+#: classes/Materialpool_Organisation.php:161
 msgctxt "Organisation list field"
 msgid "Organisation"
-msgstr ""
+msgstr "Organisation"
 
-#: classes/Materialpool_Material.php:313
+#: classes/Materialpool_Material.php:331
 msgctxt "Organisation list field"
 msgid "Autoren"
-msgstr ""
+msgstr "Autoren"
 
 #: classes/Materialpool_Medientyp.php:22 classes/Materialpool_Medientyp.php:23
 #: classes/Materialpool_Medientyp.php:41
@@ -682,14 +772,28 @@ msgstr "Kein Medientyp gefunden"
 msgid "Mediatypes"
 msgstr "Medientypen"
 
+#: classes/Materialpool_Medientyp.php:69
+msgid "Medientyp"
+msgstr "Medientyp"
+
+#: classes/Materialpool_Medientyp.php:79
+msgctxt "Medientyp Editpage Fieldname"
+msgid "Sortorder"
+msgstr "Sortierreihenfolge"
+
+#: classes/Materialpool_Medientyp.php:80
+msgctxt "Medientyp Editpage Fielddescription"
+msgid "sortorder for taxonomy"
+msgstr "Sortierreihenfolge der Medientypen. Ist ein Textfeld, kein integer. "
+
 #: classes/Materialpool_Organisation.php:24
 #: classes/Materialpool_Organisation.php:29
 msgid "Organisationen"
-msgstr ""
+msgstr "Organisationen"
 
 #: classes/Materialpool_Organisation.php:25
 msgid "Organisation"
-msgstr ""
+msgstr "Organisation"
 
 #: classes/Materialpool_Organisation.php:61
 msgid "Organisationdata"
@@ -705,60 +809,60 @@ msgctxt "Organisation Editpage Fielddescription"
 msgid "Website of organisation"
 msgstr "Webseite der Organisation"
 
-#: classes/Materialpool_Organisation.php:79
-msgctxt "Organisation Editpage Fieldname"
-msgid "Logo"
-msgstr "Logo"
-
 #: classes/Materialpool_Organisation.php:80
-msgctxt "Organisation Editpage Fielddescription"
-msgid "Logo from organisation"
-msgstr "Logo"
+msgctxt "Organisation Editpage Fieldname"
+msgid "Logo URL"
+msgstr "Logo URL"
 
-#: classes/Materialpool_Organisation.php:94
+#: classes/Materialpool_Organisation.php:81
+msgctxt "Organisation Editpage Fielddescription"
+msgid "URL of organisation logo"
+msgstr "URL der Logografik der Organisation"
+
+#: classes/Materialpool_Organisation.php:88
 msgctxt "Organisation Editpage Fieldname"
 msgid "ALPIKA"
-msgstr ""
+msgstr "ALPIKA"
 
-#: classes/Materialpool_Organisation.php:95
+#: classes/Materialpool_Organisation.php:89
 msgctxt "Organisation Editpage Fielddescription"
 msgid "Organisation is ALPIKA"
 msgstr "Organisation ist ein ALPIKA Institut"
 
-#: classes/Materialpool_Organisation.php:102
+#: classes/Materialpool_Organisation.php:96
 msgctxt "Organisation Editpage Fieldname"
 msgid "Konfession"
-msgstr ""
+msgstr "Konfession"
 
-#: classes/Materialpool_Organisation.php:103
+#: classes/Materialpool_Organisation.php:97
 msgctxt "Organisation Editpage Fielddescription"
 msgid "Konfession of organisation"
-msgstr ""
+msgstr "Konfession der Organisation"
 
-#: classes/Materialpool_Organisation.php:166
+#: classes/Materialpool_Organisation.php:160
 msgctxt "Organisation list field"
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
-#: classes/Materialpool_Organisation.php:168
+#: classes/Materialpool_Organisation.php:162
 msgctxt "Organisation list field"
 msgid "Logo"
-msgstr ""
+msgstr "Logo"
 
-#: classes/Materialpool_Organisation.php:169
+#: classes/Materialpool_Organisation.php:163
 msgctxt "Organisation list field"
 msgid "URL"
-msgstr ""
+msgstr "URL"
 
-#: classes/Materialpool_Organisation.php:170
+#: classes/Materialpool_Organisation.php:164
 msgctxt "Organisation list field"
 msgid "Konfession"
-msgstr ""
+msgstr "Konfession"
 
-#: classes/Materialpool_Organisation.php:171
+#: classes/Materialpool_Organisation.php:165
 msgctxt "Organisation list field"
 msgid "ALPIKA"
-msgstr ""
+msgstr "ALPIKA"
 
 #: classes/Materialpool_Sprache.php:22 classes/Materialpool_Sprache.php:37
 msgid "Languages"
@@ -810,7 +914,7 @@ msgstr "Keine Sprachen gefunden"
 
 #: classes/Materialpool_Sprache.php:41
 msgid "Sprachen"
-msgstr ""
+msgstr "Sprachen"
 
 #: classes/Materialpool_Verfuegbarkeit.php:22
 #: classes/Materialpool_Verfuegbarkeit.php:23
@@ -866,6 +970,21 @@ msgstr "Keine Verfügbarkeit gefunden"
 msgid "Disposabilitys"
 msgstr "Verfügbarkeiten"
 
+#: classes/Materialpool_Verfuegbarkeit.php:69
+msgid "Verfuegbarkeit"
+msgstr "Verfügbarkeit"
+
+#: classes/Materialpool_Verfuegbarkeit.php:79
+msgctxt "Verfuegbarkeit Editpage Fieldname"
+msgid "Sortorder"
+msgstr "Sortierreihenfolge"
+
+#: classes/Materialpool_Verfuegbarkeit.php:80
+msgctxt "Verfuegbarkeit Editpage Fielddescription"
+msgid "sortorder for taxonomy"
+msgstr ""
+"Sortierreihenfolge der Verfügbarkeiten. Ist ein Textfeld, kein integer. "
+
 #: classes/Materialpool_Zugaenglichkeit.php:22
 #: classes/Materialpool_Zugaenglichkeit.php:23
 #: classes/Materialpool_Zugaenglichkeit.php:37
@@ -917,6 +1036,21 @@ msgstr "Wähle aus den häufig genutzten  Zugänglichkeiten"
 msgid "No accessibility found."
 msgstr "Keine Zugänglichkeit gefunden"
 
+#: classes/Materialpool_Zugaenglichkeit.php:69
+msgid "Zugaenglichkeit"
+msgstr "Zugänglichkeit"
+
+#: classes/Materialpool_Zugaenglichkeit.php:79
+msgctxt "Zugänglichkeit Editpage Fieldname"
+msgid "Sortorder"
+msgstr "Sortierreihenfolge"
+
+#: classes/Materialpool_Zugaenglichkeit.php:80
+msgctxt "Zugänglichkeit Editpage Fielddescription"
+msgid "sortorder for taxonomy"
+msgstr ""
+"Sortierreihenfolge der Zugänglichkeiten. Ist ein Textfeld, kein integer. "
+
 #. Plugin Name of the plugin/theme
 msgid "RW Materialpool"
 msgstr "RW Materialpool"
@@ -936,3 +1070,19 @@ msgstr "Frank Staude"
 #. Author URI of the plugin/theme
 msgid "https://staude.net"
 msgstr "https://staude.net"
+
+#~ msgctxt "Author Editpage Fieldname"
+#~ msgid "Picture"
+#~ msgstr "Bild"
+
+#~ msgctxt "Author Editpage Fielddescription"
+#~ msgid "Picture from author"
+#~ msgstr "Bild des Autoren"
+
+#~ msgctxt "Organisation Editpage Fieldname"
+#~ msgid "Logo"
+#~ msgstr "Logo"
+
+#~ msgctxt "Organisation Editpage Fielddescription"
+#~ msgid "Logo from organisation"
+#~ msgstr "Logo"
