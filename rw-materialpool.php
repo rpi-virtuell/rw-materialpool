@@ -137,92 +137,28 @@ class Materialpool {
 
         // Add Filter & Actions for Dashboard
 		add_action( 'admin_menu', array( 'Materialpool_Dashboard', 'register_dashboard_page' ), 8 );
-		add_action( 'admin_menu', array( 'Materialpool_Dashboard', 'register_settings_page' ) );
+		//add_action( 'admin_menu', array( 'Materialpool_Dashboard', 'register_settings_page' ) );
 
         // Add Filter & Actions for Material
-        add_action( 'init', array( 'Materialpool_Material', 'register_post_type' ) );
-        add_action( 'cmb2_admin_init', array( 'Materialpool_Material', 'register_meta_fields' ) );
         add_filter( 'template_include', array( 'Materialpool_Material', 'load_template' ) );
         add_action( 'manage_material_posts_columns', array( 'Materialpool_Material', 'cpt_list_head') );
         add_action( 'manage_material_posts_custom_column', array( 'Materialpool_Material', 'cpt_list_column'), 10,2 );
         add_action( 'manage_edit-material_sortable_columns', array( 'Materialpool_Material', 'cpt_sort_column') );
+		add_action( 'save_post', array( 'Materialpool_Material', 'generate_title') );
 
         // Add Filter & Actions for Organisation
-        add_action( 'init', array( 'Materialpool_Organisation', 'register_post_type' ) );
-        add_action( 'cmb2_admin_init', array( 'Materialpool_Organisation', 'register_meta_fields' ) );
         add_filter( 'template_include', array( 'Materialpool_Organisation', 'load_template' ) );
         add_action( 'manage_organisation_posts_columns', array( 'Materialpool_Organisation', 'cpt_list_head') );
         add_action( 'manage_organisation_posts_custom_column', array( 'Materialpool_Organisation', 'cpt_list_column'), 10,2 );
         add_action( 'manage_edit-organisation_sortable_columns', array( 'Materialpool_Organisation', 'cpt_sort_column') );
+		add_action( 'save_post', array( 'Materialpool_Organisation', 'generate_title') );
 
         // Add Filter & Actions for Autor
-        add_action( 'init', array( 'Materialpool_Autor', 'register_post_type' ) );
-        add_action( 'cmb2_admin_init', array( 'Materialpool_Autor', 'register_meta_fields' ) );
         add_filter( 'template_include', array( 'Materialpool_Autor', 'load_template' ) );
         add_action( 'manage_autor_posts_columns', array( 'Materialpool_Autor', 'cpt_list_head') );
         add_action( 'manage_autor_posts_custom_column', array( 'Materialpool_Autor', 'cpt_list_column'), 10,2 );
         add_action( 'manage_edit-autor_sortable_columns', array( 'Materialpool_Autor', 'cpt_sort_column') );
         add_action( 'save_post', array( 'Materialpool_Autor', 'generate_title') );
-
-        // Add Filter & Actions for Konfession
-		add_action( 'init', array( 'Materialpool_Konfession', 'register_taxonomy' ) );
-
-        // Add Filter & Actions for Inklusives Material
-        add_action( 'init', array( 'Materialpool_Inklusives_Material', 'register_taxonomy' ) );
-
-        // Add Filter & Actions for Lizenz
-        add_action( 'init', array( 'Materialpool_Lizenz', 'register_taxonomy' ) );
-        add_action( 'cmb2_admin_init', array( 'Materialpool_Lizenz', 'add_taxonomy_metadata' ) );
-        add_filter( 'manage_edit-lizenz_columns', array( 'Materialpool_Lizenz', 'taxonomy_column' ) );
-        add_filter( 'manage_lizenz_custom_column', array( 'Materialpool_Lizenz', 'taxonomy_column_data' ), 10, 3);
-        add_filter( 'manage_edit-lizenz_sortable_columns', array( 'Materialpool_Lizenz', 'taxonomy_sort_column' ) );
-
-        // Add Filter & Actions for Zugänglichkeit
-        add_action( 'init', array( 'Materialpool_Zugaenglichkeit', 'register_taxonomy' ) );
-        add_action( 'cmb2_admin_init', array( 'Materialpool_Zugaenglichkeit', 'add_taxonomy_metadata' ) );
-        add_filter( 'manage_edit-zugaenglichkeit_columns', array( 'Materialpool_Zugaenglichkeit', 'taxonomy_column' ) );
-        add_filter( 'manage_zugaenglichkeit_custom_column', array( 'Materialpool_Zugaenglichkeit', 'taxonomy_column_data' ), 10, 3);
-        add_filter( 'manage_edit-zugaenglichkeit_sortable_columns', array( 'Materialpool_Zugaenglichkeit', 'taxonomy_sort_column' ) );
-
-        // Add Filter & Actions for Verfügbarkeit
-        add_action( 'init', array( 'Materialpool_Verfuegbarkeit', 'register_taxonomy' ) );
-        add_action( 'cmb2_admin_init', array( 'Materialpool_Verfuegbarkeit', 'add_taxonomy_metadata' ) );
-        add_filter( 'manage_edit-verfuegbarkeit_columns', array( 'Materialpool_Verfuegbarkeit', 'taxonomy_column' ) );
-        add_filter( 'manage_verfuegbarkeit_custom_column', array( 'Materialpool_Verfuegbarkeit', 'taxonomy_column_data' ), 10, 3);
-        add_filter( 'manage_edit-verfuegbarkeit_sortable_columns', array( 'Materialpool_Verfuegbarkeit', 'taxonomy_sort_column' ) );
-
-        // Add Filter & Actions for Altersstufe
-        add_action( 'init', array( 'Materialpool_Altersstufe', 'register_taxonomy' ) );
-        add_action( 'cmb2_admin_init', array( 'Materialpool_Altersstufe', 'add_taxonomy_metadata' ) );
-        add_filter( 'manage_edit-altersstufe_columns', array( 'Materialpool_Altersstufe', 'taxonomy_column' ) );
-        add_filter( 'manage_altersstufe_custom_column', array( 'Materialpool_Altersstufe', 'taxonomy_column_data' ), 10, 3);
-        add_filter( 'manage_edit-altersstufe_sortable_columns', array( 'Materialpool_Altersstufe', 'taxonomy_sort_column' ) );
-
-        // Add Filter & Actions for Medientype
-        add_action( 'init', array( 'Materialpool_Medientyp', 'register_taxonomy' ) );
-        add_action( 'cmb2_admin_init', array( 'Materialpool_Medientyp', 'add_taxonomy_metadata' ) );
-        add_filter( 'manage_edit-medientyp_columns', array( 'Materialpool_Medientyp', 'taxonomy_column' ) );
-        add_filter( 'manage_medientyp_custom_column', array( 'Materialpool_Medientyp', 'taxonomy_column_data' ), 10, 3);
-        add_filter( 'manage_edit-medientyp_sortable_columns', array( 'Materialpool_Medientyp', 'taxonomy_sort_column' ) );
-
-        // Add Filter & Actions for Bildungsstufe
-        add_action( 'init', array( 'Materialpool_Bildungsstufe', 'register_taxonomy' ) );
-        add_action( 'cmb2_admin_init', array( 'Materialpool_Bildungsstufe', 'add_taxonomy_metadata' ) );
-        add_filter( 'manage_edit-bildungsstufe_columns', array( 'Materialpool_Bildungsstufe', 'taxonomy_column' ) );
-        add_filter( 'manage_bildungsstufe_custom_column', array( 'Materialpool_Bildungsstufe', 'taxonomy_column_data' ), 10, 3);
-        add_filter( 'manage_edit-bildungsstufe_sortable_columns', array( 'Materialpool_Bildungsstufe', 'taxonomy_sort_column' ) );
-
-        // Add Filter & Actions for Sprache
-        add_action( 'init', array( 'Materialpool_Sprache', 'register_taxonomy' ) );
-
-        // Add Filter & Actions for Keywords
-        add_action( 'init', array( 'Materialpool_Keywords', 'register_taxonomy' ) );
-
-        // CMB2 Enhancement
-        add_filter( 'cmb2_render_cpt_select', array( 'Materialpool_CMB2_CPT_Select', 'render_cpt_select' ), 10, 5 );
-        add_filter( 'cmb2_sanitize_cpt_select', array( 'Materialpool_CMB2_CPT_Select', 'sanitize_cpt_select' ), 10, 4 );
-
-        add_image_size( 'materialpool-autor-size', 110, 90 );
 
         do_action( 'materialpool_init' );
 	}
@@ -335,12 +271,6 @@ class Materialpool {
 
 
 if ( class_exists( 'Materialpool' ) ) {
-	if ( file_exists( dirname( __FILE__ ) . '/vendor/cmb2/init.php' ) ) {
-		require_once dirname( __FILE__ ) . '/vendor/cmb2/init.php';
-	} elseif ( file_exists( dirname( __FILE__ ) . '/vendor/CMB2/init.php' ) ) {
-		require_once dirname( __FILE__ ) . '/vendor/CMB2/init.php';
-	}
-
 	add_action( 'plugins_loaded', array( 'Materialpool', 'get_instance' ) );
 
 	require_once 'classes/Materialpool_Autoloader.php';

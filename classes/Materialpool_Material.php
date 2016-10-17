@@ -11,284 +11,6 @@
 
 class Materialpool_Material {
 
-	/**
-	 *
-	 * @since 0.0.1
-	 * @access	public
-	 * @filters materialpool_material_posttype_label
-	 * @filters materialpool_material_posttype_args
-	 *
-	 */
-	static public function register_post_type() {
-		$labels = array(
-			"name"                  => __( 'Material', Materialpool::$textdomain ),
-			"singular_name"         => __( 'Material', Materialpool::$textdomain ),
-            'menu_name'             => _x( 'Material', 'admin menu', Materialpool::$textdomain ),
-            'name_admin_bar'        => _x( 'Material', 'add new on admin bar', Materialpool::$textdomain ),
-            'add_new'               => _x( 'Add New', 'Material', Materialpool::$textdomain ),
-            'add_new_item'          => __( 'Add New Material', Materialpool::$textdomain ),
-            'new_item'              => __( 'New Material', Materialpool::$textdomain ),
-            'edit_item'             => __( 'Edit Material', Materialpool::$textdomain ),
-            'view_item'             => __( 'View Material', Materialpool::$textdomain ),
-            'all_items'             => __( 'All Material', Materialpool::$textdomain ),
-            'search_items'          => __( 'Search Material', Materialpool::$textdomain ),
-            'parent_item_colon'     => __( 'Parent Material:', Materialpool::$textdomain ),
-            'not_found'             => __( 'No Material found.', Materialpool::$textdomain ),
-            'not_found_in_trash'    => __( 'No Material found in Trash.', Materialpool::$textdomain )
-		);
-
-		$args = array(
-			"label" => __( 'Material', Materialpool::$textdomain ),
-			"labels" => apply_filters( 'materialpool_material_posttype_label', $labels ),
-			"description" => "",
-			"public" => true,
-			"publicly_queryable" => true,
-			"show_ui" => true,
-			"show_in_rest" => false,
-			"rest_base" => "",
-			"has_archive" => 'material',
-			"show_in_menu" => true, //'materialpool',
-			"exclude_from_search" => false,
-			"capability_type" => "post",
-			"map_meta_cap" => true,
-			"hierarchical" => false,
-			"rewrite" => array( "slug" => "material", "with_front" => true ),
-			"query_var" => true,
-			"supports" => array( "title" ),
-		);
-		register_post_type( "material", apply_filters( 'materialpool_material_posttype_args', $args ) );
-
-	}
-
-    /**
-     *
-     * @since 0.0.1
-     * @access	public
-     * @filters materialpool_material_meta_field
-     *
-     */
-    static public function register_meta_fields()
-    {
-        $cmb_material = new_cmb2_box(array(
-            'id' => 'cmb_material',
-            'title' => __('Materialdata', Materialpool::get_textdomain()),
-            'object_types' => array('material'),
-            'context' => 'normal',
-            'priority' => 'core',
-            'show_names' => true,
-            'cmb_styles' => true,
-            'closed' => false,
-        ) );
-
-        $cmb_material->add_field(array(
-            'name' => _x('Shortdescription', 'Material Editpage Fieldname', Materialpool::get_textdomain()),
-            'desc' => _x('Shortdescription of material', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain()),
-            'default' => '',
-            'id' => 'material_shortdescription',
-            'type' => 'textarea',
-        ) );
-
-        $cmb_material->add_field(array(
-            'name' => _x('Description', 'Material Editpage Fieldname', Materialpool::get_textdomain()),
-            'desc' => _x('Description of material', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain()),
-            'default' => '',
-            'id' => 'material_description',
-            'type' => 'wysiwyg',
-        ) );
-
-        $cmb_material->add_field( array(
-            'name' => _x('Keywords', 'Material Editpage Fieldname', Materialpool::get_textdomain()),
-            'desc' => _x('Keywords of material', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain()),
-            'id' => 'material_keywords',
-            'taxonomy'  => 'keywords',
-            'type'      => 'taxonomy_multicheck',
-            'text'      => array(
-                'no_terms_text' => _x('Sorry, no terms could be found.', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain()),
-            ),
-        ) );
-
-        $cmb_material->add_field( array(
-            'name' => 'Schlagwort Vorschläge',
-            'desc' => 'Die Schlagwortdialog oben muss noch umgebaut werden, liste der zugeordneten Keywords und texteingabe mit vorschlägen beim tippen. Hier ercheinen die Schlagwortvorschläge und mann kann sie als Schlagwort übernehmen oder in die Synonymliste aufnehmen.',
-            'type' => 'title',
-            'id'   => 'wiki_test_title'
-        ) );
-
-        $cmb_material->add_field(array(
-            'name' => _x('Release Date', 'Material Editpage Fieldname', Materialpool::get_textdomain()),
-            'desc' => _x('Release Date of material', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain()),
-            'default' => '',
-            'id' => 'material_releasedate',
-            'type' => 'text_date',
-            'date_format' => 'd.m.Y'
-        ) );
-
-        $cmb_material->add_field(array(
-            'name' => _x('Depublication Date', 'Material Editpage Fieldname', Materialpool::get_textdomain()),
-            'desc' => _x('Depublicarion Date of material', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain()),
-            'default' => '',
-            'id' => 'material_depublicationdate',
-            'type' => 'text_date',
-            'date_format' => 'd.m.Y'
-        ) );
-
-        $cmb_material->add_field(array(
-            'name' => _x('Review Date', 'Material Editpage Fieldname', Materialpool::get_textdomain()),
-            'desc' => _x('Review Date of material', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain()),
-            'default' => '',
-            'id' => 'material_reviewdate',
-            'type' => 'text_date',
-            'date_format' => 'd.m.Y'
-        ) );
-
-        $cmb_material->add_field(array(
-            'name' => _x('Create Date', 'Material Editpage Fieldname', Materialpool::get_textdomain()),
-            'desc' => _x('Create Date of material', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain()),
-            'default' => '',
-            'id' => 'material_createdate',
-            'type' => 'text_date',
-            'date_format' => 'd.m.Y'
-        ) );
-
-        $cmb_material->add_field(array(
-            'name' => _x('Material URL', 'Material Editpage Fieldname', Materialpool::get_textdomain()),
-            'desc' => _x('URL of material', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain()),
-            'default' => '',
-            'id' => 'material_url',
-            'type' => 'text_url',
-        ) );
-
-        $cmb_material->add_field( array(
-            'name' => _x( 'Picture', 'Material Editpage Fieldname', Materialpool::get_textdomain() ),
-            'desc' => _x( 'Picture from material', 'Material Editpage Fielddescription', Materialpool::get_textdomain() ),
-            'id'   => 'material_picture',
-            'type' => 'file',
-            'preview_size' => array( 350, 550 ),
-            'options' => array(
-                'add_upload_files_text' => 'Replacement',
-                'remove_image_text' => 'Replacement',
-                'file_text' => 'Replacement',
-                'file_download_text' => 'Replacement',
-                'remove_text' => 'Replacement',
-            ),
-        ) );
-
-        $cmb_material->add_field( array(
-            'name' => 'Autor',
-            'desc' => 'Hier fehlt die zuordnung zu Autoren',
-            'type' => 'title',
-            'id'   => 'material_autor'
-        ) );
-
-        $cmb_material->add_field( array(
-            'name' => 'Organisation',
-            'desc' => 'Hier fehlt die zuordnung zu Organisationen',
-            'type' => 'title',
-            'id'   => 'material_organisation'
-        ) );
-
-        $cmb_material->add_field( array(
-            'name' => _x( 'Werk', 'Material Editpage Fieldname', Materialpool::get_textdomain() ),
-            'desc' => _x( 'Werk from material', 'Material Editpage Fielddescription', Materialpool::get_textdomain() ),
-            'id'   => 'material_werk',
-            'type' => 'cpt_select',
-            'cpt'  => 'material',
-        ) );
-
-        $cmb_material->add_field( array(
-            'name' => _x( 'Reference', 'Material Editpage Fieldname', Materialpool::get_textdomain() ),
-            'desc' => _x( 'Reference to material', 'Material Editpage Fielddescription', Materialpool::get_textdomain() ),
-            'id'   => 'material_reference',
-            'type' => 'cpt_select',
-            'cpt'  => 'material',
-        ) );
-
-        //@todo Hierachische Taxonomien sollen entsprechend eingerückt sein.
-        $cmb_material->add_field( array(
-            'name' => _x( 'Mediatyp', 'Material Editpage Fieldname', Materialpool::get_textdomain() ),
-            'desc' => _x( 'Mediatyp of material', 'Material Editpage Fielddescription', Materialpool::get_textdomain() ),
-            'id'        => 'material_mediatyp',
-            'taxonomy'  => 'medientyp',
-            'type'      => 'taxonomy_multicheck',
-            'text'      => array(
-                'no_terms_text' => _x('Sorry, no terms could be found.', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain()),
-            ),
-        ) );
-
-        $cmb_material->add_field( array(
-            'name' => _x( 'Verfügbarkeit', 'Material Editpage Fieldname', Materialpool::get_textdomain() ),
-            'desc' => _x( 'Verfügbarkeit of material', 'Material Editpage Fielddescription', Materialpool::get_textdomain() ),
-            'id'        => 'material_verfuegbarkeit',
-            'taxonomy'  => 'verfuegbarkeit',
-            'type'      => 'taxonomy_select',
-        ) );
-
-        $cmb_material->add_field( array(
-            'name' => _x( 'Bildungsstufe', 'Material Editpage Fieldname', Materialpool::get_textdomain() ),
-            'desc' => _x( 'Bildungsstuge of material', 'Material Editpage Fielddescription', Materialpool::get_textdomain() ),
-            'id'        => 'material_bildungsstufe',
-            'taxonomy'  => 'bildungsstufe',
-            'type'      => 'taxonomy_multicheck',
-            'text'      => array(
-                'no_terms_text' => _x('Sorry, no terms could be found.', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain()),
-            ),
-        ) );
-
-        $cmb_material->add_field( array(
-            'name' => _x( 'Zugänglichkeit', 'Material Editpage Fieldname', Materialpool::get_textdomain() ),
-            'desc' => _x( 'Zugänglichkeit of material', 'Material Editpage Fielddescription', Materialpool::get_textdomain() ),
-            'id'        => 'material_zugaenglichkeit',
-            'taxonomy'  => 'zugaenglichkeit',
-            'type'      => 'taxonomy_multicheck',
-            'text'      => array(
-                'no_terms_text' => _x('Sorry, no terms could be found.', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain()),
-            ),
-        ) );
-
-        $cmb_material->add_field( array(
-            'name' => _x( 'Inklusion', 'Material Editpage Fieldname', Materialpool::get_textdomain() ),
-            'desc' => _x( 'Inklusion of material', 'Material Editpage Fielddescription', Materialpool::get_textdomain() ),
-            'id'        => 'material_inklusion',
-            'taxonomy'  => 'inklusion',
-            'type'      => 'taxonomy_multicheck',
-            'text'      => array(
-                'no_terms_text' => _x('Sorry, no terms could be found.', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain()),
-            ),
-        ) );
-
-        $cmb_material->add_field( array(
-            'name' => _x( 'Language', 'Material Editpage Fieldname', Materialpool::get_textdomain() ),
-            'desc' => _x( 'Language of material', 'Material Editpage Fielddescription', Materialpool::get_textdomain() ),
-            'id'        => 'material_language',
-            'taxonomy'  => 'sprache',
-            'type'      => 'taxonomy_multicheck',
-            'text'      => array(
-                'no_terms_text' => _x('Sorry, no terms could be found.', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain()),
-            ),
-        ) );
-
-        $cmb_material->add_field( array(
-            'name' => _x( 'Lizenz', 'Material Editpage Fieldname', Materialpool::get_textdomain() ),
-            'desc' => _x( 'Lizenz of material', 'Material Editpage Fielddescription', Materialpool::get_textdomain() ),
-            'id'        => 'material_lizenz',
-            'taxonomy'  => 'lizenz',
-            'type'      => 'taxonomy_select',
-        ) );
-
-        $cmb_material->add_field( array(
-            'name' => _x( 'Altersstufe', 'Material Editpage Fieldname', Materialpool::get_textdomain() ),
-            'desc' => _x( 'Altersstufe of material', 'Material Editpage Fielddescription', Materialpool::get_textdomain() ),
-            'id'        => 'material_altersstufe',
-            'taxonomy'  => 'altersstufe',
-            'type'      => 'taxonomy_multicheck',
-            'text'      => array(
-                'no_terms_text' => _x('Sorry, no terms could be found.', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain()),
-            ),
-        ) );
-
-        $cmb_material = apply_filters( 'materialpool_material_meta_field', $cmb_material);
-    }
-
     /**
      *
      * @since 0.0.1
@@ -365,6 +87,29 @@ class Materialpool_Material {
         ) );
     }
 
+
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
+	static public function generate_title( $post_id ) {
+		$post_type = get_post_type($post_id);
+
+		// If this isn't a 'book' post, don't update it.
+		if ( "material" != $post_type ) return;
+
+		$title = get_metadata( 'post', $post_id, 'material_titel', true );
+		remove_action( 'save_post', array( 'Materialpool_Material', 'generate_title') );
+		wp_update_post( array(
+			'ID' => $post_id,
+			'post_title' => $title,
+			'post_name' => $title,
+		));
+		add_action( 'save_post', array( 'Materialpool_Material', 'generate_title') );
+	}
+
     /**
      *
      * @since 0.0.1
@@ -406,7 +151,7 @@ class Materialpool_Material {
     static public function get_shortdescription() {
         global $post;
 
-        return get_metadata( 'post', $post->ID, 'material_shortdescription', true );
+        return get_metadata( 'post', $post->ID, 'material_kurzbeschreibung', true );
     }
 
     /**
@@ -428,7 +173,7 @@ class Materialpool_Material {
     static public function get_description() {
         global $post;
 
-        return get_metadata( 'post', $post->ID, 'material_description', true );
+        return get_metadata( 'post', $post->ID, 'material_beschreibung', true );
     }
 
     /**
@@ -450,7 +195,7 @@ class Materialpool_Material {
     static public function get_releasedate() {
         global $post;
 
-        return get_metadata( 'post', $post->ID, 'material_releasedate', true );
+        return get_metadata( 'post', $post->ID, 'material_veroeffentlichungsdatum', true );
     }
 
     /**
@@ -472,7 +217,7 @@ class Materialpool_Material {
     static public function get_depublicationdate() {
         global $post;
 
-        return get_metadata( 'post', $post->ID, 'material_depublicationdate', true );
+        return get_metadata( 'post', $post->ID, 'material_depublizierungsdatum', true );
     }
 
     /**
@@ -494,7 +239,7 @@ class Materialpool_Material {
     static public function get_reviewdate() {
         global $post;
 
-        return get_metadata( 'post', $post->ID, 'material_reviewdate', true );
+        return get_metadata( 'post', $post->ID, 'material_wiedervorlagedatum', true );
     }
 
     /**
@@ -516,7 +261,7 @@ class Materialpool_Material {
     static public function get_createdate() {
         global $post;
 
-        return get_metadata( 'post', $post->ID, 'material_createdate', true );
+        return get_metadata( 'post', $post->ID, 'material_erstellungsdatum', true );
     }
 
     /**
@@ -570,7 +315,8 @@ class Materialpool_Material {
      *
      */
     static public function picture_html() {
-        $url = Materialpool_Material::get_picture();
+        $pic  = Materialpool_Material::get_picture();
+	    $url = wp_get_attachment_url( $pic[ 'ID' ] );
         echo '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'materialpool-template-material-picture' ) .'"/>';
     }
 
@@ -583,7 +329,7 @@ class Materialpool_Material {
     static public function get_picture() {
         global $post;
 
-        return get_metadata( 'post', $post->ID, 'material_picture', true );
+        return get_metadata( 'post', $post->ID, 'material_cover', true );
     }
 
     /**
@@ -594,6 +340,9 @@ class Materialpool_Material {
      */
     static public function werk() {
         $werkID =  Materialpool_Material::get_werk_id();
+	    if ( false === $werkID ) {
+	    	return;
+	    }
         $werk = get_post( $werkID );
         echo $werk->post_title;
     }
@@ -623,7 +372,12 @@ class Materialpool_Material {
     static public function get_werk_id() {
         global $post;
 
-        return get_metadata( 'post', $post->ID, 'material_werk', true );
+	    $werk = get_metadata( 'post', $post->ID, 'material_werk', true );
+		if ( is_array( $werk ) ) {
+		    return ( $werk["ID"] );
+		} else {
+			return false;
+		}
     }
 
     /**
@@ -703,54 +457,93 @@ class Materialpool_Material {
     }
 
     /**
-     *
-     * @since 0.0.1
-     * @access public
-     *
-     */
-    static public function sibling_volumes ( $selfinclude = false ) {
-        global $wpdb;
-        global $post;
+ *
+ * @since 0.0.1
+ * @access public
+ *
+ */
+	static public function sibling_volumes ( $selfinclude = false ) {
+		global $wpdb;
+		global $post;
 
-        if ( self::is_part_of_werk() ) {
-            $werk = self::get_werk_id();
-            $result = $wpdb->get_results( $wpdb->prepare( "SELECT $wpdb->posts.*  FROM $wpdb->posts, $wpdb->postmeta WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id AND  $wpdb->postmeta.meta_key = %s AND $wpdb->postmeta.meta_value = %s order by post_title asc" , 'material_werk', $werk ) );
-            foreach ( $result as $material ) {
-                if ( ! $selfinclude ) {
-                    if ( $material->ID == $post->ID ) {
-                        break;
-                    }
-                }
-                echo $material->post_title . '<br>';
-            }
-        }
-    }
+		if ( self::is_part_of_werk() ) {
+			$werk = self::get_werk_id();
+			$result = $wpdb->get_results( $wpdb->prepare( "SELECT $wpdb->posts.*  FROM $wpdb->posts, $wpdb->postmeta WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id AND  $wpdb->postmeta.meta_key = %s AND $wpdb->postmeta.meta_value = %s order by post_title asc" , 'material_werk', $werk ) );
+			foreach ( $result as $material ) {
+				if ( ! $selfinclude ) {
+					if ( $material->ID == $post->ID ) {
+						break;
+					}
+				}
+				echo $material->post_title . '<br>';
+			}
+		}
+	}
 
-    /**
-     *
-     * @since 0.0.1
-     * @access public
-     * @filters materialpool-template-material-sibling
-     *
-     */
-    static public function sibling_volumes_html ( $selfinclude = false ) {
-        global $wpdb;
-        global $post;
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access public
+	 * @filters materialpool-template-material-sibling
+	 *
+	 */
+	static public function sibling_volumes_html ( $selfinclude = false ) {
+		global $wpdb;
+		global $post;
 
-        if ( self::is_part_of_werk() ) {
-            $werk = self::get_werk_id();
-            $result = $wpdb->get_results( $wpdb->prepare( "SELECT $wpdb->posts.*  FROM $wpdb->posts, $wpdb->postmeta WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id AND  $wpdb->postmeta.meta_key = %s AND $wpdb->postmeta.meta_value = %s order by post_title asc" , 'material_werk', $werk ) );
-            foreach ( $result as $material ) {
-                if ( ! $selfinclude ) {
-                    if ( $material->ID == $post->ID ) {
-                        break;
-                    }
-                }
-                $url = get_permalink( $material->ID );
-                echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-sibling', 'materialpool-template-material-sibling' ) .'">' . $material->post_title . '</a><br>';
-            }
-        }
-    }
+		if ( self::is_part_of_werk() ) {
+			$werk = self::get_werk_id();
+			$result = $wpdb->get_results( $wpdb->prepare( "SELECT $wpdb->posts.*  FROM $wpdb->posts, $wpdb->postmeta WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id AND  $wpdb->postmeta.meta_key = %s AND $wpdb->postmeta.meta_value = %s order by post_title asc" , 'material_werk', $werk ) );
+			foreach ( $result as $material ) {
+				if ( ! $selfinclude ) {
+					if ( $material->ID == $post->ID ) {
+						break;
+					}
+				}
+				$url = get_permalink( $material->ID );
+				echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-sibling', 'materialpool-template-material-sibling' ) .'">' . $material->post_title . '</a><br>';
+			}
+		}
+	}
 
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access public
+	 *
+	 */
+	static public function verweise ( $selfinclude = false ) {
+		$verweise = Materialpool_Material::get_verweise();
+		foreach ( $verweise as $verweis ) {
+			echo $verweis[ 'post_title' ] . '<br>';
+		}
+	}
+
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access public
+ 	 * @filters materialpool-template-material-verweise
+	 */
+	static public function verweise_html () {
+		$verweise = Materialpool_Material::get_verweise();
+		foreach ( $verweise as $verweis ) {
+			$url = get_permalink( $verweis[ 'ID' ] );
+			echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-verweise' ) .'">' . $verweis[ 'post_title' ] . '</a><br>';
+
+		}
+	}
+
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
+	static public function get_verweise() {
+		global $post;
+
+		return get_metadata( 'post', $post->ID, 'material_verweise', false );
+	}
 
 }

@@ -24,7 +24,14 @@ get_header( 'materialpool' ); ?>
         BuddyPress: <?php Materialpool_Autor::buddypress_html(); ?><br>
         Email: <?php Materialpool_Autor::email_html(); ?><br>
         Bild: <?php Materialpool_Autor::picture_html(); ?><br>
-
+        <br>
+        <br>
+        Organisationen des Autors:<br>
+        <?php Materialpool_Autor::organisationen_html(); ?>
+        <br>
+        <br>
+        Material des Autors:<br>
+        <?php Materialpool_Autor::materialien_html(); ?>
 
     </div>
 </section>

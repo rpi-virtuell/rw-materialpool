@@ -160,9 +160,9 @@ class Materialpool_Organisation {
             'organisation-id' => _x( 'ID', 'Organisation list field',  Materialpool::$textdomain ),
             'title' => _x( 'Organisation', 'Organisation list field',  Materialpool::$textdomain ),
             'organisation_logo_url' => _x( 'Logo', 'Organisation list field', Materialpool::$textdomain ),
-            'organisation-url' => _x( 'URL', 'Organisation list field', Materialpool::$textdomain ),
-            'organisation-konfession' => _x( 'Konfession', 'Organisation list field', Materialpool::$textdomain ),
-            'organisation-alpika' => _x( 'ALPIKA', 'Organisation list field', Materialpool::$textdomain ),
+            'organisation_url' => _x( 'URL', 'Organisation list field', Materialpool::$textdomain ),
+            'organisation_konfession' => _x( 'Konfession', 'Organisation list field', Materialpool::$textdomain ),
+            'organisation_alpika' => _x( 'ALPIKA', 'Organisation list field', Materialpool::$textdomain ),
             'date' => __('Date'),
         );
         return $columns;
@@ -188,24 +188,18 @@ class Materialpool_Organisation {
                 $data = "<img src='". $url ."' class='". apply_filters( 'materialpool-admin-organisation-pic-class', 'materialpool-admin-organisation-pic' ) ."'>";
             }
         }
-        if ( $column_name == 'organisation-url' ) {
+        if ( $column_name == 'organisation_url' ) {
             $data = get_metadata( 'post', $post_id, 'organisation_url', true );
         }
-        if ( $column_name == 'organisation-alpika' ) {
+        if ( $column_name == 'organisation_alpika' ) {
             $alpiika = get_metadata( 'post', $post_id, 'organisation_alpika', true );
-            if ( $alpiika == 'on' ) {
+            if ( $alpiika == '1' ) {
                 $data = "<img src='". Materialpool::$plugin_url ."/assets/alpika.png'>";
             }
         }
-        if ( $column_name == 'organisation-konfession' ) {
-            $terms = get_the_terms( $post_id, 'konfession' );
-            $term = array();
-            if ( is_array( $terms ) ) {
-                foreach ( $terms as $termObj ) {
-                    $term[] = $termObj->name;
-                }
-            }
-            $data = implode( ', ', $term );
+        if ( $column_name == 'organisation_konfession' ) {
+            $term = get_metadata( 'post', $post_id, 'organisation_konfession' );
+            $data = $term[ 0 ][ 'name' ];
         }
         echo $data;
     }
@@ -220,11 +214,35 @@ class Materialpool_Organisation {
      */
     static public function cpt_sort_column( $columns ) {
         return array_merge( $columns, array(
-            'organisation-url' => 'organisation-url',
-            'organisation-alpika' => 'organisation-alpika',
-            'organisation-konfession' => 'organisation-konfession',
+            'organisation_url' => 'organisation_url',
+            'organisation_alpika' => 'organisation_alpika',
+            'organisation_konfession' => 'organisation_konfession',
         ) );
     }
+
+
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
+	static public function generate_title( $post_id ) {
+		$post_type = get_post_type($post_id);
+
+		// If this isn't a 'book' post, don't update it.
+		if ( "organisation" != $post_type ) return;
+
+		$title = get_metadata( 'post', $post_id, 'organisation_titel', true );
+		remove_action( 'save_post', array( 'Materialpool_Organisation', 'generate_title') );
+		wp_update_post( array(
+			'ID' => $post_id,
+			'post_title' => $title,
+			'post_name' => $title,
+		));
+		add_action( 'save_post', array( 'Materialpool_Organisation', 'generate_title') );
+	}
+
 
     /**
      *

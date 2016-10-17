@@ -41,6 +41,9 @@ get_header( 'materialpool' ); ?>
             <?php Materialpool_Material::sibling_volumes_html( true ); ?><br>
         <?php } ?>
 
+        <br>
+        Verweise: <br>
+        <?php Materialpool_Material::verweise_html(); ?>
     </div>
 </section>
 

@@ -174,11 +174,11 @@ class Materialpool_Autor {
         unset( $columns );
         $columns = array(
             'autor-id' => _x( 'ID', 'Autor list field',  Materialpool::$textdomain ),
-            'autor_picture_url' => _x( 'Picture', 'Autor list field', Materialpool::$textdomain ),
-            'autor-lastname' => _x( 'Lastname', 'Autor list field', Materialpool::$textdomain ),
-            'autor-firstname' => _x( 'Firstname', 'Autor list field', Materialpool::$textdomain ),
-            'autor-buddypress' => _x( 'BuddyPress', 'Autor list field', Materialpool::$textdomain ),
-            'autor-email' => _x( 'Email', 'Autor list field', Materialpool::$textdomain ),
+            'autor_bild_url' => _x( 'Picture', 'Autor list field', Materialpool::$textdomain ),
+            'autor_nachname' => _x( 'Lastname', 'Autor list field', Materialpool::$textdomain ),
+            'autor_vorname' => _x( 'Firstname', 'Autor list field', Materialpool::$textdomain ),
+            'autor_buddypress' => _x( 'BuddyPress', 'Autor list field', Materialpool::$textdomain ),
+            'autor_email' => _x( 'Email', 'Autor list field', Materialpool::$textdomain ),
             'date' => __('Date'),
         );
         return $columns;
@@ -198,22 +198,22 @@ class Materialpool_Autor {
         if ( $column_name == 'autor-id' ) {
             $data = $post_id;
         }
-        if ( $column_name == 'autor_picture_url' ) {
-            $url = get_metadata( 'post', $post_id, 'autor_picture_url', true );
+        if ( $column_name == 'autor_bild_url' ) {
+            $url = get_metadata( 'post', $post_id, 'autor_bild_url', true );
             if ( $url !== false ) {
                 $data = "<img src='". $url ."' class='". apply_filters( 'materialpool-admin-autor-pic-class', 'materialpool-admin-autor-pic' ) ."'>";
             }
         }
-        if ( $column_name == 'autor-firstname' ) {
-            $data = get_metadata( 'post', $post_id, 'autor_firstname', true );
+        if ( $column_name == 'autor_vorname' ) {
+            $data = get_metadata( 'post', $post_id, 'autor_vorname', true );
         }
-        if ( $column_name == 'autor-lastname' ) {
-            $data = get_metadata( 'post', $post_id, 'autor_lastname', true );
+        if ( $column_name == 'autor_nachname' ) {
+            $data = get_metadata( 'post', $post_id, 'autor_nachname', true );
         }
-        if ( $column_name == 'autor-buddypress' ) {
+        if ( $column_name == 'autor_buddypress' ) {
             $data = get_metadata( 'post', $post_id, 'autor_buddypress', true );
         }
-        if ( $column_name == 'autor-email' ) {
+        if ( $column_name == 'autor_email' ) {
             $data = get_metadata( 'post', $post_id, 'autor_email', true );
         }
         echo $data;
@@ -229,10 +229,10 @@ class Materialpool_Autor {
      */
     static public function cpt_sort_column( $columns ) {
         return array_merge( $columns, array(
-            'autor-lastname' => 'autor-lastname',
-            'autor-firstname' => 'autor-firstname',
-            'autor-buddypress' => 'autor-buddypress',
-            'autor-email' => 'autor-email',
+            'autor_nachname' => 'autor_nachname',
+            'autor_vorname' => 'autor_vorname',
+            'autor_buddypress' => 'autor_buddypress',
+            'autor_email' => 'autor_email',
         ) );
     }
 
@@ -243,8 +243,13 @@ class Materialpool_Autor {
      *
      */
     static public function generate_title( $post_id ) {
-        $firstname = get_metadata( 'post', $post_id, 'autor_firstname', true );
-        $lastname = get_metadata( 'post', $post_id, 'autor_lastname', true );
+	    $post_type = get_post_type($post_id);
+
+	    // If this isn't a 'book' post, don't update it.
+	    if ( "autor" != $post_type ) return;
+
+        $firstname = get_metadata( 'post', $post_id, 'autor_vorname', true );
+        $lastname = get_metadata( 'post', $post_id, 'autor_nachname', true );
         $name = $firstname . ' ' . $lastname;
         remove_action( 'save_post', array( 'Materialpool_Autor', 'generate_title') );
         wp_update_post( array(
@@ -274,7 +279,7 @@ class Materialpool_Autor {
     static public function get_firstname() {
         global $post;
 
-        return get_metadata( 'post', $post->ID, 'autor_firstname', true );
+        return get_metadata( 'post', $post->ID, 'autor_vorname', true );
     }
 
     /**
@@ -296,7 +301,7 @@ class Materialpool_Autor {
     static public function get_lastname() {
         global $post;
 
-        return get_metadata( 'post', $post->ID, 'autor_lastname', true );
+        return get_metadata( 'post', $post->ID, 'autor_nachname', true );
     }
 
     /**
@@ -430,9 +435,60 @@ class Materialpool_Autor {
     static public function get_picture() {
         global $post;
 
-        return get_metadata( 'post', $post->ID, 'autor_picture_url', true );
+        return get_metadata( 'post', $post->ID, 'autor_bild_url', true );
     }
 
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
+	static public function get_organisationen() {
+		global $post;
 
+		return get_metadata( 'post', $post->ID, 'autor_organisation', false );
+	}
 
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
+	static public function organisationen_html() {
+		$organistionen = Materialpool_Autor::get_organisationen();
+		foreach ( $organistionen as $organisation ) {
+			$url = get_permalink( $organisation[ 'ID' ] );
+			echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-volumes', 'materialpool-template-material-volumes' ) .'">' . $organisation[ 'post_title' ] . '</a><br>';
+
+		}
+	}
+
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
+	static public function get_materialien() {
+		global $post;
+
+		return get_metadata( 'post', $post->ID, 'autor_material', false );
+	}
+
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
+	static public function materialien_html() {
+		$materialien = Materialpool_Autor::get_materialien();
+		foreach ( $materialien as $material ) {
+			$url = get_permalink( $material[ 'ID' ] );
+			echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-volumes', 'materialpool-template-material-volumes' ) .'">' . $material[ 'post_title' ] . '</a><br>';
+
+		}
+	}
 }
