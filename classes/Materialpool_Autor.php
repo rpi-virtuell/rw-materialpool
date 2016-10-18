@@ -245,12 +245,16 @@ class Materialpool_Autor {
     static public function generate_title( $post_id ) {
 	    $post_type = get_post_type($post_id);
 
-	    // If this isn't a 'book' post, don't update it.
 	    if ( "autor" != $post_type ) return;
+	    $firstname = get_metadata( 'post', $post_id, 'autor_vorname', true );
+	    $lastname = get_metadata( 'post', $post_id, 'autor_nachname', true );
 
-        $firstname = get_metadata( 'post', $post_id, 'autor_vorname', true );
-        $lastname = get_metadata( 'post', $post_id, 'autor_nachname', true );
-        $name = $firstname . ' ' . $lastname;
+	    if ($lastname == '' && $firstname == '' ) {
+	    	$firstname = $_POST[ 'pods_meta_autor_vorname' ];
+		    $lastname = $_POST[ 'pods_meta_autor_nachname' ];
+	    }
+
+	    $name = $firstname . ' ' . $lastname;
         remove_action( 'save_post', array( 'Materialpool_Autor', 'generate_title') );
         wp_update_post( array(
             'ID' => $post_id,

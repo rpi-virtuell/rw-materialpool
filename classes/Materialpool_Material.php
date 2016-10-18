@@ -101,6 +101,10 @@ class Materialpool_Material {
 		if ( "material" != $post_type ) return;
 
 		$title = get_metadata( 'post', $post_id, 'material_titel', true );
+
+		if ($title == ''  ) {
+			$title = $_POST[ 'pods_meta_material_titel' ];
+		}
 		remove_action( 'save_post', array( 'Materialpool_Material', 'generate_title') );
 		wp_update_post( array(
 			'ID' => $post_id,

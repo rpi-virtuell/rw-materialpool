@@ -48,7 +48,7 @@ class Materialpool_Dashboard {
 	 * @since   0.0.1
 	 */
 	static public function dashboard_page_content() {
-		echo "Inhalt";
+		echo "Das soll mal eine Art Materialpool Dashboard werden.";
 	}
 
 	/**

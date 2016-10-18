@@ -234,6 +234,9 @@ class Materialpool_Organisation {
 		if ( "organisation" != $post_type ) return;
 
 		$title = get_metadata( 'post', $post_id, 'organisation_titel', true );
+		if ($title == ''  ) {
+			$title = $_POST[ 'pods_meta_organisation_titel' ];
+		}
 		remove_action( 'save_post', array( 'Materialpool_Organisation', 'generate_title') );
 		wp_update_post( array(
 			'ID' => $post_id,
