@@ -320,9 +320,15 @@ class Materialpool_Material {
      */
     static public function picture_html() {
         $pic  = Materialpool_Material::get_picture();
-	    if ( ! is_array( $pic ) )  return false;
-	    $url = wp_get_attachment_url( $pic[ 'ID' ] );
-        echo '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'materialpool-template-material-picture' ) .'"/>';
+	    if ( is_array( $pic ) ) {
+		    $url = wp_get_attachment_url( $pic[ 'ID' ] );
+		    echo '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'materialpool-template-material-picture' ) .'"/>';
+	    }
+	    $url = Materialpool_Material::get_picture_url();
+	    if ( $url != '') {
+		    echo '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'materialpool-template-material-picture' ) .'"/>';
+	    }
+
     }
 
     /**
@@ -336,6 +342,19 @@ class Materialpool_Material {
 
         return get_metadata( 'post', $post->ID, 'material_cover', true );
     }
+
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
+	static public function get_picture_url() {
+		global $post;
+
+		return get_metadata( 'post', $post->ID, 'material_cover_url', true );
+	}
+
 
     /**
      *
