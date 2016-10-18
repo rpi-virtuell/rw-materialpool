@@ -18,6 +18,7 @@ get_header( 'materialpool' ); ?>
     <div id="content" class="site-content" role="main">
         <H1>Materialseite</H1>
         Titel: <?php Materialpool_Material::title(); ?> <br>
+        URL: <?php Materialpool_Material::url_html(); ?><br>
         Kurzbeschreibung: <p><?php Materialpool_Material::shortdecription(); ?> </p><br>
         Beschreibung: <p><?php Materialpool_Material::decription(); ?> </p><br>
         Veröffentlichungsdatum: <?php Materialpool_Material::releasedate(); ?><br>
