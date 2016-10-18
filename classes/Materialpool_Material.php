@@ -316,6 +316,7 @@ class Materialpool_Material {
      */
     static public function picture_html() {
         $pic  = Materialpool_Material::get_picture();
+	    if ( ! is_array( $pic ) )  return false;
 	    $url = wp_get_attachment_url( $pic[ 'ID' ] );
         echo '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'materialpool-template-material-picture' ) .'"/>';
     }
