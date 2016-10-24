@@ -160,6 +160,48 @@ class Materialpool {
         add_action( 'manage_edit-autor_sortable_columns', array( 'Materialpool_Autor', 'cpt_sort_column') );
         add_action( 'save_post', array( 'Materialpool_Autor', 'generate_title') );
 
+        // Add Filter & Actions for Sprache
+        add_filter( 'manage_edit-sprache_columns', array( 'Materialpool_Sprache', 'taxonomy_column' ) );
+        add_filter( 'manage_sprache_custom_column', array( 'Materialpool_Sprache', 'taxonomy_column_data' ), 10, 3);
+
+        // Add Filter & Actions for Zugänglichkeiten
+        add_filter( 'manage_edit-zugaenglichkeit_columns', array( 'Materialpool_Zugaenglichkeiten', 'taxonomy_column' ) );
+        add_filter( 'manage_zugaenglichkeit_custom_column', array( 'Materialpool_Zugaenglichkeiten', 'taxonomy_column_data' ), 10, 3);
+
+        // Add Filter & Actions for Verfügbarkeiten
+        add_filter( 'manage_edit-verfuegbarkeit_columns', array( 'Materialpool_Verfuegbarkeiten', 'taxonomy_column' ) );
+        add_filter( 'manage_verfuegbarkeit_custom_column', array( 'Materialpool_Verfuegbarkeiten', 'taxonomy_column_data' ), 10, 3);
+
+        // Add Filter & Actions for Schlagworte
+        add_filter( 'manage_edit-schlagwort_columns', array( 'Materialpool_Schlagworte', 'taxonomy_column' ) );
+        add_filter( 'manage_schlagwort_custom_column', array( 'Materialpool_Schlagworte', 'taxonomy_column_data' ), 10, 3);
+
+        // Add Filter & Actions for Medientypem
+        add_filter( 'manage_edit-medientyp_columns', array( 'Materialpool_Medientyp', 'taxonomy_column' ) );
+        add_filter( 'manage_medientyp_custom_column', array( 'Materialpool_Medientyp', 'taxonomy_column_data' ), 10, 3);
+
+        // Add Filter & Actions for Lizenzen
+        add_filter( 'manage_edit-lizenz_columns', array( 'Materialpool_Lizenzen', 'taxonomy_column' ) );
+        add_filter( 'manage_lizenz_custom_column', array( 'Materialpool_Lizenzen', 'taxonomy_column_data' ), 10, 3);
+
+        // Add Filter & Actions for Konfession
+        add_filter( 'manage_edit-konfession_columns', array( 'Materialpool_Konfessionen', 'taxonomy_column' ) );
+        add_filter( 'manage_konfession_custom_column', array( 'Materialpool_Konfessionen', 'taxonomy_column_data' ), 10, 3);
+
+        // Add Filter & Actions for Inklusion
+        add_filter( 'manage_edit-inklusion_columns', array( 'Materialpool_Inklusionen', 'taxonomy_column' ) );
+        add_filter( 'manage_inklusion_custom_column', array( 'Materialpool_Inklusionen', 'taxonomy_column_data' ), 10, 3);
+
+        // Add Filter & Actions for Bildungsstufen
+        add_filter( 'manage_edit-bildungsstufe_columns', array( 'Materialpool_Bildungsstufen', 'taxonomy_column' ) );
+        add_filter( 'manage_bildungsstufe_custom_column', array( 'Materialpool_Bildungsstufen', 'taxonomy_column_data' ), 10, 3);
+
+        // Add Filter & Actions for Altersstuden
+        add_filter( 'manage_edit-altersstufe_columns', array( 'Materialpool_Altersstufen', 'taxonomy_column' ) );
+        add_filter( 'manage_altersstufe_custom_column', array( 'Materialpool_Altersstufen', 'taxonomy_column_data' ), 10, 3);
+
+        //pods_register_field_type( 'screenshot', self::$plugin_base_dir . 'classes/Materialpool_Pods_Screenshot.php' );
+
         do_action( 'materialpool_init' );
 	}
 
@@ -265,6 +307,7 @@ class Materialpool {
      */
     public function register_admin_plugin_styles() {
         wp_register_style( 'rw-materialpool', Materialpool::$plugin_url . 'css/backend.css' );
+	    wp_register_script( 'rw-materialpool', Materialpool::$plugin_url . 'js/materialpool.js' );
         wp_enqueue_style( 'rw-materialpool' );
     }
 }
