@@ -243,6 +243,7 @@ class Materialpool_Organisation {
 			'post_title' => $title,
 			'post_name' => $title,
 		));
+        $_POST[ 'post_title'] = $title;
 		add_action( 'save_post', array( 'Materialpool_Organisation', 'generate_title') );
 	}
 

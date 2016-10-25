@@ -261,6 +261,7 @@ class Materialpool_Autor {
             'post_title' => $name,
             'post_name' => $name,
         ));
+        $_POST[ 'post_title'] = $name;
         add_action( 'save_post', array( 'Materialpool_Autor', 'generate_title') );
     }
 

@@ -100,17 +100,15 @@ class Materialpool_Material {
 		// If this isn't a 'book' post, don't update it.
 		if ( "material" != $post_type ) return;
 
-		$title = get_metadata( 'post', $post_id, 'material_titel', true );
+		$title = $_POST[ 'pods_meta_material_titel' ];
 
-		if ($title == ''  ) {
-			$title = $_POST[ 'pods_meta_material_titel' ];
-		}
 		remove_action( 'save_post', array( 'Materialpool_Material', 'generate_title') );
 		wp_update_post( array(
 			'ID' => $post_id,
 			'post_title' => $title,
 			'post_name' => $title,
 		));
+        $_POST[ 'post_title'] = $title;
 		add_action( 'save_post', array( 'Materialpool_Material', 'generate_title') );
 	}
 
