@@ -228,23 +228,27 @@ class Materialpool_Organisation {
 	 *
 	 */
 	static public function generate_title( $post_id ) {
+        global $wpdb;
 		$post_type = get_post_type($post_id);
 
-		// If this isn't a 'book' post, don't update it.
 		if ( "organisation" != $post_type ) return;
 
-		$title = get_metadata( 'post', $post_id, 'organisation_titel', true );
-		if ($title == ''  ) {
-			$title = $_POST[ 'pods_meta_organisation_titel' ];
-		}
-		remove_action( 'save_post', array( 'Materialpool_Organisation', 'generate_title') );
-		wp_update_post( array(
-			'ID' => $post_id,
-			'post_title' => $title,
-			'post_name' => $title,
-		));
+		$title = $_POST[ 'pods_meta_organisation_titel' ];
+
+        $wpdb->update(
+            $wpdb->posts,
+            array(
+                'post_title' => $title,
+                'post_name' => $title
+            ),
+            array( 'ID' => $post_id ),
+            array(
+                '%s',
+                '%s'
+            ),
+            array( '%d' )
+        );
         $_POST[ 'post_title'] = $title;
-		add_action( 'save_post', array( 'Materialpool_Organisation', 'generate_title') );
 	}
 
 

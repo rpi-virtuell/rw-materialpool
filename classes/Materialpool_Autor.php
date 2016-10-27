@@ -243,26 +243,30 @@ class Materialpool_Autor {
      *
      */
     static public function generate_title( $post_id ) {
+        global $wpdb;
+
 	    $post_type = get_post_type($post_id);
 
 	    if ( "autor" != $post_type ) return;
-	    $firstname = get_metadata( 'post', $post_id, 'autor_vorname', true );
-	    $lastname = get_metadata( 'post', $post_id, 'autor_nachname', true );
 
-	    if ($lastname == '' && $firstname == '' ) {
-	    	$firstname = $_POST[ 'pods_meta_autor_vorname' ];
-		    $lastname = $_POST[ 'pods_meta_autor_nachname' ];
-	    }
+    	$firstname = $_POST[ 'pods_meta_autor_vorname' ];
+	    $lastname = $_POST[ 'pods_meta_autor_nachname' ];
 
 	    $name = $firstname . ' ' . $lastname;
-        remove_action( 'save_post', array( 'Materialpool_Autor', 'generate_title') );
-        wp_update_post( array(
-            'ID' => $post_id,
-            'post_title' => $name,
-            'post_name' => $name,
-        ));
+        $wpdb->update(
+            $wpdb->posts,
+            array(
+                'post_title' => $name,
+                'post_name' => $name
+            ),
+            array( 'ID' => $post_id ),
+            array(
+                '%s',
+                '%s'
+            ),
+            array( '%d' )
+        );
         $_POST[ 'post_title'] = $name;
-        add_action( 'save_post', array( 'Materialpool_Autor', 'generate_title') );
     }
 
     /**
