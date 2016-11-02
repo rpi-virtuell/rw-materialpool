@@ -210,7 +210,7 @@ class Materialpool {
 	 *
 	 * @since   0.0.1
 	 * @access  public
-	 * @return  Emergency_Report
+	 * @return  Materialpool
 	 */
 	public static function get_instance() {
 
@@ -307,8 +307,8 @@ class Materialpool {
      */
     public function register_admin_plugin_styles() {
         wp_register_style( 'rw-materialpool', Materialpool::$plugin_url . 'css/backend.css' );
-	    wp_register_script( 'rw-materialpool', Materialpool::$plugin_url . 'js/materialpool.js' );
         wp_enqueue_style( 'rw-materialpool' );
+        wp_enqueue_script( 'rw-materialpool-js', Materialpool::$plugin_url . 'js/materialpool.js' );
     }
 }
 
