@@ -105,7 +105,7 @@ class PodsField_Screenshot extends PodsField {
         ?>
         <div id="material-screenshot">
         <?php if( $screenshot != '' ) { ?>
-            <img src="<?php echo $screenshot; ?>">
+            <img style="max-width: 400px;" src="<?php echo $screenshot; ?>">
         <?php } ?>
         </div>
         <div id="generate-screenshot-container">

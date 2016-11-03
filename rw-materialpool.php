@@ -202,8 +202,37 @@ class Materialpool {
 
         pods_register_field_type( 'screenshot', self::$plugin_base_dir . 'classes/Materialpool_Pods_Screenshot.php' );
 
+        add_action( 'wp_ajax_mp_get_html',  array( 'Materialpool', 'my_action_callback_mp_get_html' ) );
+
+
         do_action( 'materialpool_init' );
 	}
+
+    /**
+     * Load HTML from remote site
+     *
+     * @since   0.0.1
+     * @access  public
+     */
+    public static function my_action_callback_mp_get_html() {
+        $url =  $_POST['site'];
+        $response =  wp_remote_get( $url);
+        $body = $response['body'];
+        libxml_use_internal_errors(true);
+        $doc = new DomDocument();
+        $doc->loadHTML($body);
+        $xpath = new DOMXPath($doc);
+        $query = '//*/meta[starts-with(@property, \'og:\')]';
+        $metas = $xpath->query($query);
+        foreach ($metas as $meta) {
+            $property = $meta->getAttribute('property');
+            $content = $meta->getAttribute('content');
+            if ( $property == 'og:image' ) {
+                echo $content;
+            }
+        }
+        wp_die();
+    }
 
 	/**
 	 * Creates an Instance of this Class
@@ -314,6 +343,7 @@ class Materialpool {
 
 
 if ( class_exists( 'Materialpool' ) ) {
+
 	add_action( 'plugins_loaded', array( 'Materialpool', 'get_instance' ) );
 
 	require_once 'classes/Materialpool_Autoloader.php';

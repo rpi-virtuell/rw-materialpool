@@ -92,12 +92,27 @@ function set_altersstufe( id ) {
 jQuery(document).ready(function(){
     jQuery("#generate-screenshot").click( function() {
         var url = jQuery("#pods-form-ui-pods-meta-material-url").val();
-        img = "https://s0.wordpress.com/mshots/v1/" + url + "?w=400&h=300";
+        var html;
+        var data = {
+            'action': 'mp_get_html',
+            'site': url
+        };
 
+        jQuery.post(ajaxurl, data, function(response) {
 
-        jQuery('#material-screenshot').html('');
-        jQuery('#material-screenshot').prepend('<img id="theImg" src="' + img + '" />')
-        jQuery('#pods-form-ui-pods-meta-material-screenshot').val( img );
+            html = response;
+            if ( html != ''  ) {
+                img = html;
+            } else {
+                img = "https://s0.wordpress.com/mshots/v1/" + url + "?w=400&h=300";
+            }
+
+            jQuery('#material-screenshot').html('');
+            jQuery('#material-screenshot').prepend('<img style="max-width: 400px;" id="theImg" src="' + img + '" />')
+            jQuery('#pods-form-ui-pods-meta-material-screenshot').val( img );
+
+        });
+
 
     })
 
