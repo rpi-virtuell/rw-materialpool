@@ -51,8 +51,7 @@ class PodsField_Screenshot extends PodsField {
 	 * @since 2.0
 	 */
 	public function options () {
-		$options = array(
-		);
+		$options = array();
 
 		return $options;
 	}
@@ -66,13 +65,7 @@ class PodsField_Screenshot extends PodsField {
 	 * @since 2.0
 	 */
 	public function schema ( $options = null ) {
-		$length = (int) pods_var( self::$type . '_max_length', $options, 255 );
-
-		$schema = 'VARCHAR(' . $length . ')';
-
-		if ( 255 < $length || $length < 1 )
-			$schema = 'LONGTEXT';
-
+ 		$schema = 'LONGTEXT';
 		return $schema;
 	}
 
@@ -89,10 +82,7 @@ class PodsField_Screenshot extends PodsField {
 	 * @since 2.0
 	 */
 	public function display ( $value = null, $name = null, $options = null, $pod = null, $id = null ) {
-		$value = $this->strip_html( $value, $options );
 
-		if ( 1 == pods_var( self::$type . '_allow_shortcode', $options ) )
-			$value = do_shortcode( $value );
 
 		return $value;
 	}
@@ -158,13 +148,6 @@ class PodsField_Screenshot extends PodsField {
 	 * @since 2.0
 	 */
 	public function pre_save ( $value, $id = null, $name = null, $options = null, $fields = null, $pod = null, $params = null ) {
-		$value = $this->strip_html( $value, $options );
-
-		$length = (int) pods_var( self::$type . '_max_length', $options, 255 );
-
-		if ( 0 < $length && $length < pods_mb_strlen( $value ) ) {
-			$value = pods_mb_substr( $value, 0, $length );
-		}
 
 		return $value;
 	}
@@ -183,10 +166,6 @@ class PodsField_Screenshot extends PodsField {
 	 * @since 2.0
 	 */
 	public function ui ( $id, $value, $name = null, $options = null, $fields = null, $pod = null ) {
-		$value = $this->strip_html( $value, $options );
-
-		if ( 0 == pods_var( self::$type . '_allow_html', $options, 0, null, true ) )
-			$value = wp_trim_words( $value );
 
 		return $value;
 	}
