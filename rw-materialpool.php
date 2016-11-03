@@ -200,7 +200,7 @@ class Materialpool {
         add_filter( 'manage_edit-altersstufe_columns', array( 'Materialpool_Altersstufen', 'taxonomy_column' ) );
         add_filter( 'manage_altersstufe_custom_column', array( 'Materialpool_Altersstufen', 'taxonomy_column_data' ), 10, 3);
 
-        //pods_register_field_type( 'screenshot', self::$plugin_base_dir . 'classes/Materialpool_Pods_Screenshot.php' );
+        pods_register_field_type( 'screenshot', self::$plugin_base_dir . 'classes/Materialpool_Pods_Screenshot.php' );
 
         do_action( 'materialpool_init' );
 	}

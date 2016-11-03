@@ -11,3 +11,14 @@ img.materialpool-admin-autor-pic {
 img.materialpool-admin-organisation-pic {
     max-width: 100px;
 }
+
+#material-screenshot {
+    width: 400px;
+    height: 300px;
+    float: left;
+    padding-right: 20px;
+}
+
+#generate-screenshot-container {
+    float: left;
+}

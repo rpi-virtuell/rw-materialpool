@@ -82,3 +82,30 @@ function set_altersstufe( id ) {
         }
     })
 }
+
+/**
+ *
+ * Screeshotbuttons
+ *
+ */
+
+jQuery(document).ready(function(){
+    jQuery("#generate-screenshot").click( function() {
+        var url = jQuery("#pods-form-ui-pods-meta-material-url").val();
+        img = "https://s0.wordpress.com/mshots/v1/" + url + "?w=400&h=300";
+
+
+        jQuery('#material-screenshot').html('');
+        jQuery('#material-screenshot').prepend('<img id="theImg" src="' + img + '" />')
+        jQuery('#pods-form-ui-pods-meta-material-screenshot').val( img );
+
+    })
+
+    jQuery("#delete-screenshot").click( function() {
+        jQuery('#material-screenshot').html('');
+        jQuery('#pods-form-ui-pods-meta-material-screenshot').val('');
+    })
+
+});
+
+
