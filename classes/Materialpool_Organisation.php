@@ -164,6 +164,9 @@ class Materialpool_Organisation {
             'organisation_konfession' => _x( 'Konfession', 'Organisation list field', Materialpool::$textdomain ),
             'organisation_alpika' => _x( 'ALPIKA', 'Organisation list field', Materialpool::$textdomain ),
             'date' => __('Date'),
+            'organisation_autoren' => _x( '#Autoren', 'Organisation list field', Materialpool::$textdomain ),
+            'organisation_material' => _x( '#Material', 'Organisation list field', Materialpool::$textdomain ),
+            'organisation_owner' => _x( 'Eintrager', 'Organisation list field', Materialpool::$textdomain ),
         );
         return $columns;
     }
@@ -200,6 +203,35 @@ class Materialpool_Organisation {
         if ( $column_name == 'organisation_konfession' ) {
             $term = get_metadata( 'post', $post_id, 'organisation_konfession' );
             $data = $term[ 0 ][ 'name' ];
+        }
+        if ( $column_name == 'organisation_autoren' ) {
+            $autors = get_metadata( 'post', $post_id, 'organisation_autor' );
+            if ( sizeof( $autors ) == 1 ) {
+                if ( $autors[ 0 ] !== false ) {
+                    $data = "1";
+                } else {
+                    $data = "0";
+                }
+            } else {
+                $data = sizeof( $autors );
+            }
+        }
+        if ( $column_name == 'organisation_material' ) {
+            $material = get_metadata( 'post', $post_id, 'organisation_material' );
+            if ( sizeof( $material ) == 1 ) {
+                if ( $material[ 0 ] !== false ) {
+                    $data = "1";
+                } else {
+                    $data = "0";
+                }
+            } else {
+                $data = sizeof( $material );
+            }
+        }
+        if ( $column_name == 'organisation_owner' ) {
+            $post = get_post( $post_id);
+            $user = get_user_by( 'ID', $post->post_author );
+            $data = $user->display_name;
         }
         echo $data;
     }
