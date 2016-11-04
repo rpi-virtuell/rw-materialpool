@@ -180,6 +180,9 @@ class Materialpool_Autor {
             'autor_buddypress' => _x( 'BuddyPress', 'Autor list field', Materialpool::$textdomain ),
             'autor_email' => _x( 'Email', 'Autor list field', Materialpool::$textdomain ),
             'date' => __('Date'),
+            'autor_organisation' => _x( 'Organisationen', 'Autor list field', Materialpool::$textdomain ),
+            'autor_material' => _x( '#Material', 'Autor list field', Materialpool::$textdomain ),
+            'autor_owner' => _x( 'Eintrager', 'Autor list field', Materialpool::$textdomain ),
         );
         return $columns;
     }
@@ -215,6 +218,39 @@ class Materialpool_Autor {
         }
         if ( $column_name == 'autor_email' ) {
             $data = get_metadata( 'post', $post_id, 'autor_email', true );
+        }
+        if ( $column_name == 'autor_organisation' ) {
+            $autors = get_metadata( 'post', $post_id, 'autor_organisation' );
+            if ( sizeof( $autors ) == 1 ) {
+                if ( $autors[ 0 ] !== false ) {
+                    $post = get_post( $autors[ 0 ][ 'ID' ] );
+                    $data .= '<a href="' . get_edit_post_link( $autors[ 0 ][ 'ID' ] ) . '">' . $post->post_title .'</a><br>';
+                } else {
+                    $data = "";
+                }
+            } else {
+                foreach ( $autors as $autor ) {
+                    $post = get_post( $autor[ 'ID' ] );
+                    $data .= '<a href="' . get_edit_post_link( $autor[ 'ID' ] ) . '">' . $post->post_title .'</a><br>';
+                }
+            }
+        }
+        if ( $column_name == 'autor_material' ) {
+            $autors = get_metadata( 'post', $post_id, 'autor_material' );
+            if ( sizeof( $autors ) == 1 ) {
+                if ( $autors[ 0 ] !== false ) {
+                    $data = "1";
+                } else {
+                    $data = "0";
+                }
+            } else {
+                $data = sizeof( $autors );
+            }
+        }
+        if ( $column_name == 'autor_owner' ) {
+            $post = get_post( $post_id);
+            $user = get_user_by( 'ID', $post->post_author );
+            $data = $user->display_name;
         }
         echo $data;
     }

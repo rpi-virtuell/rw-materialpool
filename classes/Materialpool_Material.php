@@ -49,8 +49,14 @@ class Materialpool_Material {
      * @return  array
      */
     static public function cpt_list_head( $columns ) {
-        $columns[ 'organisation-name' ] = _x( 'Organisation', 'Organisation list field',  Materialpool::$textdomain );
-        $columns[ 'autor-name' ] = _x( 'Autoren', 'Organisation list field',  Materialpool::$textdomain );
+        $columns[ 'material-bildungsstufe' ] = _x( 'Bildungsstufe', 'Material list field',  Materialpool::$textdomain );
+        $columns[ 'material-owner' ] = _x( 'Eintrager', 'Material list field',  Materialpool::$textdomain );
+        $columns[ 'material-schlagworte' ] = _x( 'Schlagworte', 'Material list field',  Materialpool::$textdomain );
+        $columns[ 'material-organisation' ] = _x( 'Organisation', 'Material list field',  Materialpool::$textdomain );
+        $columns[ 'material-autor' ] = _x( 'Autoren', 'Material list field',  Materialpool::$textdomain );
+        $columns[ 'material-medientyp' ] = _x( 'Medientyp', 'Material list field',  Materialpool::$textdomain );
+        $columns[ 'material-online' ] = _x( 'Online', 'Material list field',  Materialpool::$textdomain );
+        $columns[ 'material-stauts' ] = _x( 'Status', 'Material list field',  Materialpool::$textdomain );
         return $columns;
     }
 
@@ -63,12 +69,87 @@ class Materialpool_Material {
      * @var     int     $post_id        ID of the current post
      */
     static public function cpt_list_column( $column_name, $post_id ) {
-        if ( $column_name == 'organisation-name' ) {
-            $data = "name der zugeordneten Orgas";
+
+        if ( $column_name == 'material-autor' ) {
+            $autors = get_metadata( 'post', $post_id, 'material_autoren' );
+            if ( sizeof( $autors ) == 1 ) {
+                if ( $autors[ 0 ] !== false ) {
+                    $post = get_post( $autors[ 0 ][ 'ID' ] );
+                    $data .= '<a href="' . get_edit_post_link( $autors[ 0 ][ 'ID' ] ) . '">' . $post->post_title .'</a><br>';
+                } else {
+                    $data = "";
+                }
+            } else {
+                foreach ( $autors as $autor ) {
+                    $post = get_post( $autor[ 'ID' ] );
+                    $data .= '<a href="' . get_edit_post_link( $autor[ 'ID' ] ) . '">' . $post->post_title .'</a><br>';
+                }
+            }
         }
-        if ( $column_name == 'autor-name' ) {
-            $data = "name der zugeordneten Autoren";
+        if ( $column_name == 'material-medientyp' ) {
+            $medientyp = get_metadata( 'post', $post_id, 'material_medientyp' );
+            if ( sizeof( $medientyp ) == 1 ) {
+                if ( $medientyp[ 0 ] !== false ) {
+                    $data .= $medientyp[ 0 ][ 'name' ] .'<br>';
+                } else {
+                    $data = "";
+                }
+            } else {
+                foreach ( $medientyp as $medien ) {
+                    $data .= $medien[ 'name' ] .'<br>';
+                }
+            }
         }
+        if ( $column_name == 'material-bildungsstufe' ) {
+            $bildungsstufe = get_metadata( 'post', $post_id, 'material_bildungsstufe' );
+            if ( sizeof( $bildungsstufe ) == 1 ) {
+                if ( $bildungsstufe[ 0 ] !== false ) {
+                    $data .= $bildungsstufe[ 0 ][ 'name' ] .'<br>';
+                } else {
+                    $data = "";
+                }
+            } else {
+                foreach ( $bildungsstufe as $bildung ) {
+                    $data .= $bildung[ 'name' ] .'<br>';
+                }
+            }
+        }
+        if ( $column_name == 'material-owner' ) {
+            $post = get_post( $post_id);
+            $user = get_user_by( 'ID', $post->post_author );
+            $data = $user->display_name;
+        }
+        if ( $column_name == 'material-schlagworte' ) {
+            $schlagworte = get_metadata( 'post', $post_id, 'material_schlagworte' );
+            if ( sizeof( $schlagworte ) == 1 ) {
+                if ( $schlagworte[ 0 ] !== false ) {
+                    $data .= $schlagworte[ 0 ][ 'name' ] .'<br>';
+                } else {
+                    $data = "";
+                }
+            } else {
+                foreach ( $schlagworte as $schlagwort ) {
+                    $data .= $schlagwort[ 'name' ] .'<br>';
+                }
+            }
+        }
+        if ( $column_name == 'material-organisation' ) {
+            $autors = get_metadata( 'post', $post_id, 'material_organisation' );
+            if ( sizeof( $autors ) == 1 ) {
+                if ( $autors[ 0 ] !== false ) {
+                    $post = get_post( $autors[ 0 ][ 'ID' ] );
+                    $data .= '<a href="' . get_edit_post_link( $autors[ 0 ][ 'ID' ] ) . '">' . $post->post_title .'</a><br>';
+                } else {
+                    $data = "";
+                }
+            } else {
+                foreach ( $autors as $autor ) {
+                    $post = get_post( $autor[ 'ID' ] );
+                    $data .= '<a href="' . get_edit_post_link( $autor[ 'ID' ] ) . '">' . $post->post_title .'</a><br>';
+                }
+            }
+        }
+
         echo $data;
     }
 
