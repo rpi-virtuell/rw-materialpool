@@ -100,7 +100,7 @@ class Materialpool_Material {
 
 		if ( "material" != $post_type ) return;
 
-		$title = $_POST[ 'pods_meta_material_titel' ];
+		$title = sanitize_title( $_POST[ 'pods_meta_material_titel' ] );
 
         $wpdb->update(
             $wpdb->posts,
