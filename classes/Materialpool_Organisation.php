@@ -233,13 +233,13 @@ class Materialpool_Organisation {
 
 		if ( "organisation" != $post_type ) return;
 
-		$title = sanitize_title( $_POST[ 'pods_meta_organisation_titel' ] );
+		$title = $_POST[ 'pods_meta_organisation_titel' ];
 
         $wpdb->update(
             $wpdb->posts,
             array(
                 'post_title' => $title,
-                'post_name' => $title
+                'post_name' => sanitize_title( $title )
             ),
             array( 'ID' => $post_id ),
             array(

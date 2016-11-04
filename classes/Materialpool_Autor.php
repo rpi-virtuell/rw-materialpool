@@ -252,12 +252,12 @@ class Materialpool_Autor {
     	$firstname = $_POST[ 'pods_meta_autor_vorname' ];
 	    $lastname = $_POST[ 'pods_meta_autor_nachname' ];
 
-	    $name = sanitize_title( $firstname . ' ' . $lastname ) ;
+	    $name = $firstname . ' ' . $lastname;
         $wpdb->update(
             $wpdb->posts,
             array(
                 'post_title' => $name,
-                'post_name' => $name
+                'post_name' => sanitize_title( $name )
             ),
             array( 'ID' => $post_id ),
             array(
