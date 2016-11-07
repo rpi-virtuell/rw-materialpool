@@ -383,7 +383,7 @@ class Materialpool_Organisation {
         global $post;
 
         $alpika = get_metadata( 'post', $post->ID, 'organisation_alpika', true );
-        if ( $alpika == 'on' ) {
+        if ( $alpika == '1' ) {
             return true;
         }
         return false;
