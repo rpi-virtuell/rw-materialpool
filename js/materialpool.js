@@ -42,36 +42,36 @@ jQuery(document).ready(function(){
     jQuery(".pods-form-ui-field-name-pods-meta-material-bildungsstufe").click( function() {
         switch ( jQuery(this).val() ) {
             case "11":    // Elementarbereich
-                set_altersstufe( 4 ); // 1-5
+                set_altersstufe( 37 ); // 1-5
                 break;
             case "12":    // Erwachsenenbildung
-                set_altersstufe( 9 ); // 1-5
+                set_altersstufe( 41 ); //
                 break;
             case "13":    // Kinder und Jugendarbeit
-                set_altersstufe( 5 ); // 5-10
-                set_altersstufe( 6 ); // 10-13
-                set_altersstufe( 7 ); // 13-15
-                set_altersstufe( 8 ); // 15-19
+                set_altersstufe( 42 ); // 5-10
+                set_altersstufe( 38 ); // 10-13
+                set_altersstufe( 39 ); // 13-15
+                set_altersstufe( 40 ); // 15-19
                 break;
             case "14":    // Kindergottesdienst
-                set_altersstufe( 4 ); // 1-5
-                set_altersstufe( 5 ); // 5-10
+                set_altersstufe( 37 ); // 1-5
+                set_altersstufe( 42 ); // 5-10
                 break;
             case "15":    // Konfirmandenarbeit
-                set_altersstufe( 7 ); // 13-15
+                set_altersstufe( 39 ); // 13-15
                 break;
             case "17":    // Berufsshule
-                set_altersstufe( 8 ); // 15-19
+                set_altersstufe( 40 ); // 15-19
                 break;
             case "18":    // Grundschule
-                set_altersstufe( 5 ); // 5-10
+                set_altersstufe( 42 ); // 5-10
                 break;
             case "19":    // Oberstufe
-                set_altersstufe( 8 ); // 15-19
+                set_altersstufe( 40 ); // 15-19
                 break;
             case "20":    // Sekundarstufe
-                set_altersstufe( 6 ); // 10-13
-                set_altersstufe( 7 ); // 13-15
+                set_altersstufe( 38 ); // 10-13
+                set_altersstufe( 39 ); // 13-15
                 break;
         }
     })
