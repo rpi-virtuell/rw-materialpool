@@ -41,35 +41,35 @@ jQuery(document).ready(function(){
 jQuery(document).ready(function(){
     jQuery(".pods-form-ui-field-name-pods-meta-material-bildungsstufe").click( function() {
         switch ( jQuery(this).val() ) {
-            case "11":    // Elementarbereich
+            case "7":    // Elementarbereich
                 set_altersstufe( 37 ); // 1-5
                 break;
-            case "12":    // Erwachsenenbildung
+            case "8":    // Erwachsenenbildung
                 set_altersstufe( 41 ); //
                 break;
-            case "13":    // Kinder und Jugendarbeit
+            case "9":    // Kinder und Jugendarbeit
                 set_altersstufe( 42 ); // 5-10
                 set_altersstufe( 38 ); // 10-13
                 set_altersstufe( 39 ); // 13-15
                 set_altersstufe( 40 ); // 15-19
                 break;
-            case "14":    // Kindergottesdienst
+            case "10":    // Kindergottesdienst
                 set_altersstufe( 37 ); // 1-5
                 set_altersstufe( 42 ); // 5-10
                 break;
-            case "15":    // Konfirmandenarbeit
+            case "11":    // Konfirmandenarbeit
                 set_altersstufe( 39 ); // 13-15
                 break;
-            case "17":    // Berufsshule
+            case "13":    // Berufsshule
                 set_altersstufe( 40 ); // 15-19
                 break;
-            case "18":    // Grundschule
+            case "14":    // Grundschule
                 set_altersstufe( 42 ); // 5-10
                 break;
-            case "19":    // Oberstufe
+            case "15":    // Oberstufe
                 set_altersstufe( 40 ); // 15-19
                 break;
-            case "20":    // Sekundarstufe
+            case "16":    // Sekundarstufe
                 set_altersstufe( 38 ); // 10-13
                 set_altersstufe( 39 ); // 13-15
                 break;
