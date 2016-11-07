@@ -11,17 +11,19 @@
 /**
  *
  * Set Defauls for new Material
+ *
+ * @todo Zuordnungen im Backend Pflegbar
  */
 
 jQuery(document).ready(function(){
     var url = document.URL;
     if ( url.indexOf( 'post-new.php?post_type=material') !== -1 ) {
         // set verfuegbarkeit
-        jQuery("#pods-form-ui-pods-meta-material-verfuegbarkeit").val("49");
+        jQuery("#pods-form-ui-pods-meta-material-verfuegbarkeit").val("51");
 
         // set sprache
         jQuery(".pods-form-ui-field-name-pods-meta-material-sprache").each( function() {
-            if ( jQuery(this).val() == 21 ) {
+            if ( jQuery(this).val() == 4 ) {
                 // checkbox deutsch
                 jQuery(this).attr('checked', true);
             }
@@ -33,6 +35,7 @@ jQuery(document).ready(function(){
  *
  * Set Alterstufen depends on Bildungsstufe
  *
+ * @todo Zuordnungen im Backend Pflegbar
  */
 
 jQuery(document).ready(function(){
