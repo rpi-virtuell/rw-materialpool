@@ -145,6 +145,10 @@ class Materialpool {
         add_action( 'manage_material_posts_custom_column', array( 'Materialpool_Material', 'cpt_list_column'), 10,2 );
         add_action( 'manage_edit-material_sortable_columns', array( 'Materialpool_Material', 'cpt_sort_column') );
 		add_action( 'save_post', array( 'Materialpool_Material', 'generate_title') );
+        /*
+         * Register as Class method throws an error
+         */
+        add_action( 'pods_meta_groups',  'materialpool_pods_material_metaboxes', 10, 2 );
 
         // Add Filter & Actions for Organisation
         add_filter( 'template_include', array( 'Materialpool_Organisation', 'load_template' ) );
@@ -204,9 +208,9 @@ class Materialpool {
 
         add_action( 'wp_ajax_mp_get_html',  array( 'Materialpool', 'my_action_callback_mp_get_html' ) );
 
-
         do_action( 'materialpool_init' );
 	}
+
 
     /**
      * Load HTML from remote site
@@ -332,9 +336,13 @@ class Materialpool {
 	}
 
     /**
+     *
+     * @since   0.0.1
+     * @access  public
+     *
      * Register and enqueue style sheet.
      */
-    public function register_admin_plugin_styles() {
+    public static function register_admin_plugin_styles() {
         wp_register_style( 'rw-materialpool', Materialpool::$plugin_url . 'css/backend.css' );
         wp_enqueue_style( 'rw-materialpool' );
         wp_enqueue_script( 'rw-materialpool-js', Materialpool::$plugin_url . 'js/materialpool.js' );
@@ -352,4 +360,25 @@ if ( class_exists( 'Materialpool' ) ) {
 	register_activation_hook( __FILE__, array( 'Materialpool_Installation', 'on_activate' ) );
 	register_uninstall_hook(  __FILE__,	array( 'Materialpool_Installation', 'on_uninstall' ) );
 	register_deactivation_hook( __FILE__, array( 'Materialpool_Installation', 'on_deactivation' ) );
+}
+
+
+/**
+ *
+ *
+ * Register as Class method throws an error
+ *
+ * @since   0.0.1
+ * @param $type
+ * @param $name
+ */
+function materialpool_pods_material_metaboxes ( $type, $name ) {
+    // Add a new meta group for the Books post type
+    pods_group_add( 'material', __( 'Base', Materialpool::get_textdomain() ), 'material_url,material_titel,material_kurzbeschreibung,material_beschreibung' );
+    pods_group_add( 'material', __( 'Owner', Materialpool::get_textdomain() ), 'material_autoren,material_organisation' );
+    pods_group_add( 'material', __( 'Meta', Materialpool::get_textdomain() ), 'material_schlagworte,material_bildungsstufe,material_medientyp,material_sprache' );
+    pods_group_add( 'material', __( 'Advanced Meta', Materialpool::get_textdomain() ), 'material_inklusion,material_verfuegbarkeit,material_zugaenglichkeit,material_lizenz,material_altersstufe' );
+    pods_group_add( 'material', __( 'Date', Materialpool::get_textdomain() ), 'material_veroeffentlichungsdatum,material_erstellungsdatum,material_depublizierungsdatum,material_wiedervorlagedatum' );
+    pods_group_add( 'material', __( 'Relationships', Materialpool::get_textdomain() ), 'material_werk,material_band,material_verweise' );
+    pods_group_add( 'material', __( 'Image', Materialpool::get_textdomain() ), 'material_cover,material_cover_url,material_cover_quelle,material_screenshot' );
 }
