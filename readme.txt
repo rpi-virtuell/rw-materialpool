@@ -61,6 +61,9 @@ materialpool-template-material-sibling
 materialpool-template-material-volumes
 materialpool-template-material-verweise
 
+materialpool-template-spezial-picture
+materialpool-template-spezial-url
+
 materialpool-buddypress-member-url
 
 = Actions =
