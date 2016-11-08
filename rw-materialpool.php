@@ -405,5 +405,5 @@ function materialpool_pods_spezial_metaboxes ( $type, $name ) {
     pods_group_add( 'spezial', __( 'Meta', Materialpool::get_textdomain() ), 'spezial_schlagworte,spezial_bildungsstufe,spezial_medientyp,spezial_sprache' );
     pods_group_add( 'spezial', __( 'Advanced Meta', Materialpool::get_textdomain() ), 'spezial_inklusion,spezial_verfuegbarkeit,spezial_zugaenglichkeit,spezial_lizenz,spezial_altersstufe' );
     pods_group_add( 'spezial', __( 'Date', Materialpool::get_textdomain() ), 'spezial_veroeffentlichungsdatum,spezial_erstellungsdatum,spezial_depublizierungsdatum,spezial_wiedervorlagedatum' );
-    pods_group_add( 'spezial', __( 'Image', Materialpool::get_textdomain() ), 'material_cover,material_cover_url,material_cover_quelle' );
+    pods_group_add( 'spezial', __( 'Image', Materialpool::get_textdomain() ), 'spezial_cover,spezial_cover_url,spezial_cover_bildquelle' );
 }
