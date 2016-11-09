@@ -204,14 +204,6 @@ class Materialpool {
         add_filter( 'manage_edit-altersstufe_columns', array( 'Materialpool_Altersstufen', 'taxonomy_column' ) );
         add_filter( 'manage_altersstufe_custom_column', array( 'Materialpool_Altersstufen', 'taxonomy_column_data' ), 10, 3);
 
-        // Add Filter & Action for Speials
-        add_filter( 'template_include', array( 'Materialpool_Spezial', 'load_template' ) );
-        add_action( 'manage_spezial_posts_columns', array( 'Materialpool_Spezial', 'cpt_list_head') );
-        add_action( 'manage_spezial_posts_custom_column', array( 'Materialpool_Spezial', 'cpt_list_column'), 10,2 );
-        /*
-         * Register as Class method throws an error
-         */
-        add_action( 'pods_meta_groups',  'materialpool_pods_spezial_metaboxes', 10, 2 );
 
 
         pods_register_field_type( 'screenshot', self::$plugin_base_dir . 'classes/Materialpool_Pods_Screenshot.php' );
@@ -392,18 +384,3 @@ function materialpool_pods_material_metaboxes ( $type, $name ) {
     pods_group_add( 'material', __( 'Image', Materialpool::get_textdomain() ), 'material_cover,material_cover_url,material_cover_quelle,material_screenshot' );
 }
 
-/**
- *
- *
- * Register as Class method throws an error
- *
- * @since   0.0.1
- * @param $type
- * @param $name
- */
-function materialpool_pods_spezial_metaboxes ( $type, $name ) {
-    pods_group_add( 'spezial', __( 'Meta', Materialpool::get_textdomain() ), 'spezial_schlagworte,spezial_bildungsstufe,spezial_medientyp,spezial_sprache' );
-    pods_group_add( 'spezial', __( 'Advanced Meta', Materialpool::get_textdomain() ), 'spezial_inklusion,spezial_verfuegbarkeit,spezial_zugaenglichkeit,spezial_lizenz,spezial_altersstufe' );
-    pods_group_add( 'spezial', __( 'Date', Materialpool::get_textdomain() ), 'spezial_veroeffentlichungsdatum,spezial_erstellungsdatum,spezial_depublizierungsdatum,spezial_wiedervorlagedatum' );
-    pods_group_add( 'spezial', __( 'Image', Materialpool::get_textdomain() ), 'spezial_cover,spezial_cover_url,spezial_cover_bildquelle' );
-}
