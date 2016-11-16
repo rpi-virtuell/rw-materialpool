@@ -1,0 +1,16 @@
+<div style="float: left; width:30%;">
+
+
+[facetwp facet="bildungsstufe"]
+[facetwp facet="inklusion"]
+[facetwp facet="lizenz"]
+[facetwp facet="medientyp"]
+[facetwp facet="schlagworte"]
+[facetwp facet="sprache"]
+[facetwp facet="verfuegbarkeit"]
+[facetwp facet="zugaenglichkeit"]
+</div>
+<div style="float: left; width:70%;">
+ [facetwp template="example"]
+</div>
+&nbsp;
