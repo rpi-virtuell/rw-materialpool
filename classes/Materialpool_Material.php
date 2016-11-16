@@ -198,7 +198,127 @@ class Materialpool_Material {
         );
 
         $_POST[ 'post_title'] = $title;
-	}
+
+        // Altersstufen des Materials in term_rel speichern
+        wp_delete_object_term_relationships( $post_id, 'altersstufe' );
+        $cats = $_POST[ 'pods_meta_material_altersstufe' ];
+        if ( is_array( $cats ) ) {
+            foreach ( $cats as $key => $val ) {
+                $cat_ids[] = (int) $val;
+            }
+        }
+        if ( is_int( $cats ) ) {
+            $cat_ids[] = $cats;
+        }
+        wp_set_object_terms( $post_id, $cat_ids, 'altersstufe', true );
+
+        // Bildungsstufen des Materials in term_rel speichern
+        wp_delete_object_term_relationships( $post_id, 'bildungsstufe' );
+        $cats = $_POST[ 'pods_meta_material_bildungsstufe' ];
+        if ( is_array( $cats ) ) {
+            foreach ( $cats as $key => $val ) {
+                $cat_ids[] = (int) $val;
+            }
+        }
+        if ( is_int( $cats ) ) {
+            $cat_ids[] = $cats;
+        }
+        wp_set_object_terms( $post_id, $cat_ids, 'bildungsstufe', true );
+
+
+        // Inklusion des Materials in term_rel speichern
+        wp_delete_object_term_relationships( $post_id, 'inklusion' );
+        $cats = $_POST[ 'pods_meta_material_inklusion' ];
+        if ( is_array( $cats ) ) {
+            foreach ( $cats as $key => $val ) {
+                $cat_ids[] = (int) $val;
+            }
+        }
+        if ( $cats!== null  ) {
+            $cat_ids[] = (int) $cats;
+        }
+        wp_set_object_terms( $post_id, $cat_ids, 'inklusion', true );
+
+
+        // Lizenz des Materials in term_rel speichern
+        wp_delete_object_term_relationships( $post_id, 'lizenz' );
+        $cats = $_POST[ 'pods_meta_material_lizenz' ];
+        if ( is_array( $cats ) ) {
+            foreach ( $cats as $key => $val ) {
+                $cat_ids[] = (int) $val;
+            }
+        }
+        if ( $cats!== null  ) {
+            $cat_ids[] = (int) $cats;
+        }
+        wp_set_object_terms( $post_id, $cat_ids, 'lizenz', true );
+
+        // Medientyp des Materials in term_rel speichern
+        wp_delete_object_term_relationships( $post_id, 'medientyp' );
+        $cats = $_POST[ 'pods_meta_material_medientyp' ];
+        if ( is_array( $cats ) ) {
+            foreach ( $cats as $key => $val ) {
+                $cat_ids[] = (int) $val;
+            }
+        }
+        if ( $cats!== null  ) {
+            $cat_ids[] = (int) $cats;
+        }
+        wp_set_object_terms( $post_id, $cat_ids, 'medientyp', true );
+
+        // Schlagwort des Materials in term_rel speichern
+        wp_delete_object_term_relationships( $post_id, 'schlagwort' );
+        $cats = explode( ',', $_POST[ 'pods_meta_material_schlagworte' ] ) ;
+        if ( is_array( $cats ) ) {
+            foreach ( $cats as $key => $val ) {
+                $cat_ids[] = (int) $val;
+            }
+        }
+        if ( $cats!== null  ) {
+            $cat_ids[] = (int) $cats;
+        }
+        wp_set_object_terms( $post_id, $cat_ids, 'schlagwort', true );
+
+        // Sprachen des Materials in term_rel speichern
+        wp_delete_object_term_relationships( $post_id, 'sprache' );
+        $cats = $_POST[ 'pods_meta_material_sprache' ];
+        if ( is_array( $cats ) ) {
+            foreach ( $cats as $key => $val ) {
+                $cat_ids[] = (int) $val;
+            }
+        }
+        if ( $cats!== null  ) {
+            $cat_ids[] = (int) $cats;
+        }
+        wp_set_object_terms( $post_id, $cat_ids, 'sprache', true );
+
+        // Verfügbarkeit des Materials in term_rel speichern
+        wp_delete_object_term_relationships( $post_id, 'verfuegbarkeit' );
+        $cats = $_POST[ 'pods_meta_material_verfuegbarkeit' ];
+        if ( is_array( $cats ) ) {
+            foreach ( $cats as $key => $val ) {
+                $cat_ids[] = (int) $val;
+            }
+        }
+        if ( $cats!== null  ) {
+            $cat_ids[] = (int) $cats;
+        }
+        wp_set_object_terms( $post_id, $cat_ids, 'verfuegbarkeit', true );
+
+        // Zugänglichkeit des Materials in term_rel speichern
+        wp_delete_object_term_relationships( $post_id, 'zugaenglichkeit' );
+        $cats = $_POST[ 'pods_meta_material_zugaenglichkeit' ];
+        if ( is_array( $cats ) ) {
+            foreach ( $cats as $key => $val ) {
+                $cat_ids[] = (int) $val;
+            }
+        }
+        if ( $cats!== null  ) {
+            $cat_ids[] = (int) $cats;
+        }
+        wp_set_object_terms( $post_id, $cat_ids, 'zugaenglichkeit', true );
+
+    }
 
     /**
      *
