@@ -24,7 +24,8 @@ get_header( 'materialpool' ); ?>
         Bild: <?php Materialpool_Organisation::logo_html(); ?><br>
         ALPIKA: <?php if ( Materialpool_Organisation::is_alpika() ) { echo 'Ja'; } else { echo "Nein"; } ?><br>
         Konfession: <?php Materialpool_Organisation::konfession(); ?><br>
-
+        Material dieser Organisation: <br>
+        <?php Materialpool_Organisation::material_html(); ?>
     </div>
 </section>
 

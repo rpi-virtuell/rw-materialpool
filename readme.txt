@@ -54,6 +54,7 @@ materialpool-template-autor-buddypress-url
 
 materialpool-template-organisation-url
 materialpool-template-organisation-logo
+materialpool-template-organisation-material
 
 materialpool-template-material-url
 materialpool-template-material-werk

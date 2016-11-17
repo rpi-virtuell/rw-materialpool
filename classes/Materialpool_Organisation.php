@@ -415,4 +415,30 @@ class Materialpool_Organisation {
     }
 
 
+    /**
+     *
+     * @since 0.0.1
+     * @access public
+     * @filters materialpool-template-organisation-material
+     */
+    static public function material_html () {
+        $verweise = Materialpool_Organisation::get_material();
+        foreach ( $verweise as $verweis ) {
+            $url = get_permalink( $verweis[ 'ID' ] );
+            echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-organisation-material', 'materialpool-template-organisation-material' ) .'">' . $verweis[ 'post_title' ] . '</a><br>';
+
+        }
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_material() {
+        global $post;
+
+        return get_metadata( 'post', $post->ID, 'organisation_material', false );
+    }
 }
