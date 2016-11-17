@@ -776,4 +776,30 @@ class Materialpool_Material {
 		return get_metadata( 'post', $post->ID, 'material_verweise', false );
 	}
 
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function availability() {
+        echo Materialpool_Material::get_availability();
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_availability() {
+        global $post;
+
+        $vid = get_metadata( 'post', $post->ID, 'material_verfuegbarkeit', true );
+        if ( is_array( $vid ) ) {
+            return $vid[ 'name'];
+        }
+    }
+
+
 }
