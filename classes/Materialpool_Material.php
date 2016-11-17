@@ -186,7 +186,7 @@ class Materialpool_Material {
         $wpdb->update(
             $wpdb->posts,
             array(
-                'post_title' => $title,
+                'post_title' => stripslashes( $title ),
                 'post_name' => sanitize_title( $title )
             ),
             array( 'ID' => $post_id ),
@@ -339,7 +339,7 @@ class Materialpool_Material {
     static public function get_title() {
         global $post;
 
-        return $post->post_title;
+        return get_metadata( 'post', $post->ID, 'material_titel', true );
     }
 
     /**
