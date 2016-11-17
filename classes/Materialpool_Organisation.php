@@ -408,14 +408,10 @@ class Materialpool_Organisation {
     static public function get_konfession() {
         global $post;
 
-            $terms = get_the_terms( $post_id, 'konfession' );
-            $term = array();
-            if ( is_array( $terms ) ) {
-                foreach ( $terms as $termObj ) {
-                    $term[] = $termObj->name;
-                }
-            }
-            return ( implode( ', ', $term ) );
+        $konfession = get_metadata( 'post', $post->ID, 'organisation_konfession', true );
+        if ( is_array( $konfession ) ) {
+            return $konfession[ 'name'];
+        }
     }
 
 
