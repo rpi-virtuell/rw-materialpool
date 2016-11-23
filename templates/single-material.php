@@ -33,13 +33,13 @@ get_header( 'materialpool' ); ?>
 <hr>
 
         <?php if ( Materialpool_Material::is_werk() ) { ?>
-        Dies ist ein Werk. Folgende Bände sind zugeordnet<br>
+        Dies ist ein Werk. Folgende Bände sind zugeordnet:<br>
             <?php Materialpool_Material::volumes_html( true ); ?><br>
         <?php } ?>
 
 
         <?php if ( Materialpool_Material::is_part_of_werk() ) { ?>
-            Dieser Band ist teil eines Werks. Folgende Bände umfasst das Werk.<br>
+            Dieser Band ist teil eines Werks. Folgende Bände umfasst das Werk:<br>
             <?php Materialpool_Material::sibling_volumes_html( true ); ?><br>
         <?php } ?>
 
