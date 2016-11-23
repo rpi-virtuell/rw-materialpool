@@ -205,6 +205,10 @@ class Materialpool {
         add_filter( 'manage_altersstufe_custom_column', array( 'Materialpool_Altersstufen', 'taxonomy_column_data' ), 10, 3);
 
 
+        add_filter( 'searchwp_extensions',          array( 'Materialpool', 'register' ), 10 );
+        add_filter( 'searchwp_term_in',             array( 'SearchWPRWTermSynonyms', 'find_synonyms' ), 10, 3 );
+
+
 
         pods_register_field_type( 'screenshot', self::$plugin_base_dir . 'classes/Materialpool_Pods_Screenshot.php' );
 
@@ -212,6 +216,13 @@ class Materialpool {
 
         do_action( 'materialpool_init' );
 	}
+
+
+    public static 	function register( $extensions ) {
+        $extensions['RWTermSynonyms'] = __FILE__;
+
+        return $extensions;
+    }
 
 
     /**
@@ -382,5 +393,17 @@ function materialpool_pods_material_metaboxes ( $type, $name ) {
     pods_group_add( 'material', __( 'Date', Materialpool::get_textdomain() ), 'material_veroeffentlichungsdatum,material_erstellungsdatum,material_depublizierungsdatum,material_wiedervorlagedatum' );
     pods_group_add( 'material', __( 'Relationships', Materialpool::get_textdomain() ), 'material_werk,material_band,material_verweise' );
     pods_group_add( 'material', __( 'Image', Materialpool::get_textdomain() ), 'material_cover,material_cover_url,material_cover_quelle,material_screenshot' );
+}
+
+class SearchWPRWTermSynonyms {
+    public static function find_synonyms( $processed_term, $engine, $term ) {
+
+        if ( $term == 'abtreibung' ) {
+            return array( 'abtreibung', 'schwangerschaftsabbruch');
+        } else {
+            return array( $term );
+        }
+
+    }
 }
 
