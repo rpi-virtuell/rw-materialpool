@@ -22,3 +22,38 @@ img.materialpool-admin-organisation-pic {
 #generate-screenshot-container {
     float: left;
 }
+
+#s2id_pods-form-ui-pods-meta-material-autoren {
+    min-width: 380px !important;
+    width: 300px !important;
+}
+
+#s2id_pods-form-ui-pods-meta-material-organisation {
+    min-width: 380px !important;
+    width: 300px !important;
+}
+
+#s2id_pods-form-ui-pods-meta-material-schlagworte {
+    min-width: 380px !important;
+    width: 300px !important;
+}
+
+#s2id_pods-form-ui-pods-meta-material-werk {
+    min-width: 380px !important;
+    width: 300px !important;
+}
+
+#s2id_pods-form-ui-pods-meta-material-band {
+    min-width: 380px !important;
+    width: 300px !important;
+}
+
+#s2id_pods-form-ui-pods-meta-material-verweise {
+    min-width: 380px !important;
+    width: 300px !important;
+}
+
+#select2-results {
+    min-width: 380px !important;
+}
+
