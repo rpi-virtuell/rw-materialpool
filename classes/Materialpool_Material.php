@@ -742,7 +742,7 @@ class Materialpool_Material {
 	 * @access public
 	 *
 	 */
-	static public function verweise ( $selfinclude = false ) {
+	static public function verweise () {
 		$verweise = Materialpool_Material::get_verweise();
 		foreach ( $verweise as $verweis ) {
 			echo $verweis[ 'post_title' ] . '<br>';
@@ -808,7 +808,7 @@ class Materialpool_Material {
      * @access public
      *
      */
-    static public function organisation ( $selfinclude = false ) {
+    static public function organisation () {
         $verweise = Materialpool_Material::get_organisation();
         foreach ( $verweise as $verweis ) {
             echo $verweis[ 'post_title' ] . '<br>';
@@ -840,5 +840,46 @@ class Materialpool_Material {
         global $post;
 
         return get_metadata( 'post', $post->ID, 'material_organisation', false );
+    }
+
+
+    /**
+     *
+     * @since 0.0.1
+     * @access public
+     *
+     */
+    static public function autor () {
+        $verweise = Materialpool_Material::get_autor();
+        foreach ( $verweise as $verweis ) {
+            echo $verweis[ 'post_title' ] . '<br>';
+        }
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access public
+     * @filters materialpool-template-material-autor
+     */
+    static public function autor_html () {
+        $verweise = Materialpool_Material::get_autor();
+        foreach ( $verweise as $verweis ) {
+            $url = get_permalink( $verweis[ 'ID' ] );
+            echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-autor', 'materialpool-template-material-autor' ) .'">' . $verweis[ 'post_title' ] . '</a><br>';
+
+        }
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_autor() {
+        global $post;
+
+        return get_metadata( 'post', $post->ID, 'material_autoren', false );
     }
 }

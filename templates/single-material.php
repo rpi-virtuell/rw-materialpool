@@ -26,6 +26,10 @@ get_header( 'materialpool' ); ?>
         Organisationen dieses Materials: <br>
         <?php Materialpool_Material::organisation_html(); ?>
 <br>
+        Autoren dieses Materials: <br>
+        <?php Materialpool_Material::autor_html(); ?>
+        <br>
+
         <br>
         Veröffentlichungsdatum: <?php Materialpool_Material::releasedate(); ?><br>
         Depublizierungsdatum: <?php Materialpool_Material::depublicationdate(); ?><br>
