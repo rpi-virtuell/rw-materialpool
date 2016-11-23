@@ -802,4 +802,43 @@ class Materialpool_Material {
     }
 
 
+    /**
+     *
+     * @since 0.0.1
+     * @access public
+     *
+     */
+    static public function organisation ( $selfinclude = false ) {
+        $verweise = Materialpool_Material::get_organisation();
+        foreach ( $verweise as $verweis ) {
+            echo $verweis[ 'post_title' ] . '<br>';
+        }
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access public
+     * @filters materialpool-template-material-verweise
+     */
+    static public function organisation_html () {
+        $verweise = Materialpool_Material::get_organisation();
+        foreach ( $verweise as $verweis ) {
+            $url = get_permalink( $verweis[ 'ID' ] );
+            echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-verweise' ) .'">' . $verweis[ 'post_title' ] . '</a><br>';
+
+        }
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_organisation() {
+        global $post;
+
+        return get_metadata( 'post', $post->ID, 'material_organisation', false );
+    }
 }

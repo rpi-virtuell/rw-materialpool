@@ -22,6 +22,11 @@ get_header( 'materialpool' ); ?>
         Kurzbeschreibung: <p><?php Materialpool_Material::shortdecription(); ?> </p><br>
         Beschreibung: <p><?php Materialpool_Material::decription(); ?> </p><br>
         <p>Verfügbarkeit: <?php Materialpool_Material::availability(); ?> </p><br>
+
+        Organisationen dieses Materials: <br>
+        <?php Materialpool_Material::organisation_html(); ?>
+<br>
+        <br>
         Veröffentlichungsdatum: <?php Materialpool_Material::releasedate(); ?><br>
         Depublizierungsdatum: <?php Materialpool_Material::depublicationdate(); ?><br>
         Wiedervorlagedatum: <?php Materialpool_Material::reviewdate(); ?><br>
