@@ -46,6 +46,12 @@ class Materialpool_Installation {
 			);
 		}
 		// @todo pods abfragen und aktivierte componenten wenn möglich
+        // @todo searchwp abfragen
+        // @todo facetwp abfragen
+
+
+        // create synonymdb tables
+
 	}
 
 	/**

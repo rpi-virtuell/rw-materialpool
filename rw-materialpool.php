@@ -205,8 +205,14 @@ class Materialpool {
         add_filter( 'manage_altersstufe_custom_column', array( 'Materialpool_Altersstufen', 'taxonomy_column_data' ), 10, 3);
 
 
-        add_filter( 'searchwp_extensions',          array( 'Materialpool', 'register' ), 10 );
-        add_filter( 'searchwp_term_in',             array( 'SearchWPRWTermSynonyms', 'find_synonyms' ), 10, 3 );
+        // Add Filter & Actions for Synonyme
+
+        add_filter( 'manage_edit-synonym_columns', array( 'Materialpool_Synonyme', 'cpt_list_head' ) );
+        add_action( 'manage_synonym_posts_custom_column', array( 'Materialpool_Synonyme', 'cpt_list_column'), 10,2 );
+        add_action( 'manage_edit-synonym_sortable_columns', array( 'Materialpool_Synonyme', 'cpt_sort_column') );
+
+        add_filter( 'searchwp_extensions',          array( 'SearchWP_Materialpool_Synonyms', 'register' ), 10 );
+        add_filter( 'searchwp_term_in',             array( 'SearchWP_Materialpool_Synonyms', 'find_synonyms' ), 10, 3 );
 
 
 
@@ -216,14 +222,6 @@ class Materialpool {
 
         do_action( 'materialpool_init' );
 	}
-
-
-    public static 	function register( $extensions ) {
-        $extensions['RWTermSynonyms'] = __FILE__;
-
-        return $extensions;
-    }
-
 
     /**
      * Load HTML from remote site
@@ -365,6 +363,8 @@ class Materialpool {
 
 if ( class_exists( 'Materialpool' ) ) {
 
+    global $SearchWP_Materialpool_Synonyms_Flag;
+    $SearchWP_Materialpool_Synonyms_Flag= false;
 	add_action( 'plugins_loaded', array( 'Materialpool', 'get_instance' ) );
 
 	require_once 'classes/Materialpool_Autoloader.php';
@@ -395,15 +395,4 @@ function materialpool_pods_material_metaboxes ( $type, $name ) {
     pods_group_add( 'material', __( 'Image', Materialpool::get_textdomain() ), 'material_cover,material_cover_url,material_cover_quelle,material_screenshot' );
 }
 
-class SearchWPRWTermSynonyms {
-    public static function find_synonyms( $processed_term, $engine, $term ) {
-
-        if ( $term == 'abtreibung' ) {
-            return array( 'abtreibung', 'schwangerschaftsabbruch');
-        } else {
-            return array( $term );
-        }
-
-    }
-}
 
