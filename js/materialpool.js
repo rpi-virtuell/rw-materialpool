@@ -202,4 +202,68 @@ jQuery(document).ready(function(){
 
 });
 
+/**
+ *
+ * MaterialEdit Schlagworte
+ */
+
+jQuery(document).ready(function(){
+    jQuery('#pods-form-ui-pods-meta-material-schlagworte').on('change', function(){
+        var keystring = jQuery('#pods-form-ui-pods-meta-material-schlagworte').val();
+        var keys = keystring.split(',');
+        var html;
+        var jo;
+        keys.forEach( function( s, i, o ) {
+            if ( isNaN( s ) ) {
+
+                // Ein neues Schlagwort. Prüfen gegen SynonymDB
+                var data = {
+                    'action': 'mp_synonym_check_tag',
+                    'tag': s
+                };
+                jQuery.post(ajaxurl, data, function(response ) {
+                    html = response;
+                    if ( html != ''  ) {
+                        jo = JSON.parse( html );
+                        switch  ( jo.status ) {
+                            case 'replace-new':
+                                    keys.forEach( function( s2, i2, o2 ) {
+                                        if ( s2 ==  jo.orig) {
+                                            keys[ i2 ] = jo.id;
+
+                                        }
+                                    })
+                                    jQuery('#pods-form-ui-pods-meta-material-schlagworte').val( keys.toString()  );
+                                    jQuery('#s2id_pods-form-ui-pods-meta-material-schlagworte > ul > li').each( function () {
+                                        old = jQuery(this).find('div').html();
+                                        if ( old == jo.orig ) {
+                                            jQuery(this).find('div').html( jo.name );
+                                        }
+                                    })
+                                break;
+                            case 'replace-exist':
+                                    keys.forEach( function( s2, i2, o2 ) {
+                                        if ( s2 ==  jo.orig) {
+                                            keys[ i2 ] = jo.id;
+
+                                        }
+                                    })
+                                    jQuery('#pods-form-ui-pods-meta-material-schlagworte').val( keys.toString()  );
+                                    jQuery('#s2id_pods-form-ui-pods-meta-material-schlagworte > ul > li').each( function () {
+                                        old = jQuery(this).find('div').html();
+                                        if ( old == jo.orig ) {
+                                            jQuery(this).find('div').html( jo.name );
+                                        }
+                                    })
+
+                                break;
+                        }
+                    }
+                })
+            }
+        })
+
+    })
+
+})
 

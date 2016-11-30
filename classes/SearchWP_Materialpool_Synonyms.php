@@ -86,5 +86,94 @@ class SearchWP_Materialpool_Synonyms {
         return $processed_term;
     }
 
+
+    static public function wp_ajax_mp_synonym_check_tag() {
+        global $wpdb;
+
+        $output = array();
+        $tag =  $_POST['tag'];
+        // 1. ist als Schlagwort im System, dann alles ok.
+        $term = get_term_by( 'name', $tag, 'schlagwort' );
+        if ( $term != false ) {
+            $output[ 'status' ] = 'ok';
+            $output[ 'orig' ] = $tag;
+        } else {
+            // 2. SynonymDB prüfen
+            $postids=$wpdb->get_col( $wpdb->prepare(
+                "
+                SELECT      p.ID
+                FROM        $wpdb->posts p
+                WHERE       p.post_title = %s 
+                ",
+                    $tag
+                ) );
+            foreach ( $postids as $id ) {
+                $post = get_post( $id );
+                $normwort = get_post_meta( $id, "normwort", true);
+                // Prüfen ob Normwort als Schlagwort existiert.
+                $keyword = get_term_by( 'name', $normwort, 'schlagwort' );
+                if ( $keyword !== false ) {
+                    $output[ 'status' ] = 'replace-exist';
+                    $output[ 'name' ] = $normwort;
+                    $output[ 'id' ] = $keyword->term_id;
+                    $output[ 'orig' ] = $tag;
+                } else {
+                    // schlagwort anlegen
+                    $newterm = wp_insert_term( $normwort, 'schlagwort' );
+
+                    $output[ 'status' ] = 'replace-new';
+                    $output[ 'name' ] = $normwort;
+                    $output[ 'id' ] = $newterm[ 'term_id' ];
+                    $output[ 'orig' ] = $tag;
+                }
+            }
+        }
+
+        if ( $output == array() ) {
+            // Gibt es noch nicht, nun Nationalbibliothek befragen.
+
+            $gnd = wp_remote_get( "https://xgnd.bsz-bw.de/Anfrage?suchfeld=pica.swr&suchwort=" . $tag );
+            $gndObj = json_decode( $gnd[ 'body'] );
+            if ( is_array( $gndObj )) {
+                foreach ( $gndObj as $obj ) {
+                    if ( $obj->Typ == 'Sachschlagwort' ) {
+                        $normwort = $obj->Ansetzung;
+                        foreach ( $obj->Synonyme  as $key => $value ) {
+                            // Prüfen ob Synonym noch nicht gespeichert ist
+                            $postids=$wpdb->get_col( $wpdb->prepare(
+                                "
+                                SELECT      p.ID
+                                FROM        $wpdb->posts p
+                                WHERE       p.post_title = %s 
+                                ",
+                                $value
+                            ) );
+                            if ( sizeof( $postids ) == 0 ) {
+                                // Synonym speichern
+                                $my_post = array(
+                                    'post_title'    => wp_strip_all_tags( $value ),
+                                    'post_status'   => 'publish',
+                                    'post_type'     => 'synonym',
+                                );
+                                $back = wp_insert_post( $my_post );
+                                if ( is_int( $back ) ) {
+                                    $dummy = add_post_meta( $back, "normwort", $normwort, true );
+                                }
+                            }
+                        }
+                    }
+                    // Normwort noch als Schlagwort speichern
+                    $newterm = wp_insert_term( $normwort, 'schlagwort' );
+
+                    $output[ 'status' ] = 'replace-new';
+                    $output[ 'name' ] = $normwort;
+                    $output[ 'id' ] = $newterm[ 'term_id' ];
+                    $output[ 'orig' ] = $tag;
+                }
+            }
+        }
+        echo json_encode( $output );
+        wp_die();
+    }
 }
 
