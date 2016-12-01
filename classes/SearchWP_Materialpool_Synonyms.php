@@ -81,6 +81,7 @@ class SearchWP_Materialpool_Synonyms {
             $processed_term[] = strtolower( $post->post_title );
         }
 
+        $SearchWP_Materialpool_Synonyms_Flag = false;
         $processed_term = array_unique( $processed_term );
 
         return $processed_term;
