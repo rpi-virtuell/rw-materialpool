@@ -60,3 +60,8 @@ img.materialpool-admin-organisation-pic {
 .no-close .ui-dialog-titlebar-close {
     display: none;
 }
+
+#pods-form-ui-pods-meta-material-kurzbeschreibung {
+    min-height: 50px;
+    font-family: inherit;
+}
