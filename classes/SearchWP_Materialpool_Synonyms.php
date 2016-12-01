@@ -135,8 +135,10 @@ class SearchWP_Materialpool_Synonyms {
             $gnd = wp_remote_get( "https://xgnd.bsz-bw.de/Anfrage?suchfeld=pica.swr&suchwort=" . $tag );
             $gndObj = json_decode( $gnd[ 'body'] );
             if ( is_array( $gndObj )) {
+                $treffer = 0;
                 foreach ( $gndObj as $obj ) {
                     if ( $obj->Typ == 'Sachschlagwort' ) {
+                        $treffer = 1;
                         $normwort = $obj->Ansetzung;
                         foreach ( $obj->Synonyme  as $key => $value ) {
                             // Prüfen ob Synonym noch nicht gespeichert ist
@@ -170,6 +172,17 @@ class SearchWP_Materialpool_Synonyms {
                     $output[ 'id' ] = $newterm[ 'term_id' ];
                     $output[ 'orig' ] = $tag;
                 }
+                if ( $treffer == 0 ) {
+                    $output[ 'status' ] = 'error';
+                    $output[ 'url' ] = "https://xgnd.bsz-bw.de/Anfrage";
+                    $output[ 'tagcolor' ] = "#FF0000";
+                    $output[ 'orig' ] = $tag;
+                }
+            } else {
+                $output[ 'status' ] = 'error';
+                $output[ 'url' ] = "https://xgnd.bsz-bw.de/Anfrage";
+                $output[ 'tagcolor' ] = "#FF0000";
+                $output[ 'orig' ] = $tag;
             }
         }
         echo json_encode( $output );

@@ -257,6 +257,40 @@ jQuery(document).ready(function(){
                                     })
 
                                 break;
+                            case 'error' :
+                                jQuery('#s2id_pods-form-ui-pods-meta-material-schlagworte > ul > li').each( function () {
+                                    old = jQuery(this).find('div').html();
+                                    if ( old == jo.orig ) {
+                                        jQuery(this).css({"border-color" : jo.tagcolor});
+                                        jQuery("body").append("<div id='" + jo.orig + "' title='Hinweis'>" +
+                                            "<p align='center'>Das Normwort konnte nicht ermittlet werden.</p>" +
+                                            "<p align='center'>Bitte recherchiere <a  target='_blank' href='" + jo.url + "'>selbst</a>, ob das Schlagwort korrekt ist.</p>" +
+                                            "</div>");
+
+                                        jQuery( "#" + jo.orig ).dialog({
+                                            dialogClass: "no-close",
+                                            buttons: [
+                                                {
+                                                    text: "OK",
+                                                    click: function() {
+                                                        jQuery( this ).dialog( "close" );
+                                                    }
+                                                }
+                                            ],
+                                            width: 450,
+                                            height: 280,
+                                            show: {
+                                                effect: "blind",
+                                                duration: 1000
+                                            },
+                                            hide: {
+                                                effect: "blind",
+                                                duration: 800
+                                            }
+                                        });
+                                    }
+                                })
+                                break;
                         }
                     }
                 })

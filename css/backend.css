@@ -57,3 +57,6 @@ img.materialpool-admin-organisation-pic {
     min-width: 380px !important;
 }
 
+.no-close .ui-dialog-titlebar-close {
+    display: none;
+}

@@ -357,6 +357,8 @@ class Materialpool {
         wp_register_style( 'rw-materialpool', Materialpool::$plugin_url . 'css/backend.css' );
         wp_enqueue_style( 'rw-materialpool' );
         wp_enqueue_script( 'rw-materialpool-js', Materialpool::$plugin_url . 'js/materialpool.js' );
+        wp_enqueue_script('jquery-ui-dialog');
+        wp_enqueue_style("wp-jquery-ui-dialog");
     }
 }
 
