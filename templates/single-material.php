@@ -55,6 +55,8 @@ get_header( 'materialpool' ); ?>
         <br>
         Verweise: <br>
         <?php Materialpool_Material::verweise_html(); ?>
+
+        <?php if(function_exists('the_ratings')) { the_ratings(); } ?>
     </div>
 </section>
 
