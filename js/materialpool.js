@@ -47,11 +47,13 @@ jQuery(document).ready(function(){
             case "8":    // Erwachsenenbildung
                 set_altersstufe( 41 ); //
                 break;
-            case "9":    // Kinder und Jugendarbeit
-                set_altersstufe( 42 ); // 5-10
-                set_altersstufe( 38 ); // 10-13
+            case "9":    // Arbeit mit Jugendlichen
                 set_altersstufe( 39 ); // 13-15
                 set_altersstufe( 40 ); // 15-19
+                break;
+            case "108":    // Arbeit mit Kindern
+                set_altersstufe( 42 ); // 5-10
+                set_altersstufe( 38 ); // 10-13
                 break;
             case "10":    // Kindergottesdienst
                 set_altersstufe( 37 ); // 1-5
