@@ -326,6 +326,25 @@ class Materialpool_Material {
      * @access	public
      *
      */
+    static public function remove_post_custom_fields() {
+        remove_meta_box( 'tagsdiv-altersstufe' , 'material' , 'normal' );
+        remove_meta_box( 'bildungsstufediv' , 'material' , 'normal' );
+        remove_meta_box( 'tagsdiv-inklusion' , 'material' , 'normal' );
+        remove_meta_box( 'tagsdiv-konfession' , 'material' , 'normal' );
+        remove_meta_box( 'tagsdiv-lizenz' , 'material' , 'normal' );
+        remove_meta_box( 'medientypdiv' , 'material' , 'normal' );
+        remove_meta_box( 'tagsdiv-schlagwort' , 'material' , 'normal' );
+        remove_meta_box( 'tagsdiv-sprache' , 'material' , 'normal' );
+        remove_meta_box( 'tagsdiv-verfuegbarkeit' , 'material' , 'normal' );
+        remove_meta_box( 'tagsdiv-zugaenglichkeit' , 'material' , 'normal' );
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
     static public function title() {
         echo Materialpool_Material::get_title();
     }

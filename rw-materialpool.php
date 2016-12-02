@@ -145,6 +145,7 @@ class Materialpool {
         add_action( 'manage_material_posts_custom_column', array( 'Materialpool_Material', 'cpt_list_column'), 10,2 );
         add_action( 'manage_edit-material_sortable_columns', array( 'Materialpool_Material', 'cpt_sort_column') );
 		add_action( 'save_post', array( 'Materialpool_Material', 'generate_title') );
+        add_action( 'admin_menu' , array( 'Materialpool_Material', 'remove_post_custom_fields' ) );
         /*
          * Register as Class method throws an error
          */
