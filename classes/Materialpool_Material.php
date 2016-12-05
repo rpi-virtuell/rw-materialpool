@@ -318,6 +318,19 @@ class Materialpool_Material {
         }
         wp_set_object_terms( $post_id, $cat_ids, 'zugaenglichkeit', true );
 
+        // Autoren für FacetWP spiechern
+        delete_post_meta( $post_id, 'material_autor_facet' );
+        $autoren = self::get_autor();
+        foreach ( $autoren as $autor ) {
+            add_post_meta( $post_id, 'material_autor_facet', $autor[ 'post_title' ] );
+        }
+
+        // Organisationen für FacetWP speichern
+         delete_post_meta( $post_id, 'material_organisation_facet' );
+        $organisationen = self::get_organisation();
+        foreach ( $organisationen as $organisation ) {
+            add_post_meta( $post_id, 'material_organisation_facet', $organisation[ 'post_title' ] );
+        }
     }
 
     /**
