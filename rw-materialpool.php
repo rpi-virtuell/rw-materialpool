@@ -216,6 +216,8 @@ class Materialpool {
         add_filter( 'searchwp_term_in',             array( 'SearchWP_Materialpool_Synonyms', 'find_synonyms' ), 10, 3 );
 
 
+        // Add Filter & Actions for 3Party Stuff
+        add_action( 'rate_post', array( 'Materialpool_FacetWP', 'reindex_post_after_ajax_rating'),10, 2 );
 
         pods_register_field_type( 'screenshot', self::$plugin_base_dir . 'classes/Materialpool_Pods_Screenshot.php' );
 
