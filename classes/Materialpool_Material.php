@@ -352,6 +352,39 @@ class Materialpool_Material {
         remove_meta_box( 'tagsdiv-zugaenglichkeit' , 'material' , 'normal' );
     }
 
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function material_list_post_join( $join ) {
+        global $pagenow, $wpdb;
+
+        if ( is_admin() && $pagenow=='edit.php' && $_GET['post_type']=='material' && $_GET['s'] != '') {
+            $join .='LEFT JOIN '.$wpdb->postmeta. ' ON '. $wpdb->posts . '.ID = ' . $wpdb->postmeta . '.post_id ';
+        }
+        return $join;
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function material_list_post_where( $where ) {
+        global $pagenow, $wpdb;
+
+        if ( is_admin() && $pagenow=='edit.php' && $_GET['post_type']=='material' && $_GET['s'] != '') {
+            $where = preg_replace(
+                "/\(\s*".$wpdb->posts.".post_title\s+LIKE\s*(\'[^\']+\')\s*\)/",
+                "(".$wpdb->posts.".post_title LIKE $1) OR (".$wpdb->postmeta.".meta_value LIKE $1)", $where );
+        }
+        return $where;
+    }
+
     /**
      *
      * @since 0.0.1

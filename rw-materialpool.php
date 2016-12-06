@@ -146,6 +146,8 @@ class Materialpool {
         add_action( 'manage_edit-material_sortable_columns', array( 'Materialpool_Material', 'cpt_sort_column') );
 		add_action( 'save_post', array( 'Materialpool_Material', 'generate_title') );
         add_action( 'admin_menu' , array( 'Materialpool_Material', 'remove_post_custom_fields' ) );
+        add_filter( 'posts_join', array( 'Materialpool_Material', 'material_list_post_join' ) );
+        add_filter( 'posts_where', array( 'Materialpool_Material', 'material_list_post_where' ) );
         /*
          * Register as Class method throws an error
          */
@@ -395,8 +397,8 @@ if ( class_exists( 'Materialpool' ) ) {
  */
 function materialpool_pods_material_metaboxes ( $type, $name ) {
     pods_group_add( 'material', __( 'Base', Materialpool::get_textdomain() ), 'material_url,material_titel,material_kurzbeschreibung,material_beschreibung' );
-    pods_group_add( 'material', __( 'Owner', Materialpool::get_textdomain() ), 'material_autoren,material_organisation' );
-    pods_group_add( 'material', __( 'Meta', Materialpool::get_textdomain() ), 'material_schlagworte,material_bildungsstufe,material_medientyp,material_sprache' );
+    pods_group_add( 'material', __( 'Owner', Materialpool::get_textdomain() ), 'material_autoren,material_autor_interim,material_organisation,material_organisation_interim' );
+    pods_group_add( 'material', __( 'Meta', Materialpool::get_textdomain() ), 'material_schlagworte,material_schlagworte_interim,material_bildungsstufe,material_medientyp,material_sprache' );
     pods_group_add( 'material', __( 'Advanced Meta', Materialpool::get_textdomain() ), 'material_inklusion,material_verfuegbarkeit,material_zugaenglichkeit,material_lizenz,material_altersstufe' );
     pods_group_add( 'material', __( 'Date', Materialpool::get_textdomain() ), 'material_jahr, material_veroeffentlichungsdatum,material_erstellungsdatum,material_depublizierungsdatum,material_wiedervorlagedatum' );
     pods_group_add( 'material', __( 'Relationships', Materialpool::get_textdomain() ), 'material_werk,material_band,material_verweise' );
