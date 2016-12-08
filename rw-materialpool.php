@@ -230,6 +230,7 @@ class Materialpool {
         pods_register_field_type( 'screenshot', self::$plugin_base_dir . 'classes/Materialpool_Pods_Screenshot.php' );
 
         add_action( 'wp_ajax_mp_get_html',  array( 'Materialpool', 'my_action_callback_mp_get_html' ) );
+        add_action( 'wp_ajax_mp_get_description',  array( 'Materialpool', 'my_action_callback_mp_get_description' ) );
 
         do_action( 'materialpool_init' );
 	}
@@ -257,6 +258,43 @@ class Materialpool {
                 echo $content;
             }
         }
+        wp_die();
+    }
+
+    /**
+     * Load HTML from remote site
+     *
+     * @since   0.0.1
+     * @access  public
+     */
+    public static function my_action_callback_mp_get_description() {
+        $url =  $_POST['site'];
+        $title = '';
+        $description = '';
+        $response =  wp_remote_get( $url);
+        $body = $response['body'];
+        libxml_use_internal_errors(true);
+        $doc = new DomDocument();
+        $doc->loadHTML($body);
+        $xpath = new DOMXPath($doc);
+        $query = '//*/meta[starts-with(@property, \'og:\')]';
+        $metas = $xpath->query($query);
+        foreach ($metas as $meta) {
+            $property = $meta->getAttribute('property');
+            $content = $meta->getAttribute('content');
+            if ( $property == 'og:title' ) {
+                $title = $content;
+            }
+            if ( $property == 'og:description' ) {
+                $description = $content;
+            }
+        }
+
+        $data = array(
+            'title' => $title,
+            'description' => $description
+        );
+        echo json_encode( $data );
         wp_die();
     }
 

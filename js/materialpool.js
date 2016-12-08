@@ -301,5 +301,45 @@ jQuery(document).ready(function(){
 
     })
 
+
+
+    /**
+     *
+     * get title&description
+     *
+     */
+
+    jQuery(document).ready(function(){
+        jQuery("#pods-form-ui-pods-meta-material-url").focusout( function() {
+            var url = jQuery("#pods-form-ui-pods-meta-material-url").val();
+            var html;
+            var data = {
+                'action': 'mp_get_description',
+                'site': url
+            };
+
+            jQuery.post(ajaxurl, data, function(response) {
+
+                html = response;
+                if ( html != ''  ) {
+                    $obj = jQuery.parseJSON( html );
+                    if ( jQuery("#pods-form-ui-pods-meta-material-titel").val() == '') {
+                        jQuery("#pods-form-ui-pods-meta-material-titel").val( $obj.title );
+                    }
+                    if ( jQuery("#pods-form-ui-pods-meta-material-kurzbeschreibung").val() == '') {
+                        jQuery("#pods-form-ui-pods-meta-material-kurzbeschreibung").val( $obj.description );
+                    }
+
+                }
+            });
+
+        })
+
+    });
+
+
+
+    //wp_ajax_mp_get_description
+
 })
 
