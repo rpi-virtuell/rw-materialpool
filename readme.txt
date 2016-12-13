@@ -67,6 +67,10 @@ materialpool-template-spezial-url
 
 materialpool-buddypress-member-url
 
+materialpool-ajax-get-description
+materialpool-ajax-check-url
+
+
 = Actions =
 
 materialpool_init

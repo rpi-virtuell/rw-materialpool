@@ -231,6 +231,7 @@ class Materialpool {
 
         add_action( 'wp_ajax_mp_get_html',  array( 'Materialpool', 'my_action_callback_mp_get_html' ) );
         add_action( 'wp_ajax_mp_get_description',  array( 'Materialpool', 'my_action_callback_mp_get_description' ) );
+        add_action( 'wp_ajax_mp_check_url',  array( 'Materialpool', 'my_action_callback_mp_check_url' ) );
 
         do_action( 'materialpool_init' );
 	}
@@ -242,7 +243,7 @@ class Materialpool {
      * @access  public
      */
     public static function my_action_callback_mp_get_html() {
-        $url =  $_POST['site'];
+        $url =  esc_url_raw( $_POST['site'] );
         $response =  wp_remote_get( $url);
         $body = $response['body'];
         libxml_use_internal_errors(true);
@@ -266,35 +267,66 @@ class Materialpool {
      *
      * @since   0.0.1
      * @access  public
+     * @filters materialpool-ajax-get-description
      */
     public static function my_action_callback_mp_get_description() {
-        $url =  $_POST['site'];
+        $url =  esc_url_raw( $_POST['site'] );
         $title = '';
         $description = '';
         $response =  wp_remote_get( $url);
-        $body = $response['body'];
-        libxml_use_internal_errors(true);
-        $doc = new DomDocument();
-        $doc->loadHTML($body);
-        $xpath = new DOMXPath($doc);
-        $query = '//*/meta[starts-with(@property, \'og:\')]';
-        $metas = $xpath->query($query);
-        foreach ($metas as $meta) {
-            $property = $meta->getAttribute('property');
-            $content = $meta->getAttribute('content');
-            if ( $property == 'og:title' ) {
-                $title = $content;
+        if (  ! is_wp_error( $response ) ) {
+            $body = $response['body'];
+            libxml_use_internal_errors(true);
+            $doc = new DomDocument();
+            $doc->loadHTML($body);
+            $xpath = new DOMXPath($doc);
+            $query = '//*/meta[starts-with(@property, \'og:\')]';
+            $metas = $xpath->query($query);
+            foreach ($metas as $meta) {
+                $property = $meta->getAttribute('property');
+                $content = $meta->getAttribute('content');
+                if ( $property == 'og:title' ) {
+                    $title = $content;
+                }
+                if ( $property == 'og:description' ) {
+                    $description = $content;
+                }
             }
-            if ( $property == 'og:description' ) {
-                $description = $content;
-            }
-        }
 
-        $data = array(
-            'title' => $title,
-            'description' => $description
-        );
-        echo json_encode( $data );
+            $data = array(
+                'title' => $title,
+                'description' => $description
+            );
+        }
+        echo json_encode( apply_filters( 'materialpool-ajax-get-description', $data, $xpath ) );
+        wp_die();
+    }
+
+
+    /**
+     *
+     * @since   0.0.1
+     * @access  public
+     * @filters materialpool-ajax-check-url
+     */
+    public static function my_action_callback_mp_check_url() {
+        global $wpdb;
+        $url =  esc_url_raw( $_POST['site'] ) ;
+
+        $anzahl = $wpdb->get_col( $wpdb->prepare( "SELECT count( meta_id ) as anzahl  FROM  $wpdb->postmeta WHERE meta_key = %s and meta_value = %s", 'material_url', $url) );
+        if ( is_array( $anzahl ) && $anzahl[ 0 ] == 0 ) {
+            $data = array(
+                'status' => "ok"
+            );
+        } else {
+            $post_id = $wpdb->get_var( $wpdb->prepare( "SELECT post_id   FROM  $wpdb->postmeta WHERE meta_key = %s and meta_value = %s", 'material_url', $url) );
+            $data = array(
+                'status' => "exists",
+                'material_url' => get_permalink( $post_id )
+            );
+
+        }
+        echo json_encode( apply_filters( 'materialpool-ajax-check-url', $data  ) );
         wp_die();
     }
 
