@@ -385,6 +385,23 @@ class Materialpool_Material {
         return $where;
     }
 
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function material_list_post_distinct( ) {
+        global $pagenow;
+        $back = '';
+
+        if ( is_admin() && $pagenow=='edit.php' && $_GET['post_type']=='material' && $_GET['s'] != '') {
+            $back = " DISTINCT ";
+        }
+        return $back;
+    }
+
     /**
      *
      * @since 0.0.1

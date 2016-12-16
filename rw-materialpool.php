@@ -148,6 +148,7 @@ class Materialpool {
         add_action( 'admin_menu' , array( 'Materialpool_Material', 'remove_post_custom_fields' ) );
         add_filter( 'posts_join', array( 'Materialpool_Material', 'material_list_post_join' ) );
         add_filter( 'posts_where', array( 'Materialpool_Material', 'material_list_post_where' ) );
+        add_filter( 'posts_distinct', array( 'Materialpool_Material', 'material_list_post_distinct' ) );
         /*
          * Register as Class method throws an error
          */
