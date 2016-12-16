@@ -262,8 +262,11 @@ class Materialpool_Organisation {
 	static public function generate_title( $post_id ) {
         global $wpdb;
 		$post_type = get_post_type($post_id);
+        $post_status = get_post_status ($post_id);
+        $post_parent = wp_get_post_parent_id( $post_id );
 
-		if ( "organisation" != $post_type ) return;
+
+        if ( "organisation" != $post_type ) return;
 
 		$title = $_POST[ 'pods_meta_organisation_titel' ];
 
@@ -271,7 +274,7 @@ class Materialpool_Organisation {
             $wpdb->posts,
             array(
                 'post_title' => $title,
-                'post_name' => sanitize_title( $title )
+                'post_name' => wp_unique_post_slug( sanitize_title( $title ), $post_id, $post_status, $post_type, $post_parent ),
             ),
             array( 'ID' => $post_id ),
             array(
