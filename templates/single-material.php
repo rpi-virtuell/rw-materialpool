@@ -35,7 +35,8 @@ get_header( 'materialpool' ); ?>
         Depublizierungsdatum: <?php Materialpool_Material::depublicationdate(); ?><br>
         Wiedervorlagedatum: <?php Materialpool_Material::reviewdate(); ?><br>
         Erstellungsdatum: <?php Materialpool_Material::createdate(); ?><br>
-        Cover: <?php Materialpool_Material::picture_html(); ?><br>
+        Cover:
+        <div class="featured-image"><?php Materialpool_Material::picture_html(); ?></div><br>
 <hr>
         Bestandteil eines Werks: <?php Materialpool_Material::werk_html(); ?><br>
         Weitere Bände des Werks (ohne den aktuellen Band) : <?php Materialpool_Material::sibling_volumes_html(); ?><br>
