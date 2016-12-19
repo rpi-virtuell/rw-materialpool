@@ -274,9 +274,15 @@ class Materialpool {
         $url =  esc_url_raw( $_POST['site'] );
         $title = '';
         $description = '';
-        $response =  wp_remote_get( $url);
+        $keywords = '';
+        $image = '';
+
+        $args = array(
+            'user-agent' => 'Mozilla/5.0 (compatible; Materialpool; +'.home_url().')',
+        );
+        $response =  wp_remote_get( $url, $args );
         if (  ! is_wp_error( $response ) ) {
-            $body = $response['body'];
+             $body = utf8_decode( $response['body'] );
             libxml_use_internal_errors(true);
             $doc = new DomDocument();
             $doc->loadHTML($body);
@@ -292,11 +298,37 @@ class Materialpool {
                 if ( $property == 'og:description' ) {
                     $description = $content;
                 }
+                if ( $property == 'og:video:tag' || $property == 'video:tag'  ) {
+                    if ( $keywords != '' ) {
+                        $keywords .= ', ';
+                    }
+                    $keywords .= $content;
+                }
+                if ( $property == 'og:image' ) {
+                    $image = $content;
+                }
             }
-
+            $query = '//*/meta';
+            $metas = $xpath->query($query);
+            foreach ($metas as $meta) {
+                $name = $meta->getAttribute('name');
+                $content = $meta->getAttribute('content');
+                if ( $name == 'description' && $description == '' ) {
+                    $description = $content;
+                }
+                if ( $name == 'keywords' && $keywords == '' ) {
+                    $keywords = $content;
+                }
+            }
+            $titleNode = $xpath->query('//title');
+            if ( $title == '' ) {
+                $title = $titleNode->item(0)->textContent;
+            }
             $data = array(
                 'title' => $title,
-                'description' => $description
+                'description' => $description,
+                'keywords' => $keywords,
+                'image' => $image,
             );
         }
         echo json_encode( apply_filters( 'materialpool-ajax-get-description', $data, $xpath ) );

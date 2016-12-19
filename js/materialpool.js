@@ -381,6 +381,12 @@ jQuery(document).ready(function(){
                     if ( jQuery("#pods-form-ui-pods-meta-material-kurzbeschreibung").val() == '') {
                         jQuery("#pods-form-ui-pods-meta-material-kurzbeschreibung").val( $obj.description );
                     }
+                    if ( jQuery("#pods-form-ui-pods-meta-material-schlagworte-interim").val() == '') {
+                        jQuery("#pods-form-ui-pods-meta-material-schlagworte-interim").val( $obj.keywords );
+                    }
+                    if ( jQuery("#pods-form-ui-pods-meta-material-cover-url").val() == '') {
+                        jQuery("#pods-form-ui-pods-meta-material-cover-url").val( $obj.image );
+                    }
 
                 }
             });
