@@ -233,7 +233,7 @@ class Materialpool {
         add_action( 'wp_ajax_mp_get_html',  array( 'Materialpool', 'my_action_callback_mp_get_html' ) );
         add_action( 'wp_ajax_mp_get_description',  array( 'Materialpool', 'my_action_callback_mp_get_description' ) );
         add_action( 'wp_ajax_mp_check_url',  array( 'Materialpool', 'my_action_callback_mp_check_url' ) );
-
+        add_action( 'wp_head', array( 'Materialpool',  'promote_feeds' ) );
         do_action( 'materialpool_init' );
 	}
 
@@ -474,6 +474,19 @@ class Materialpool {
         wp_enqueue_script('jquery-ui-dialog');
         wp_enqueue_style("wp-jquery-ui-dialog");
     }
+
+
+    function promote_feeds() {
+        $post_types = array('material', 'organisation', 'autor');
+        foreach( $post_types as $post_type ) {
+            $feed = get_post_type_archive_feed_link( $post_type );
+            if ( $feed === '' || !is_string( $feed ) ) {
+                $feed =  get_bloginfo( 'rss2_url' ) . "?post_type=$post_type";
+            }
+            printf(__('<link rel="%1$s" type="%2$s" href="%3$s" />'),"alternate","application/rss+xml",$feed);
+        }
+    }
+
 }
 
 
