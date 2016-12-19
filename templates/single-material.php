@@ -19,8 +19,8 @@ get_header( 'materialpool' ); ?>
         <H1>Materialseite</H1>
         Titel: <?php Materialpool_Material::title(); ?> <br>
         URL: <?php Materialpool_Material::url_html(); ?><br>
-        Kurzbeschreibung: <p><?php Materialpool_Material::shortdecription(); ?> </p><br>
-        Beschreibung: <p><?php Materialpool_Material::decription(); ?> </p><br>
+        Kurzbeschreibung: <p><?php Materialpool_Material::shortdescription(); ?> </p><br>
+        Beschreibung: <p><?php Materialpool_Material::description(); ?> </p><br>
         <p>Verfügbarkeit: <?php Materialpool_Material::availability(); ?> </p><br>
 
         Organisationen dieses Materials: <br>

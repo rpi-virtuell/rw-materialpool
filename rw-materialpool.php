@@ -234,8 +234,22 @@ class Materialpool {
         add_action( 'wp_ajax_mp_get_description',  array( 'Materialpool', 'my_action_callback_mp_get_description' ) );
         add_action( 'wp_ajax_mp_check_url',  array( 'Materialpool', 'my_action_callback_mp_check_url' ) );
         add_action( 'wp_head', array( 'Materialpool',  'promote_feeds' ) );
+        remove_all_actions( 'do_feed_rss2' );
+        add_action( 'do_feed_rss2', array( 'Materialpool', 'material_feed_rss2') , 10, 1 );
+
         do_action( 'materialpool_init' );
 	}
+
+
+    function material_feed_rss2( $for_comments ) {
+        $rss_template = Materialpool::$plugin_base_dir . 'templates/feed-rss2.php';
+
+        if( get_query_var( 'post_type' ) == 'material' and file_exists( $rss_template ) )
+            load_template( $rss_template );
+        else
+            do_feed_rss2( $for_comments ); // Call default function
+    }
+
 
     /**
      * Load HTML from remote site

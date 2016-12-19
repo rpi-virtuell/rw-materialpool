@@ -432,7 +432,7 @@ class Materialpool_Material {
      * @access	public
      *
      */
-    static public function shortdecription() {
+    static public function shortdescription() {
         echo Materialpool_Material::get_shortdescription();
     }
 
@@ -454,7 +454,7 @@ class Materialpool_Material {
      * @access	public
      *
      */
-    static public function decription() {
+    static public function description() {
         echo Materialpool_Material::get_description();
     }
 
