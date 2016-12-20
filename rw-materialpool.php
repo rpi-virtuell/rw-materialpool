@@ -242,12 +242,31 @@ class Materialpool {
 
 
     function material_feed_rss2( $for_comments ) {
-        $rss_template = Materialpool::$plugin_base_dir . 'templates/feed-rss2.php';
+        if( get_query_var( 'post_type' ) == 'material' ) {
+            $rss_template = Materialpool::$plugin_base_dir . 'templates/feed-material-rss2.php';
+            if (file_exists($rss_template)) {
+                load_template($rss_template);
+            } else {
+                do_feed_rss2($for_comments);
+            }
+        }
+        if( get_query_var( 'post_type' ) == 'organisation' ) {
+            $rss_template = Materialpool::$plugin_base_dir . 'templates/feed-organisation-rss2.php';
+            if (file_exists($rss_template)) {
+                load_template($rss_template);
+            } else {
+                do_feed_rss2($for_comments);
+            }
+        }
+        if( get_query_var( 'post_type' ) == 'autor' ) {
+            $rss_template = Materialpool::$plugin_base_dir . 'templates/feed-autor-rss2.php';
+            if (file_exists($rss_template)) {
+                load_template($rss_template);
+            } else {
+                do_feed_rss2($for_comments);
+            }
+        }
 
-        if( get_query_var( 'post_type' ) == 'material' and file_exists( $rss_template ) )
-            load_template( $rss_template );
-        else
-            do_feed_rss2( $for_comments ); // Call default function
     }
 
 
