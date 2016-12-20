@@ -944,6 +944,24 @@ class Materialpool_Material {
      *
      * @since 0.0.1
      * @access public
+     *
+     */
+    static public function autor_list () {
+        $count = 0;
+        $verweise = Materialpool_Material::get_autor();
+        foreach ( $verweise as $verweis ) {
+            if ($count > 0 ) {
+                echo ", ";
+            }
+            echo $verweis[ 'post_title' ];
+            $count++;
+        }
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access public
      * @filters materialpool-template-material-autor
      */
     static public function autor_html () {
