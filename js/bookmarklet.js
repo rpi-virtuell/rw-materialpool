@@ -1,0 +1,1 @@
+javascript:(function()%7Bjavascript%3Alocation.href%3D'http%3A%2F%2Fmaterialpool.dev%2Fwp-admin%2Fpost-new.php%3Fpost_type%3Dmaterial%26url%3D'%2BencodeURIComponent(location.href)%2B'%26title%3D'%2BencodeURIComponent(document.title)%7D)()

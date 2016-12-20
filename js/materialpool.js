@@ -299,7 +299,9 @@ jQuery(document).ready(function(){
             }
         })
 
-    })
+    });
+
+
 
 
 
@@ -311,6 +313,7 @@ jQuery(document).ready(function(){
 
     jQuery(document).ready(function(){
         jQuery("#pods-form-ui-pods-meta-material-url").focusout( function() {
+
             var url = jQuery("#pods-form-ui-pods-meta-material-url").val();
             if ( url == '' ) return;
             var ret;
@@ -390,14 +393,116 @@ jQuery(document).ready(function(){
 
                 }
             });
-
         })
 
     });
+});
+
+
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
+};
+
+
+jQuery(document).ready(function(){
+    var url = getUrlParameter('url');
+    if ( url != '' ) {
+        jQuery("#pods-form-ui-pods-meta-material-url").click();
+        jQuery("#pods-form-ui-pods-meta-material-url").val( url );
+        var url = jQuery("#pods-form-ui-pods-meta-material-url").val();
+        if ( url == '' ) return;
+        var ret;
+
+        // url exists?
+        var data = {
+            'action': 'mp_check_url',
+            'site': url
+        };
+        jQuery.post(ajaxurl, data, function(response) {
+
+            ret = response;
+            if ( ret != ''  ) {
+                obj = jQuery.parseJSON( ret );
+                if ( obj.status == 'exists' ) {
+
+                    jQuery("#pods-form-ui-pods-meta-material-url").val('');
+                    jQuery("#pods-form-ui-pods-meta-material-url").focus();
+
+                    jQuery("body").append("<div id='" + obj.status + "' title='Hinweis'>" +
+                        "<p align='center'>Diese URL wurde schon erfasst unter diesem <a  target='_blank' href='" + obj.material_url + "'>Material</a>.</p>" +
+                        "</div>");
+
+                    jQuery( "#" + obj.status ).dialog({
+                        dialogClass: "no-close",
+                        buttons: [
+                            {
+                                text: "OK",
+                                click: function() {
+                                    jQuery( this ).dialog( "close" );
+                                }
+                            }
+                        ],
+                        width: 450,
+                        height: 280,
+                        show: {
+                            effect: "blind",
+                            duration: 1000
+                        },
+                        hide: {
+                            effect: "blind",
+                            duration: 800
+                        }
+                    });
+
+                    return;
+                }
+
+            }
+        });
 
 
 
-    //wp_ajax_mp_get_description
+        var html;
+        var data = {
+            'action': 'mp_get_description',
+            'site': url
+        };
 
-})
+        jQuery.post(ajaxurl, data, function(response) {
 
+            html = response;
+            if ( html != ''  ) {
+                $obj = jQuery.parseJSON( html );
+                if ( jQuery("#pods-form-ui-pods-meta-material-titel").val() == '') {
+                    jQuery("#pods-form-ui-pods-meta-material-titel").val( $obj.title );
+                }
+                if ( jQuery("#pods-form-ui-pods-meta-material-kurzbeschreibung").val() == '') {
+                    jQuery("#pods-form-ui-pods-meta-material-kurzbeschreibung").val( $obj.description );
+                }
+                if ( jQuery("#pods-form-ui-pods-meta-material-schlagworte-interim").val() == '') {
+                    jQuery("#pods-form-ui-pods-meta-material-schlagworte-interim").val( $obj.keywords );
+                }
+                if ( jQuery("#pods-form-ui-pods-meta-material-cover-url").val() == '') {
+                    jQuery("#pods-form-ui-pods-meta-material-cover-url").val( $obj.image );
+                }
+
+            }
+        });
+//        jQuery("#pods-form-ui-pods-meta-material-url").focus();
+//        jQuery("#pods-form-ui-pods-meta-material-titel").click();
+//        jQuery("#pods-form-ui-pods-meta-material-url").trigger("focusout");
+
+
+    }
+});
