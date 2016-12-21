@@ -418,7 +418,7 @@ var getUrlParameter = function getUrlParameter(sParam) {
 jQuery(document).ready(function(){
     var url = unescape(getUrlParameter('url'));
     var text = unescape(getUrlParameter('text'));
-    if ( url != '' ) {
+    if ( url != 'undefined' ) {
         jQuery("#pods-form-ui-pods-meta-material-url").click();
         jQuery("#pods-form-ui-pods-meta-material-url").val( url );
         jQuery("#pods-form-ui-pods-meta-material-beschreibung").val( unescape(text ));
