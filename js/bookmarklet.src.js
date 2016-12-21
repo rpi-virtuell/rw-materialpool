@@ -22,7 +22,7 @@
     function initMyBookmarklet() {
         (window.myBookmarklet = function() {
             var mText=document.getSelection();
-            var url ="http://materialpool.dev/wp-admin/post-new.php?post_type=material&url="
+            var url ="http://material.rpi-virtuell.de/wp-admin/post-new.php?post_type=material&url="
                 +encodeURIComponent(escape(location.href))
                 +"&text="+encodeURIComponent(escape(mText));
             window.open(url, "_blank");
