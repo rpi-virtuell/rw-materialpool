@@ -409,18 +409,20 @@ var getUrlParameter = function getUrlParameter(sParam) {
         sParameterName = sURLVariables[i].split('=');
 
         if (sParameterName[0] === sParam) {
-            return sParameterName[1] === undefined ? true : sParameterName[1];
+            return sParameterName[1] === undefined ? '' : sParameterName[1];
         }
     }
 };
 
 
 jQuery(document).ready(function(){
-    var url = getUrlParameter('url');
+    var url = unescape(getUrlParameter('url'));
+    var text = unescape(getUrlParameter('text'));
     if ( url != '' ) {
         jQuery("#pods-form-ui-pods-meta-material-url").click();
         jQuery("#pods-form-ui-pods-meta-material-url").val( url );
-        var url = jQuery("#pods-form-ui-pods-meta-material-url").val();
+        jQuery("#pods-form-ui-pods-meta-material-beschreibung").val( unescape(text ));
+
         if ( url == '' ) return;
         var ret;
 
@@ -483,25 +485,23 @@ jQuery(document).ready(function(){
 
             html = response;
             if ( html != ''  ) {
-                $obj = jQuery.parseJSON( html );
+                obj = jQuery.parseJSON( html );
                 if ( jQuery("#pods-form-ui-pods-meta-material-titel").val() == '') {
-                    jQuery("#pods-form-ui-pods-meta-material-titel").val( $obj.title );
+                    jQuery("#pods-form-ui-pods-meta-material-titel").val( obj.title );
                 }
                 if ( jQuery("#pods-form-ui-pods-meta-material-kurzbeschreibung").val() == '') {
-                    jQuery("#pods-form-ui-pods-meta-material-kurzbeschreibung").val( $obj.description );
+                    jQuery("#pods-form-ui-pods-meta-material-kurzbeschreibung").val( obj.description );
                 }
                 if ( jQuery("#pods-form-ui-pods-meta-material-schlagworte-interim").val() == '') {
-                    jQuery("#pods-form-ui-pods-meta-material-schlagworte-interim").val( $obj.keywords );
+                    jQuery("#pods-form-ui-pods-meta-material-schlagworte-interim").val( obj.keywords );
                 }
                 if ( jQuery("#pods-form-ui-pods-meta-material-cover-url").val() == '') {
-                    jQuery("#pods-form-ui-pods-meta-material-cover-url").val( $obj.image );
+                    jQuery("#pods-form-ui-pods-meta-material-cover-url").val( obj.image );
                 }
 
             }
         });
-//        jQuery("#pods-form-ui-pods-meta-material-url").focus();
-//        jQuery("#pods-form-ui-pods-meta-material-titel").click();
-//        jQuery("#pods-form-ui-pods-meta-material-url").trigger("focusout");
+
 
 
     }

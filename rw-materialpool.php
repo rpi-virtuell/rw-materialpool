@@ -149,6 +149,8 @@ class Materialpool {
         add_filter( 'posts_join', array( 'Materialpool_Material', 'material_list_post_join' ) );
         add_filter( 'posts_where', array( 'Materialpool_Material', 'material_list_post_where' ) );
         add_filter( 'posts_distinct', array( 'Materialpool_Material', 'material_list_post_distinct' ) );
+        add_action( 'add_meta_boxes',  array( 'Materialpool_Material', 'add_metaboxes' ) );
+
         /*
          * Register as Class method throws an error
          */
@@ -348,6 +350,9 @@ class Materialpool {
                 $content = $meta->getAttribute('content');
                 if ( $name == 'description' && $description == '' ) {
                     $description = $content;
+                }
+                if ( $name == 'title' && $title == '' ) {
+                    $title = $content;
                 }
                 if ( $name == 'keywords' && $keywords == '' ) {
                     $keywords = $content;

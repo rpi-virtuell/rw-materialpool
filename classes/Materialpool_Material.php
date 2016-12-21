@@ -354,6 +354,27 @@ class Materialpool_Material {
         remove_meta_box( 'tagsdiv-zugaenglichkeit' , 'material' , 'normal' );
     }
 
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function add_metaboxes() {
+	    add_meta_box('material_bookmarklet', __( 'Bookmarklet', Materialpool::$textdomain ), array( 'Materialpool_Material', 'bookmarklet_metabox' ), 'material', 'side', 'default');
+	}
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+	static public function bookmarklet_metabox() {
+	    $js = file_get_contents( Materialpool::$plugin_base_dir . 'js/bookmarklet.js' );
+        echo "<a href='". $js ."'>". __( 'Materialpool++', Materialpool::$textdomain ) ."</a><br>";
+        _e( 'Zieh den Link in deine Lesezeichenliste', Materialpool::$textdomain );
+    }
 
     /**
      *
