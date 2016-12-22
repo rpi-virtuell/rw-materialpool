@@ -305,6 +305,34 @@ class Materialpool_Autor {
             array( '%d' )
         );
         $_POST[ 'post_title'] = $name;
+
+        // Posts suchen die mit diesem Autoren verbunden sind und dort den Autorennamen neu speichern
+        $materialien = $wpdb->get_col( $wpdb->prepare( "SELECT post_id   FROM  $wpdb->postmeta WHERE meta_key = %s and meta_value = %s", 'material_autoren', $post_id ) );
+
+        foreach ( $materialien as $material_id ) {
+            delete_post_meta( $material_id, 'material_autor_facet' );
+            $autoren = get_metadata( 'post', $material_id, 'material_autoren', false );
+            if ( is_array( $autoren ) ) {
+                foreach ( $autoren as $key => $val ) {
+                    $autoren_ids[] = (int) $val[ 'ID' ];
+                }
+            } else {
+                $autoren_ids[] = (int) $autoren;
+            }
+            foreach ( $autoren_ids as $autoren_id ) {
+                $autoren_meta = get_post( $autoren_id );
+                if ( $autoren_meta->ID == $post_id ) {
+                    $autoren_title = $name;
+                } else {
+                    $autoren_title = $autoren_meta->post_title;
+                }
+                add_post_meta( $material_id, 'material_autor_facet', $autoren_title );
+            }
+            if ( is_object( FWP() ) ) {
+                FWP()->indexer->save_post( $material_id );
+            }
+            unset ($autoren_ids );
+        }
     }
 
     /**

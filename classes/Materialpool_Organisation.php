@@ -286,9 +286,32 @@ class Materialpool_Organisation {
         $_POST[ 'post_title'] = $title;
 
         // Posts suchen die mit dieser Organisation verbunden sind und dort den Organisationenamen neu speichern
-
         $materialien = $wpdb->get_col( $wpdb->prepare( "SELECT post_id   FROM  $wpdb->postmeta WHERE meta_key = %s and meta_value = %s", 'material_organisation', $post_id ) );
-        //var_dump ($materialien);exit;
+
+        foreach ( $materialien as $material_id ) {
+            delete_post_meta( $material_id, 'material_organisation_facet' );
+            $organisationen = get_metadata( 'post', $material_id, 'material_organisation', false );
+            if ( is_array( $organisationen ) ) {
+                foreach ( $organisationen as $key => $val ) {
+                    $organisationen_ids[] = (int) $val[ 'ID' ];
+                }
+            } else {
+                $organisationen_ids[] = (int) $organisationen;
+            }
+            foreach ( $organisationen_ids as $organisationen_id ) {
+                $organisationen_meta = get_post( $organisationen_id );
+                if ( $organisationen_meta->ID == $post_id ) {
+                    $orga_title = $title;
+                } else {
+                    $orga_title = $organisationen_meta->post_title;
+                }
+                add_post_meta( $material_id, 'material_organisation_facet', $orga_title );
+            }
+            if ( is_object( FWP() ) ) {
+                FWP()->indexer->save_post( $material_id );
+            }
+            unset ($organisationen_ids );
+        }
 	}
 
 
