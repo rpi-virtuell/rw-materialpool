@@ -284,6 +284,11 @@ class Materialpool_Organisation {
             array( '%d' )
         );
         $_POST[ 'post_title'] = $title;
+
+        // Posts suchen die mit dieser Organisation verbunden sind und dort den Organisationenamen neu speichern
+
+        $materialien = $wpdb->get_col( $wpdb->prepare( "SELECT post_id   FROM  $wpdb->postmeta WHERE meta_key = %s and meta_value = %s", 'material_organisation', $post_id ) );
+        //var_dump ($materialien);exit;
 	}
 
 

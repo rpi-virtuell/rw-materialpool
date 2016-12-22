@@ -322,16 +322,32 @@ class Materialpool_Material {
 
         // Autoren für FacetWP spiechern
         delete_post_meta( $post_id, 'material_autor_facet' );
-        $autoren = self::get_autor();
-        foreach ( $autoren as $autor ) {
-            add_post_meta( $post_id, 'material_autor_facet', $autor[ 'post_title' ] );
+        $autoren = explode( ',', $_POST[ 'pods_meta_material_autoren' ] ) ;
+        if ( is_array( $autoren ) ) {
+            foreach ( $autoren as $key => $val ) {
+                $autoren_ids[] = (int) $val;
+            }
+        } else {
+            $autoren_ids[] = (int) $autoren;
+        }
+        foreach ( $autoren_ids as $autoren_id ) {
+            $autoren_meta = get_post( $autoren_id );
+            add_post_meta( $post_id, 'material_autor_facet', $autoren_meta->post_title );
         }
 
         // Organisationen für FacetWP speichern
-         delete_post_meta( $post_id, 'material_organisation_facet' );
-        $organisationen = self::get_organisation();
-        foreach ( $organisationen as $organisation ) {
-            add_post_meta( $post_id, 'material_organisation_facet', $organisation[ 'post_title' ] );
+        delete_post_meta( $post_id, 'material_organisation_facet' );
+        $organisationen = explode( ',', $_POST[ 'pods_meta_material_organisation' ] ) ;
+        if ( is_array( $organisationen ) ) {
+            foreach ( $organisationen as $key => $val ) {
+                $organisationen_ids[] = (int) $val;
+            }
+        } else {
+            $organisationen_ids[] = (int) $organisationen;
+        }
+        foreach ( $organisationen_ids as $organisationen_id ) {
+            $organisationen_meta = get_post( $organisationen_id );
+            add_post_meta( $post_id, 'material_organisation_facet', $organisationen_meta->post_title );
         }
     }
 
