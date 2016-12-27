@@ -184,12 +184,13 @@ class Materialpool_Material {
 		if ( "material" != $post_type ) return;
 
 		$title = $_POST[ 'pods_meta_material_titel' ];
+        $post_name = wp_unique_post_slug( sanitize_title( $title ), $post_id, $post_status, $post_type, $post_parent );
 
         $wpdb->update(
             $wpdb->posts,
             array(
                 'post_title' => stripslashes( $title ),
-                'post_name' => wp_unique_post_slug( sanitize_title( $title ), $post_id, $post_status, $post_type, $post_parent ),
+                'post_name' => $post_name,
             ),
             array( 'ID' => $post_id ),
             array(
@@ -348,6 +349,15 @@ class Materialpool_Material {
         foreach ( $organisationen_ids as $organisationen_id ) {
             $organisationen_meta = get_post( $organisationen_id );
             add_post_meta( $post_id, 'material_organisation_facet', $organisationen_meta->post_title );
+        }
+
+        // Wenn Special, dann MaterialURL auf das Material selbst zeigen lassen.
+        if (  $_POST[ 'pods_meta_material_special' ] == 1  ) {
+            clean_post_cache( $post_id );
+            $p = get_post( $post_id );
+            $url = get_permalink( $p );
+            update_post_meta( $post_id, 'material_url', $url  );
+            $_POST[ 'pods_meta_material_url' ] = $url;
         }
     }
 

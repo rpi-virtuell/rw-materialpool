@@ -498,11 +498,44 @@ jQuery(document).ready(function(){
                 if ( jQuery("#pods-form-ui-pods-meta-material-cover-url").val() == '') {
                     jQuery("#pods-form-ui-pods-meta-material-cover-url").val( obj.image );
                 }
-
             }
         });
-
-
-
     }
 });
+
+/**
+ *
+ * specials handling
+ *
+ */
+
+jQuery(document).ready(function(){
+    // Hide URL afer loading
+    if ( jQuery( '#pods-form-ui-pods-meta-material-special1' ).is( ":checked" ) ) {
+        jQuery(".pods-form-ui-row-name-material-url").hide();
+    }
+
+    // Hide URL
+    jQuery('#pods-form-ui-pods-meta-material-special1').click(function(){
+        jQuery("#gruppe1").attr("checked","checked");
+        jQuery(".pods-form-ui-row-name-material-url").hide();
+    });
+
+    // Show URL
+    jQuery('#pods-form-ui-pods-meta-material-special2').click(function(){
+        jQuery("#gruppe1").attr("checked","checked");
+        jQuery(".pods-form-ui-row-name-material-url").show();
+    });
+
+    // Set URL on Specials, after title is focus lost
+    jQuery("#pods-form-ui-pods-meta-material-titel").focusout( function() {
+        if ( jQuery( '#pods-form-ui-pods-meta-material-special1' ).is( ":checked" ) ) {
+            if ( jQuery("#pods-form-ui-pods-meta-material-url").val() == '') {
+                jQuery("#pods-form-ui-pods-meta-material-url").val( 'http://localhost/random'  +  Math.floor((Math.random() * 10000000) + 1)  );
+            }
+        }
+    })
+});
+
+
+
