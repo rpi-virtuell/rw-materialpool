@@ -151,6 +151,7 @@ class Materialpool {
         add_filter( 'posts_distinct', array( 'Materialpool_Material', 'material_list_post_distinct' ) );
         add_action( 'add_meta_boxes',  array( 'Materialpool_Material', 'add_metaboxes' ) );
 
+        add_filter( 'tl_tplc_external_files', array( 'Materialpool_Material', 'add_template_check_external_files' ) );
 
 
         /*
@@ -164,6 +165,7 @@ class Materialpool {
         add_action( 'manage_organisation_posts_custom_column', array( 'Materialpool_Organisation', 'cpt_list_column'), 10,2 );
         add_action( 'manage_edit-organisation_sortable_columns', array( 'Materialpool_Organisation', 'cpt_sort_column') );
 		add_action( 'save_post', array( 'Materialpool_Organisation', 'generate_title') );
+        add_filter( 'tl_tplc_external_files', array( 'Materialpool_Organisation', 'add_template_check_external_files' ) );
 
         // Add Filter & Actions for Autor
         add_filter( 'template_include', array( 'Materialpool_Autor', 'load_template' ) );
@@ -171,6 +173,7 @@ class Materialpool {
         add_action( 'manage_autor_posts_custom_column', array( 'Materialpool_Autor', 'cpt_list_column'), 10,2 );
         add_action( 'manage_edit-autor_sortable_columns', array( 'Materialpool_Autor', 'cpt_sort_column') );
         add_action( 'save_post', array( 'Materialpool_Autor', 'generate_title') );
+        add_filter( 'tl_tplc_external_files', array( 'Materialpool_Autor', 'add_template_check_external_files' ) );
 
         // Add Filter & Actions for Sprache
         add_filter( 'manage_edit-sprache_columns', array( 'Materialpool_Sprache', 'taxonomy_column' ) );
