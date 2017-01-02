@@ -301,12 +301,15 @@ class Materialpool_Autor {
 
     	$firstname = $_POST[ 'pods_meta_autor_vorname' ];
 	    $lastname = $_POST[ 'pods_meta_autor_nachname' ];
+	    $anmerkung = $_POST[ 'pods_meta_autor_uniq' ];
 
+	    $intern_name = $firstname . ' ' . $lastname . ' - ' . $anmerkung;
 	    $name = $firstname . ' ' . $lastname;
+
         $wpdb->update(
             $wpdb->posts,
             array(
-                'post_title' => $name,
+                'post_title' => $intern_name,
                 'post_name' => wp_unique_post_slug( sanitize_title( $name ), $post_id, $post_status, $post_type, $post_parent ),
             ),
             array( 'ID' => $post_id ),
