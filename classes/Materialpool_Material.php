@@ -1031,4 +1031,21 @@ class Materialpool_Material {
 
         return get_metadata( 'post', $post->ID, 'material_autoren', false );
     }
+
+	/**
+	 * @since 0.0.1
+	 * @access public
+	 * @return mixed
+	 */
+    static public function is_special() {
+    	global $post;
+
+    	$back = false;
+	    $special =  get_metadata( 'post', $post->ID, 'material_special', true );
+
+		if ( $special == '1' ) {
+			$back = true;
+		}
+		return $back;
+    }
 }
