@@ -68,7 +68,7 @@ class Materialpool_Material {
         $columns[ 'material-autor' ] = _x( 'Autoren', 'Material list field',  Materialpool::$textdomain );
         $columns[ 'material-medientyp' ] = _x( 'Medientyp', 'Material list field',  Materialpool::$textdomain );
         $columns[ 'material-online' ] = _x( 'Online', 'Material list field',  Materialpool::$textdomain );
-        $columns[ 'material-stauts' ] = _x( 'Status', 'Material list field',  Materialpool::$textdomain );
+        $columns[ 'material-status' ] = _x( 'Status', 'Material list field',  Materialpool::$textdomain );
         return $columns;
     }
 
