@@ -163,6 +163,18 @@ class Materialpool_Autor {
 
 
     /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function add_template_check_external_files ( $checkArray ) {
+        $checkArray[ 'materialpool/single-autor.php' ] = Materialpool::$plugin_base_dir . 'templates/single-autor.php';
+        $checkArray[ 'materialpool/archive-autor.php'] = Materialpool::$plugin_base_dir . 'templates/archive-autor.php';
+        return $checkArray;
+    }
+
+    /**
      * Change the columns for list table
      *
      * @since   0.0.1

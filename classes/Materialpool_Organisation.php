@@ -147,6 +147,18 @@ class Materialpool_Organisation {
     }
 
     /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function add_template_check_external_files ( $checkArray ) {
+        $checkArray[ 'materialpool/single-organisation.php' ] = Materialpool::$plugin_base_dir . 'templates/single-organisation.php';
+        $checkArray[ 'materialpool/archive-organisation.php'] = Materialpool::$plugin_base_dir . 'templates/archive-organisation.php';
+        return $checkArray;
+    }
+
+    /**
      * Change the columns for list table
      *
      * @since   0.0.1
