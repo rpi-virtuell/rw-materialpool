@@ -336,12 +336,18 @@ class Materialpool_Material {
         // Autoren für FacetWP spiechern
         delete_post_meta( $post_id, 'material_autor_facet' );
         $autoren = explode( ',', $_POST[ 'pods_meta_material_autoren' ] ) ;
+        $autoren_ids = array();
         if ( is_array( $autoren ) ) {
             foreach ( $autoren as $key => $val ) {
-                $autoren_ids[] = (int) $val;
+                if ( $val != '' ) {
+                    $autoren_ids[] = (int)$val;
+                }
             }
         } else {
-            $autoren_ids[] = (int) $autoren;
+            $autorid = (int) $autoren;
+            if ( 0 !=  $autorid ) {
+                $autoren_ids[] = $autorid;
+            }
         }
         foreach ( $autoren_ids as $autoren_id ) {
             $autoren_meta = get_post( $autoren_id );
@@ -351,18 +357,23 @@ class Materialpool_Material {
         // Organisationen für FacetWP speichern
         delete_post_meta( $post_id, 'material_organisation_facet' );
         $organisationen = explode( ',', $_POST[ 'pods_meta_material_organisation' ] ) ;
+        $organisationen_ids = array();
         if ( is_array( $organisationen ) ) {
             foreach ( $organisationen as $key => $val ) {
-                $organisationen_ids[] = (int) $val;
+                if ( $val != '' ) {
+                    $organisationen_ids[] = (int) $val;
+                }
             }
         } else {
-            $organisationen_ids[] = (int) $organisationen;
+            $orgaid = (int) $organisationen;
+            if ( 0 != $orgaid ) {
+                $organisationen_ids[] = $orgaid;
+            }
         }
         foreach ( $organisationen_ids as $organisationen_id ) {
             $organisationen_meta = get_post( $organisationen_id );
             add_post_meta( $post_id, 'material_organisation_facet', $organisationen_meta->post_title );
         }
-
         // Wenn Special, dann MaterialURL auf das Material selbst zeigen lassen.
         if (  $_POST[ 'pods_meta_material_special' ] == 1  ) {
             clean_post_cache( $post_id );
@@ -1018,11 +1029,11 @@ class Materialpool_Material {
     }
 
     /**
-     *
-     * @since 0.0.1
-     * @access public
-     * @filters materialpool-template-material-autor
-     */
+ *
+ * @since 0.0.1
+ * @access public
+ * @filters materialpool-template-material-autor
+ */
     static public function autor_html () {
         $verweise = Materialpool_Material::get_autor();
         foreach ( $verweise as $verweis ) {
@@ -1030,6 +1041,22 @@ class Materialpool_Material {
             echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-autor', 'materialpool-template-material-autor' ) .'">' . $verweis[ 'post_title' ] . '</a><br>';
 
         }
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access public
+     * @filters materialpool-template-material-autor
+     */
+    static public function autor_facet_html () {
+        $verweise = Materialpool_Material::get_autor();
+        $data = '';
+        foreach ( $verweise as $verweis ) {
+            if ( $verweis != '' )
+            $data .= '<span class="facet-tag">' . $verweis[ 'post_title' ] . '</span>';
+        }
+        return $data;
     }
 
     /**
@@ -1059,5 +1086,77 @@ class Materialpool_Material {
 			$back = true;
 		}
 		return $back;
+    }
+
+    /**
+     * @since 0.0.1
+     * @access public
+     * @return mixed
+     */
+    static public function get_schlagworte() {
+        global $post;
+
+        $data = '';
+        $schlagworte = get_metadata( 'post', $post->ID, 'material_schlagworte' );
+        if ( sizeof( $schlagworte ) == 1 ) {
+            if ( $schlagworte[ 0 ] !== false ) {
+                if ( $data != '') $data .= ', ';
+                $data .= $schlagworte[ 0 ][ 'name' ];
+            } else {
+                $data = "";
+            }
+        } else {
+            foreach ( $schlagworte as $schlagwort ) {
+                if ( $data != '') $data .= ', ';
+                $data .= $schlagwort[ 'name' ];
+            }
+        }
+        return $data;
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function jahr_html() {
+        $jahr = Materialpool_Material::get_jahr();
+        $data = '';
+        if ( $jahr != '' ) {
+            $data = '<span class="facet-tag">' . $jahr . '</span>';
+        }
+        return $data;
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_jahr() {
+        global $post;
+
+        return get_metadata( 'post', $post->ID, 'material_jahr', true );
+    }
+
+    static public function get_mediatyps_root() {
+        global $post;
+
+        $arr = array();
+        $typs = wp_get_object_terms( $post->ID, 'medientyp' );
+        foreach ( $typs as $term ) {
+            if ( $term->parent == 0 ) {
+                $icon =   get_metadata( 'term', $term->term_id, 'medientyp_icon', true );
+                $farbe =   get_metadata( 'term', $term->term_id, 'medientyp_farbe', true );
+                $arr[] = array(
+                  'name' => $term->name,
+                  'icon' => $icon,
+                  'farbe' => $farbe
+                );
+            }
+        }
+        return $arr;
     }
 }
