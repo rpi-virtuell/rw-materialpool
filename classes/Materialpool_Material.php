@@ -715,6 +715,31 @@ class Materialpool_Material {
 		return get_metadata( 'post', $post->ID, 'material_cover_url', true );
 	}
 
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+	static public function cover_facet_html() {
+        $url = '';
+        $data = '';
+        // Prio 1: hochgeladenes Bild
+        $pic  = Materialpool_Material::get_picture();
+        if ( is_array( $pic ) ) {
+            $url = wp_get_attachment_url( $pic[ 'ID' ] );
+        }
+        // Prio 2, Cover URL
+        if ( $url == '' ) {
+            $url  = Materialpool_Material::get_picture_url();
+        }
+
+        if ( $url != '' ) {
+            $data = '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'alignleft materialpool-template-material-picture-facet' ) .'"/>';
+
+        }
+        return $data;
+    }
 
     /**
      *
@@ -996,6 +1021,22 @@ class Materialpool_Material {
         return get_metadata( 'post', $post->ID, 'material_organisation', false );
     }
 
+    /**
+     *
+     * @since 0.0.1
+     * @access public
+     * @filters materialpool-template-material-autor
+     */
+    static public function organisation_facet_html () {
+        $verweise = Materialpool_Material::get_organisation();
+        $data = '';
+        foreach ( $verweise as $verweis ) {
+            if ( $verweis != '' )
+                $data .= '<span class="facet-tag">' . $verweis[ 'post_title' ] . '</span>';
+        }
+        return $data;
+    }
+
 
     /**
      *
@@ -1058,6 +1099,62 @@ class Materialpool_Material {
         }
         return $data;
     }
+
+
+
+    /**
+     *
+     * @since 0.0.1
+     * @access public
+     * @filters materialpool-template-material-autor
+     */
+    static public function bildungsstufe_facet_html () {
+        global $post;
+        $data = '';
+        $bildungsstufe = get_metadata( 'post', $post->ID, 'material_bildungsstufe' );
+        if ( sizeof( $bildungsstufe ) == 1 ) {
+            if ( $bildungsstufe[ 0 ] !== false ) {
+                $data .= '<span class="facet-tag">' . $bildungsstufe[ 0 ][ 'name' ] .'</span>';
+            } else {
+                $data = "";
+            }
+        } else {
+            foreach ( $bildungsstufe as $bildung ) {
+                $data .= '<span class="facet-tag">' . $bildung[ 'name' ] .'</span>';
+            }
+        }
+        return $data;
+    }
+
+
+
+
+
+    /**
+     *
+     * @since 0.0.1
+     * @access public
+     * @filters materialpool-template-material-autor
+     */
+    static public function inklusion_facet_html () {
+        global $post;
+        $data = '';
+        $bildungsstufe = get_metadata( 'post', $post->ID, 'material_inklusion' );
+        if ( sizeof( $bildungsstufe ) == 1 ) {
+            if ( $bildungsstufe[ 0 ] !== false ) {
+                $data .= '<span class="facet-tag">' . $bildungsstufe[ 0 ][ 'name' ] .'</span>';
+            } else {
+                $data = "";
+            }
+        } else {
+            foreach ( $bildungsstufe as $bildung ) {
+                $data .= '<span class="facet-tag">' . $bildung[ 'name' ] .'</span>';
+            }
+        }
+        return $data;
+    }
+
+
 
     /**
      *
@@ -1158,5 +1255,13 @@ class Materialpool_Material {
             }
         }
         return $arr;
+    }
+
+    static public function rating_facet_html() {
+        global $post;
+        if (function_exists( 'the_ratings_results' )) {
+            return '<span class="facet-tag">' . the_ratings_results( $post->ID )  . '</span>';
+        }
+
     }
 }
