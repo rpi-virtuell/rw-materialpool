@@ -680,14 +680,25 @@ class Materialpool_Material {
      */
     static public function picture_html() {
         $pic  = Materialpool_Material::get_picture();
+        $data = '';
 	    if ( is_array( $pic ) ) {
 		    $url = wp_get_attachment_url( $pic[ 'ID' ] );
-		    echo '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'materialpool-template-material-picture' ) .'"/>';
+		    $data =  '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'materialpool-template-material-picture' ) .'"/>';
 	    }
-	    $url = Materialpool_Material::get_picture_url();
-	    if ( $url != '') {
-		    echo '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'materialpool-template-material-picture' ) .'"/>';
-	    }
+	    if ( $data == '' ) {
+	        $url = Materialpool_Material::get_picture_url();
+	        if ( $url != '')  {
+		        $data =  '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'materialpool-template-material-picture' ) .'"/>';
+	        }
+        }
+        if ( $data == '' ) {
+            $url = Materialpool_Material::get_screenshot();
+            if ( $url != '')  {
+                $data =  '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'materialpool-template-material-picture' ) .'"/>';
+            }
+        }
+
+	    echo $data;
 
     }
 
@@ -715,6 +726,21 @@ class Materialpool_Material {
 		return get_metadata( 'post', $post->ID, 'material_cover_url', true );
 	}
 
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_screenshot() {
+        global $post;
+
+        return get_metadata( 'post', $post->ID, 'material_screenshot', true );
+    }
+
+
+
     /**
      *
      * @since 0.0.1
@@ -733,7 +759,10 @@ class Materialpool_Material {
         if ( $url == '' ) {
             $url  = Materialpool_Material::get_picture_url();
         }
-
+        // Prio 3, Screenshot URL
+        if ( $url == '' ) {
+            $url  = Materialpool_Material::get_screenshot();
+        }
         if ( $url != '' ) {
             $data = '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'alignleft materialpool-template-material-picture-facet' ) .'"/>';
 
