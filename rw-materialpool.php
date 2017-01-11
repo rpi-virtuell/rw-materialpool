@@ -568,3 +568,10 @@ function materialpool_pods_material_metaboxes ( $type, $name ) {
 }
 
 
+function mb_endsWith($check, $endStr) {
+    if (!is_string($check) || !is_string($endStr) || mb_strlen($check)<mb_strlen($endStr)) {
+        return false;
+    }
+
+    return (mb_substr($check, mb_strlen($check)-mb_strlen($endStr), mb_strlen($endStr)) === $endStr);
+}

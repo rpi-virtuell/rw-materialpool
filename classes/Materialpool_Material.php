@@ -1190,6 +1190,24 @@ class Materialpool_Material {
      * @access public
      * @return mixed
      */
+    static public function is_viewer() {
+        global $post;
+
+        $back = false;
+        $url =  get_metadata( 'post', $post->ID, 'material_url', true );
+        if ( mb_endsWith($url, '.pdf' ) ) {
+            $back = true;
+        }
+
+        return $back;
+    }
+
+
+    /**
+     * @since 0.0.1
+     * @access public
+     * @return mixed
+     */
     static public function get_schlagworte() {
         global $post;
 
