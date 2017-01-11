@@ -285,7 +285,14 @@ class Materialpool {
      */
     public static function my_action_callback_mp_get_html() {
         $url =  esc_url_raw( $_POST['site'] );
-        $response =  wp_remote_get( $url);
+        $args = array(
+            'user-agent' => 'Mozilla/5.0 (compatible; Materialpool; +'.home_url().')',
+            'timeout'     => 30,
+        );
+        $response =  wp_remote_get( $url, $args );
+        if ( is_wp_error( $response) ) {
+            wp_die;
+        }
         $body = $response['body'];
         libxml_use_internal_errors(true);
         $doc = new DomDocument();
@@ -319,6 +326,7 @@ class Materialpool {
 
         $args = array(
             'user-agent' => 'Mozilla/5.0 (compatible; Materialpool; +'.home_url().')',
+            'timeout'     => 30,
         );
         $response =  wp_remote_get( $url, $args );
         if (  ! is_wp_error( $response ) ) {
