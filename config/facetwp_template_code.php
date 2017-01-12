@@ -16,12 +16,15 @@
         </div>
         <div class="facet-treffer-content">
             <h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
-            <p><?php echo  Materialpool_Material::cover_facet_html(); ?><?php Materialpool_Material::shortdescription(); ?><br>
-            <?php echo wp_trim_words(  wp_strip_all_tags ( Materialpool_Material::get_description() )) ; ?>
+            <p class="search-head">
+                <?php echo Materialpool_Material::organisation_facet_html(); ?><br>
+                <?php echo Materialpool_Material::autor_facet_html(); ?>
+            </p>
+            <p class="search-description">
+                <?php echo  Materialpool_Material::cover_facet_html(); ?><?php Materialpool_Material::shortdescription(); ?><br>
+                <?php echo wp_trim_words(  wp_strip_all_tags ( Materialpool_Material::get_description() )) ; ?>
             </p>
             <div class="facet-tags">
-                <?php echo Materialpool_Material::autor_facet_html(); ?>
-                <?php echo Materialpool_Material::organisation_facet_html(); ?>
                 <?php echo Materialpool_Material::bildungsstufe_facet_html(); ?>
                 <?php echo Materialpool_Material::inklusion_facet_html(); ?>
                 <?php echo Materialpool_Material::rating_facet_html(); ?>

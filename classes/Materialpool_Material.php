@@ -1061,8 +1061,12 @@ class Materialpool_Material {
         $data = '';
         foreach ( $verweise as $verweis ) {
             if ( $verweis != '' )
-                $data .= '<span class="facet-tag">' . $verweis[ 'post_title' ] . '</span>';
+                if ( $data != '') {
+                    $data .= ', ';
+                }
+                $data .= $verweis[ 'post_title' ];
         }
+        $data = "<span class='search-organisation'>" . $data . "</span>";
         return $data;
     }
 
@@ -1124,8 +1128,12 @@ class Materialpool_Material {
         $data = '';
         foreach ( $verweise as $verweis ) {
             if ( $verweis != '' )
-            $data .= '<span class="facet-tag">' . $verweis[ 'post_title' ] . '</span>';
+                if ( $data != '') {
+                    $data .= ', ';
+                }
+            $data .= $verweis[ 'post_title' ];
         }
+        $data = "<span class='search-autor'>" . $data . "</span>";
         return $data;
     }
 
@@ -1139,17 +1147,23 @@ class Materialpool_Material {
      */
     static public function bildungsstufe_facet_html () {
         global $post;
+
+        $url =  parse_url( $_SERVER[ 'REQUEST_URI' ], PHP_URL_PATH );
         $data = '';
         $bildungsstufe = get_metadata( 'post', $post->ID, 'material_bildungsstufe' );
         if ( sizeof( $bildungsstufe ) == 1 ) {
             if ( $bildungsstufe[ 0 ] !== false ) {
-                $data .= '<span class="facet-tag">' . $bildungsstufe[ 0 ][ 'name' ] .'</span>';
-            } else {
-                $data = "";
+                if ( $bildungsstufe[ 0 ][ 'parent'] != 0 ) {
+                    $link = add_query_arg( 'fwp_bildungsstufe', $bildungsstufe[0][ 'slug' ], $url );
+                    $data .= '<span class="facet-tag"><a href="' . $link . '">' . $bildungsstufe[0][ 'name' ] .'</a></span>';
+                }
             }
         } else {
             foreach ( $bildungsstufe as $bildung ) {
-                $data .= '<span class="facet-tag">' . $bildung[ 'name' ] .'</span>';
+                if ( $bildung[ 'parent'] != 0 ) {
+                    $link = add_query_arg( 'fwp_bildungsstufe', $bildung[ 'slug' ], $url );
+                    $data .= '<span class="facet-tag"><a href="' . $link . '">' . $bildung[ 'name' ] .'</a></span>';
+                }
             }
         }
         return $data;
