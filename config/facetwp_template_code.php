@@ -15,7 +15,7 @@
             </ul>
         </div>
         <div class="facet-treffer-content">
-            <h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
+            <h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a><?php echo Materialpool_Material::rating_facet_html(); ?></h2>
             <p class="search-head">
                 <?php echo Materialpool_Material::organisation_facet_html(); ?><br>
                 <?php echo Materialpool_Material::autor_facet_html(); ?>
@@ -27,9 +27,9 @@
             <div class="facet-tags">
                 <?php echo Materialpool_Material::bildungsstufe_facet_html(); ?>
                 <?php echo Materialpool_Material::inklusion_facet_html(); ?>
-                <?php echo Materialpool_Material::rating_facet_html(); ?>
+
             </div><div style="clear: both;"></div>
-            <p class="schlagworte"><strong>Schlagworte: </strong> <?php echo Materialpool_Material::get_schlagworte(); ?>
+            <p class="schlagworte"><strong>Schlagworte: </strong> <?php echo Materialpool_Material::get_schlagworte_html(); ?>
 
         </div><div class="clear"></div>
 

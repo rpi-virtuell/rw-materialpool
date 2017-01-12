@@ -763,7 +763,7 @@ class Materialpool_Material {
         if ( $url == '' ) {
             $url  = Materialpool_Material::get_screenshot();
         }
-        if ( $url != '' ) {
+        if ( $url != '' && trim( $url)  != '' ) {
             $data = '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'alignleft materialpool-template-material-picture-facet' ) .'"/>';
 
         }
@@ -1125,6 +1125,7 @@ class Materialpool_Material {
      */
     static public function autor_facet_html () {
         $verweise = Materialpool_Material::get_autor();
+        $url =  parse_url( $_SERVER[ 'REQUEST_URI' ], PHP_URL_PATH );
         $data = '';
         foreach ( $verweise as $verweis ) {
             if ( $verweis != '' )
@@ -1181,17 +1182,20 @@ class Materialpool_Material {
      */
     static public function inklusion_facet_html () {
         global $post;
+        $url =  parse_url( $_SERVER[ 'REQUEST_URI' ], PHP_URL_PATH );
         $data = '';
         $bildungsstufe = get_metadata( 'post', $post->ID, 'material_inklusion' );
         if ( sizeof( $bildungsstufe ) == 1 ) {
             if ( $bildungsstufe[ 0 ] !== false ) {
-                $data .= '<span class="facet-tag">' . $bildungsstufe[ 0 ][ 'name' ] .'</span>';
+                $link = add_query_arg( 'fwp_bildungsstufe', $bildungsstufe[0][ 'slug' ], $url );
+                $data .= '<span class="facet-tag"><a href="' . $link . '">' . $bildungsstufe[0][ 'name' ] .'</a></span>';
             } else {
                 $data = "";
             }
         } else {
             foreach ( $bildungsstufe as $bildung ) {
-                $data .= '<span class="facet-tag">' . $bildung[ 'name' ] .'</span>';
+                $link = add_query_arg( 'fwp_bildungsstufe', $bildung[ 'slug' ], $url );
+                $data .= '<span class="facet-tag"><a href="' . $link . '">' . $bildung[ 'name' ] .'</a></span>';
             }
         }
         return $data;
@@ -1273,6 +1277,34 @@ class Materialpool_Material {
     }
 
     /**
+     * @since 0.0.1
+     * @access public
+     * @return mixed
+     */
+    static public function get_schlagworte_html() {
+        global $post;
+        $url =  parse_url( $_SERVER[ 'REQUEST_URI' ], PHP_URL_PATH );
+        $data = '';
+        $schlagworte = get_metadata( 'post', $post->ID, 'material_schlagworte' );
+        if ( sizeof( $schlagworte ) == 1 ) {
+            if ( $schlagworte[ 0 ] !== false ) {
+                $link = add_query_arg( 'fwp_schlagworte', $schlagworte[0][ 'slug' ], $url );
+                if ( $data != '') $data .= ', ';
+                $data .= '<a href="' . $link . '">' . $schlagworte[0][ 'name' ] .'</a>';
+            } else {
+                $data = "";
+            }
+        } else {
+            foreach ( $schlagworte as $schlagwort ) {
+                $link = add_query_arg( 'fwp_schlagworte', $schlagwort[ 'slug' ], $url );
+                if ( $data != '') $data .= ', ';
+                $data .= '<a href="' . $link . '">' . $schlagwort[ 'name' ] .'</a>';
+            }
+        }
+        return $data;
+    }
+
+    /**
      *
      * @since 0.0.1
      * @access	public
@@ -1321,7 +1353,7 @@ class Materialpool_Material {
     static public function rating_facet_html() {
         global $post;
         if (function_exists( 'the_ratings_results' )) {
-            return '<span class="facet-tag">' . the_ratings_results( $post->ID )  . '</span>';
+            return '<span class="facet-rating">' . the_ratings_results( $post->ID )  . '</span>';
         }
 
     }
