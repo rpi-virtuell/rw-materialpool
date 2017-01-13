@@ -779,7 +779,7 @@ class Materialpool_Material {
             $url  = Materialpool_Material::get_screenshot();
         }
         if ( $url != '' && trim( $url)  != '' ) {
-            $data = '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'materialpool-template-material-picture-facet' ) .'"/>';
+            $data = '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'alignleft materialpool-template-material-picture-facet' ) .'"/>';
 
         }
         return $data;
