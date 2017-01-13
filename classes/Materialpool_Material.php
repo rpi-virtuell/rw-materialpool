@@ -540,6 +540,21 @@ class Materialpool_Material {
         return get_metadata( 'post', $post->ID, 'material_beschreibung', true );
     }
 
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function description_footer() {
+        global $post;
+
+        $user = get_user_by( 'ID', $post->post_author );
+        $ts = strtotime( $post->post_date );
+        echo "Im Materialpool eingetragen: " . date( 'd.m.Y', $ts) ." von " . $user->display_name;
+    }
+
     /**
      *
      * @since 0.0.1
@@ -764,7 +779,7 @@ class Materialpool_Material {
             $url  = Materialpool_Material::get_screenshot();
         }
         if ( $url != '' && trim( $url)  != '' ) {
-            $data = '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'alignleft materialpool-template-material-picture-facet' ) .'"/>';
+            $data = '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'materialpool-template-material-picture-facet' ) .'"/>';
 
         }
         return $data;
@@ -1041,6 +1056,27 @@ class Materialpool_Material {
     /**
      *
      * @since 0.0.1
+     * @access public
+     * @filters materialpool-template-material-verweise
+     */
+    static public function organisation_html_cover () {
+        $verweise = Materialpool_Material::get_organisation();
+        foreach ( $verweise as $verweis ) {
+            $url = get_permalink( $verweis[ 'ID' ] );
+            $logo = get_metadata( 'post', $verweis[ 'ID' ], 'organisation_logo_url', true );
+            echo "<div class='materialpool-template-material-organisation'>";
+            if ( $logo != '') {
+                echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-organisation-logo' ) .'"><img src="' . $logo . '"></a><br>';
+            }
+            echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-organisation' ) .'">' . $verweis[ 'post_title' ] . '</a><br>';
+            echo "</div>";
+        }
+    }
+
+
+    /**
+     *
+     * @since 0.0.1
      * @access	public
      *
      */
@@ -1116,6 +1152,27 @@ class Materialpool_Material {
 
         }
     }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access public
+     * @filters materialpool-template-material-autor
+     */
+    static public function autor_html_picture () {
+        $verweise = Materialpool_Material::get_autor();
+        foreach ( $verweise as $verweis ) {
+            $url = get_permalink( $verweis[ 'ID' ] );
+            $logo = get_metadata( 'post', $verweis[ 'ID' ], 'autor_bild_url', true );
+            echo "<div class='materialpool-template-material-organisation'>";
+            if ( $logo != '') {
+                echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-autor-logo' ) .'"><img  class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-autor-logo' ) .'" src="' . $logo . '"></a><br>';
+            }
+            echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-autor', 'materialpool-template-material-autor' ) .'">' . $verweis[ 'post_title' ] . '</a><br>';
+
+        }
+    }
+
 
     /**
      *
@@ -1249,6 +1306,24 @@ class Materialpool_Material {
         return $back;
     }
 
+    /**
+     * @since 0.0.1
+     * @access public
+     * @return mixed
+     */
+    static public function is_download() {
+        global $post;
+
+        $back = false;
+        $url =  get_metadata( 'post', $post->ID, 'material_url', true );
+        if ( mb_endsWith($url, '.pdf' ) ) {
+            $back = true;
+        }
+
+        return $back;
+    }
+
+
 
     /**
      * @since 0.0.1
@@ -1356,5 +1431,23 @@ class Materialpool_Material {
             return '<span class="facet-rating">' . the_ratings_results( $post->ID )  . '</span>';
         }
 
+    }
+
+    static public function cta_link() {
+        global $post;
+
+        if ( self::is_download() ) {
+            $text = "Material herunterladen";
+        } else {
+            $text = "Zum Material";
+        }
+         return "<a class='cta-button' href='". self::get_url() ."'>".$text."</a>";
+    }
+
+    static public function cta_url2clipboard() {
+        global $post;
+
+        $back = "<a class='cta-button copyurl'>URL in Zwischenablage</a> <script> jQuery(document).ready(function(){ var clipboard = new Clipboard('.copyurl', { text: function() { return '". self::get_url() ."'; } }); clipboard.on('success', function(e) { console.log(e);}); clipboard.on('error', function(e) { console.log(e); });}); </script>";
+        return $back;
     }
 }
