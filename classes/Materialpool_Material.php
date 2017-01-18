@@ -693,21 +693,23 @@ class Materialpool_Material {
      * @filters materialpool-template-material-picture
      *
      */
-    static public function picture_html() {
-        $pic  = Materialpool_Material::get_picture();
+    static public function picture_html( $id = null ) {
+        global $post;
+        if ( $id == null ) $id = $post->ID;
+        $pic  = Materialpool_Material::get_picture( $id );
         $data = '';
 	    if ( is_array( $pic ) ) {
 		    $url = wp_get_attachment_url( $pic[ 'ID' ] );
 		    $data =  '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'materialpool-template-material-picture' ) .'"/>';
 	    }
 	    if ( $data == '' ) {
-	        $url = Materialpool_Material::get_picture_url();
+	        $url = Materialpool_Material::get_picture_url( $id );
 	        if ( $url != '')  {
 		        $data =  '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'materialpool-template-material-picture' ) .'"/>';
 	        }
         }
         if ( $data == '' ) {
-            $url = Materialpool_Material::get_screenshot();
+            $url = Materialpool_Material::get_screenshot( $id );
             if ( $url != '')  {
                 $data =  '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'materialpool-template-material-picture' ) .'"/>';
             }
@@ -723,10 +725,11 @@ class Materialpool_Material {
      * @access	public
      *
      */
-    static public function get_picture() {
+    static public function get_picture( $id = null ) {
         global $post;
+        if ( $id == null ) $id = $post->ID;
 
-        return get_metadata( 'post', $post->ID, 'material_cover', true );
+        return get_metadata( 'post', $id, 'material_cover', true );
     }
 
 	/**
@@ -735,10 +738,11 @@ class Materialpool_Material {
 	 * @access	public
 	 *
 	 */
-	static public function get_picture_url() {
+	static public function get_picture_url( $id = null ) {
 		global $post;
+        if ( $id == null ) $id = $post->ID;
 
-		return get_metadata( 'post', $post->ID, 'material_cover_url', true );
+		return get_metadata( 'post', $id, 'material_cover_url', true );
 	}
 
 
@@ -748,10 +752,11 @@ class Materialpool_Material {
      * @access	public
      *
      */
-    static public function get_screenshot() {
+    static public function get_screenshot( $id = null ) {
         global $post;
+        if ( $id == null ) $id = $post->ID;
 
-        return get_metadata( 'post', $post->ID, 'material_screenshot', true );
+        return get_metadata( 'post', $id, 'material_screenshot', true );
     }
 
 
@@ -762,21 +767,24 @@ class Materialpool_Material {
      * @access	public
      *
      */
-	static public function cover_facet_html() {
-        $url = '';
+	static public function cover_facet_html( $id = null) {
+        global $post;
+        if ( $id == null ) $id = $post->ID;
+
+	    $url = '';
         $data = '';
         // Prio 1: hochgeladenes Bild
-        $pic  = Materialpool_Material::get_picture();
+        $pic  = Materialpool_Material::get_picture( $id );
         if ( is_array( $pic ) ) {
             $url = wp_get_attachment_url( $pic[ 'ID' ] );
         }
         // Prio 2, Cover URL
         if ( $url == '' ) {
-            $url  = Materialpool_Material::get_picture_url();
+            $url  = Materialpool_Material::get_picture_url( $id );
         }
         // Prio 3, Screenshot URL
         if ( $url == '' ) {
-            $url  = Materialpool_Material::get_screenshot();
+            $url  = Materialpool_Material::get_screenshot( $id );
         }
         if ( $url != '' && trim( $url)  != '' ) {
             $data = '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'alignleft materialpool-template-material-picture-facet' ) .'"/>';

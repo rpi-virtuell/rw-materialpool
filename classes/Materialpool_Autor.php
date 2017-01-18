@@ -555,6 +555,29 @@ class Materialpool_Autor {
 		}
 	}
 
+
+    /**
+     *
+     * @since 0.0.1
+     * @access public
+     * @filters materialpool-template-material-verweise
+     */
+    static public function organisation_html_cover () {
+        $organistionen = Materialpool_Autor::get_organisationen();
+        foreach ( $organistionen as $organisation ) {
+            $url = get_permalink( $organisation[ 'ID' ] );
+            $logo = get_metadata( 'post', $organisation[ 'ID' ], 'organisation_logo_url', true );
+            echo "<div class='materialpool-template-autor-organisation'>";
+            if ( $logo != '') {
+                echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-organisation-logo' ) .'"><img src="' . $logo . '"></a><br>';
+            }
+            echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-organisation' ) .'">' . $organisation[ 'post_title' ] . '</a><br>';
+            echo "</div>";
+        }
+    }
+
+
+
 	/**
 	 *
 	 * @since 0.0.1
@@ -581,4 +604,29 @@ class Materialpool_Autor {
 
 		}
 	}
+
+
+    /**
+     *
+     * @since 0.0.1
+     * @access public
+     * @filters materialpool-template-material-verweise
+     */
+    static public function materialien_html_cover () {
+        $materialien = Materialpool_Autor::get_materialien();
+        foreach ( $materialien as $material ) {
+            $url = get_permalink( $material[ 'ID' ] );
+            $logo = Materialpool_Material::cover_facet_html( $material[ 'ID' ] );
+            echo "<div class='materialpool-template-autor-material'>";
+            echo "<div class='materialpool-template-autor-material-logo'>";
+            if ( $logo != '') {
+                echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-autor-cover-', 'materialpool-template-material-material-cover' ) .'">' . $logo . '</a><br>';
+            }
+            echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-autor', 'materialpool-template-material-autor' ) .'">' . $material[ 'post_title' ] . '</a><br>';
+            echo "</div>";
+            echo "</div>";
+        }
+    }
+
+
 }

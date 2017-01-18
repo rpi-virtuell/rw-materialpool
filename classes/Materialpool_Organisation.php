@@ -484,4 +484,38 @@ class Materialpool_Organisation {
 
         return get_metadata( 'post', $post->ID, 'organisation_material', false );
     }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access public
+     * @filters materialpool-template-material-autor
+     */
+    static public function autor_html_picture () {
+        $verweise = Materialpool_Organisation::get_autor();
+        foreach ( $verweise as $verweis ) {
+            $url = get_permalink( $verweis[ 'ID' ] );
+            $logo = get_metadata( 'post', $verweis[ 'ID' ], 'autor_bild_url', true );
+            echo "<div class='materialpool-template-autor-organisation'>";
+            if ( $logo != '') {
+                echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-autor-logo' ) .'"><img  class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-autor-logo' ) .'" src="' . $logo . '"></a><br>';
+            }
+            echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-autor', 'materialpool-template-material-autor' ) .'">' . $verweis[ 'post_title' ] . '</a><br>';
+            echo "</div>";
+        }
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_autor() {
+        global $post;
+
+        return get_metadata( 'post', $post->ID, 'organisation_autor', false );
+    }
+
+
 }
