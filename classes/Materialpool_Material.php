@@ -793,6 +793,43 @@ class Materialpool_Material {
         return $data;
     }
 
+
+
+
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function cover_facet_html_noallign( $id = null) {
+        global $post;
+        if ( $id == null ) $id = $post->ID;
+
+        $url = '';
+        $data = '';
+        // Prio 1: hochgeladenes Bild
+        $pic  = Materialpool_Material::get_picture( $id );
+        if ( is_array( $pic ) ) {
+            $url = wp_get_attachment_url( $pic[ 'ID' ] );
+        }
+        // Prio 2, Cover URL
+        if ( $url == '' ) {
+            $url  = Materialpool_Material::get_picture_url( $id );
+        }
+        // Prio 3, Screenshot URL
+        if ( $url == '' ) {
+            $url  = Materialpool_Material::get_screenshot( $id );
+        }
+        if ( $url != '' && trim( $url)  != '' ) {
+            $data = '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'materialpool-template-material-picture-facet' ) .'"/>';
+
+        }
+        return $data;
+    }
+
+
     /**
      *
      * @since 0.0.1
