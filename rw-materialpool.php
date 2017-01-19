@@ -152,8 +152,10 @@ class Materialpool {
         add_action( 'add_meta_boxes',  array( 'Materialpool_Material', 'add_metaboxes' ) );
 
         add_filter( 'tl_tplc_external_files', array( 'Materialpool_Material', 'add_template_check_external_files' ) );
+        add_action( 'init', array( 'Materialpool', 'get_crossdomain_viewer_url' ) );
 
-
+        remove_shortcode( 'viewerjs', 'viewerjs_shortcode_handler');
+        add_shortcode( 'viewerjs', array( 'Materialpool', 'viewerjs_shortcode_handler' ) );
         /*
          * Register as Class method throws an error
          */
@@ -537,6 +539,50 @@ class Materialpool {
             printf(__('<link rel="%1$s" type="%2$s" href="%3$s" />'),"alternate","application/rss+xml",$feed);
         }
     }
+
+    /**
+     *
+     */
+    function get_crossdomain_viewer_url(){
+        global $wp_version;
+
+        if(isset($_GET['vsviewer_url'])){
+            $url = $_GET['vsviewer_url'];
+
+
+            //@todo check url in materialpool
+
+            $file_name=substr (strrchr ($url, "/"), 1);
+
+            $args = array(
+                'user-agent'  => 'rpi-virtuell/' . $wp_version . '; ' . home_url(),
+            );
+            $response = wp_remote_get( $url, $args );
+            if( is_array($response) ) {
+                header("Content-type:application/pdf");
+                header("Content-Disposition:inline;filename='$file_name'");
+                print $response['body'];
+                die();
+            }
+        }
+    }
+
+    function viewerjs_shortcode_handler($args) {
+        global $viewerjs_plugin_url;
+        $document_url = home_url().'/?vsviewer_url='.$args[0];
+        $options = get_option('ViewerJS_PluginSettings');
+        $iframe_width = $options['width'];
+        $iframe_height = $options['height'];
+        return "<iframe src=\"$viewerjs_plugin_url" .
+            '#' . $document_url .'" '.
+            "width=\"$iframe_width\" ".
+            "height=\"$iframe_height\" ".
+            'style="border: 1px solid black; border-radius: 5px;" '.
+            'webkitallowfullscreen="true" '.
+            'mozallowfullscreen="true"></iframe>
+			<p class="viewerjsurlmeta">Quelle: <span class="viewerjsurl">'.$args[0].'</span></p>';
+    }
+
 
 }
 

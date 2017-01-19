@@ -653,6 +653,20 @@ class Materialpool_Material {
         echo Materialpool_Material::get_url();
     }
 
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function url_shorten() {
+        $url =  parse_url ( Materialpool_Material::get_url() );
+        if ( $url !== false ) {
+            echo $url[ 'host' ];
+        }
+
+    }
     /**
      *
      * @since 0.0.1
@@ -1346,6 +1360,24 @@ class Materialpool_Material {
         $url =  get_metadata( 'post', $post->ID, 'material_url', true );
         if ( mb_endsWith($url, '.pdf' ) ) {
             $back = true;
+        }
+
+        return $back;
+    }
+
+
+    /**
+     * @since 0.0.1
+     * @access public
+     * @return mixed
+     */
+    static public function is_embed() {
+        global $post;
+
+        $back = true;
+        $url =  wp_oembed_get( get_metadata( 'post', $post->ID, 'material_url', true )) ;
+        if ($url === false ) {
+            $back = false;
         }
 
         return $back;
