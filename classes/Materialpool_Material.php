@@ -1031,6 +1031,21 @@ class Materialpool_Material {
 		}
 	}
 
+    /**
+     *
+     * @since 0.0.1
+     * @access public
+     *
+     */
+    static public function has_verweise () {
+        $back = false;
+        $verweise = Materialpool_Material::get_verweise();
+        if ( is_array( $verweise ) ) {
+            $back = true;
+        }
+        return $back;
+    }
+
 	/**
 	 *
 	 * @since 0.0.1
@@ -1046,7 +1061,22 @@ class Materialpool_Material {
 		}
 	}
 
-	/**
+
+    /**
+     *
+     * @since 0.0.1
+     * @access public
+     * @filters materialpool-template-material-verweise
+     */
+    static public function get_verweise_ids () {
+        $back = array();
+        $verweise = Materialpool_Material::get_verweise();
+        foreach ( $verweise as $verweis ) {
+            $back[] = $verweis[ 'ID' ];
+        }
+        return $back;
+    }
+    /**
 	 *
 	 * @since 0.0.1
 	 * @access	public
