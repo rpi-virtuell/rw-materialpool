@@ -1155,10 +1155,15 @@ class Materialpool_Material {
             $logo = get_metadata( 'post', $verweis[ 'ID' ], 'organisation_logo_url', true );
             echo "<div class='materialpool-template-material-organisation'>";
             if ( $logo != '') {
-                echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-organisation-logo' ) .'"><img src="' . $logo . '"></a><br>';
+                //echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-organisation-logo' ) .'"><img src="' . $logo . '"></a>';
+                echo '<a href="' . $url . '" style="background-image:url(\'' . $logo . '\')" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-organisation-logo' ) .'"></a>';
+
             }
-            echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-organisation' ) .'">' . $verweis[ 'post_title' ] . '</a><br>';
+            echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-organisation' ) .'">' . $verweis[ 'post_title' ] . '</a>';
             echo "</div>";
+
+
+
         }
     }
 
@@ -1255,7 +1260,8 @@ class Materialpool_Material {
             $logo = get_metadata( 'post', $verweis[ 'ID' ], 'autor_bild_url', true );
 
             if ( $logo != '') {
-                echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-autor-logo' ) .'"><img  class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-autor-logo' ) .'" src="' . $logo . '"></a>';
+                //echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-autor-logo' ) .'"><img  class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-autor-logo' ) .'" src="' . $logo . '"></a>';
+                echo '<a href="' . $url . '" style="background-image:url(\'' . $logo . '\')" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-autor-logo' ) .'"></a>';
             }
             echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-autor', 'materialpool-template-material-autor' ) .'">' . $verweis[ 'post_title' ] . '</a>';
 
