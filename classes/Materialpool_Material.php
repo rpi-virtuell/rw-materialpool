@@ -1253,11 +1253,11 @@ class Materialpool_Material {
         foreach ( $verweise as $verweis ) {
             $url = get_permalink( $verweis[ 'ID' ] );
             $logo = get_metadata( 'post', $verweis[ 'ID' ], 'autor_bild_url', true );
-            echo "<div class='materialpool-template-material-organisation'>";
+
             if ( $logo != '') {
-                echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-autor-logo' ) .'"><img  class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-autor-logo' ) .'" src="' . $logo . '"></a><br>';
+                echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-autor-logo' ) .'"><img  class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-autor-logo' ) .'" src="' . $logo . '"></a>';
             }
-            echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-autor', 'materialpool-template-material-autor' ) .'">' . $verweis[ 'post_title' ] . '</a><br>';
+            echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-autor', 'materialpool-template-material-autor' ) .'">' . $verweis[ 'post_title' ] . '</a>';
 
         }
     }
@@ -1316,7 +1316,29 @@ class Materialpool_Material {
         return $data;
     }
 
+    /**
+     *
+     * @since 0.0.1
+     * @access public
+     * @return  commaseparated bildungssufen
+     */
+    static public function get_bildungsstufen () {
+        global $post;
 
+        $url =  parse_url( $_SERVER[ 'REQUEST_URI' ], PHP_URL_PATH );
+        $data = '';
+        $bildungsstufe = get_metadata( 'post', $post->ID, 'material_bildungsstufe' );
+        foreach ( $bildungsstufe as $bildung ) {
+            if ( $bildung[ 'parent'] != 0 ) {
+                $data[] =  $bildung[ 'name' ] ;
+            }
+        }
+        return implode(', ', $data);
+    }
+
+    static public function bildungsstufen () {
+        return self::get_bildungsstufen();
+    }
 
 
 
