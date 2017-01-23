@@ -20,7 +20,7 @@ class Materialpool_Material {
     static public function load_template($template) {
         global $post;
 
-        if ($post->post_type == "material"){
+        if ($post->post_type == "material" && !is_embed() ){
             if ( is_single() ) {
                 if ( $theme_file = locate_template( array ( 'materialpool/single-material.php' ) ) ) {
                     $template_path = $theme_file;
