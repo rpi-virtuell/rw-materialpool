@@ -246,8 +246,16 @@ class Materialpool {
         remove_all_actions( 'do_feed_rss2' );
         add_action( 'do_feed_rss2', array( 'Materialpool', 'material_feed_rss2') , 10, 1 );
 
+        add_action( 'init', array( 'Materialpool', 'custom_oembed_providers' ) , 10, 1 );
+
         do_action( 'materialpool_init' );
 	}
+
+
+
+    function custom_oembed_providers() {
+        wp_oembed_add_provider( 'http://learningapps.org/*', 'http://learningapps.org/oembed.php' );
+    }
 
 
     function material_feed_rss2( $for_comments ) {
