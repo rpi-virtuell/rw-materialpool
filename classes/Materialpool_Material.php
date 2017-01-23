@@ -81,20 +81,22 @@ class Materialpool_Material {
      * @var     int     $post_id        ID of the current post
      */
     static public function cpt_list_column( $column_name, $post_id ) {
-
+        $data = '';
         if ( $column_name == 'material-autor' ) {
             $autors = get_metadata( 'post', $post_id, 'material_autoren' );
             if ( sizeof( $autors ) == 1 ) {
                 if ( $autors[ 0 ] !== false ) {
-                    $post = get_post( $autors[ 0 ][ 'ID' ] );
-                    $data .= '<a href="' . get_edit_post_link( $autors[ 0 ][ 'ID' ] ) . '">' . $post->post_title .'</a><br>';
+                    $vorname = get_post_meta($autors[ 0 ][ 'ID' ], 'autor_vorname', true );
+                    $nachname = get_post_meta($autors[ 0 ][ 'ID' ], 'autor_nachname', true );
+                    $data .= '<a href="' . get_edit_post_link( $autors[ 0 ][ 'ID' ] ) . '">' . $vorname. ' '. $nachname .'</a><br>';
                 } else {
                     $data = "";
                 }
             } else {
                 foreach ( $autors as $autor ) {
-                    $post = get_post( $autor[ 'ID' ] );
-                    $data .= '<a href="' . get_edit_post_link( $autor[ 'ID' ] ) . '">' . $post->post_title .'</a><br>';
+                    $vorname = get_post_meta($autor[ 'ID' ], 'autor_vorname', true );
+                    $nachname = get_post_meta($autor[ 'ID' ], 'autor_nachname', true );
+                    $data .= '<a href="' . get_edit_post_link( $autor[ 'ID' ] ) . '">' . $vorname. ' '. $nachname .'</a><br>';
                 }
             }
         }
@@ -350,8 +352,9 @@ class Materialpool_Material {
             }
         }
         foreach ( $autoren_ids as $autoren_id ) {
-            $autoren_meta = get_post( $autoren_id );
-            add_post_meta( $post_id, 'material_autor_facet', $autoren_meta->post_title );
+            $vorname = get_post_meta($autoren_id, 'autor_vorname', true );
+            $nachname = get_post_meta($autoren_id, 'autor_nachname', true );
+            add_post_meta( $post_id, 'material_autor_facet', $vorname . ' ' . $nachname );
         }
 
         // Organisationen für FacetWP speichern
@@ -1210,7 +1213,9 @@ class Materialpool_Material {
     static public function autor () {
         $verweise = Materialpool_Material::get_autor();
         foreach ( $verweise as $verweis ) {
-            echo $verweis[ 'post_title' ] . '<br>';
+            $vorname = get_post_meta($verweis[ 'ID' ], 'autor_vorname', true );
+            $nachname = get_post_meta($verweis[ 'ID' ], 'autor_nachname', true );
+            echo $vorname. ' ' . $nachname . '<br>';
         }
     }
 
@@ -1227,7 +1232,9 @@ class Materialpool_Material {
             if ($count > 0 ) {
                 echo ", ";
             }
-            echo $verweis[ 'post_title' ];
+            $vorname = get_post_meta($verweis[ 'ID' ], 'autor_vorname', true );
+            $nachname = get_post_meta($verweis[ 'ID' ], 'autor_nachname', true );
+            echo $vorname . ' ' . $nachname;
             $count++;
         }
     }
@@ -1242,7 +1249,9 @@ class Materialpool_Material {
         $verweise = Materialpool_Material::get_autor();
         foreach ( $verweise as $verweis ) {
             $url = get_permalink( $verweis[ 'ID' ] );
-            echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-autor', 'materialpool-template-material-autor' ) .'">' . $verweis[ 'post_title' ] . '</a><br>';
+            $vorname = get_post_meta($verweis[ 'ID' ], 'autor_vorname', true );
+            $nachname = get_post_meta($verweis[ 'ID' ], 'autor_nachname', true );
+            echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-autor', 'materialpool-template-material-autor' ) .'">' . $vorname .' '. $nachname . '</a><br>';
 
         }
     }
@@ -1258,12 +1267,13 @@ class Materialpool_Material {
         foreach ( $verweise as $verweis ) {
             $url = get_permalink( $verweis[ 'ID' ] );
             $logo = get_metadata( 'post', $verweis[ 'ID' ], 'autor_bild_url', true );
-
+            $vorname = get_post_meta($verweis[ 'ID' ], 'autor_vorname', true );
+            $nachname = get_post_meta($verweis[ 'ID' ], 'autor_nachname', true );
             if ( $logo != '') {
                 //echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-autor-logo' ) .'"><img  class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-autor-logo' ) .'" src="' . $logo . '"></a>';
                 echo '<a href="' . $url . '" style="background-image:url(\'' . $logo . '\')" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-autor-logo' ) .'"></a>';
             }
-            echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-autor', 'materialpool-template-material-autor' ) .'">' . $verweis[ 'post_title' ] . '</a>';
+            echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-autor', 'materialpool-template-material-autor' ) .'">' . $vorname . ' '. $nachname . '</a>';
 
         }
     }
@@ -1284,7 +1294,9 @@ class Materialpool_Material {
                 if ( $data != '') {
                     $data .= ', ';
                 }
-            $data .= $verweis[ 'post_title' ];
+            $vorname = get_post_meta($verweis[ 'ID' ], 'autor_vorname', true );
+            $nachname = get_post_meta($verweis[ 'ID' ], 'autor_nachname', true );
+            $data .=  $vorname .' '. $nachname;
         }
         $data = "<span class='search-autor'>" . $data . "</span>";
         return $data;

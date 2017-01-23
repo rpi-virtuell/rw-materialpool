@@ -298,12 +298,14 @@ class Materialpool_Autor {
         $post_parent = wp_get_post_parent_id( $post_id );
 
 	    if ( "autor" != $post_type ) return;
-
+        $anmerkung = '';
     	$firstname = $_POST[ 'pods_meta_autor_vorname' ];
 	    $lastname = $_POST[ 'pods_meta_autor_nachname' ];
 	    $anmerkung = $_POST[ 'pods_meta_autor_uniq' ];
-
-	    $intern_name = $firstname . ' ' . $lastname . ' - ' . $anmerkung;
+        if ( $anmerkung != '' ) {
+            $anmerkung = ' - ' . $anmerkung;
+        }
+	    $intern_name = $firstname . ' ' . $lastname .  $anmerkung;
 	    $name = $firstname . ' ' . $lastname;
 
         $wpdb->update(
