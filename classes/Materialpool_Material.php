@@ -535,12 +535,32 @@ class Materialpool_Material {
      *
      * @since 0.0.1
      * @access	public
+     * @filters materialpool_material_description_interim_autor
+     * @filters materialpool_material_description_interim_organisation
+     * @filters materialpool_material_description_interim_start
+     * @filters materialpool_material_description_interim_separator
+     * @filters materialpool_material_description_interim_end
      *
      */
     static public function get_description() {
         global $post;
 
-        return get_metadata( 'post', $post->ID, 'material_beschreibung', true );
+        $description = get_metadata( 'post', $post->ID, 'material_beschreibung', true );
+        if ( ! self::has_autor() ) {
+            $autor = apply_filters( 'materialpool_material_description_interim_autor', get_metadata( 'post', $post->ID, 'material_autor_interim', true ) );
+        }
+        if ( ! self::has_organisation() ) {
+            $organisation = apply_filters( 'materialpool_material_description_interim_organisation', get_metadata( 'post', $post->ID, 'material_organisation_interim', true ) );
+        }
+        $addon = apply_filters( 'materialpool_material_description_interim_start', '<div class="">' );
+        $addon .= $autor;
+        if ( $autor != '' && $organisation != '' ) {
+            $addon .= apply_filters( 'materialpool_material_description_interim_separator', ', ' );
+        }
+        $addon .= $organisation;
+        $addon .= apply_filters( 'materialpool_material_description_interim_end', '</div>' );
+        return $description . $addon;
+
     }
 
 
@@ -1174,6 +1194,25 @@ class Materialpool_Material {
     /**
      *
      * @since 0.0.1
+     * @access public
+     *
+     */
+    static public function has_organisation () {
+        $verweise = Materialpool_Material::get_organisation();
+        $back = true;
+        if ( $verweise === false) {
+            $back = false;
+        }
+        if ( is_array( $verweise ) && $verweise[ 0 ] === false ) {
+            $back = false;
+        }
+
+        return $back;
+    }
+
+    /**
+     *
+     * @since 0.0.1
      * @access	public
      *
      */
@@ -1201,6 +1240,27 @@ class Materialpool_Material {
         }
         $data = "<span class='search-organisation'>" . $data . "</span>";
         return $data;
+    }
+
+
+
+    /**
+     *
+     * @since 0.0.1
+     * @access public
+     *
+     */
+    static public function has_autor () {
+        $verweise = Materialpool_Material::get_autor();
+        $back = true;
+        if ( $verweise === false) {
+            $back = false;
+        }
+        if ( is_array( $verweise ) && $verweise[ 0 ] === false ) {
+            $back = false;
+        }
+
+        return $back;
     }
 
 
