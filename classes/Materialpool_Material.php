@@ -1063,7 +1063,7 @@ class Materialpool_Material {
     static public function has_verweise () {
         $back = false;
         $verweise = Materialpool_Material::get_verweise();
-        if ( is_array( $verweise ) && count( $verweise) > 0 ) {
+        if ( is_array( $verweise ) && $verweise[0] ) {
             $back = true;
         }
         return $back;
