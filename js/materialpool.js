@@ -540,3 +540,115 @@ jQuery(document).ready(function(){
     })
 });
 
+/**
+ *
+ * check material title
+ *
+ */
+
+jQuery(document).ready(function(){
+    jQuery("#pods-form-ui-pods-meta-material-titel").focusout( function() {
+        var title = jQuery("#pods-form-ui-pods-meta-material-titel").val();
+        if ( title == '' ) return;
+        var ret;
+        var data = {
+            'action': 'mp_check_material_title',
+            'title': title
+        };
+        jQuery.post(ajaxurl, data, function(response) {
+
+            ret = response;
+            if ( ret != ''  ) {
+                obj = jQuery.parseJSON( ret );
+                if ( obj.status == 'exists' ) {
+
+                    jQuery("body").append("<div id='" + obj.status + "' title='Hinweis'>" +
+                        "<p align='center'>Dieser Titel wirde schon verwendet bei diesem <a  target='_blank' href='" + obj.material_url + "'>Material</a>.</p>" +
+                        "</div>");
+
+                    jQuery( "#" + obj.status ).dialog({
+                        dialogClass: "no-close",
+                        buttons: [
+                            {
+                                text: "OK",
+                                click: function() {
+                                    jQuery( this ).dialog( "close" );
+                                }
+                            }
+                        ],
+                        width: 450,
+                        height: 280,
+                        show: {
+                            effect: "blind",
+                            duration: 1000
+                        },
+                        hide: {
+                            effect: "blind",
+                            duration: 800
+                        }
+                    });
+
+                    return;
+                }
+
+            }
+        });
+    });
+});
+
+/**
+ *
+ * check organisation title
+ *
+ */
+
+jQuery(document).ready(function(){
+    jQuery("#pods-form-ui-pods-meta-organisation-titel").focusout( function() {
+        var title = jQuery("#pods-form-ui-pods-meta-organisation-titel").val();
+        if ( title == '' ) return;
+        var ret;
+        var data = {
+            'action': 'mp_check_organisation_title',
+            'title': title
+        };
+        jQuery.post(ajaxurl, data, function(response) {
+
+            ret = response;
+            if ( ret != ''  ) {
+                obj = jQuery.parseJSON( ret );
+                if ( obj.status == 'exists' ) {
+
+                    jQuery("body").append("<div id='" + obj.status + "' title='Hinweis'>" +
+                        "<p align='center'>Dieser Titel wirde schon verwendet bei dieser <a  target='_blank' href='" + obj.material_url + "'>Organisation</a>.</p>" +
+                        "</div>");
+
+                    jQuery( "#" + obj.status ).dialog({
+                        dialogClass: "no-close",
+                        buttons: [
+                            {
+                                text: "OK",
+                                click: function() {
+                                    jQuery( this ).dialog( "close" );
+                                }
+                            }
+                        ],
+                        width: 450,
+                        height: 280,
+                        show: {
+                            effect: "blind",
+                            duration: 1000
+                        },
+                        hide: {
+                            effect: "blind",
+                            duration: 800
+                        }
+                    });
+
+                    return;
+                }
+
+            }
+        });
+    });
+});
+

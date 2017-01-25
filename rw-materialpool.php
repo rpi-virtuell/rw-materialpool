@@ -242,6 +242,9 @@ class Materialpool {
         add_action( 'wp_ajax_mp_get_html',  array( 'Materialpool', 'my_action_callback_mp_get_html' ) );
         add_action( 'wp_ajax_mp_get_description',  array( 'Materialpool', 'my_action_callback_mp_get_description' ) );
         add_action( 'wp_ajax_mp_check_url',  array( 'Materialpool', 'my_action_callback_mp_check_url' ) );
+        add_action( 'wp_ajax_mp_check_material_title',  array( 'Materialpool', 'my_action_callback_mp_check_material_title' ) );
+        add_action( 'wp_ajax_mp_check_organisation_title',  array( 'Materialpool', 'my_action_callback_mp_check_organisation_title' ) );
+
         add_action( 'wp_head', array( 'Materialpool',  'promote_feeds' ) );
         remove_all_actions( 'do_feed_rss2' );
         add_action( 'do_feed_rss2', array( 'Materialpool', 'material_feed_rss2') , 10, 1 );
@@ -424,7 +427,63 @@ class Materialpool {
         wp_die();
     }
 
-	/**
+
+    /**
+     *
+     * @since   0.0.1
+     * @access  public
+     * @filters materialpool-ajax-check-material-title
+     */
+    public static function my_action_callback_mp_check_material_title() {
+        global $wpdb;
+        $title =  $_POST['title'];
+        $anzahl = $wpdb->get_col( $wpdb->prepare( "SELECT count( meta_id ) as anzahl  FROM  $wpdb->postmeta WHERE meta_key = %s and meta_value = %s", 'material_titel', $title) );
+        if ( is_array( $anzahl ) && $anzahl[ 0 ] == 0 ) {
+            $data = array(
+                'status' => "ok"
+            );
+        } else {
+            $post_id = $wpdb->get_var( $wpdb->prepare( "SELECT post_id   FROM  $wpdb->postmeta WHERE meta_key = %s and meta_value = %s", 'material_titel', $title) );
+            $data = array(
+                'status' => "exists",
+                'material_url' => get_permalink( $post_id )
+            );
+
+        }
+        echo json_encode( apply_filters( 'materialpool-ajax-check-material-title', $data  ) );
+        wp_die();
+    }
+
+
+
+    /**
+     *
+     * @since   0.0.1
+     * @access  public
+     * @filters materialpool-ajax-check-organisation-title
+     */
+    public static function my_action_callback_mp_check_organisation_title() {
+        global $wpdb;
+        $title =  $_POST['title'];
+        $anzahl = $wpdb->get_col( $wpdb->prepare( "SELECT count( meta_id ) as anzahl  FROM  $wpdb->postmeta WHERE meta_key = %s and meta_value = %s", 'organisation_titel', $title) );
+        if ( is_array( $anzahl ) && $anzahl[ 0 ] == 0 ) {
+            $data = array(
+                'status' => "ok"
+            );
+        } else {
+            $post_id = $wpdb->get_var( $wpdb->prepare( "SELECT post_id   FROM  $wpdb->postmeta WHERE meta_key = %s and meta_value = %s", 'organisation_titel', $title) );
+            $data = array(
+                'status' => "exists",
+                'material_url' => get_permalink( $post_id )
+            );
+
+        }
+        echo json_encode( apply_filters( 'materialpool-ajax-check-organisation-title', $data  ) );
+        wp_die();
+    }
+
+
+    /**
 	 * Creates an Instance of this Class
 	 *
 	 * @since   0.0.1

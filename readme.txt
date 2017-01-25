@@ -74,6 +74,8 @@ materialpool-buddypress-member-url
 
 materialpool-ajax-get-description
 materialpool-ajax-check-url
+materialpool-ajax-check-material-title
+materialpool-ajax-check-organisation-title
 
 = Actions =
 
