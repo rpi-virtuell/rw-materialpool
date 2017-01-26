@@ -91,29 +91,6 @@ function set_altersstufe( id ) {
 
 
 
-/**
- *
- * Set Defauls for new Spezial
- *
- * @todo Zuordnungen im Backend Pflegbar
- */
-
-jQuery(document).ready(function(){
-    var url = document.URL;
-    if ( url.indexOf( 'post-new.php?post_type=spezial') !== -1 ) {
-        // set verfuegbarkeit
-        jQuery("#pods-form-ui-pods-meta-spezial-verfuegbarkeit").val("51");
-
-        // set sprache
-        jQuery(".pods-form-ui-field-name-pods-meta-spezial-sprache").each( function() {
-            if ( jQuery(this).val() == 4 ) {
-                // checkbox deutsch
-                jQuery(this).attr('checked', true);
-            }
-        })
-    }
-});
-
 
 jQuery(document).ready(function(){
     jQuery(".pods-form-ui-field-name-pods-meta-spezial-bildungsstufe").click( function() {
