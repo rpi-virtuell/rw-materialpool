@@ -571,7 +571,7 @@ class Materialpool_Autor {
             $logo = get_metadata( 'post', $organisation[ 'ID' ], 'organisation_logo_url', true );
             echo "<div class='materialpool-template-autor-organisation'>";
             if ( $logo != '') {
-                echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-organisation-logo' ) .'"><img src="' . $logo . '"></a><br>';
+                echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-organisation-logo' ) .'" style="background-image: url(\''. $logo .'\')"><img src="' . $logo . '"></a>';
             }
             echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-organisation' ) .'">' . $organisation[ 'post_title' ] . '</a><br>';
             echo "</div>";
