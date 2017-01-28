@@ -630,5 +630,20 @@ class Materialpool_Autor {
         }
     }
 
+    /**
+     *
+     * @since 0.0.1
+     * @access public
+     * @return number of materials from the current Autor
+     */
+    static public function get_count_posts_per_autor ($autor_id = 0) {
+        global $post,$wpdb;
+
+        $autor_id = ($autor_id>0)?$autor_id:$post->ID;
+        $query = "select count(pod_id) from {$wpdb->prefix}podsrel where item_id = %d and field_id in ( select ID from wp_posts where post_type ='_pods_field' and post_name='autor_material')" ;
+        $query = $wpdb->prepare($query, $autor_id);
+        $count = $wpdb->get_var($query);
+        return $count;
+    }
 
 }
