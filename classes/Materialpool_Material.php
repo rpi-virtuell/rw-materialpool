@@ -549,6 +549,7 @@ class Materialpool_Material {
      *
      * @since 0.0.1
      * @access	public
+     * @filters materialpool_material_description
      * @filters materialpool_material_description_interim_autor
      * @filters materialpool_material_description_interim_organisation
      * @filters materialpool_material_description_interim_start
@@ -560,6 +561,7 @@ class Materialpool_Material {
         global $post;
 
         $description = get_metadata( 'post', $post->ID, 'material_beschreibung', true );
+        $description = apply_filters( 'materialpool_material_description', $description, $post );
         if ( ! self::has_autor() ) {
             $autor = apply_filters( 'materialpool_material_description_interim_autor', get_metadata( 'post', $post->ID, 'material_autor_interim', true ) );
         }
