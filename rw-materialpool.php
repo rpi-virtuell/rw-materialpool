@@ -134,6 +134,9 @@ class Materialpool {
 
 		// Register Stylesheets
         add_action( 'admin_enqueue_scripts', array( 'Materialpool', 'register_admin_plugin_styles' ) );
+        if ( is_user_logged_in() ) {
+            add_action( 'wp_enqueue_scripts', array( 'Materialpool', 'register_frontend_plugin_styles' ) );
+        }
 
         // Add Filter & Actions for Dashboard
 		add_action( 'admin_menu', array( 'Materialpool_Dashboard', 'register_dashboard_page' ), 8 );
@@ -227,6 +230,10 @@ class Materialpool {
         add_filter( 'searchwp_extensions',          array( 'SearchWP_Materialpool_Synonyms', 'register' ), 10 );
         add_filter( 'searchwp_term_in',             array( 'SearchWP_Materialpool_Synonyms', 'find_synonyms' ), 10, 3 );
 
+        // Add Filter & Actions for Themenseiten
+        add_filter( 'template_include', array( 'Materialpool_Themenseite', 'load_template' ) );
+        add_filter( 'tl_tplc_external_files', array( 'Materialpool_Themenseite', 'add_template_check_external_files' ) );
+
 
         // Add Filter & Actions for 3Party Stuff
         add_action( 'rate_post',                            array( 'Materialpool_FacetWP', 'reindex_post_after_ajax_rating'),10, 2 );
@@ -238,12 +245,17 @@ class Materialpool {
 
 
         pods_register_field_type( 'screenshot', self::$plugin_base_dir . 'classes/Materialpool_Pods_Screenshot.php' );
+        pods_register_field_type( 'facette', self::$plugin_base_dir . 'classes/Materialpool_Pods_Facette.php' );
 
         add_action( 'wp_ajax_mp_get_html',  array( 'Materialpool', 'my_action_callback_mp_get_html' ) );
         add_action( 'wp_ajax_mp_get_description',  array( 'Materialpool', 'my_action_callback_mp_get_description' ) );
         add_action( 'wp_ajax_mp_check_url',  array( 'Materialpool', 'my_action_callback_mp_check_url' ) );
         add_action( 'wp_ajax_mp_check_material_title',  array( 'Materialpool', 'my_action_callback_mp_check_material_title' ) );
         add_action( 'wp_ajax_mp_check_organisation_title',  array( 'Materialpool', 'my_action_callback_mp_check_organisation_title' ) );
+        add_action( 'wp_ajax_mp_add_thema',  array( 'Materialpool', 'my_action_callback_mp_add_thema' ) );
+        add_action( 'wp_ajax_mp_remove_thema',  array( 'Materialpool', 'my_action_callback_mp_remove_thema' ) );
+
+
 
         add_action( 'wp_head', array( 'Materialpool',  'promote_feeds' ) );
         remove_all_actions( 'do_feed_rss2' );
@@ -256,12 +268,12 @@ class Materialpool {
 
 
 
-    function custom_oembed_providers() {
+    public static function custom_oembed_providers() {
         wp_oembed_add_provider( 'http://learningapps.org/*', 'http://learningapps.org/oembed.php' );
     }
 
 
-    function material_feed_rss2( $for_comments ) {
+    public static function material_feed_rss2( $for_comments ) {
         if( get_query_var( 'post_type' ) == 'material' ) {
             $rss_template = Materialpool::$plugin_base_dir . 'templates/feed-material-rss2.php';
             if (file_exists($rss_template)) {
@@ -484,6 +496,60 @@ class Materialpool {
 
 
     /**
+     *
+     * @since   0.0.1
+     * @access  public
+     * @filters materialpool-ajax-check-organisation-title
+     */
+    public static function my_action_callback_mp_add_thema() {
+        global $wpdb;
+        $gruppe = (int) $_POST['gruppe'];
+        $post = (int) $_POST['post'];
+
+        $thema = Materialpool_Material::get_themengruppe( $gruppe );
+        $auswahlArr = explode( ',', $thema[ 'auswahl'] );
+
+        if ( !in_array( $post, $auswahlArr ) ) {
+            $auswahlArr[] = $post;
+            $auswahl = implode( ',', $auswahlArr );
+            $query_str 		= $wpdb->prepare('UPDATE `' . $wpdb->prefix . 'pods_themenseitengruppen`	 	  
+										 SET auswahl=%s WHERE id = %s ', $auswahl, $gruppe );
+            $items_arr 		= $wpdb->get_results( $query_str , ARRAY_A );
+        }
+        wp_die();
+    }
+
+
+    /**
+     *
+     * @since   0.0.1
+     * @access  public
+     * @filters materialpool-ajax-check-organisation-title
+     */
+    public static function my_action_callback_mp_remove_thema() {
+        global $wpdb;
+        $gruppe = (int) $_POST['gruppe'];
+        $post = (int) $_POST['post'];
+
+        $thema = Materialpool_Material::get_themengruppe( $gruppe );
+        $auswahlArr = explode( ',', $thema[ 'auswahl'] );
+
+        if ( in_array( $post, $auswahlArr ) ) {
+            $auswahlArr = array_flip($auswahlArr);
+            unset($auswahlArr[ $post ]);
+            $auswahlArr = array_flip($auswahlArr);
+            $auswahl = implode( ',', $auswahlArr );
+            $query_str 		= $wpdb->prepare('UPDATE `' . $wpdb->prefix . 'pods_themenseitengruppen`	 	  
+										 SET auswahl=%s WHERE id = %s ', $auswahl, $gruppe );
+            $items_arr 		= $wpdb->get_results( $query_str , ARRAY_A );
+        }
+        wp_die();
+    }
+
+
+
+
+    /**
 	 * Creates an Instance of this Class
 	 *
 	 * @since   0.0.1
@@ -596,7 +662,19 @@ class Materialpool {
     }
 
 
-    function promote_feeds() {
+    /**
+     *
+     * @since   0.0.1
+     * @access  public
+     *
+     * Register and enqueue style sheet.
+     */
+    public static function register_frontend_plugin_styles() {
+        wp_enqueue_script( 'rw-materialpool-js', Materialpool::$plugin_url . 'js/materialpool-frontend.js' );
+    }
+
+
+    public static function promote_feeds() {
         $post_types = array('material', 'organisation', 'autor');
         foreach( $post_types as $post_type ) {
             $feed = get_post_type_archive_feed_link( $post_type );
@@ -610,7 +688,7 @@ class Materialpool {
     /**
      *
      */
-    function get_crossdomain_viewer_url(){
+    public static function get_crossdomain_viewer_url(){
         global $wp_version;
 
         if(isset($_GET['vsviewer_url'])){
@@ -634,7 +712,7 @@ class Materialpool {
         }
     }
 
-    function viewerjs_shortcode_handler($args) {
+    public static function viewerjs_shortcode_handler($args) {
         global $viewerjs_plugin_url;
         $document_url = home_url().'/?vsviewer_url='.$args[0];
         $options = get_option('ViewerJS_PluginSettings');

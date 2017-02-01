@@ -544,6 +544,8 @@ class Materialpool_Material {
      */
     static public function get_description() {
         global $post;
+        $autor = '';
+        $organisation = '';
 
         $description = get_metadata( 'post', $post->ID, 'material_beschreibung', true );
         if ( ! self::has_autor() ) {
@@ -1613,6 +1615,12 @@ class Materialpool_Material {
         return get_metadata( 'post', $post->ID, 'material_jahr', true );
     }
 
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
     static public function get_mediatyps_root() {
         global $post;
 
@@ -1632,6 +1640,12 @@ class Materialpool_Material {
         return $arr;
     }
 
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
     static public function rating_facet_html() {
         global $post;
         if (function_exists( 'the_ratings_results' )) {
@@ -1640,6 +1654,12 @@ class Materialpool_Material {
 
     }
 
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
     static public function cta_link() {
         global $post;
 
@@ -1651,10 +1671,123 @@ class Materialpool_Material {
          return "<a class='cta-button' href='". self::get_url() ."'>".$text."</a>";
     }
 
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
     static public function cta_url2clipboard() {
         global $post;
 
         $back = "<a class='cta-button copyurl'>URL in Zwischenablage</a> <script> jQuery(document).ready(function(){ var clipboard = new Clipboard('.copyurl', { text: function() { return '". self::get_url() ."'; } }); clipboard.on('success', function(e) { console.log(e);}); clipboard.on('error', function(e) { console.log(e); });}); </script>";
+        return $back;
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     * @param $id
+     * @return string
+     */
+    static public function get_themengruppentitel( $id ) {
+        global $wpdb;
+        $query_str 		= $wpdb->prepare('SELECT *  FROM `' . $wpdb->prefix . 'pods_themenseitengruppen`	 	  
+										 WHERE id = %s ', $id );
+        $items_arr 		= $wpdb->get_results( $query_str , ARRAY_A );
+        return $items_arr[ 0 ][ 'gruppe' ];
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     * @param $id
+     * @return string
+     */
+    static public function get_themengruppenbeschreibung( $id ) {
+        global $wpdb;
+        $query_str 		= $wpdb->prepare('SELECT *  FROM `' . $wpdb->prefix . 'pods_themenseitengruppen`	 	  
+										 WHERE id = %s ', $id );
+        $items_arr 		= $wpdb->get_results( $query_str , ARRAY_A );
+        return $items_arr[ 0 ][ 'titel_der_gruppe' ];
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     * @param $id
+     * @return array
+     */
+    static public function get_themengruppe( $id ) {
+        global $wpdb;
+        $query_str 		= $wpdb->prepare('SELECT *  FROM `' . $wpdb->prefix . 'pods_themenseitengruppen`	 	  
+										 WHERE id = %s ', $id );
+        $items_arr 		= $wpdb->get_results( $query_str , ARRAY_A );
+        return $items_arr[ 0 ];
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     * @param $id
+     * @return string
+     */
+    static public function get_thema( $id ) {
+        $thema = get_post( $id);
+        return $thema->post_title;
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     * @param $id
+     * @return string
+     */
+    static public function cb_themenseite_checked( $id ) {
+        $thema = self::get_themengruppe( $id);
+        $auswahlArr = explode( ',', $thema[ 'auswahl'] );
+        $back ='';
+        if ( in_array( get_the_ID(), $auswahlArr ) ) {
+            $back = "checked='checked' class='uncheck_themenseite' ";
+        } else {
+            $back = " class='check_themenseite' ";
+        }
+        return $back;
+    }
+
+
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     * @return string
+     *
+     */
+    static public function cb_themenseite() {
+        $thema = (int) $_GET[ 'thema'];
+        $gruppe = (int) $_GET[ 'gruppe'];
+        $back = '';
+        if ( $thema == 0 || $gruppe == 0 ) {
+            return $back;
+        }
+        $gruppenname = self::get_themengruppentitel ($gruppe);
+        $themaname = self::get_thema( $thema );
+        if ( is_user_logged_in() ) {  // @todo Rolle abfragen welche nötig ist dafür
+            $back .= '<div class="material-themenseiten-auswahl">';
+            $back .= "<input type='checkbox' " . self::cb_themenseite_checked( $gruppe ) ;
+            $back .= " data-thema='". $thema ."' data-gruppe='". $gruppe ."' data-post='". get_the_ID() ."'";
+            $back .= ">";
+            $back .= "Material der Themenseite '". $themaname ."', Gruppe '" . $gruppenname . "' zuordnen.";
+            $back .= "postID:".get_the_id();
+            $back .= '</div>';
+        }
+
         return $back;
     }
 }
