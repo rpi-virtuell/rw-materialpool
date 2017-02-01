@@ -359,6 +359,7 @@ class Materialpool_Material {
 
         // Organisationen für FacetWP speichern
         delete_post_meta( $post_id, 'material_organisation_facet' );
+        delete_post_meta( $post_id, 'material_alpika_facet' );
         $organisationen = explode( ',', $_POST[ 'pods_meta_material_organisation' ] ) ;
         $organisationen_ids = array();
         if ( is_array( $organisationen ) ) {
@@ -374,8 +375,21 @@ class Materialpool_Material {
             }
         }
         foreach ( $organisationen_ids as $organisationen_id ) {
+            /*organisation title*/
             $organisationen_meta = get_post( $organisationen_id );
             add_post_meta( $post_id, 'material_organisation_facet', $organisationen_meta->post_title );
+
+            /*organisation_alpika*/
+            if(get_post_meta($organisationen_meta->ID,'organisation_alpika', true)){
+                add_post_meta( $post_id, 'material_alpika_facet', 1 );
+            }
+
+            /*organisation_konfession zu material konfessionen hinzugügen*/
+            $konfession = get_post_meta($organisationen_meta->ID,'organisation_konfession', true);
+            if($konfession && isset($konfession['name'])){
+                wp_set_post_tags( $post_id, $konfession['name'], true);
+            }
+
         }
         // Wenn Special, dann MaterialURL auf das Material selbst zeigen lassen.
         if (  $_POST[ 'pods_meta_material_special' ] == 1  ) {
@@ -535,6 +549,7 @@ class Materialpool_Material {
      *
      * @since 0.0.1
      * @access	public
+     * @filters materialpool_material_description
      * @filters materialpool_material_description_interim_autor
      * @filters materialpool_material_description_interim_organisation
      * @filters materialpool_material_description_interim_start
@@ -548,6 +563,7 @@ class Materialpool_Material {
         $organisation = '';
 
         $description = get_metadata( 'post', $post->ID, 'material_beschreibung', true );
+        $description = apply_filters( 'materialpool_material_description', $description, $post );
         if ( ! self::has_autor() ) {
             $autor = apply_filters( 'materialpool_material_description_interim_autor', get_metadata( 'post', $post->ID, 'material_autor_interim', true ) );
         }
@@ -1180,9 +1196,7 @@ class Materialpool_Material {
             $logo = get_metadata( 'post', $verweis[ 'ID' ], 'organisation_logo_url', true );
             echo "<div class='materialpool-template-material-organisation'>";
             if ( $logo != '') {
-                //echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-organisation-logo' ) .'"><img src="' . $logo . '"></a>';
-                echo '<a href="' . $url . '" style="background-image:url(\'' . $logo . '\')" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-organisation-logo' ) .'"></a>';
-
+                echo '<a href="' . $url . '" style="background-image:url(\'' . $logo . '\')" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-organisation-logo' ) .'"><img src="' . $logo . '"></a>';
             }
             echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-organisation' ) .'">' . $verweis[ 'post_title' ] . '</a>';
             echo "</div>";
@@ -1228,17 +1242,17 @@ class Materialpool_Material {
      *
      * @since 0.0.1
      * @access public
-     * @filters materialpool-template-material-autor
+     * @filters materialpool-template-material-organisation
      */
     static public function organisation_facet_html () {
-        $verweise = Materialpool_Material::get_organisation();
+        $organisationen = Materialpool_Material::get_organisation();
         $data = '';
-        foreach ( $verweise as $verweis ) {
-            if ( $verweis != '' )
+        foreach ( $organisationen as $organisation ) {
+            if ( $organisation != '' )
                 if ( $data != '') {
                     $data .= ', ';
                 }
-                $data .= $verweis[ 'post_title' ];
+                $data .= $organisation[ 'post_title' ];
         }
         $data = "<span class='search-organisation'>" . $data . "</span>";
         return $data;
@@ -1479,6 +1493,18 @@ class Materialpool_Material {
 		}
 		return $back;
     }
+
+    /**
+     * @since 0.0.1
+     * @access public
+     * @return bool
+     */
+    static public function is_alpika() {
+        global $post;
+        $alpika =  get_post_meta( $post->ID, 'material_alpika_facet', true );
+        return $alpika?true:false;
+    }
+
 
     /**
      * @since 0.0.1
