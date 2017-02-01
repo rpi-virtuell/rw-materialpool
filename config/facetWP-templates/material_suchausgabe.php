@@ -36,7 +36,7 @@
 
             </div><div style="clear: both;"></div>
             <p class="schlagworte"><strong>Schlagworte: </strong> <?php echo Materialpool_Material::get_schlagworte_html(); ?>
-
+                <?php echo Materialpool_Material::cb_themenseite(); ?>
         </div><div class="clear"></div>
 
     </div>

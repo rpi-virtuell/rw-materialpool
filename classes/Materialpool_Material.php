@@ -1810,7 +1810,6 @@ class Materialpool_Material {
             $back .= " data-thema='". $thema ."' data-gruppe='". $gruppe ."' data-post='". get_the_ID() ."'";
             $back .= ">";
             $back .= "Material der Themenseite '". $themaname ."', Gruppe '" . $gruppenname . "' zuordnen.";
-            $back .= "postID:".get_the_id();
             $back .= '</div>';
         }
 
