@@ -106,7 +106,7 @@ class PodsField_Facette extends PodsField {
          Themengruppe muss gespeichert werden, bevor Material zugeordnet werden kann.
             <?php } else { ?>
 
-        <a href="//materialpool.dev/facetten?thema=<?php echo $pod->data->row[ 'pandarf_parent_post_id'];?>&gruppe=<?php echo $pod->data->id; ?>" target="_blank">Auswahl</a>
+        <a href="//material.rpi-virtuell.de/facetten?thema=<?php echo $pod->data->row[ 'pandarf_parent_post_id'];?>&gruppe=<?php echo $pod->data->id; ?>" target="_blank">Auswahl</a>
         <?php
         }
     }
