@@ -632,3 +632,50 @@ jQuery(document).ready(function(){
 
 
 
+/**
+ * Uncheck Themenseite Backend
+ */
+
+jQuery(document).ready(function(){
+        jQuery('body').on('change', '.uncheck_themenseite', function() {
+        // Data Read
+        var gruppe = jQuery(this).data("gruppe");
+        var post = jQuery(this).data("post");
+        var data = {
+            'action': 'mp_remove_thema_backend',
+            'gruppe': gruppe,
+            'post': post
+        };
+        jQuery.post(ajaxurl, data, function(response) {
+
+            ret = response;
+            jQuery('#material-' + gruppe ).html('');
+            jQuery('#material-' + gruppe ).prepend( ret );
+        });
+
+    })
+});
+
+
+/**
+ * Refresh Themenseite Backend Materialliste
+ */
+
+jQuery(document).ready(function(){
+    jQuery(".themenseite-cb-backend-update").click( function() {
+        // Data Read
+        var gruppe = jQuery(this).data("gruppe");
+        var data = {
+            'action': 'mp_list_thema_backend',
+            'gruppe': gruppe
+        };
+        jQuery.post(ajaxurl, data, function(response) {
+
+            ret = response;
+            jQuery('#material-' + gruppe ).html('');
+            jQuery('#material-' + gruppe ).prepend( ret );
+        });
+
+    })
+});
+

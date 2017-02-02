@@ -254,8 +254,8 @@ class Materialpool {
         add_action( 'wp_ajax_mp_check_organisation_title',  array( 'Materialpool', 'my_action_callback_mp_check_organisation_title' ) );
         add_action( 'wp_ajax_mp_add_thema',  array( 'Materialpool', 'my_action_callback_mp_add_thema' ) );
         add_action( 'wp_ajax_mp_remove_thema',  array( 'Materialpool', 'my_action_callback_mp_remove_thema' ) );
-
-
+        add_action( 'wp_ajax_mp_remove_thema_backend',  array( 'Materialpool', 'my_action_callback_mp_remove_thema_backend' ) );
+        add_action( 'wp_ajax_mp_list_thema_backend',  array( 'Materialpool', 'my_action_callback_mp_list_thema_backend' ) );
 
         add_action( 'wp_head', array( 'Materialpool',  'promote_feeds' ) );
         remove_all_actions( 'do_feed_rss2' );
@@ -546,6 +546,71 @@ class Materialpool {
         wp_die();
     }
 
+
+    /**
+     *
+     * @since   0.0.1
+     * @access  public
+     * @filters materialpool-ajax-check-organisation-title
+     */
+    public static function my_action_callback_mp_remove_thema_backend() {
+        global $wpdb;
+        $gruppe = (int) $_POST['gruppe'];
+        $post = (int) $_POST['post'];
+
+        $thema = Materialpool_Material::get_themengruppe( $gruppe );
+        $auswahlArr = explode( ',', $thema[ 'auswahl'] );
+
+        if ( in_array( $post, $auswahlArr ) ) {
+            $auswahlArr = array_flip($auswahlArr);
+            unset($auswahlArr[ $post ]);
+            $auswahlArr = array_flip($auswahlArr);
+            $auswahl = implode( ',', $auswahlArr );
+            $query_str 		= $wpdb->prepare('UPDATE `' . $wpdb->prefix . 'pods_themenseitengruppen`	 	  
+										 SET auswahl=%s WHERE id = %s ', $auswahl, $gruppe );
+            $items_arr 		= $wpdb->get_results( $query_str , ARRAY_A );
+        }
+
+        $thema = Materialpool_Material::get_themengruppe( $gruppe );
+        foreach ( explode(',', $thema[ 'auswahl'] ) as $materialid ) {
+            $post = get_post( $materialid);
+            if ( is_object( $post) ) {
+                echo "<input type='checkbox' checked='checked' class='uncheck_themenseite  themenseite-cb-backend' ";
+                echo " data-gruppe='". $gruppe  ."' data-post='". $post->ID ."'";
+                echo  ">";
+                echo "<a href='". get_permalink( $post ) . "' target='_new'>" . $post->post_title."</a><br>";
+            }
+        }
+
+        wp_die();
+    }
+
+
+
+
+    /**
+     *
+     * @since   0.0.1
+     * @access  public
+     * @filters materialpool-ajax-check-organisation-title
+     */
+    public static function my_action_callback_mp_list_thema_backend() {
+        global $wpdb;
+        $gruppe = (int) $_POST['gruppe'];
+
+        $thema = Materialpool_Material::get_themengruppe( $gruppe );
+        foreach ( explode(',', $thema[ 'auswahl'] ) as $materialid ) {
+            $post = get_post( $materialid);
+            if ( is_object( $post) ) {
+                echo "<input type='checkbox' checked='checked' class='uncheck_themenseite  themenseite-cb-backend' ";
+                echo " data-gruppe='". $gruppe  ."' data-post='". $post->ID ."'";
+                echo  ">";
+                echo "<a href='". get_permalink( $post ) . "' target='_new'>" . $post->post_title."</a><br>";
+            }
+        }
+
+        wp_die();
+    }
 
 
 

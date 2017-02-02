@@ -59,15 +59,31 @@ class Materialpool_Themenseite {
      * @access	public
      *
      */
-    static public function get_gruppen() {
+    static public function get_gruppen( $id = null) {
         global $post;
+        if ( $id == null ) $id = $post->ID;
         global $wpdb;
         $query_str 		= $wpdb->prepare('SELECT *  FROM `' . $wpdb->prefix . 'pods_themenseitengruppen`	 	  
-										 WHERE pandarf_parent_post_id = %s order by pandarf_order ', $post->ID );
+										 WHERE pandarf_parent_post_id = %s order by pandarf_order ', $id );
         $items_arr 		= $wpdb->get_results( $query_str , ARRAY_A );
         return $items_arr;
     }
 
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_gruppen_by_groupid( $id = null) {
+        global $post;
+        if ( $id == null ) $id = $post->ID;
+        global $wpdb;
+        $query_str 		= $wpdb->prepare('SELECT *  FROM `' . $wpdb->prefix . 'pods_themenseitengruppen`	 	  
+										 WHERE id = %s order by pandarf_order ', $id );
+        $items_arr 		= $wpdb->get_results( $query_str , ARRAY_A );
+        return $items_arr;
+    }
 
 
 

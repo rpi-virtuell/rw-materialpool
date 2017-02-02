@@ -65,3 +65,11 @@ img.materialpool-admin-organisation-pic {
     min-height: 50px;
     font-family: inherit;
 }
+
+
+input.uncheck_themenseite.themenseite-cb-backend {
+    width: auto !important;
+    display:inline;
+    line-height: 1.5em;
+
+}
