@@ -153,6 +153,8 @@ class Materialpool {
         add_filter( 'posts_where', array( 'Materialpool_Material', 'material_list_post_where' ) );
         add_filter( 'posts_distinct', array( 'Materialpool_Material', 'material_list_post_distinct' ) );
         add_action( 'add_meta_boxes',  array( 'Materialpool_Material', 'add_metaboxes' ) );
+        add_action( 'init', array( 'Materialpool_Material', 'custom_post_status' ) );
+        add_action( 'admin_footer-post.php', array( 'Materialpool_Material', 'append_post_status_list' ) );
 
         add_filter( 'tl_tplc_external_files', array( 'Materialpool_Material', 'add_template_check_external_files' ) );
         add_action( 'init', array( 'Materialpool', 'get_crossdomain_viewer_url' ) );

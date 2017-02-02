@@ -163,6 +163,11 @@ class Materialpool_Material {
                 }
             }
         }
+        if ( $column_name == 'material-status' ) {
+            $labels =  get_post_status_object( get_post_status( $post_id) );
+            $data = $labels->label;
+
+        }
 
         echo $data;
     }
@@ -418,6 +423,50 @@ class Materialpool_Material {
         remove_meta_box( 'tagsdiv-sprache' , 'material' , 'normal' );
         remove_meta_box( 'tagsdiv-verfuegbarkeit' , 'material' , 'normal' );
         remove_meta_box( 'tagsdiv-zugaenglichkeit' , 'material' , 'normal' );
+    }
+
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function custom_post_status(){
+        register_post_status( 'vorschlag', array(
+            'label'                     => _x( 'Vorschlag', 'material' ),
+            'public'                    => true,
+            'show_in_admin_all_list'    => false,
+            'show_in_admin_status_list' => true,
+            'label_count'               => _n_noop( 'Vorschlag <span class="count">(%s)</span>', 'Vorschläge <span class="count">(%s)</span>' )
+        ) );
+    }
+
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function append_post_status_list(){
+        global $post;
+        $complete = '';
+        $label = '';
+        if($post->post_type == 'material'){
+            if($post->post_status == 'vorschlag'){
+                $complete = ' selected=\"selected\"';
+                $label = '<span id=\"post-status-display\">Vorschlag</span>';
+            }
+            echo '
+          <script>
+          jQuery(document).ready(function($){
+               $("select#post_status").append("<option value=\"vorschlag\" '.$complete.'>Vorschlag</option>");
+               $(".misc-pub-section label").append("'.$label.'");
+          });
+          </script>
+          ';
+        }
     }
 
     /**
