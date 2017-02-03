@@ -161,8 +161,8 @@ class PodsField_Facette extends PodsField {
      * @since 2.0
      */
     public function pre_save ( $value, $id = null, $name = null, $options = null, $fields = null, $pod = null, $params = null ) {
-
-        return $value;
+        $var = Materialpool_Themenseite::get_gruppen_by_groupid( $id );
+        return $var[ 0 ][ 'auswahl' ];
     }
 
     /**
