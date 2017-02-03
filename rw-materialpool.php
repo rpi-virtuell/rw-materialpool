@@ -134,7 +134,7 @@ class Materialpool {
 
 		// Register Stylesheets
         add_action( 'admin_enqueue_scripts', array( 'Materialpool', 'register_admin_plugin_styles' ) );
-        if ( is_user_logged_in() ) {
+        if ( !is_admin() ) {
             add_action( 'wp_enqueue_scripts', array( 'Materialpool', 'register_frontend_plugin_styles' ) );
         }
 
