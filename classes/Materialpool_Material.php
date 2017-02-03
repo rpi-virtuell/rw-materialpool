@@ -440,6 +440,13 @@ class Materialpool_Material {
             'show_in_admin_status_list' => true,
             'label_count'               => _n_noop( 'Vorschlag <span class="count">(%s)</span>', 'Vorschläge <span class="count">(%s)</span>' )
         ) );
+        register_post_status( 'check', array(
+            'label'                     => _x( 'Überprüfen', 'material' ),
+            'public'                    => true,
+            'show_in_admin_all_list'    => false,
+            'show_in_admin_status_list' => true,
+            'label_count'               => _n_noop( 'Überprüfen <span class="count">(%s)</span>', 'Überprüfen <span class="count">(%s)</span>' )
+        ) );
     }
 
 
@@ -451,18 +458,31 @@ class Materialpool_Material {
      */
     static public function append_post_status_list(){
         global $post;
-        $complete = '';
-        $label = '';
+        $complete1 = '';
+        $label1 = '';
+        $complete2 = '';
+        $label2 = '';
         if($post->post_type == 'material'){
             if($post->post_status == 'vorschlag'){
-                $complete = ' selected=\"selected\"';
-                $label = '<span id=\"post-status-display\">Vorschlag</span>';
+                $complete1 = ' selected=\"selected\"';
+                $label1 = '<span id=\"post-status-display\">Vorschlag</span>';
+            }
+            if($post->post_status == 'check'){
+                $complete2 = ' selected=\"selected\"';
+                $label2 = '<span id=\"post-status-display\">Überprüfen</span>';
             }
             echo '
           <script>
           jQuery(document).ready(function($){
-               $("select#post_status").append("<option value=\"vorschlag\" '.$complete.'>Vorschlag</option>");
-               $(".misc-pub-section label").append("'.$label.'");
+               $("select#post_status").append("<option value=\"vorschlag\" '.$complete1.'>Vorschlag</option>");
+               $("select#post_status").append("<option value=\"check\" '.$complete2.'>Überprüfen</option>");';
+            if($post->post_status == 'vorschlag'){
+                echo '$(".misc-pub-section label").append("'.$label1.'");';
+            }
+            if($post->post_status == 'check') {
+                echo '$(".misc-pub-section label").append("' . $label2 . '");';
+            }
+            echo '
           });
           </script>
           ';
@@ -537,6 +557,37 @@ class Materialpool_Material {
         if ( is_admin() && $pagenow=='edit.php' && $_GET['post_type']=='material' && $_GET['s'] != '') {
             $back = " DISTINCT ";
         }
+        return $back;
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function vorschlag_shortcode( $args ) {
+
+        $back = <<<END
+
+<div class="materialpool-vorschlag">
+    Ich möchte folgendes Material vorschlagen zur Aufnahme in den Materialpool.<br>
+    <div class="materialpool-vorschlag-url">
+        URL: <input type="text" id="vorschlag-url" >
+    </div>
+    <div class="materialpool-vorschlag-text">
+        Beschreibung<br>
+        <textarea id="vorschlag-beschreibung" ></textarea>
+    </div>
+    <br>
+    <button class="materialpool-vorschlag-send">Vorschlagen</button>
+    <div class="materialpool-vorschlag-hinweis">
+        
+    </div>
+</div
+END;
+
+
         return $back;
     }
 

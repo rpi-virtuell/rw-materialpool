@@ -1,8 +1,8 @@
 === RW Materialpool ===
 Contributors: f.staude
 Tags: materialpool
-Requires at least: 4.0
-Tested up to: 4.6.1
+Requires at least: 4.7
+Tested up to: 4.7.2
 Stable tag: 0.0.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -76,6 +76,7 @@ materialpool-ajax-get-description
 materialpool-ajax-check-url
 materialpool-ajax-check-material-title
 materialpool-ajax-check-organisation-title
+materialpool-ajax-add-proposal
 
 = Actions =
 
@@ -86,6 +87,9 @@ materialpool_autoload_unregister
 
 == Defines ==
 
+== Shortcodes ==
+
+material-vorschlag
 
 
 == Installation ==

@@ -158,9 +158,10 @@ class Materialpool {
 
         add_filter( 'tl_tplc_external_files', array( 'Materialpool_Material', 'add_template_check_external_files' ) );
         add_action( 'init', array( 'Materialpool', 'get_crossdomain_viewer_url' ) );
-
+        add_shortcode( 'material-vorschlag', array( 'Materialpool_Material', 'vorschlag_shortcode' ) );
         remove_shortcode( 'viewerjs', 'viewerjs_shortcode_handler');
         add_shortcode( 'viewerjs', array( 'Materialpool', 'viewerjs_shortcode_handler' ) );
+
         /*
          * Register as Class method throws an error
          */
@@ -248,6 +249,7 @@ class Materialpool {
 
         pods_register_field_type( 'screenshot', self::$plugin_base_dir . 'classes/Materialpool_Pods_Screenshot.php' );
         pods_register_field_type( 'facette', self::$plugin_base_dir . 'classes/Materialpool_Pods_Facette.php' );
+        add_action( 'wp_enqueue_scripts', array( 'Materialpool', 'frontend_ajax' ) );
 
         add_action( 'wp_ajax_mp_get_html',  array( 'Materialpool', 'my_action_callback_mp_get_html' ) );
         add_action( 'wp_ajax_mp_get_description',  array( 'Materialpool', 'my_action_callback_mp_get_description' ) );
@@ -258,6 +260,8 @@ class Materialpool {
         add_action( 'wp_ajax_mp_remove_thema',  array( 'Materialpool', 'my_action_callback_mp_remove_thema' ) );
         add_action( 'wp_ajax_mp_remove_thema_backend',  array( 'Materialpool', 'my_action_callback_mp_remove_thema_backend' ) );
         add_action( 'wp_ajax_mp_list_thema_backend',  array( 'Materialpool', 'my_action_callback_mp_list_thema_backend' ) );
+        add_action( 'wp_ajax_mp_add_proposal',  array( 'Materialpool', 'my_action_callback_mp_add_proposal' ) );
+
 
         add_action( 'wp_head', array( 'Materialpool',  'promote_feeds' ) );
         remove_all_actions( 'do_feed_rss2' );
@@ -589,6 +593,41 @@ class Materialpool {
 
 
 
+    /**
+     *
+     * @since   0.0.1
+     * @access  public
+     */
+    public static function my_action_callback_mp_add_proposal() {
+        global $wpdb;
+        $url = esc_url_raw( $_POST['url'] );
+        $description = sanitize_textarea_field( $_POST['description'] );
+
+        $anzahl = $wpdb->get_col( $wpdb->prepare( "SELECT count( meta_id ) as anzahl  FROM  $wpdb->postmeta WHERE meta_key = %s and meta_value = %s", 'material_url', $url) );
+        if ( is_array( $anzahl ) && $anzahl[ 0 ] == 0 ) {
+            remove_action( 'save_post', array( 'Materialpool_Material', 'generate_title') );
+            $back = wp_insert_post(  array(
+                'post_status'   => 'vorschlag',
+                'post_type'     => 'material',
+                'post_title'    => 'Materialvorschlag',
+                'post_author'   => 1,
+                'meta_input'    => array (
+                    'material_url'  => $url,
+                    'material_titel' => 'Materialvorschlag',
+                    'material_beschreibung' => $description
+                )
+            ) );
+            $data = "Vielen Dank f&uuml;r ihren Vorschlag. Ihr Materialvorschlag wird nun Redaktionell geprüft.";
+        } else {
+            $post_id = $wpdb->get_var( $wpdb->prepare( "SELECT post_id   FROM  $wpdb->postmeta WHERE meta_key = %s and meta_value = %s", 'material_url', $url) );
+            $data = "Vielen Dank f&uuml;r ihren Vorschlag. Das <a href='";
+            $data .= get_permalink( $post_id );
+            $data .= "'>Material</a> befindet sich bereits im Materialpool.";
+        }
+        echo ( apply_filters( 'materialpool-ajax-add-proposal', $data  ) );
+        var_dump( $back);
+        wp_die();
+    }
 
     /**
      *
@@ -740,7 +779,11 @@ class Materialpool {
         wp_enqueue_script( 'rw-materialpool-js', Materialpool::$plugin_url . 'js/materialpool-frontend.js' );
     }
 
-
+    /**
+     *
+     * @since   0.0.1
+     * @access  public
+     */
     public static function promote_feeds() {
         $post_types = array('material', 'organisation', 'autor');
         foreach( $post_types as $post_type ) {
@@ -754,6 +797,8 @@ class Materialpool {
 
     /**
      *
+     * @since   0.0.1
+     * @access  public
      */
     public static function get_crossdomain_viewer_url(){
         global $wp_version;
@@ -779,6 +824,11 @@ class Materialpool {
         }
     }
 
+    /**
+     *
+     * @since   0.0.1
+     * @access  public
+     */
     public static function viewerjs_shortcode_handler($args) {
         global $viewerjs_plugin_url;
         $document_url = home_url().'/?vsviewer_url='.$args[0];
