@@ -625,7 +625,6 @@ class Materialpool {
             $data .= "'>Material</a> befindet sich bereits im Materialpool.";
         }
         echo ( apply_filters( 'materialpool-ajax-add-proposal', $data  ) );
-        var_dump( $back);
         wp_die();
     }
 
