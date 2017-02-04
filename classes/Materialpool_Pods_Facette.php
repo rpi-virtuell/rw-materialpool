@@ -106,7 +106,7 @@ class PodsField_Facette extends PodsField {
          Themengruppe muss gespeichert werden, bevor Material zugeordnet werden kann.
             <?php } else { ?>
 
-        <a href="<?php echo site_url(); ?>/facetten?thema=<?php echo $pod->data->row[ 'pandarf_parent_post_id'];?>&gruppe=<?php echo $pod->data->id; ?>" target="_blank">Material zuordnen</a>
+        <a href="<?php echo site_url(); ?>/facettierte-suche?thema=<?php echo $pod->data->row[ 'pandarf_parent_post_id'];?>&gruppe=<?php echo $pod->data->id; ?>" target="_blank">Material zuordnen</a>
         <h2>Material in dieser Gruppe</h2> <p><a  class="themenseite-cb-backend-update" data-gruppe="<?php echo $pod->data->id; ?>">Materialliste aktualisieren</a></p>
             <div id="material-<?php echo $pod->data->id; ?>">
             <?php
