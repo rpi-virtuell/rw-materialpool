@@ -349,6 +349,29 @@ class Materialpool_Organisation {
         return $post->post_title;
     }
 
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function title_long() {
+        echo Materialpool_Organisation::get_title_long();
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_title_long() {
+        global $post;
+
+        return get_metadata( 'post', $post->ID, 'organisation_titel_lang', true );
+    }
+
     /**
      *
      * @since 0.0.1
