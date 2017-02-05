@@ -62,6 +62,10 @@ class Materialpool_Themenseite {
      *
      */
     static public function generate_taxonomy( $post_id ) {
+        $post_type = get_post_type($post_id);
+
+        if ( "themenseite" != $post_type ) return;
+
         // Schlagwort det Themenseite in term_rel speichern
         wp_delete_object_term_relationships( $post_id, 'schlagwort' );
         $cats = explode( ',', $_POST[ 'pods_meta_thema_schlagworte' ] ) ;
