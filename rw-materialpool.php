@@ -236,6 +236,7 @@ class Materialpool {
         // Add Filter & Actions for Themenseiten
         add_filter( 'template_include', array( 'Materialpool_Themenseite', 'load_template' ) );
         add_filter( 'tl_tplc_external_files', array( 'Materialpool_Themenseite', 'add_template_check_external_files' ) );
+        add_action( 'save_post', array( 'Materialpool_Themenseite', 'generate_taxonomy') );
 
 
         // Add Filter & Actions for 3Party Stuff

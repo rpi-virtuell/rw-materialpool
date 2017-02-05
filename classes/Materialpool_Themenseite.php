@@ -40,6 +40,9 @@ class Materialpool_Themenseite {
     }
 
 
+
+
+
     /**
      *
      * @since 0.0.1
@@ -52,7 +55,27 @@ class Materialpool_Themenseite {
         return $checkArray;
     }
 
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function generate_taxonomy( $post_id ) {
+        // Schlagwort det Themenseite in term_rel speichern
+        wp_delete_object_term_relationships( $post_id, 'schlagwort' );
+        $cats = explode( ',', $_POST[ 'pods_meta_thema_schlagworte' ] ) ;
+        if ( is_array( $cats ) ) {
+            foreach ( $cats as $key => $val ) {
+                $cat_ids[] = (int) $val;
+            }
+        }
+        if ( $cats!== null  ) {
+            $cat_ids[] = (int) $cats;
+        }
+        wp_set_object_terms( $post_id, $cat_ids, 'schlagwort', true );
 
+    }
     /**
      *
      * @since 0.0.1
