@@ -13,9 +13,13 @@ return array(
 <?php while ( have_posts() ) : the_post(); ?>
     <div class="facet-treffer<?php echo (Materialpool_Material::is_alpika())?' alpika':'';?><?php echo (Materialpool_Material::is_special())?' special':'';?>">
         <div class="facet-treffer-content">
-            <h4><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h4>
-            <p class="search-description">
+            <?php if (Materialpool_Material::cover_facet_html()  && !in_array(strrchr(Materialpool_Material::get_url(),'.'),array('.pdf','.docx','.doc','.odt')) ):?>
+            <div class="material-cover">
                 <?php echo  Materialpool_Material::cover_facet_html(); ?>
+            </div>
+            <?php endif; ?>
+            <p class="material-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></p>
+            <p class="search-description">
                 <strong><?php Materialpool_Material::shortdescription(); ?></strong><br>
                 <?php //echo wp_trim_words(  wp_strip_all_tags ( Materialpool_Material::get_description() )) ; ?>
             </p>
