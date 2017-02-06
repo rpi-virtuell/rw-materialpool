@@ -519,11 +519,13 @@ class Materialpool_Organisation {
         foreach ( $verweise as $verweis ) {
             $url = get_permalink( $verweis[ 'ID' ] );
             $logo = get_metadata( 'post', $verweis[ 'ID' ], 'autor_bild_url', true );
+
             echo "<div class='materialpool-template-autor-organisation'>";
-            if ( $logo != '') {
-                echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-autor-logo' ) .'"><img  class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-autor-logo' ) .'" src="' . $logo . '"></a><br>';
-            }
-            echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-autor', 'materialpool-template-material-autor' ) .'">' . $verweis[ 'post_title' ] . '</a><br>';
+                if ( $logo != '') {
+                    echo '<a href="' . $url . '" style="background-image:url(\'' . $logo . '\')" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-autor-logo' ) .'"><img  class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-autor-logo' ) .'" src="' . $logo . '"></a>';
+                }
+                echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-autor', 'materialpool-template-material-autor' ) .'">' . $verweis[ 'post_title' ] . '</a>';
+
             echo "</div>";
         }
     }
