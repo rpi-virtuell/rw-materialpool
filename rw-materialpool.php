@@ -855,6 +855,7 @@ if ( class_exists( 'Materialpool' ) ) {
 	add_action( 'plugins_loaded', array( 'Materialpool', 'get_instance' ) );
 
 	require_once 'classes/Materialpool_Autoloader.php';
+
 	Materialpool_Autoloader::register();
 
 	register_activation_hook( __FILE__, array( 'Materialpool_Installation', 'on_activate' ) );

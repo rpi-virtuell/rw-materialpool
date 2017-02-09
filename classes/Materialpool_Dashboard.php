@@ -48,61 +48,181 @@ class Materialpool_Dashboard {
 	 * @since   0.0.1
 	 */
 	static public function dashboard_page_content() {
-		echo "Das soll mal eine Art Materialpool Dashboard werden.";
-	}
+        wp_enqueue_script( 'rw-materialpool-chat', Materialpool::$plugin_url . 'js/chart.bundle.min.js' );
+?>
 
-	/**
-	 * Register Plugin settingspage
-	 *
-	 * Register the plugin settingspage
-	 *
-	 * @since   0.0.1
-	 * @hook    materialpool_dashboard_submenu_args
-	 *
-	 */
-	static public function register_settings_page() {
-		$args = array(
-			'slug'  => 'materialpool',
-			'page_title' => _x( 'Settings', 'Page title', Materialpool::$textdomain ),
-			'menu_title' => _x( 'Settings', 'Menu title', Materialpool::$textdomain ),
-			'capability' => 'manage_options',
-			'menu_slug' => 'materialpool-settings',
-			'callback' => array(
-				'Materialpool_Dashboard',   // Callback class
-				'settings_page_content'         // Callback method
-			)
-		);
-		$args = apply_filters( 'materialpool_dashboard_submenu_args', $args );
-		add_submenu_page(
-			$args[ 'slug' ],      // slug of parentpage
-			$args[ 'page_title' ], //page title
-			$args[ 'menu_title' ], // menu title
-			$args[ 'capability' ],                               // capability
-			$args[ 'menu_slug' ],                       // menu slug
-			$args[ 'callback' ]
-		);
-	}
+        <div class="wrap">
 
-	/**
-	 * Register the Pluginsetings
-	 *
-	 * @since   0.0.1
-	 */
-	static public function register_settings() {
+        <?php self::welcome(); ?>
+
+        </div>
+<?php
 
 	}
 
-	/**
-	 * Output the plugin settingspage content
-	 *
-	 * @since   0.0.1
-	 *
-	 */
-	static public function settings_page_content() {
+    /**
+     * @param string $posttype
+     * @param $date
+     * @return array
+     */
+	static public function  count( $posttype = "post", $date ) {
+        global $wpdb;
 
-		echo '<div class="wrap"><div id="icon-tools" class="icon32"></div>';
-		echo '<h2>My Custom Settings Page</h2>';
-		echo '</div>';
+        $query = $wpdb->prepare( "SELECT COUNT(*) as anzahl FROM {$wpdb->posts} WHERE post_type = %s AND post_status = 'publish' AND post_date < %s ",
+            $posttype, $date
+        );
+        $results = (array) $wpdb->get_results(  $query , ARRAY_A );
+        return $results;
+    }
 
-	}
+    /**
+     *
+     */
+	static public function welcome() {
+	    $material = wp_count_posts( 'material');
+	    $autoren = wp_count_posts( 'autor');
+	    $orga = wp_count_posts( 'organisation');
+	    ?>
+        <div id="welcome-panel" class="welcome-panel">
+            <div class="welcome-panel-content">
+                <h2>Willkommen im Materialpool!</h2>
+                <br>
+                Material: <?php echo $material->publish; ?> <br>
+                Autoren: <?php echo $autoren->publish; ?><br>
+                Organisationen: <?php echo $orga->publish; ?><br>
+                <br>
+            </div>
+        </div>
+
+        <?php self::material_count(); ?>
+        <?php self::autor_count(); ?>
+        <?php self::organisation_count(); ?>
+
+<?php
+    }
+
+    /**
+     *
+     */
+    static public function material_count() {
+        for ( $i = 19; $i >= 0; $i-- ) {
+            $date = mktime (0, 0,0, date("n"), date("j")- ( $i * 7 ) , date("Y"));
+            $back = ( self::count( 'material', date("Y-m-d", $date) ) );
+            $anzahl[] = $back[0][ 'anzahl' ];
+            $datum[] = '"'.date("d.m", $date).'"';
+        }
+        ?>
+        <canvas id="MaterialChart" width="400" height="100"></canvas>
+        <script>
+            jQuery(document).ready(function(){
+                var ctx = document.getElementById("MaterialChart");
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: [ <?php echo implode( ',', $datum ); ?> ],
+                        datasets: [{
+                            label: '# Material',
+                            data: [<?php echo implode( ',', $anzahl ); ?>],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero:true
+                                }
+                            }]
+                        }
+                    }
+                });
+            });
+        </script>
+
+        <?php
+    }
+
+
+    /**
+     *
+     */
+    static public function autor_count() {
+        for ( $i = 19; $i >= 0; $i-- ) {
+            $date = mktime (0, 0,0, date("n"), date("j")- ( $i * 7 ) , date("Y"));
+            $back = ( self::count( 'autor', date("Y-m-d", $date) ) );
+            $anzahl[] = $back[0][ 'anzahl' ];
+            $datum[] = '"'.date("d.m", $date).'"';
+        }
+        ?>
+        <canvas id="AutorChart" width="400" height="100"></canvas>
+        <script>
+            jQuery(document).ready(function(){
+                var ctx = document.getElementById("AutorChart");
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: [ <?php echo implode( ',', $datum ); ?> ],
+                        datasets: [{
+                            label: '# Autoren',
+                            data: [<?php echo implode( ',', $anzahl ); ?>],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero:true
+                                }
+                            }]
+                        }
+                    }
+                });
+            });
+        </script>
+
+        <?php
+    }
+
+    /**
+     *
+     */
+    static public function organisation_count() {
+        for ( $i = 19; $i >= 0; $i-- ) {
+            $date = mktime (0, 0,0, date("n"), date("j")- ( $i * 7 ) , date("Y"));
+            $back = ( self::count( 'organisation', date("Y-m-d", $date) ) );
+            $anzahl[] = $back[0][ 'anzahl' ];
+            $datum[] = '"'.date("d.m", $date).'"';
+        }
+        ?>
+        <canvas id="OrgaChart" width="400" height="100"></canvas>
+        <script>
+            jQuery(document).ready(function(){
+                var ctx = document.getElementById("OrgaChart");
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: [ <?php echo implode( ',', $datum ); ?> ],
+                        datasets: [{
+                            label: '# Organissationen',
+                            data: [<?php echo implode( ',', $anzahl ); ?>],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero:true
+                                }
+                            }]
+                        }
+                    }
+                });
+            });
+        </script>
+
+        <?php
+    }
+
 }
