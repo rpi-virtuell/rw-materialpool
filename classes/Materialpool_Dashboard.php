@@ -204,7 +204,7 @@ class Materialpool_Dashboard {
                     data: {
                         labels: [ <?php echo implode( ',', $datum ); ?> ],
                         datasets: [{
-                            label: '# Organissationen',
+                            label: '# Organisationen',
                             data: [<?php echo implode( ',', $anzahl ); ?>],
                             borderWidth: 1
                         }]
