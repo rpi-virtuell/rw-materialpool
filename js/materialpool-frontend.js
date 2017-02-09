@@ -58,3 +58,14 @@ jQuery(document).ready(function(){
         })
     })
 });
+
+jQuery(window).load( function() {
+    var isIE11 = /Trident.*rv[ :]*11\./.test(navigator.userAgent);
+    var isIE10 = /Trident.*rv[ :]*6\./.test(navigator.userAgent);
+
+    if ( isIE10 || isIE11 ) {
+        jQuery('input, select, textarea, :input').removeAttr('placeholder');
+    }
+});
+
+
