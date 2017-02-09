@@ -59,7 +59,7 @@ jQuery(document).ready(function(){
     })
 });
 
-jQuery(window).load( function() {
+jQuery(document).ready(function(){
     var isIE11 = /Trident.*rv[ :]*11\./.test(navigator.userAgent);
     var isIE10 = /Trident.*rv[ :]*6\./.test(navigator.userAgent);
 
