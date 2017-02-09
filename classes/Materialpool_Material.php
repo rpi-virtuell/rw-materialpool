@@ -1915,4 +1915,78 @@ END;
 
         return $back;
     }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     * @return string
+     *
+     */
+    static public function write_javascript() {
+        ?>
+
+        <script>
+        jQuery(document).ready(function(){
+        jQuery(".pods-form-ui-field-name-pods-meta-material-bildungsstufe").click( function() {
+            switch ( jQuery(this).val() ) {
+<?php
+        $terms = get_terms( array(
+            'taxonomy' => 'bildungsstufe',
+        ) );
+        foreach ( $terms as $term ) {
+            if ( $term->parent != 0 ) {
+                ?>
+                case "<?php echo $term->term_id; ?>":    // Elementarbereich
+                set_bildungsstufe( <?php echo $term->parent; ?> );
+                break;
+            <?php
+            }
+        }
+        ?>
+
+            }
+        });
+        });
+        function set_bildungsstufe( id ) {
+            jQuery(".pods-form-ui-field-name-pods-meta-material-bildungsstufe").each( function() {
+                if ( jQuery(this).val() == id ) {
+                    jQuery(this).attr('checked', true);
+                }
+            })
+        };
+
+        jQuery(document).ready(function(){
+            jQuery(".pods-form-ui-field-name-pods-meta-material-medientyp").click( function() {
+                switch ( jQuery(this).val() ) {
+                <?php
+                    $terms = get_terms( array(
+                        'taxonomy' => 'medientyp',
+                    ) );
+                    foreach ( $terms as $term ) {
+                    if ( $term->parent != 0 ) {
+                    ?>
+                    case "<?php echo $term->term_id; ?>":  
+                        set_medientyp( <?php echo $term->parent; ?> );
+                        break;
+                <?php
+                    }
+                    }
+                    ?>
+
+                }
+            });
+        });
+        function set_medientyp( id ) {
+            jQuery(".pods-form-ui-field-name-pods-meta-material-medientyp").each( function() {
+                if ( jQuery(this).val() == id ) {
+                    jQuery(this).attr('checked', true);
+                }
+            })
+        };
+
+        </script>
+        <?php
+    }
+
 }
