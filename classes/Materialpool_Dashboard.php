@@ -86,10 +86,17 @@ class Materialpool_Dashboard {
         <div id="welcome-panel" class="welcome-panel">
             <div class="welcome-panel-content">
                 <h2>Willkommen im Materialpool!</h2>
-                <br>
+                <div style="float: left; padding-right: 20px;" >
                 Material: <?php echo $material->publish; ?> <br>
                 Autoren: <?php echo $autoren->publish; ?><br>
                 Organisationen: <?php echo $orga->publish; ?><br>
+                </div>
+                <div style="float: left; padding-right: 20px;">
+                    <a href="<?php echo admin_url( 'index.php?page=searchwp-stats' ); ?>">Suchstatistik</a><br>
+                    <a href="<?php echo admin_url( 'index.php?page=wysija_campaigns' ); ?>">Newsletter</a><br>
+                </div>
+
+                <div style="clear: both"></div>
                 <br>
             </div>
         </div>
