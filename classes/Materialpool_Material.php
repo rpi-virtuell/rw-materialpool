@@ -204,12 +204,23 @@ class Materialpool_Material {
 
 		$title = $_POST[ 'pods_meta_material_titel' ];
         $post_name = wp_unique_post_slug( sanitize_title( $title ), $post_id, $post_status, $post_type, $post_parent );
+        $post_content = '<strong>' . wp_unslash( apply_filters( 'content_save_pre', $_POST[ 'pods_meta_material_kurzbeschreibung' ] ) ) . '</strong>';
+        $post_content .= '<p>';
+        $text = wp_unslash( $_POST[ 'pods_meta_material_beschreibung' ] );
+        $text = strip_shortcodes( $text );
+        $text = apply_filters( 'the_content', $text );
+        $text = str_replace(']]>', ']]&gt;', $text);
+        $excerpt_length = apply_filters( 'excerpt_length', 55 );
+        $excerpt_more = apply_filters( 'excerpt_more', ' ' . '[&hellip;]' );
+        $text = wp_trim_words( $text, $excerpt_length, $excerpt_more );
+        $post_content .= $text . '&hellip;';
 
         $wpdb->update(
             $wpdb->posts,
             array(
                 'post_title' => stripslashes( $title ),
                 'post_name' => $post_name,
+                'post_content' => $post_content,
             ),
             array( 'ID' => $post_id ),
             array(
