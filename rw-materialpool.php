@@ -156,6 +156,8 @@ class Materialpool {
         add_action( 'init', array( 'Materialpool_Material', 'custom_post_status' ) );
         add_action( 'admin_footer-post.php', array( 'Materialpool_Material', 'append_post_status_list' ) );
         add_action( 'admin_footer-post.php', array( 'Materialpool_Material', 'write_javascript' ) );
+        add_action( 'admin_footer-post-new.php', array( 'Materialpool_Material', 'append_post_status_list' ) );
+        add_action( 'admin_footer-post-new.php', array( 'Materialpool_Material', 'write_javascript' ) );
         add_filter( 'tl_tplc_external_files', array( 'Materialpool_Material', 'add_template_check_external_files' ) );
         add_action( 'init', array( 'Materialpool', 'get_crossdomain_viewer_url' ) );
         add_shortcode( 'material-vorschlag', array( 'Materialpool_Material', 'vorschlag_shortcode' ) );
