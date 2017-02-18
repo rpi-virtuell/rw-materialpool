@@ -2000,4 +2000,35 @@ END;
         <?php
     }
 
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     * @return string
+     *
+     */
+    static public function review_count() {
+        global $wpdb;
+
+        $result = $wpdb->get_var( $wpdb->prepare( "SELECT count( $wpdb->posts.ID) as anzahl  FROM $wpdb->posts, $wpdb->postmeta WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id AND  $wpdb->postmeta.meta_key = %s AND $wpdb->postmeta.meta_value != '0000-00-00' order by post_title asc" , 'material_wiedervorlagedatum' ) );
+        return $result;
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     * @return string
+     *
+     */
+    static public function depublication_count() {
+        global $wpdb;
+
+        $result = $wpdb->get_var( $wpdb->prepare( "SELECT count( $wpdb->posts.ID) as anzahl  FROM $wpdb->posts, $wpdb->postmeta WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id AND  $wpdb->postmeta.meta_key = %s AND $wpdb->postmeta.meta_value != '0000-00-00' order by post_title asc" , 'material_depublizierungsdatum' ) );
+        return $result;
+
+    }
+
+
+
 }

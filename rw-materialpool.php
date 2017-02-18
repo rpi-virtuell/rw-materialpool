@@ -161,7 +161,6 @@ class Materialpool {
         add_shortcode( 'material-vorschlag', array( 'Materialpool_Material', 'vorschlag_shortcode' ) );
         remove_shortcode( 'viewerjs', 'viewerjs_shortcode_handler');
         add_shortcode( 'viewerjs', array( 'Materialpool', 'viewerjs_shortcode_handler' ) );
-
         /*
          * Register as Class method throws an error
          */
@@ -891,3 +890,4 @@ function mb_endsWith($check, $endStr) {
 
     return (mb_substr($check, mb_strlen($check)-mb_strlen($endStr), mb_strlen($endStr)) === $endStr);
 }
+add_action('wp_dashboard_setup', 'wpse_73561_remove_all_dashboard_meta_boxes', 9999 );
