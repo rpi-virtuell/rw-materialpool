@@ -879,7 +879,7 @@ function materialpool_pods_material_metaboxes ( $type, $name ) {
     pods_group_add( 'material', __( 'Owner', Materialpool::get_textdomain() ), 'material_autoren,material_autor_interim,material_organisation,material_organisation_interim' );
     pods_group_add( 'material', __( 'Meta', Materialpool::get_textdomain() ), 'material_schlagworte,material_schlagworte_interim,material_bildungsstufe,material_medientyp,material_sprache' );
     pods_group_add( 'material', __( 'Advanced Meta', Materialpool::get_textdomain() ), 'material_inklusion,material_verfuegbarkeit,material_zugaenglichkeit,material_lizenz,material_altersstufe' );
-    pods_group_add( 'material', __( 'Date', Materialpool::get_textdomain() ), 'material_jahr, material_veroeffentlichungsdatum,material_erstellungsdatum,material_depublizierungsdatum,material_wiedervorlagedatum' );
+    pods_group_add( 'material', __( 'Date', Materialpool::get_textdomain() ), 'material_veroeffentlichungsdatum,material_jahr, material_erstellungsdatum,material_depublizierungsdatum,material_wiedervorlagedatum' );
     pods_group_add( 'material', __( 'Relationships', Materialpool::get_textdomain() ), 'material_werk,material_band,material_verweise' );
     pods_group_add( 'material', __( 'Image', Materialpool::get_textdomain() ), 'material_cover,material_cover_url,material_cover_quelle,material_screenshot' );
 }
@@ -893,3 +893,13 @@ function mb_endsWith($check, $endStr) {
     return (mb_substr($check, mb_strlen($check)-mb_strlen($endStr), mb_strlen($endStr)) === $endStr);
 }
 add_action('wp_dashboard_setup', 'wpse_73561_remove_all_dashboard_meta_boxes', 9999 );
+
+
+add_filter( 'pods_form_ui_field_date_args', 'my_date',10,6);
+
+function my_date($args, $type, $options, $attributes, $name, $form_field_type ) {
+    if ( $name == 'pods_meta_material_veroeffentlichungsdatum' ) {
+      //  $args[ 'onSelect' ] = 'function(d,i){ if(d !== i.lastVal){ jQuery(this).change(); } }' ;
+    }
+    return $args;
+}
