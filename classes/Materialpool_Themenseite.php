@@ -34,6 +34,7 @@ class Materialpool_Themenseite {
                     $template_path = Materialpool::$plugin_base_dir . 'templates/archive-themenseite.php';
                 }
             }
+            Materialpool_Statistic::log( $post->ID, $post->post_type );
             return $template_path;
         }
         return $template;
