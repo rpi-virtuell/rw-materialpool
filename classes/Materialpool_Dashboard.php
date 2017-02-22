@@ -131,6 +131,41 @@ class Materialpool_Dashboard {
             array( 'Materialpool_Dashboard', 'wiedervorlage') // Display function.
         );
 
+        wp_add_dashboard_widget(
+            'mp-material-7',         // Widget slug.
+            'Materialabrufe 7 Tage',         // Title.
+            array( 'Materialpool_Statistic', 'material7') // Display function.
+        );
+
+        wp_add_dashboard_widget(
+            'mp-autoren-7',         // Widget slug.
+            'Autorenseitenabrufe 7 Tage',         // Title.
+            array( 'Materialpool_Statistic', 'autoren7') // Display function.
+        );
+
+        wp_add_dashboard_widget(
+            'mp-organisaion-7',         // Widget slug.
+            'Organisationsseitenabrufe 7 Tage',         // Title.
+            array( 'Materialpool_Statistic', 'organisationen7') // Display function.
+        );
+
+        wp_add_dashboard_widget(
+            'mp-material-wochentag',         // Widget slug.
+            'Materialabrufe nach Wochentag',         // Title.
+            array( 'Materialpool_Statistic', 'material_wochentag') // Display function.
+        );
+
+        wp_add_dashboard_widget(
+            'mp-material-monat',         // Widget slug.
+            'Materialabrufe nach Monat',         // Title.
+            array( 'Materialpool_Statistic', 'material_monate') // Display function.
+        );
+
+     //   wp_add_dashboard_widget(
+     //       'mp-materialautoren7',         // Widget slug.
+     //       'Meistgelesene Autoren',         // Title.
+     //       array( 'Materialpool_Statistic', 'materialautoren7') // Display function.
+     //   );
 
         wp_enqueue_script( 'dashboard' );
         $title =" Materialpool";

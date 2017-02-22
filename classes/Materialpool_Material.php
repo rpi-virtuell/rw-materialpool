@@ -38,16 +38,17 @@ class Materialpool_Material {
             $autoren = get_metadata( 'post', $post->ID, 'material_autoren', false );
             foreach( $autoren  as $autor ) {
                 if ( is_array( $autor ) ) {
-                    $autorArray[] = "'" . $autor[ 'ID' ] . "'";
+                    Materialpool_Statistic::log_autor( $autor[ 'ID' ] );
                 }
             }
             $orgas = get_metadata( 'post', $post->ID, 'material_organisation', false );
             foreach( $orgas  as $orga ) {
                 if ( is_array( $orga ) ) {
-                    $orgaArray[] = "'" .  $orga[ 'ID' ] . "'";
+                    Materialpool_Statistic::log_organisation( $orga[ 'ID' ] );
                 }
             }
             Materialpool_Statistic::log( $post->ID, $post->post_type );
+
             return $template_path;
         }
         return $template;

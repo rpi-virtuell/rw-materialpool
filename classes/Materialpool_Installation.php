@@ -63,6 +63,7 @@ class Materialpool_Installation {
           `month` tinyint(2) NOT NULL,
           `year` SMALLINT (6) NOT NULL,
           `posttype` char(20) NOT NULL,
+          `dayofweek` tinyint(2) NOT NULL,
           PRIMARY KEY (`id`),
           KEY `object` (`object`),
           KEY `day` (`day`),
@@ -71,13 +72,61 @@ class Materialpool_Installation {
           KEY `month` (`month`),
           KEY `posttype` (`posttype`),
           KEY `year` (`year`),
+          KEY `dayofweek` (`dayofweek`)
         ) $charset_collate;";
 
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
         dbDelta( $sql );
 
+        $table_name = $wpdb->prefix . "mp_stats_autor";
+        $charset_collate = $wpdb->get_charset_collate();
 
-	}
+        $sql = "CREATE TABLE $table_name (
+          `id` bigint(20) NOT NULL AUTO_INCREMENT,
+          `object` int(11) NOT NULL,
+          `day` char(2) NOT NULL,
+          `hour` tinyint(2) NOT NULL,
+          `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          `month` tinyint(2) NOT NULL,
+          `year` SMALLINT (6) NOT NULL,
+          `dayofweek` tinyint(2) NOT NULL,
+          PRIMARY KEY (`id`),
+          KEY `object` (`object`),
+          KEY `day` (`day`),
+          KEY `hour` (`hour`),
+          KEY `ts` (`ts`),
+          KEY `month` (`month`),
+          KEY `year` (`year`),
+          KEY `dayofweek` (`dayofweek`)
+        ) $charset_collate;";
+
+        dbDelta( $sql );
+
+        $table_name = $wpdb->prefix . "mp_stats_organisation";
+        $charset_collate = $wpdb->get_charset_collate();
+
+        $sql = "CREATE TABLE $table_name (
+          `id` bigint(20) NOT NULL AUTO_INCREMENT,
+          `object` int(11) NOT NULL,
+          `day` char(2) NOT NULL,
+          `hour` tinyint(2) NOT NULL,
+          `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          `month` tinyint(2) NOT NULL,
+          `year` SMALLINT (6) NOT NULL,
+          `dayofweek` tinyint(2) NOT NULL,
+          PRIMARY KEY (`id`),
+          KEY `object` (`object`),
+          KEY `day` (`day`),
+          KEY `hour` (`hour`),
+          KEY `ts` (`ts`),
+          KEY `month` (`month`),
+          KEY `year` (`year`),
+          KEY `dayofweek` (`dayofweek`)
+        ) $charset_collate;";
+
+        dbDelta( $sql );
+
+    }
 
 	/**
 	 * Clean up after deactivation
