@@ -124,6 +124,56 @@ class Materialpool_Statistic
         <?php
     }
 
+    /**
+     *
+     */
+    static public function thema7() {
+        global $wpdb;
+        $wpdb->mp_stats = $wpdb->prefix . 'mp_stats';
+        for ( $i = 7; $i >= 0; $i-- ) {
+            $tag = idate("d", mktime(0, 0, 0, date("m"), date("d")-$i, date("Y")));
+            $monat = idate("m", mktime(0, 0, 0, date("m"), date("d")-$i, date("Y")));
+            $jahr = idate("Y", mktime(0, 0, 0, date("m"), date("d")-$i, date("Y")));
+            $query = $wpdb->prepare( "SELECT COUNT(*) as anzahl FROM {$wpdb->mp_stats} WHERE day=%d and month=%d and year=%d and posttype=%s ",
+                $tag, $monat, $jahr, 'themenseite'
+            );
+            $results = (array) $wpdb->get_results(  $query , ARRAY_A );
+            $anzahl[] = $results[ 0 ][ 'anzahl' ];
+            $datum[] =  '"' . date("d.m.Y", mktime(0, 0, 0, date("m"), date("d")-$i, date("Y"))) . '"';
+
+        }
+        ?>
+        <canvas id="ThemenCount7" width="400" height="200"></canvas>
+        <script>
+            jQuery(document).ready(function(){
+                var ctx = document.getElementById("ThemenCount7");
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: [ <?php echo implode( ',', $datum ); ?> ],
+                        datasets: [{
+                            label: '# Themenseitenabrufe',
+                            data: [<?php echo implode( ',', $anzahl ); ?>],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero:true
+                                }
+                            }]
+                        }
+                    }
+                });
+            });
+        </script>
+
+        <?php
+    }
+
+
 
     /**
      *

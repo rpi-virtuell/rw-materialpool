@@ -138,6 +138,12 @@ class Materialpool_Dashboard {
         );
 
         wp_add_dashboard_widget(
+            'mp-thema-7',         // Widget slug.
+            'Themenseitenabrufe 7 Tage',         // Title.
+            array( 'Materialpool_Statistic', 'thema7') // Display function.
+        );
+
+        wp_add_dashboard_widget(
             'mp-autoren-7',         // Widget slug.
             'Autorenseitenabrufe 7 Tage',         // Title.
             array( 'Materialpool_Statistic', 'autoren7') // Display function.
