@@ -47,7 +47,7 @@ class Materialpool_Material {
                     $orgaArray[] = "'" .  $orga[ 'ID' ] . "'";
                 }
             }
-            Materialpool_Statistic::log( $post->ID, $post->post_type,  implode(',', $autorArray ), implode( ',', $orgaArray) );
+            Materialpool_Statistic::log( $post->ID, $post->post_type );
             return $template_path;
         }
         return $template;

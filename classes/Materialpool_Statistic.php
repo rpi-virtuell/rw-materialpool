@@ -8,15 +8,15 @@
  */
 class Materialpool_Statistic
 {
-    static public function log( $post_id, $post_type , $autor = '', $organisation = '' ) {
+    static public function log( $post_id, $post_type  ) {
         global $wpdb;
         $wpdb->mp_stats = $wpdb->prefix . 'mp_stats';
         $timestamp = time();
 
         $wpdb->query( $wpdb->prepare( " 
             INSERT INTO $wpdb->mp_stats 
-            (  `object`, `day`, `hour`, `month`, `year`, `posttype`, `autor`, `organisation` )
-            VALUES ( %d,%s,%s,%s,%s,%s, %s, %s  )
+            (  `object`, `day`, `hour`, `month`, `year`, `posttype`  )
+            VALUES ( %d,%s,%s,%s,%s,%s  )
             ",
             $post_id,
             date( "d", $timestamp ),
@@ -24,8 +24,7 @@ class Materialpool_Statistic
             date( "m", $timestamp ),
             date( "Y", $timestamp ),
             $post_type,
-            $autor,
-            $organisation
         ));
     }
+
 }

@@ -63,8 +63,6 @@ class Materialpool_Installation {
           `month` tinyint(2) NOT NULL,
           `year` SMALLINT (6) NOT NULL,
           `posttype` char(20) NOT NULL,
-          `autor` char(255) NOT NULL,,
-          `organisation` char(255) NOT NULL,,
           PRIMARY KEY (`id`),
           KEY `object` (`object`),
           KEY `day` (`day`),
@@ -73,8 +71,6 @@ class Materialpool_Installation {
           KEY `month` (`month`),
           KEY `posttype` (`posttype`),
           KEY `year` (`year`),
-          KEY `autor` (`autor`),
-          KEY `organisation` (`organisation`),
         ) $charset_collate;";
 
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
