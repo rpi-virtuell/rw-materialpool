@@ -23,8 +23,9 @@ class Materialpool_Statistic
             date( "H", $timestamp ),
             date( "m", $timestamp ),
             date( "Y", $timestamp ),
-            $post_type,
+            $post_type
         ));
     }
+
 
 }
