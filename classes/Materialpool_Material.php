@@ -694,14 +694,14 @@ END;
         if ( ! self::has_organisation() ) {
             $organisation = apply_filters( 'materialpool_material_description_interim_organisation', get_metadata( 'post', $post->ID, 'material_organisation_interim', true ) );
         }
-        $addon = apply_filters( 'materialpool_material_description_interim_start', '<div class="">' );
+        $addon = apply_filters( 'materialpool_material_description_interim_start', '<div class="materialpool-material-description-interim">' );
         $addon .= $autor;
         if ( $autor != '' && $organisation != '' ) {
             $addon .= apply_filters( 'materialpool_material_description_interim_separator', ', ' );
         }
         $addon .= $organisation;
         $addon .= apply_filters( 'materialpool_material_description_interim_end', '</div>' );
-        return $description . $addon;
+        return $description . $addon ;
 
     }
 
