@@ -141,6 +141,7 @@ class Materialpool_Organisation {
                     $template_path = Materialpool::$plugin_base_dir . 'templates/archive-organisation.php';
                 }
             }
+            Materialpool_Statistic::log( $post->ID, $post->post_type );
             return $template_path;
         }
         return $template;

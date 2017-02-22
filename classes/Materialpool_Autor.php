@@ -156,6 +156,7 @@ class Materialpool_Autor {
                     $template_path = Materialpool::$plugin_base_dir . 'templates/archive-autor.php';
                 }
             }
+            Materialpool_Statistic::log( $post->ID, $post->post_type );
             return $template_path;
         }
         return $template;

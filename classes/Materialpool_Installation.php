@@ -20,6 +20,7 @@ class Materialpool_Installation {
 	 * @return  void
 	 */
 	public static function on_activate() {
+        global $wpdb;
 
 		// check WordPress version
 		if ( ! version_compare( $GLOBALS[ 'wp_version' ], '4.0', '>=' ) ) {
@@ -50,7 +51,35 @@ class Materialpool_Installation {
         // @todo facetwp abfragen
 
 
-        // create synonymdb tables
+        $table_name = $wpdb->prefix . "mp_stats";
+        $charset_collate = $wpdb->get_charset_collate();
+
+        $sql = "CREATE TABLE $table_name (
+          `id` bigint(20) NOT NULL AUTO_INCREMENT,
+          `object` int(11) NOT NULL,
+          `day` char(2) NOT NULL,
+          `hour` tinyint(2) NOT NULL,
+          `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          `month` tinyint(2) NOT NULL,
+          `year` SMALLINT (6) NOT NULL,
+          `posttype` char(20) NOT NULL,
+          `autor` char(255) NOT NULL,,
+          `organisation` char(255) NOT NULL,,
+          PRIMARY KEY (`id`),
+          KEY `object` (`object`),
+          KEY `day` (`day`),
+          KEY `hour` (`hour`),
+          KEY `ts` (`ts`),
+          KEY `month` (`month`),
+          KEY `posttype` (`posttype`),
+          KEY `year` (`year`),
+          KEY `autor` (`autor`),
+          KEY `organisation` (`organisation`),
+        ) $charset_collate;";
+
+        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+        dbDelta( $sql );
+
 
 	}
 

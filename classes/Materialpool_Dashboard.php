@@ -50,6 +50,8 @@ class Materialpool_Dashboard {
 	 */
 	static public function dashboard_page_content() {
         global $wp_meta_boxes;
+        $screen = get_current_screen();
+
 
         wp_enqueue_script( 'rw-materialpool-chart', Materialpool::$plugin_url . 'js/chart.bundle.min.js' );
 
@@ -136,6 +138,7 @@ class Materialpool_Dashboard {
         $material = wp_count_posts( 'material');
         $autoren = wp_count_posts( 'autor');
         $orga = wp_count_posts( 'organisation');
+
         ?>
 
         <div class="wrap">

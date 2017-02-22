@@ -35,6 +35,19 @@ class Materialpool_Material {
                     $template_path = Materialpool::$plugin_base_dir . 'templates/archive-material.php';
                 }
             }
+            $autoren = get_metadata( 'post', $post->ID, 'material_autoren', false );
+            foreach( $autoren  as $autor ) {
+                if ( is_array( $autor ) ) {
+                    $autorArray[] = "'" . $autor[ 'ID' ] . "'";
+                }
+            }
+            $orgas = get_metadata( 'post', $post->ID, 'material_organisation', false );
+            foreach( $orgas  as $orga ) {
+                if ( is_array( $orga ) ) {
+                    $orgaArray[] = "'" .  $orga[ 'ID' ] . "'";
+                }
+            }
+            Materialpool_Statistic::log( $post->ID, $post->post_type,  implode(',', $autorArray ), implode( ',', $orgaArray) );
             return $template_path;
         }
         return $template;
