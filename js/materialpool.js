@@ -292,13 +292,15 @@ jQuery(document).ready(function(){
         jQuery("#pods-form-ui-pods-meta-material-url").focusout( function() {
 
             var url = jQuery("#pods-form-ui-pods-meta-material-url").val();
+            var postid = jQuery("#post_ID").val();
             if ( url == '' ) return;
             var ret;
 
             // url exists?
             var data = {
                 'action': 'mp_check_url',
-                'site': url
+                'site': url,
+                'post-id': postid
             };
             jQuery.post(ajaxurl, data, function(response) {
 
@@ -347,7 +349,8 @@ jQuery(document).ready(function(){
             var html;
             var data = {
                 'action': 'mp_get_description',
-                'site': url
+                'site': url,
+                'post-id': postid
             };
 
             jQuery.post(ajaxurl, data, function(response) {

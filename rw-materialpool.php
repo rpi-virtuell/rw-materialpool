@@ -350,71 +350,77 @@ class Materialpool {
      * @filters materialpool-ajax-get-description
      */
     public static function my_action_callback_mp_get_description() {
-        $url =  esc_url_raw( $_POST['site'] );
-        $title = '';
-        $description = '';
-        $keywords = '';
-        $image = '';
+        global $wpdb;
 
-        $args = array(
-            'user-agent' => 'Mozilla/5.0 (compatible; Materialpool; +'.home_url().')',
-            'timeout'     => 30,
-        );
-        $response =  wp_remote_get( $url, $args );
-        if (  ! is_wp_error( $response ) ) {
-             $body = utf8_decode( $response['body'] );
-            libxml_use_internal_errors(true);
-            $doc = new DomDocument();
-            $doc->loadHTML($body);
-            $xpath = new DOMXPath($doc);
-            $query = '//*/meta[starts-with(@property, \'og:\')]';
-            $metas = $xpath->query($query);
-            foreach ($metas as $meta) {
-                $property = $meta->getAttribute('property');
-                $content = $meta->getAttribute('content');
-                if ( $property == 'og:title' ) {
-                    $title = $content;
-                }
-                if ( $property == 'og:description' ) {
-                    $description = $content;
-                }
-                if ( $property == 'og:video:tag' || $property == 'video:tag'  ) {
-                    if ( $keywords != '' ) {
-                        $keywords .= ', ';
-                    }
-                    $keywords .= $content;
-                }
-                if ( $property == 'og:image' ) {
-                    $image = $content;
-                }
-            }
-            $query = '//*/meta';
-            $metas = $xpath->query($query);
-            foreach ($metas as $meta) {
-                $name = $meta->getAttribute('name');
-                $content = $meta->getAttribute('content');
-                if ( $name == 'description' && $description == '' ) {
-                    $description = $content;
-                }
-                if ( $name == 'title' && $title == '' ) {
-                    $title = $content;
-                }
-                if ( $name == 'keywords' && $keywords == '' ) {
-                    $keywords = $content;
-                }
-            }
-            $titleNode = $xpath->query('//title');
-            if ( $title == '' ) {
-                $title = $titleNode->item(0)->textContent;
-            }
-            $data = array(
-                'title' => $title,
-                'description' => $description,
-                'keywords' => $keywords,
-                'image' => $image,
+        $url =  esc_url_raw( $_POST['site'] );
+        $id =  (int) $_POST['post-id'];
+        $anzahl = $wpdb->get_col( $wpdb->prepare( "SELECT count( meta_id ) as anzahl  FROM  $wpdb->postmeta WHERE meta_key = %s and meta_value = %s and post_id = %d", 'material_url', $url, $id) );
+        if ( is_array( $anzahl ) && $anzahl[ 0 ] == 0 ) {
+            $title = '';
+            $description = '';
+            $keywords = '';
+            $image = '';
+
+            $args = array(
+                'user-agent' => 'Mozilla/5.0 (compatible; Materialpool; +' . home_url() . ')',
+                'timeout' => 30,
             );
+            $response = wp_remote_get($url, $args);
+            if (!is_wp_error($response)) {
+                $body = utf8_decode($response['body']);
+                libxml_use_internal_errors(true);
+                $doc = new DomDocument();
+                $doc->loadHTML($body);
+                $xpath = new DOMXPath($doc);
+                $query = '//*/meta[starts-with(@property, \'og:\')]';
+                $metas = $xpath->query($query);
+                foreach ($metas as $meta) {
+                    $property = $meta->getAttribute('property');
+                    $content = $meta->getAttribute('content');
+                    if ($property == 'og:title') {
+                        $title = $content;
+                    }
+                    if ($property == 'og:description') {
+                        $description = $content;
+                    }
+                    if ($property == 'og:video:tag' || $property == 'video:tag') {
+                        if ($keywords != '') {
+                            $keywords .= ', ';
+                        }
+                        $keywords .= $content;
+                    }
+                    if ($property == 'og:image') {
+                        $image = $content;
+                    }
+                }
+                $query = '//*/meta';
+                $metas = $xpath->query($query);
+                foreach ($metas as $meta) {
+                    $name = $meta->getAttribute('name');
+                    $content = $meta->getAttribute('content');
+                    if ($name == 'description' && $description == '') {
+                        $description = $content;
+                    }
+                    if ($name == 'title' && $title == '') {
+                        $title = $content;
+                    }
+                    if ($name == 'keywords' && $keywords == '') {
+                        $keywords = $content;
+                    }
+                }
+                $titleNode = $xpath->query('//title');
+                if ($title == '') {
+                    $title = $titleNode->item(0)->textContent;
+                }
+                $data = array(
+                    'title' => $title,
+                    'description' => $description,
+                    'keywords' => $keywords,
+                    'image' => $image,
+                );
+            }
+            echo json_encode(apply_filters('materialpool-ajax-get-description', $data, $xpath));
         }
-        echo json_encode( apply_filters( 'materialpool-ajax-get-description', $data, $xpath ) );
         wp_die();
     }
 
@@ -428,8 +434,9 @@ class Materialpool {
     public static function my_action_callback_mp_check_url() {
         global $wpdb;
         $url =  esc_url_raw( $_POST['site'] ) ;
+        $id =  (int) $_POST['post-id'];
 
-        $anzahl = $wpdb->get_col( $wpdb->prepare( "SELECT count( meta_id ) as anzahl  FROM  $wpdb->postmeta WHERE meta_key = %s and meta_value = %s", 'material_url', $url) );
+        $anzahl = $wpdb->get_col( $wpdb->prepare( "SELECT count( meta_id ) as anzahl  FROM  $wpdb->postmeta WHERE meta_key = %s and meta_value = %s and post_id != %d", 'material_url', $url, $id) );
         if ( is_array( $anzahl ) && $anzahl[ 0 ] == 0 ) {
             $data = array(
                 'status' => "ok"
