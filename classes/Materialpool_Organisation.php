@@ -173,6 +173,8 @@ class Materialpool_Organisation {
             'organisation-id' => _x( 'ID', 'Organisation list field',  Materialpool::$textdomain ),
             'title' => _x( 'Organisation', 'Organisation list field',  Materialpool::$textdomain ),
             'organisation_logo_url' => _x( 'Logo', 'Organisation list field', Materialpool::$textdomain ),
+            'organisation_views' => _x( 'Views', 'Organisation list field', Materialpool::$textdomain ),
+            'material_views' => _x( 'MaterialViews', 'Organisation list field', Materialpool::$textdomain ),
             'organisation_url' => _x( 'URL', 'Organisation list field', Materialpool::$textdomain ),
             'organisation_konfession' => _x( 'Konfession', 'Organisation list field', Materialpool::$textdomain ),
             'organisation_alpika' => _x( 'ALPIKA', 'Organisation list field', Materialpool::$textdomain ),
@@ -194,6 +196,8 @@ class Materialpool_Organisation {
      * @filters materialpool-admin-organisation-pic-class
      */
     static public function cpt_list_column( $column_name, $post_id ) {
+        global $wpdb;
+
         $data = '';
         if ( $column_name == 'organisation-id' ) {
             $data = $post_id;
@@ -245,6 +249,24 @@ class Materialpool_Organisation {
             $post = get_post( $post_id);
             $user = get_user_by( 'ID', $post->post_author );
             $data = $user->display_name;
+        }
+        if ( $column_name == 'organisation_views' ) {
+            $wpdb->mp_stats = $wpdb->prefix . 'mp_stats';
+            $query = $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->mp_stats} WHERE object = %d",
+                $post_id
+            );
+            $results = $wpdb->get_var(  $query );
+
+            $data = $results;
+        }
+        if ( $column_name == 'material_views' ) {
+            $wpdb->mp_stats_organisation = $wpdb->prefix . 'mp_stats_organisation';
+            $query = $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->mp_stats_organisation} WHERE object = %d",
+                $post_id
+            );
+            $results = $wpdb->get_var(  $query );
+
+            $data = $results;
         }
         echo $data;
     }
