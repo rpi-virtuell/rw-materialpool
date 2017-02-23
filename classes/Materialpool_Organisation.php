@@ -287,7 +287,7 @@ class Materialpool_Organisation {
             $wpdb->posts,
             array(
                 'post_title' => $title,
-                'post_name' => wp_unique_post_slug( sanitize_title( $title ), $post_id, $post_status, $post_type, $post_parent ),
+                'post_name' => wp_unique_post_slug( sanitize_title( $title ), $post_id, 'publish', $post_type, $post_parent ),
             ),
             array( 'ID' => $post_id ),
             array(
