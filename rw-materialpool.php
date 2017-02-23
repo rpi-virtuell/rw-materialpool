@@ -892,14 +892,4 @@ function mb_endsWith($check, $endStr) {
 
     return (mb_substr($check, mb_strlen($check)-mb_strlen($endStr), mb_strlen($endStr)) === $endStr);
 }
-add_action('wp_dashboard_setup', 'wpse_73561_remove_all_dashboard_meta_boxes', 9999 );
 
-
-add_filter( 'pods_form_ui_field_date_args', 'my_date',10,6);
-
-function my_date($args, $type, $options, $attributes, $name, $form_field_type ) {
-    if ( $name == 'pods_meta_material_veroeffentlichungsdatum' ) {
-      //  $args[ 'onSelect' ] = 'function(d,i){ if(d !== i.lastVal){ jQuery(this).change(); } }' ;
-    }
-    return $args;
-}

@@ -679,3 +679,18 @@ jQuery(document).ready(function(){
     })
 });
 
+
+/**
+ * Set jahr after change from veroeffentlichungsdatum
+ */
+jQuery(document).ready(function(){
+    jQuery("#pods-form-ui-pods-meta-material-veroeffentlichungsdatum").on("change",function() {
+        var date = jQuery("#pods-form-ui-pods-meta-material-veroeffentlichungsdatum").val();
+        var split = date.split(".");
+        var year = parseInt(split[2] || 0, 10);
+
+        if ( ! isNaN( year)) {
+            jQuery("#pods-form-ui-pods-meta-material-jahr").val(year );
+        }
+    })
+});
