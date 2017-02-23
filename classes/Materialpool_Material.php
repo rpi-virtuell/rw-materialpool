@@ -75,6 +75,7 @@ class Materialpool_Material {
      * @return  array
      */
     static public function cpt_list_head( $columns ) {
+        $columns[ 'material_views' ] = _x( 'Views', 'Material list field',  Materialpool::$textdomain );
         $columns[ 'material-bildungsstufe' ] = _x( 'Bildungsstufe', 'Material list field',  Materialpool::$textdomain );
         $columns[ 'material-owner' ] = _x( 'Eintrager', 'Material list field',  Materialpool::$textdomain );
         $columns[ 'material-schlagworte' ] = _x( 'Schlagworte', 'Material list field',  Materialpool::$textdomain );
@@ -95,6 +96,8 @@ class Materialpool_Material {
      * @var     int     $post_id        ID of the current post
      */
     static public function cpt_list_column( $column_name, $post_id ) {
+        global $wpdb;
+
         $data = '';
         if ( $column_name == 'material-autor' ) {
             $autors = get_metadata( 'post', $post_id, 'material_autoren' );
@@ -181,6 +184,15 @@ class Materialpool_Material {
             $labels =  get_post_status_object( get_post_status( $post_id) );
             $data = $labels->label;
 
+        }
+        if ( $column_name == 'material_views' ) {
+            $wpdb->mp_stats = $wpdb->prefix . 'mp_stats';
+            $query = $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->mp_stats} WHERE object = %d",
+                $post_id
+            );
+            $results = $wpdb->get_var(  $query );
+
+            $data = $results;
         }
 
         echo $data;
