@@ -190,6 +190,8 @@ class Materialpool_Autor {
             'autor_bild_url' => _x( 'Picture', 'Autor list field', Materialpool::$textdomain ),
             'autor_nachname' => _x( 'Lastname', 'Autor list field', Materialpool::$textdomain ),
             'autor_vorname' => _x( 'Firstname', 'Autor list field', Materialpool::$textdomain ),
+            'autor_views' => _x( 'Views', 'Autor list field', Materialpool::$textdomain ),
+            'material_views' => _x( 'MaterialViews', 'Autor list field', Materialpool::$textdomain ),
             'autor_buddypress' => _x( 'BuddyPress', 'Autor list field', Materialpool::$textdomain ),
             'autor_email' => _x( 'Email', 'Autor list field', Materialpool::$textdomain ),
             'date' => __('Date'),
@@ -210,6 +212,8 @@ class Materialpool_Autor {
      * @filters materialpool-admin-autor-pic-class
      */
     static public function cpt_list_column( $column_name, $post_id ) {
+        global $wpdb;
+
         $data = '';
         if ( $column_name == 'autor-id' ) {
             $data = $post_id;
@@ -265,6 +269,25 @@ class Materialpool_Autor {
             $user = get_user_by( 'ID', $post->post_author );
             $data = $user->display_name;
         }
+        if ( $column_name == 'autor_views' ) {
+            $wpdb->mp_stats = $wpdb->prefix . 'mp_stats';
+            $query = $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->mp_stats} WHERE object = %d",
+                $post_id
+            );
+            $results = $wpdb->get_var(  $query );
+
+            $data = $results;
+        }
+        if ( $column_name == 'material_views' ) {
+            $wpdb->mp_stats_autor = $wpdb->prefix . 'mp_stats_autor';
+            $query = $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->mp_stats_autor} WHERE object = %d",
+                $post_id
+            );
+            $results = $wpdb->get_var(  $query );
+
+            $data = $results;
+        }
+
         echo $data;
     }
 
