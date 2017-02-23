@@ -179,7 +179,8 @@ class Materialpool_Dashboard {
         $material = wp_count_posts( 'material');
         $autoren = wp_count_posts( 'autor');
         $orga = wp_count_posts( 'organisation');
-
+        $synonyme = wp_count_posts( 'synonym');
+        $themenseiten = wp_count_posts( 'themenseite');
         ?>
 
         <div class="wrap">
@@ -190,6 +191,9 @@ class Materialpool_Dashboard {
                         Material: <?php echo $material->publish; ?> <br>
                         Autoren: <?php echo $autoren->publish; ?><br>
                         Organisationen: <?php echo $orga->publish; ?><br>
+                        Themenseiten: <?php echo $themenseiten->publish; ?><br>
+                        Synonyme: <?php echo $synonyme->publish; ?><br>
+
                     </div>
                     <div style="float: left; padding-right: 20px;" >
                         Material mit Wiedervorlage: <?php echo Materialpool_Material::review_count(); ?> <br>
