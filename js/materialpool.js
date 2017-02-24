@@ -361,9 +361,8 @@ jQuery(document).ready(function(){
                     if ( jQuery("#pods-form-ui-pods-meta-material-titel").val() == '') {
                         jQuery("#pods-form-ui-pods-meta-material-titel").val( $obj.title );
                     }
-                    if ( jQuery("#pods-form-ui-pods-meta-material-kurzbeschreibung").val() == '') {
-                        jQuery("#pods-form-ui-pods-meta-material-kurzbeschreibung").val( $obj.description );
-                    }
+                    var text = $obj.description + "\n\n" + jQuery("#pods-form-ui-pods-meta-material-beschreibung").val();
+                    jQuery("#pods-form-ui-pods-meta-material-beschreibung").val( text );
                     if ( jQuery("#pods-form-ui-pods-meta-material-schlagworte-interim").val() == '') {
                         jQuery("#pods-form-ui-pods-meta-material-schlagworte-interim").val( $obj.keywords );
                     }
