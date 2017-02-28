@@ -687,11 +687,6 @@ END;
      * @since 0.0.1
      * @access	public
      * @filters materialpool_material_description
-     * @filters materialpool_material_description_interim_autor
-     * @filters materialpool_material_description_interim_organisation
-     * @filters materialpool_material_description_interim_start
-     * @filters materialpool_material_description_interim_separator
-     * @filters materialpool_material_description_interim_end
      *
      */
     static public function get_description() {
@@ -701,24 +696,12 @@ END;
 
         $description = get_metadata( 'post', $post->ID, 'material_beschreibung', true );
         $description = apply_filters( 'materialpool_material_description', $description, $post );
-        if ( ! self::has_autor() ) {
-            $autor = apply_filters( 'materialpool_material_description_interim_autor', get_metadata( 'post', $post->ID, 'material_autor_interim', true ) );
-        }
-        if ( ! self::has_organisation() ) {
-            $organisation = apply_filters( 'materialpool_material_description_interim_organisation', get_metadata( 'post', $post->ID, 'material_organisation_interim', true ) );
-        }
-        $addon = apply_filters( 'materialpool_material_description_interim_start', '<div class="materialpool-material-description-interim">' );
-        $addon .= $autor;
-        if ( $autor != '' && $organisation != '' ) {
-            $addon .= apply_filters( 'materialpool_material_description_interim_separator', ', ' );
-        }
-        $addon .= $organisation;
-        $addon .= apply_filters( 'materialpool_material_description_interim_end', '</div>' );
-        return $description . $addon ;
+        return $description ;
 
     }
 
 
+    /**
     /**
      *
      * @since 0.0.1
@@ -1310,14 +1293,21 @@ END;
      * @since 0.0.1
      * @access public
      * @filters materialpool-template-material-verweise
+     * @filters materialpool-template-material-organisation
      */
     static public function organisation_html () {
+        global $post;
         $verweise = Materialpool_Material::get_organisation();
         foreach ( $verweise as $verweis ) {
             $url = get_permalink( $verweis[ 'ID' ] );
             echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-verweise' ) .'">' . $verweis[ 'post_title' ] . '</a><br>';
 
         }
+        $organisation = apply_filters( 'materialpool_material_description_interim_organisation', get_metadata( 'post', $post->ID, 'material_organisation_interim', true ) );
+        if ( $organisation != '' ) {
+            echo '<a class="'. apply_filters( 'materialpool-template-material-organisation', 'materialpool-template-material-organisation' ) .'">' . $organisation. '</a>';
+        }
+
     }
 
     /**
@@ -1327,6 +1317,7 @@ END;
      * @filters materialpool-template-material-verweise
      */
     static public function organisation_html_cover () {
+        global $post;
         $verweise = Materialpool_Material::get_organisation();
         foreach ( $verweise as $verweis ) {
             $url = get_permalink( $verweis[ 'ID' ] );
@@ -1337,9 +1328,12 @@ END;
             }
             echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-organisation' ) .'">' . $verweis[ 'post_title' ] . '</a>';
             echo "</div>";
-
-
-
+        }
+        $organisation = apply_filters( 'materialpool_material_description_interim_organisation', get_metadata( 'post', $post->ID, 'material_organisation_interim', true ) );
+        if ( $organisation != '' ) {
+            echo "<div class='materialpool-template-material-organisation'>";
+            echo '<a class="'. apply_filters( 'materialpool-template-material-organisation', 'materialpool-template-material-organisation' ) .'">' . $organisation. '</a>';
+            echo "</div>";
         }
     }
 
@@ -1459,6 +1453,7 @@ END;
  * @filters materialpool-template-material-autor
  */
     static public function autor_html () {
+        global $post;
         $verweise = Materialpool_Material::get_autor();
         foreach ( $verweise as $verweis ) {
             $url = get_permalink( $verweis[ 'ID' ] );
@@ -1466,6 +1461,11 @@ END;
             $nachname = get_post_meta($verweis[ 'ID' ], 'autor_nachname', true );
             echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-autor', 'materialpool-template-material-autor' ) .'">' . $vorname .' '. $nachname . '</a><br>';
 
+        }
+        // Output INterim Autor
+        $autor = apply_filters( 'materialpool_material_description_interim_autor', get_metadata( 'post', $post->ID, 'material_autor_interim', true ) );
+        if ( $autor != '' ) {
+            echo '<a class="'. apply_filters( 'materialpool-template-material-autor', 'materialpool-template-material-autor' ) .'">' . $autor. '</a>';
         }
     }
 
@@ -1476,6 +1476,7 @@ END;
      * @filters materialpool-template-material-autor
      */
     static public function autor_html_picture () {
+        global $post;
         $verweise = Materialpool_Material::get_autor();
         foreach ( $verweise as $verweis ) {
             $url = get_permalink( $verweis[ 'ID' ] );
@@ -1488,6 +1489,12 @@ END;
             }
             echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-autor', 'materialpool-template-material-autor' ) .'">' . $vorname . ' '. $nachname . '</a>';
 
+        }
+
+        // Output INterim Autor
+        $autor = apply_filters( 'materialpool_material_description_interim_autor', get_metadata( 'post', $post->ID, 'material_autor_interim', true ) );
+        if ( $autor != '' ) {
+            echo '<a class="'. apply_filters( 'materialpool-template-material-autor', 'materialpool-template-material-autor' ) .'">' . $autor. '</a>';
         }
     }
 
@@ -1944,7 +1951,7 @@ END;
         if ( wp_doing_ajax() ) {
             $thema = (int) $_POST[ 'mp_thema'];
             $gruppe = (int) $_POST[ 'mp_gruppe'];
-            
+
         } else {
             $thema = (int) $_GET[ 'thema'];
             $gruppe = (int) $_GET[ 'gruppe'];
