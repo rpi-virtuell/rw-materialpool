@@ -1723,6 +1723,7 @@ END;
         return $data;
     }
 
+
     /**
      * @since 0.0.1
      * @access public
@@ -1730,7 +1731,11 @@ END;
      */
     static public function get_schlagworte_html() {
         global $post;
-        $url =  parse_url( $_SERVER[ 'REQUEST_URI' ], PHP_URL_PATH );
+        if ( wp_doing_ajax() ) {
+            $url = esc_url_raw( $_POST[ 'mp_url'] );
+        } else {
+            $url =  parse_url( $_SERVER[ 'REQUEST_URI' ], PHP_URL_PATH );
+        }
         $data = '';
         $schlagworte = get_metadata( 'post', $post->ID, 'material_schlagworte' );
         if ( sizeof( $schlagworte ) == 1 ) {
@@ -1751,6 +1756,7 @@ END;
         return $data;
     }
 
+
     /**
      *
      * @since 0.0.1
@@ -1766,6 +1772,7 @@ END;
         return $data;
     }
 
+
     /**
      *
      * @since 0.0.1
@@ -1777,6 +1784,7 @@ END;
 
         return get_metadata( 'post', $post->ID, 'material_jahr', true );
     }
+
 
     /**
      *

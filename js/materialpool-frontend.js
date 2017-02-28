@@ -74,3 +74,7 @@ jQuery(document).ready(function(){
 
     });
 })(jQuery);
+
+jQuery.ajaxSetup({
+    data: { "mp_url": window.location.search }
+});
