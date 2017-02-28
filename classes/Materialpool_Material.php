@@ -77,13 +77,13 @@ class Materialpool_Material {
     static public function cpt_list_head( $columns ) {
         $columns[ 'material_views' ] = _x( 'Views', 'Material list field',  Materialpool::$textdomain );
         $columns[ 'material-bildungsstufe' ] = _x( 'Bildungsstufe', 'Material list field',  Materialpool::$textdomain );
-        $columns[ 'material-owner' ] = _x( 'Eintrager', 'Material list field',  Materialpool::$textdomain );
         $columns[ 'material-schlagworte' ] = _x( 'Schlagworte', 'Material list field',  Materialpool::$textdomain );
+        $columns[ 'material-medientyp' ] = _x( 'Medientyp', 'Material list field',  Materialpool::$textdomain );
         $columns[ 'material-organisation' ] = _x( 'Organisation', 'Material list field',  Materialpool::$textdomain );
         $columns[ 'material-autor' ] = _x( 'Autoren', 'Material list field',  Materialpool::$textdomain );
-        $columns[ 'material-medientyp' ] = _x( 'Medientyp', 'Material list field',  Materialpool::$textdomain );
         $columns[ 'material-online' ] = _x( 'Online', 'Material list field',  Materialpool::$textdomain );
         $columns[ 'material-status' ] = _x( 'Status', 'Material list field',  Materialpool::$textdomain );
+        $columns[ 'material-owner' ] = _x( 'Eintrager', 'Material list field',  Materialpool::$textdomain );
         return $columns;
     }
 
