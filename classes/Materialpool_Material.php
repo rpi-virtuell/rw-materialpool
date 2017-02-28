@@ -1941,8 +1941,14 @@ END;
      *
      */
     static public function cb_themenseite() {
-        $thema = (int) $_GET[ 'thema'];
-        $gruppe = (int) $_GET[ 'gruppe'];
+        if ( wp_doing_ajax() ) {
+            $thema = (int) $_POST[ 'mp_thema'];
+            $gruppe = (int) $_POST[ 'mp_gruppe'];
+            
+        } else {
+            $thema = (int) $_GET[ 'thema'];
+            $gruppe = (int) $_GET[ 'gruppe'];
+        }
         $back = '';
         if ( $thema == 0 || $gruppe == 0 ) {
             return $back;
