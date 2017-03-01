@@ -167,6 +167,15 @@ class Materialpool_Dashboard {
             array( 'Materialpool_Statistic', 'material_monate') // Display function.
         );
 
+        wp_add_dashboard_widget(
+            'mp-notcomplete',         // Widget slug.
+            'Unvollständiges Material',         // Title.
+            array( 'Materialpool_Dashboard', 'not_complete') // Display function.
+        );
+
+
+
+
      //   wp_add_dashboard_widget(
      //       'mp-materialautoren7',         // Widget slug.
      //       'Meistgelesene Autoren',         // Title.
@@ -616,4 +625,72 @@ class Materialpool_Dashboard {
             echo "</table>";
         }
     }
+
+
+    /**
+     *
+     */
+    static public function not_complete() {
+        global $wpdb;
+        $count = 0;
+        $result = $wpdb->get_results( $wpdb->prepare("
+        SELECT distinct( $wpdb->posts.ID ) , $wpdb->posts.post_title, DATE_FORMAT ( post_date, '%%d.%%m.%%y' ) AS datum  FROM 
+	$wpdb->posts, $wpdb->postmeta 
+WHERE 
+	$wpdb->posts.ID = $wpdb->postmeta.post_id AND  
+	$wpdb->posts.post_type = 'material' AND
+	( $wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'draft' )  AND
+
+(
+	( 
+	(
+	   not exists( select * from wp_postmeta where meta_key='material_schlagworte' and post_id = wp_posts.ID )
+	 OR  
+		( 
+			wp_postmeta.meta_key = 'material_schlagworte' AND 
+			wp_postmeta.meta_value = ''  
+		)
+		) and (
+			wp_postmeta.meta_key = 'material_schlagworte_interim' AND 
+			wp_postmeta.meta_value = ''  
+		
+		)
+	)
+OR
+	( 
+		$wpdb->postmeta.meta_key = 'material_url' AND 
+ 			$wpdb->postmeta.meta_value = ''  
+	)
+OR	
+	( 
+	   not exists( select * from $wpdb->postmeta where meta_key='_pods_material_medientyp' and post_id = $wpdb->posts.ID )
+	 OR  
+		( 
+			$wpdb->postmeta.meta_key = '_pods_material_medientyp' AND 
+			$wpdb->postmeta.meta_value = ''  
+		)
+	)
+	OR	
+	( 
+	   not exists( select * from $wpdb->postmeta where meta_key='material_bildungsstufe' and post_id = $wpdb->posts.ID )
+	 OR  
+		( 
+			$wpdb->postmeta.meta_key = 'material_bildungsstufe' AND 
+			$wpdb->postmeta.meta_value = ''  
+		)
+	)
+)	
+order by wp_posts.post_date  asc ")  );
+        foreach ( $result as $obj ) {
+            if ($count == 0 ) {
+                echo "<table><tr><th style='width: 80%;'>Material</th><th style='width: 20%;' >Datum</th></tr>";
+            }
+            echo "<tr><td><a href='". get_edit_post_link( $obj->ID) ."'>" . $obj->post_title . "</a></td><td>" . $obj->datum ."</td></tr>";
+            $count++;
+        }
+        if ( $count > 0) {
+            echo "</table>";
+        }
+    }
+
 }
