@@ -73,3 +73,12 @@ input.uncheck_themenseite.themenseite-cb-backend {
     line-height: 1.5em;
 
 }
+
+.materialpool-notice-error {
+    margin: 10px 0px 10px 0px;
+    padding: 1px 10px 1px 10px;
+    -webkit-box-shadow: -10px 0px 0px 0px rgba(220,50,50,1);
+    -moz-box-shadow: -10px 0px 0px 0px rgba(220,50,50,1);
+    box-shadow: -10px 0px 0px 0px rgba(220,50,50,1);
+    color: #dc3232;
+}

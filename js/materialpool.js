@@ -696,3 +696,40 @@ jQuery(document).ready(function(){
         }
     })
 });
+
+/**
+ * Hnweise bei Material auf Pseudo Pflichtfelder
+ */
+jQuery(document).ready(function(){
+        if ( jQuery(".post-type-material").length ) {
+            // Wenn auf der CPT Materialseite
+            if (! jQuery("#mppubinfo").length ) {
+                // Initial DIV Container hinzufügen
+                jQuery("#publishing-action").append("<div id='mppubinfo'></div>");
+
+            }
+            jQuery('body').click(function(){
+                jQuery("#mppubinfo").empty();
+                // URL prüfen
+                if ( jQuery("#pods-form-ui-pods-meta-material-url").val() == '' ) {
+                    jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Material URL nicht angegeben.</div>");
+                }
+                // Schlagworte prüfen
+                if ( jQuery("#pods-form-ui-pods-meta-material-schlagworte").val() == ''  &&  jQuery("#pods-form-ui-pods-meta-material-schlagworte-interim").val() == '' ) {
+                    jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Keine Schlagworte vergeben.</div>");
+                }
+                // Bildungsstufen prüfen
+                if ( jQuery(".pods-form-ui-field-name-pods-meta-material-bildungsstufe:checked").length == 0 ) {
+                    jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Keine Bildungsstufe gewählt.</div>");
+                }
+                // Medientyp prüfen
+                if ( jQuery(".pods-form-ui-field-name-pods-meta-material-medientyp:checked").length == 0 ) {
+                    jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Kein Medientyp gewählt.</div>");
+                }
+
+
+
+            });
+    }
+});
+
