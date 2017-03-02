@@ -661,6 +661,16 @@ OR
 		$wpdb->postmeta.meta_key = 'material_url' AND 
  			$wpdb->postmeta.meta_value = ''  
 	)
+OR
+	( 
+		$wpdb->postmeta.meta_key = 'material_beschreibung' AND 
+ 			$wpdb->postmeta.meta_value = ''  
+	)
+OR
+	( 
+		$wpdb->postmeta.meta_key = 'material_kurzbeschreibung' AND 
+ 			$wpdb->postmeta.meta_value = ''  
+	)
 OR	
 	( 
 	   not exists( select * from $wpdb->postmeta where meta_key='_pods_material_medientyp' and post_id = $wpdb->posts.ID )

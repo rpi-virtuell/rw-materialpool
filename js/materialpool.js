@@ -700,9 +700,23 @@ jQuery(document).ready(function(){
 
 function check_material() {
     jQuery("#mppubinfo").empty();
+    var text;
     // URL prüfen
     if ( jQuery("#pods-form-ui-pods-meta-material-url").val() == '' ) {
         jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Material URL nicht angegeben.</div>");
+    }
+    // Kurzbeschreibung prüfen
+    if ( jQuery("#pods-form-ui-pods-meta-material-kurzbeschreibung").val() == '' ) {
+        jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Kurzbeschreibung nicht angegeben.</div>");
+    }
+    // Beschreibung prüfen
+    if ( (typeof tinyMCE != "undefined") && tinyMCE.activeEditor && !tinyMCE.activeEditor.isHidden() ) {
+        text = tinyMCE.activeEditor.getContent();
+    } else {
+        text = jQuery("#pods-form-ui-pods-meta-material-beschreibung").val();
+    }
+    if ( text == '' ) {
+        jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Beschreibung nicht angegeben.</div>");
     }
     // Schlagworte prüfen
     if ( jQuery("#pods-form-ui-pods-meta-material-schlagworte").val() == ''  &&  jQuery("#pods-form-ui-pods-meta-material-schlagworte-interim").val() == '' ) {
