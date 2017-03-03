@@ -2085,9 +2085,15 @@ END;
     static public function depublizierung() {
         global $wpdb;
 
-        $result = $wpdb->get_var( "SELECT  $wpdb->posts.ID FROM $wpdb->posts, $wpdb->postmeta WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id AND  $wpdb->postmeta.meta_key = %s AND $wpdb->postmeta.meta_value <= CURRENT_DATE " );
-        foreach ( $result as $obj ) {
-            wp_trash_post(  $obj->ID );
+        $result = $wpdb->get_var( $wpdb->prepare( "SELECT  $wpdb->posts.ID FROM $wpdb->posts, $wpdb->postmeta WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id AND  $wpdb->postmeta.meta_key = %s AND $wpdb->postmeta.meta_value <= CURRENT_DATE " , 'material_depublizierungsdatum' ) );
+        if ( is_array( $result ) ) {
+            foreach ( $result as $obj ) {
+                wp_trash_post(  $obj->ID );
+            }
+        } else {
+            if ( ! is_wp_error( $result ) ) {
+                wp_trash_post(  $result );
+            }
         }
 
     }
