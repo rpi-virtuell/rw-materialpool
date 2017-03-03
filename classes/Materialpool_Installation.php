@@ -126,6 +126,14 @@ class Materialpool_Installation {
 
         dbDelta( $sql );
 
+        /*
+         * Register CronJobs
+         */
+
+        if (! wp_next_scheduled ( 'mp_depublizierung' ) ) {
+            wp_schedule_event(time(), 'hourly', 'mp_depublizierung');
+        }
+
     }
 
 	/**
@@ -139,6 +147,10 @@ class Materialpool_Installation {
 	 * @return  void
 	 */
 	public static function on_deactivation() {
+        /*
+         * Deregister CronJobs
+         */
+        wp_clear_scheduled_hook('mp_depublizierung');
 
 	}
 

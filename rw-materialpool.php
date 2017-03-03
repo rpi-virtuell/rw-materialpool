@@ -160,6 +160,7 @@ class Materialpool {
         add_action( 'admin_footer-post-new.php', array( 'Materialpool_Material', 'write_javascript' ) );
         add_filter( 'tl_tplc_external_files', array( 'Materialpool_Material', 'add_template_check_external_files' ) );
         add_action( 'init', array( 'Materialpool', 'get_crossdomain_viewer_url' ) );
+        add_action( 'mp_depublizierung', array( 'Materialpool_Material', 'depublizierung' ) );
         add_shortcode( 'material-vorschlag', array( 'Materialpool_Material', 'vorschlag_shortcode' ) );
         remove_shortcode( 'viewerjs', 'viewerjs_shortcode_handler');
         add_shortcode( 'viewerjs', array( 'Materialpool', 'viewerjs_shortcode_handler' ) );
