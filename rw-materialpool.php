@@ -240,6 +240,11 @@ class Materialpool {
         add_filter( 'tl_tplc_external_files', array( 'Materialpool_Themenseite', 'add_template_check_external_files' ) );
         add_action( 'save_post', array( 'Materialpool_Themenseite', 'generate_taxonomy') );
 
+        // Add Filter & Actions for Settingspage
+        add_action( 'admin_menu', array( 'Materialpool_Settings', 'options_page' ) );
+        add_action( 'admin_menu', array( 'Materialpool_Settings', 'settings_init' ) );
+
+
 
         // Add Filter & Actions for 3Party Stuff
         add_action( 'rate_post',                            array( 'Materialpool_FacetWP', 'reindex_post_after_ajax_rating'),10, 2 );
