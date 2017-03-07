@@ -234,6 +234,7 @@ class Materialpool {
         add_action( 'wp_ajax_mp_synonym_check_tag',  array( 'SearchWP_Materialpool_Synonyms', 'wp_ajax_mp_synonym_check_tag' ) );
         add_filter( 'searchwp_extensions',          array( 'SearchWP_Materialpool_Synonyms', 'register' ), 10 );
         add_filter( 'searchwp_term_in',             array( 'SearchWP_Materialpool_Synonyms', 'find_synonyms' ), 10, 3 );
+        add_filter( 'post_row_actions',             array( 'Materialpool_Synonyme', 'row_actions' ), 10, 2 );
 
         // Add Filter & Actions for Themenseiten
         add_filter( 'template_include', array( 'Materialpool_Themenseite', 'load_template' ) );

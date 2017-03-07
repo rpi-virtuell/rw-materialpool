@@ -56,6 +56,22 @@ class Materialpool_Synonyme {
         ) );
     }
 
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function row_actions( $actions, $post )
+    {
+        if ( 'synonym' === $post->post_type ) {
+            unset ( $actions[ "inline hide-if-no-js" ] );
+        }
+        return $actions;
+    }
+
+
 }
 
 
