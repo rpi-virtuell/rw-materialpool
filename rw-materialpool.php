@@ -239,6 +239,7 @@ class Materialpool {
         add_filter( 'template_include', array( 'Materialpool_Themenseite', 'load_template' ) );
         add_filter( 'tl_tplc_external_files', array( 'Materialpool_Themenseite', 'add_template_check_external_files' ) );
         add_action( 'save_post', array( 'Materialpool_Themenseite', 'generate_taxonomy') );
+        add_filter( 'post_row_actions', array( 'Materialpool_Themenseite', 'row_actions' ), 10, 2 );
 
         // Add Filter & Actions for Settingspage
         add_action( 'admin_menu', array( 'Materialpool_Settings', 'options_page' ) );

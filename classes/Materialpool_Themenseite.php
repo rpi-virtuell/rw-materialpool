@@ -113,6 +113,18 @@ class Materialpool_Themenseite {
         return $items_arr;
     }
 
-
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function row_actions( $actions, $post )
+    {
+        if ( 'themenseite' === $post->post_type ) {
+            unset ( $actions[ "inline hide-if-no-js" ] );
+        }
+        return $actions;
+    }
 
 }
