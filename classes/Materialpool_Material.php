@@ -1536,18 +1536,37 @@ END;
         $url =  parse_url( $_SERVER[ 'REQUEST_URI' ], PHP_URL_PATH );
         $data = '';
         $bildungsstufe = get_metadata( 'post', $post->ID, 'material_bildungsstufe' );
-        if ( sizeof( $bildungsstufe ) == 1 ) {
-            if ( $bildungsstufe[ 0 ] !== false ) {
-                if ( $bildungsstufe[ 0 ][ 'parent'] != 0 ) {
-                    $link = add_query_arg( 'fwp_bildungsstufe', $bildungsstufe[0][ 'slug' ], $url );
-                    $data .= '<span class="facet-tag"><a href="' . $link . '">' . $bildungsstufe[0][ 'name' ] .'</a></span>';
+        if ( ! Materialpool_Material::is_old() ) {
+            if ( sizeof( $bildungsstufe ) == 1 ) {
+                if ( $bildungsstufe[ 0 ] !== false ) {
+                    if ( $bildungsstufe[ 0 ][ 'parent'] != 0 ) {
+                        $link = add_query_arg( 'fwp_bildungsstufe', $bildungsstufe[0][ 'slug' ], $url );
+                        $data .= '<span class="facet-tag"><a href="' . $link . '">' . $bildungsstufe[0][ 'name' ] .'</a></span>';
+                    }
+                }
+            } else {
+                foreach ( $bildungsstufe as $bildung ) {
+                    if ( $bildung[ 'parent'] != 0 ) {
+                        $link = add_query_arg( 'fwp_bildungsstufe', $bildung[ 'slug' ], $url );
+                        $data .= '<span class="facet-tag"><a href="' . $link . '">' . $bildung[ 'name' ] .'</a></span>';
+                    }
                 }
             }
         } else {
-            foreach ( $bildungsstufe as $bildung ) {
-                if ( $bildung[ 'parent'] != 0 ) {
-                    $link = add_query_arg( 'fwp_bildungsstufe', $bildung[ 'slug' ], $url );
-                    $data .= '<span class="facet-tag"><a href="' . $link . '">' . $bildung[ 'name' ] .'</a></span>';
+            if ( sizeof( $bildungsstufe ) == 1 ) {
+                $term = get_term( $bildungsstufe, "bildungsstufe" );
+                if ( $term->parent != 0 ) {
+                    $link = add_query_arg( 'fwp_bildungsstufe', $term->slug, $url );
+                    $data .= '<span class="facet-tag"><a href="' . $link . '">' . $term->name .'</a></span>';
+                }
+
+            } else {
+                foreach ( $bildungsstufe as $bildung ) {
+                    $term = get_term( $bildung, "bildungsstufe" );
+                    if ( $term->parent != 0 ) {
+                        $link = add_query_arg( 'fwp_bildungsstufe', $term->slug, $url );
+                        $data .= '<span class="facet-tag"><a href="' . $link . '">' . $term->name .'</a></span>';
+                    }
                 }
             }
         }
@@ -1636,6 +1655,23 @@ END;
 			$back = true;
 		}
 		return $back;
+    }
+
+    /**
+     * @since 0.0.1
+     * @access public
+     * @return mixed
+     */
+    static public function is_old() {
+        global $post;
+
+        $back = false;
+        $old =  get_metadata( 'post', $post->ID, 'materialpool_old', true );
+
+        if ( $old == '1' ) {
+            $back = true;
+        }
+        return $back;
     }
 
     /**
