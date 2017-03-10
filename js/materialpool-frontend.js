@@ -104,7 +104,20 @@ jQuery.ajaxSetup({
     data: {
         "mp_url": window.location.search,
         "mp_thema": QueryString.thema,
-        "mp_gruppe": QueryString.gruppe
+        "mp_gruppe": QueryString.gruppe,
+        "mp_search": QueryString.fwp_suche,
     }
+});
 
+jQuery(document).ready(function(){
+     jQuery('body').keyup(function( e ){
+        jQuery.ajaxSetup({
+            data: {
+                "mp_url": window.location.search,
+                "mp_thema": QueryString.thema,
+                "mp_gruppe": QueryString.gruppe,
+                "mp_search": jQuery(".facetwp-search").val(),
+            }
+        });
+    })
 });

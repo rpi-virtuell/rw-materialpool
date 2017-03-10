@@ -278,6 +278,12 @@ class Materialpool {
 
         add_action( 'init', array( 'Materialpool', 'custom_oembed_providers' ) , 10, 1 );
 
+        // Register New Facet for Searches in Old MP
+        add_filter( 'facetwp_facet_types', function( $facet_types ) {
+            $facet_types['select2'] = new Materialpool_FacetWP_OldSearch();
+            return $facet_types;
+        });
+
         do_action( 'materialpool_init' );
 	}
 
