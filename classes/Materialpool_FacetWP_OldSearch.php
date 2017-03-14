@@ -26,7 +26,7 @@ class Materialpool_FacetWP_OldSearch
             );
             $anzahl = count($swp_query->posts);
             if ( $anzahl > 0 ) {
-                $output =  "Zu dem Suchbegriff gibt es im alten <a href='/archiv/?fwp_search=". urlencode( $search ) ."'>Materialpool</a> " . $anzahl . " Treffer ";
+                $output =  "Zu dem Suchbegriff gibt es im alten <a href='/archiv/?fwp_suche=". urlencode( $search ) ."'>Materialpool</a> " . $anzahl . " Treffer ";
             }
         }
         return $output;
