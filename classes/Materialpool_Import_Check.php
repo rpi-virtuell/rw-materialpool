@@ -31,12 +31,14 @@ class Materialpool_Import_Check
     public static function url_exists($post_id ) {
         global $wpdb;
         $url = get_post_meta( $post_id, 'material_url', true  );
-        
-        $anzahl = $wpdb->get_col( $wpdb->prepare( "SELECT count( meta_id ) as anzahl  FROM  $wpdb->postmeta WHERE $wpdb->postmeta.meta_key = %s and $wpdb->postmeta.meta_value = %s and post_id != %d", 'material_url', $url, $post_id) );
-        if ( is_array( $anzahl ) && $anzahl[ 0 ] == 0 ) {
-            $back = false;
-        } else {
-            $back = true;
+        $back = false;
+        if ( $url != '' ) {
+            $anzahl = $wpdb->get_col($wpdb->prepare("SELECT count( meta_id ) as anzahl  FROM  $wpdb->postmeta WHERE $wpdb->postmeta.meta_key = %s and $wpdb->postmeta.meta_value = %s and post_id != %d", 'material_url', $url, $post_id));
+            if (is_array($anzahl) && $anzahl[0] == 0) {
+                $back = false;
+            } else {
+                $back = true;
+            }
         }
         return $back;
     }
