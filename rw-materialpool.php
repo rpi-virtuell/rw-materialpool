@@ -284,6 +284,9 @@ class Materialpool {
             return $facet_types;
         });
 
+        // Register ImportPlugin End Action
+        add_action( 'import_end', array( 'Materialpool_Import_Check', 'check' ) );
+
         do_action( 'materialpool_init' );
 	}
 
