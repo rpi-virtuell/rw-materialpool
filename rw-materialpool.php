@@ -246,7 +246,8 @@ class Materialpool {
         add_action( 'admin_menu', array( 'Materialpool_Settings', 'options_page' ) );
         add_action( 'admin_menu', array( 'Materialpool_Settings', 'settings_init' ) );
 
-
+        // Add Filter  & Actions for Posts
+        add_action( 'add_meta_boxes',  array( 'Materialpool_Posts', 'add_metaboxes' ) );
 
         // Add Filter & Actions for 3Party Stuff
         add_action( 'rate_post',                            array( 'Materialpool_FacetWP', 'reindex_post_after_ajax_rating'),10, 2 );
@@ -271,6 +272,9 @@ class Materialpool {
         add_action( 'wp_ajax_mp_list_thema_backend',  array( 'Materialpool', 'my_action_callback_mp_list_thema_backend' ) );
         add_action( 'wp_ajax_nopriv_mp_add_proposal',  array( 'Materialpool', 'my_action_callback_mp_add_proposal' ) );
         add_action( 'wp_ajax_mp_add_proposal',  array( 'Materialpool', 'my_action_callback_mp_add_proposal' ) );
+        add_action( 'wp_ajax_convert2material',  array( 'Materialpool', 'my_action_callback_convert2material' ) );
+
+
 
         add_action( 'wp_head', array( 'Materialpool',  'promote_feeds' ) );
         remove_all_actions( 'do_feed_rss2' );
@@ -674,6 +678,129 @@ class Materialpool {
             }
         }
 
+        wp_die();
+    }
+
+    /**
+     *
+     * @since   0.0.1
+     * @access  public
+     * @filters materialpool-ajax-check-organisation-title
+     */
+    public static function my_action_callback_convert2material() {
+        global $wpdb;
+        $post_id = (int) $_POST['post'];
+
+        $pod = pods( 'material' );
+        $postdata = get_post( $post_id );
+        $sprache = get_post_meta( $post_id, '_pods_material_sprache', false );
+        $bildungsstufe = get_post_meta( $post_id, '_pods_material_bildungsstufe', false );
+        $altersstufe = get_post_meta( $post_id, '_pods_material_altersstufe', false );
+        $medientype = get_post_meta( $post_id, '_pods_material_medientyp', false  );
+        $title = get_post_meta( $post_id, 'material_titel', true );
+        $beschreibung = $postdata->post_content;
+        $data = array(
+            'material_special' => 0,
+            'material_titel' => $title,
+            'material_kurzbeschreibung' => get_post_meta( $post_id, 'material_kurzbeschreibung', true ),
+            'material_beschreibung' => $beschreibung,
+            'material_autor_interim' => get_post_meta( $post_id, 'material_autor_interim', true ),
+            'material_organisation_interim' => get_post_meta( $post_id, 'material_organisation_interim', true ),
+            'material_schlagworte_interim' => get_post_meta( $post_id, 'material_schlagworte_interim', true ),
+            'material_url' => get_post_meta( $post_id, 'material_url', true ),
+        );
+
+        wp_delete_post($post_id );
+        $material_id = $pod->add( $data );
+        $pod = pods( 'material' , $material_id );
+        $pod->add_to( 'material_sprache', implode( ',', $sprache[ 0 ] ) );
+        $pod->add_to( 'material_medientyp', implode( ',', $medientype[ 0 ] ) );
+        $pod->add_to( 'material_bildungsstufe', implode( ',', $bildungsstufe[ 0 ] ) );
+        $pod->add_to( 'material_altersstufe', implode( ',', $altersstufe[ 0 ] ) );
+
+
+        $post_type = get_post_type($material_id);
+        $post_parent = wp_get_post_parent_id( $material_id );
+        $post_name = wp_unique_post_slug( sanitize_title( $title ), $material_id, 'publish', $post_type, $post_parent );
+
+        wp_publish_post( $material_id);
+
+        $x = $wpdb->update(
+            $wpdb->posts,
+            array(
+                'post_title' => stripslashes( $title ),
+                'post_name' => $post_name,
+                'post_content' => $beschreibung,
+            ),
+            array( 'ID' => $material_id ),
+            array(
+                '%s',
+                '%s'
+            ),
+            array( '%d' )
+        );
+
+        // Altersstufen des Materials in term_rel speichern
+        wp_delete_object_term_relationships( $material_id, 'altersstufe' );
+        $cats = $altersstufe[ 0 ];
+        if ( is_array( $cats ) ) {
+            foreach ( $cats as $key => $val ) {
+                $cat_ids[] = (int) $val;
+            }
+        }
+        if ( is_int( $cats ) ) {
+            $cat_ids[] = $cats;
+        }
+        wp_set_object_terms( $material_id, $cat_ids, 'altersstufe', true );
+
+        // Bildungsstufen des Materials in term_rel speichern
+        wp_delete_object_term_relationships( $material_id, 'bildungsstufe' );
+        $cats =  $bildungsstufe[ 0 ];
+        if ( is_array( $cats ) ) {
+            foreach ( $cats as $key => $val ) {
+                $cat_ids[] = (int) $val;
+            }
+        }
+        if ( is_int( $cats ) ) {
+            $cat_ids[] = $cats;
+        }
+        wp_set_object_terms( $material_id, $cat_ids, 'bildungsstufe', true );
+
+        // Medientyp des Materials in term_rel speichern
+        wp_delete_object_term_relationships( $material_id, 'medientyp' );
+        $cats = $medientype;
+        if ( is_array( $cats ) ) {
+            foreach ( $cats as $key => $val ) {
+                $cat_ids[] = (int) $val;
+            }
+        }
+        if ( $cats!== null  ) {
+            $cat_ids[] = (int) $cats;
+        }
+        wp_set_object_terms( $material_id, $cat_ids, 'medientyp', true );
+
+
+        // Sprachen des Materials in term_rel speichern
+        wp_delete_object_term_relationships( $material_id, 'sprache' );
+        $cats = $sprache;
+        if ( is_array( $cats ) ) {
+            foreach ( $cats as $key => $val ) {
+                $cat_ids[] = (int) $val;
+            }
+        }
+        if ( $cats!== null  ) {
+            $cat_ids[] = (int) $cats;
+        }
+        wp_set_object_terms( $material_id, $cat_ids, 'sprache', true );
+
+        // Wenn Special, dann MaterialURL auf das Material selbst zeigen lassen.
+        clean_post_cache( $material_id );
+        $p = get_post( $material_id );
+        $url = get_permalink( $p );
+        update_post_meta( $material_id, 'material_url', $url  );
+
+
+        echo json_encode( get_edit_post_link( $material_id, 'use' ) );
         wp_die();
     }
 

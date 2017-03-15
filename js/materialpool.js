@@ -756,3 +756,24 @@ jQuery(window).load(function() {
     }
 });
 
+/*
+ * Konvert Post to Material
+ */
+jQuery(document).ready(function(){
+    jQuery("#convert2material").click( function() {
+        var id = jQuery(this).data("id");
+        var data = {
+            'action': 'convert2material',
+            'post': id
+        };
+        jQuery.post(ajaxurl, data, function(response) {
+
+            ret = jQuery.parseJSON( response ) ;
+            if ( ret != 0 ) {
+                window.location.href = ret;
+
+            }
+        });
+
+    });
+});
