@@ -793,13 +793,6 @@ class Materialpool {
         }
         wp_set_object_terms( $material_id, $cat_ids, 'sprache', true );
 
-        // Wenn Special, dann MaterialURL auf das Material selbst zeigen lassen.
-        clean_post_cache( $material_id );
-        $p = get_post( $material_id );
-        $url = get_permalink( $p );
-        update_post_meta( $material_id, 'material_url', $url  );
-
-
         echo json_encode( get_edit_post_link( $material_id, 'use' ) );
         wp_die();
     }
