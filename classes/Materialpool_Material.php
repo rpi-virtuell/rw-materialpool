@@ -1332,7 +1332,7 @@ END;
         $organisation = apply_filters( 'materialpool_material_description_interim_organisation', get_metadata( 'post', $post->ID, 'material_organisation_interim', true ) );
         if ( $organisation != '' ) {
             echo "<div class='materialpool-template-material-organisation'>";
-            echo '<a class="'. apply_filters( 'materialpool-template-material-organisation', 'materialpool-template-material-organisation' ) .'">' . $organisation. '</a>';
+            echo $organisation ;
             echo "</div>";
         }
     }
@@ -1345,6 +1345,8 @@ END;
      *
      */
     static public function has_organisation () {
+        global $post;
+
         $verweise = Materialpool_Material::get_organisation();
         $back = true;
         if ( $verweise === false) {
@@ -1353,7 +1355,10 @@ END;
         if ( is_array( $verweise ) && $verweise[ 0 ] === false ) {
             $back = false;
         }
-
+        $interim = get_metadata( 'post', $post->ID, 'material_organisation_interim', true );
+        if ( $interim != '' ) {
+            $back = true;
+        }
         return $back;
     }
 
@@ -1398,6 +1403,7 @@ END;
      *
      */
     static public function has_autor () {
+        global $post;
         $verweise = Materialpool_Material::get_autor();
         $back = true;
         if ( $verweise === false) {
@@ -1405,6 +1411,10 @@ END;
         }
         if ( is_array( $verweise ) && $verweise[ 0 ] === false ) {
             $back = false;
+        }
+        $interim = get_metadata( 'post', $post->ID, 'material_autor_interim', true );
+        if ( $interim != '' ) {
+            $back = true;
         }
 
         return $back;
@@ -1465,7 +1475,7 @@ END;
         // Output INterim Autor
         $autor = apply_filters( 'materialpool_material_description_interim_autor', get_metadata( 'post', $post->ID, 'material_autor_interim', true ) );
         if ( $autor != '' ) {
-            echo '<a class="'. apply_filters( 'materialpool-template-material-autor', 'materialpool-template-material-autor' ) .'">' . $autor. '</a>';
+            echo   $autor ;
         }
     }
 
@@ -1494,7 +1504,7 @@ END;
         // Output INterim Autor
         $autor = apply_filters( 'materialpool_material_description_interim_autor', get_metadata( 'post', $post->ID, 'material_autor_interim', true ) );
         if ( $autor != '' ) {
-            echo '<a class="'. apply_filters( 'materialpool-template-material-autor', 'materialpool-template-material-autor' ) .'">' . $autor. '</a>';
+            echo $autor;
         }
     }
 
