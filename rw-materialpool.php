@@ -709,6 +709,7 @@ class Materialpool {
             'material_schlagworte_interim' => get_post_meta( $post_id, 'material_schlagworte_interim', true ),
             'material_url' => get_post_meta( $post_id, 'material_url', true ),
             'material_veroeffentlichungsdatum' => get_post_meta( $post_id, 'material_veroeffentlichungsdatum', true ),
+            'material_verfuegbarkeit' => get_post_meta( $post_id, 'material_verfuegbarkeit', true ),
 
         );
 

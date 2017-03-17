@@ -67,6 +67,8 @@ class Materialpool_Import_Check
                 'material_autor_interim' => get_post_meta( $post_id, 'material_autor_interim', true ),
                 'material_organisation_interim' => get_post_meta( $post_id, 'material_organisation_interim', true ),
                 'material_schlagworte_interim' => get_post_meta( $post_id, 'material_schlagworte_interim', true ),
+                'material_veroeffentlichungsdatum' => get_post_meta( $post_id, 'material_veroeffentlichungsdatum', true ),
+                'material_verfuegbarkeit' => get_post_meta( $post_id, 'material_verfuegbarkeit', true ),
             );
 
             wp_delete_post($post_id );
