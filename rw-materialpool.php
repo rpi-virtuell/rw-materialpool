@@ -708,6 +708,8 @@ class Materialpool {
             'material_organisation_interim' => get_post_meta( $post_id, 'material_organisation_interim', true ),
             'material_schlagworte_interim' => get_post_meta( $post_id, 'material_schlagworte_interim', true ),
             'material_url' => get_post_meta( $post_id, 'material_url', true ),
+            'material_veroeffentlichungsdatum' => get_post_meta( $post_id, 'material_veroeffentlichungsdatum', true ),
+
         );
 
         wp_delete_post($post_id );
