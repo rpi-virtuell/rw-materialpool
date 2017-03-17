@@ -354,15 +354,20 @@ jQuery(document).ready(function(){
             };
 
             jQuery.post(ajaxurl, data, function(response) {
-
+                var text;
                 html = response;
                 if ( html != ''  ) {
                     $obj = jQuery.parseJSON( html );
                     if ( jQuery("#pods-form-ui-pods-meta-material-titel").val() == '') {
                         jQuery("#pods-form-ui-pods-meta-material-titel").val( $obj.title );
                     }
-                    var text = $obj.description + "\n\n" + jQuery("#pods-form-ui-pods-meta-material-beschreibung").val();
-                    jQuery("#pods-form-ui-pods-meta-material-beschreibung").val( text );
+                    if ( (typeof tinyMCE != "undefined") && tinyMCE.activeEditor && !tinyMCE.activeEditor.isHidden() ) {
+                        text = $obj.description + "<br><br>" + tinyMCE.activeEditor.getContent();
+                        tinyMCE.activeEditor.setContent( text );
+                    } else {
+                        text = $obj.description + "\n\n" + jQuery("#pods-form-ui-pods-meta-material-beschreibung").val();
+                        jQuery("#pods-form-ui-pods-meta-material-beschreibung").val( text );
+                    }
                     if ( jQuery("#pods-form-ui-pods-meta-material-schlagworte-interim").val() == '') {
                         jQuery("#pods-form-ui-pods-meta-material-schlagworte-interim").val( $obj.keywords );
                     }
