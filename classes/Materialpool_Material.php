@@ -1784,7 +1784,7 @@ END;
      */
     static public function get_schlagworte_html() {
         global $post;
-        if ( wp_doing_ajax() ) {
+        if (defined('REST_REQUEST') && REST_REQUEST) {
             $url = esc_url_raw( $_POST[ 'mp_url'] );
         } else {
             $url =  parse_url( $_SERVER[ 'REQUEST_URI' ], PHP_URL_PATH );
@@ -2143,5 +2143,6 @@ END;
         }
 
     }
+
 
 }
