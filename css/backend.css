@@ -82,3 +82,7 @@ input.uncheck_themenseite.themenseite-cb-backend {
     box-shadow: -10px 0px 0px 0px rgba(220,50,50,1);
     color: #dc3232;
 }
+
+.pods-pick-values {
+    max-height: 1000px !important;
+}
