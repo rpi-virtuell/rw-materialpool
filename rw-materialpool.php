@@ -274,7 +274,7 @@ class Materialpool {
         add_action( 'wp_ajax_mp_add_proposal',  array( 'Materialpool', 'my_action_callback_mp_add_proposal' ) );
         add_action( 'wp_ajax_convert2material',  array( 'Materialpool', 'my_action_callback_convert2material' ) );
 
-
+        add_filter( 'facetwp_api_can_access', function() { return true;} );
 
         add_action( 'wp_head', array( 'Materialpool',  'promote_feeds' ) );
         remove_all_actions( 'do_feed_rss2' );
