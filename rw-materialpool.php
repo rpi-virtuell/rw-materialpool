@@ -256,7 +256,7 @@ class Materialpool {
         remove_filter('manage_posts_columns', 'add_postratings_column');
         remove_filter('manage_pages_columns', 'add_postratings_column');
         add_filter( 'manage_material_posts_columns', array( 'Materialpool_Ratings', 'page_column'), 9999 );
-
+        add_action( 'user_register', array( 'Materialpool', 'user_defaults' ), 10, 1 );
 
         pods_register_field_type( 'screenshot', self::$plugin_base_dir . 'classes/Materialpool_Pods_Screenshot.php' );
         pods_register_field_type( 'facette', self::$plugin_base_dir . 'classes/Materialpool_Pods_Facette.php' );
@@ -295,6 +295,10 @@ class Materialpool {
 	}
 
 
+    public static function user_defaults( $user_id ) {
+        update_user_meta($user_id, 'metaboxhidden_material', array("slugdiv","trackbacksdiv","commentstatusdiv","commentsdiv") );
+        update_user_meta($user_id, 'meta-box-order_material', array ( "side" => "submitdiv", "normal"=> "slugdiv,pods-meta-basis,pods-meta-eigentuemer,pods-meta-meta,pods-meta-erweiterte-metadaten,pods-meta-datum,pods-meta-verknuepfungen,pods-meta-titelbild", "advanced"=>"") );
+    }
 
     public static function custom_oembed_providers() {
         wp_oembed_add_provider( 'http://learningapps.org/*', 'http://learningapps.org/oembed.php' );
