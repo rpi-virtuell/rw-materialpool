@@ -345,6 +345,7 @@ class Materialpool {
         $args = array(
             'user-agent' => 'Mozilla/5.0 (compatible; Materialpool; +'.home_url().')',
             'timeout'     => 30,
+            'sslverify' => false,
         );
         $response =  wp_remote_get( $url, $args );
         if ( is_wp_error( $response) ) {
@@ -389,6 +390,7 @@ class Materialpool {
             $args = array(
                 'user-agent' => 'Mozilla/5.0 (compatible; Materialpool; +' . home_url() . ')',
                 'timeout' => 30,
+                'sslverify' => false,
             );
             $response = wp_remote_get($url, $args);
             if (!is_wp_error($response)) {
@@ -963,7 +965,9 @@ class Materialpool {
             $file_name=substr (strrchr ($url, "/"), 1);
 
             $args = array(
-                'user-agent'  => 'rpi-virtuell/' . $wp_version . '; ' . home_url(),
+                'user-agent' => 'Mozilla/5.0 (compatible; Materialpool; +' . home_url() . ')',
+                'timeout' => 30,
+                'sslverify' => false,
             );
             $response = wp_remote_get( $url, $args );
             if( is_array($response) ) {
