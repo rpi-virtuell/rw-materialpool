@@ -957,15 +957,14 @@ class Materialpool {
         global $wp_version;
 
         if(isset($_GET['vsviewer_url'])){
-            $url = $_GET['vsviewer_url'];
-
+            $url = urldecode( $_GET['vsviewer_url'] );
 
             //@todo check url in materialpool
 
             $file_name=substr (strrchr ($url, "/"), 1);
 
             $args = array(
-                'user-agent' => 'Mozilla/5.0 (compatible; Materialpool; +' . home_url() . ')',
+                'user-agent' => 'Mozilla/5.0 (compatible; Materialpool; )',
                 'timeout' => 30,
                 'sslverify' => false,
             );
@@ -986,7 +985,7 @@ class Materialpool {
      */
     public static function viewerjs_shortcode_handler($args) {
         global $viewerjs_plugin_url;
-        $document_url = home_url().'/?vsviewer_url='.$args[0];
+        $document_url = home_url().'/?vsviewer_url='.urlencode( $args[0] );
         $options = get_option('ViewerJS_PluginSettings');
         $iframe_width = $options['width'];
         $iframe_height = $options['height'];
