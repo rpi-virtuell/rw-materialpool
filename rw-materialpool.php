@@ -363,7 +363,7 @@ class Materialpool {
         foreach ($metas as $meta) {
             $property = $meta->getAttribute('property');
             $content = $meta->getAttribute('content');
-            if ( $property == 'og:image' ) {
+            if ( ( $property == 'og:image' ) && ( strpos( $content, 'http') === 0 ) ) {
                 echo $content;
             }
         }
@@ -418,7 +418,7 @@ class Materialpool {
                         }
                         $keywords .= $content;
                     }
-                    if ($property == 'og:image') {
+                    if ( ( $property == 'og:image' ) && ( strpos( $content, 'http') === 0 ) ) {
                         $image = $content;
                     }
                 }
