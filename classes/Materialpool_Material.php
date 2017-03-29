@@ -597,6 +597,51 @@ class Materialpool_Material {
         return $back;
     }
 
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function check_404_old_material() {
+        global $wp_query;
+        global $wpdb;
+
+        if ( is_404() ) {
+            $uri = $_SERVER[ 'REQUEST_URI' ];
+            if ( strpos( $uri, '/material/') == 0 ) {
+                // old_slug im Material suchen und ggf Umleiten
+                $query = $wpdb->prepare( "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = 'old_slug' and meta_value = %s",
+                    $uri
+                );
+                $results = $wpdb->get_var(  $query );
+                if ( $results !== null ) {
+                    status_header( 301 );
+                    $wp_query->is_404=false;
+                    if ( wp_redirect( get_permalink( $results ) ) ) {
+                        exit;
+                    }
+                }
+            }
+            if ( strpos( $uri, '/tagpage/') == 0 ) {
+                // old_slug im Material suchen und ggf Umleiten
+                $query = $wpdb->prepare( "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = 'old_slug' and meta_value = %s",
+                    $uri
+                );
+                $results = $wpdb->get_var(  $query );
+                if ( $results !== null ) {
+                    status_header( 301 );
+                    $wp_query->is_404=false;
+                    if ( wp_redirect( get_permalink( $results ) ) ) {
+                        exit;
+                    }
+                }
+            }
+        }
+    }
+
+
     /**
      *
      * @since 0.0.1
@@ -965,6 +1010,7 @@ END;
             $data = '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'alignleft materialpool-template-material-picture-facet' ) .'"/>';
 
         }
+
         return $data;
     }
 
@@ -1001,6 +1047,7 @@ END;
             $data = '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'materialpool-template-material-picture-facet' ) .'"/>';
 
         }
+
         return $data;
     }
 
