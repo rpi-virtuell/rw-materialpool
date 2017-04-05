@@ -100,50 +100,66 @@ class Materialpool_Material {
 
         $data = '';
         if ( $column_name == 'material-autor' ) {
-            $autors = get_metadata( 'post', $post_id, 'material_autoren' );
-            if ( sizeof( $autors ) == 1 ) {
-                if ( $autors[ 0 ] !== false ) {
-                    $vorname = get_post_meta($autors[ 0 ][ 'ID' ], 'autor_vorname', true );
-                    $nachname = get_post_meta($autors[ 0 ][ 'ID' ], 'autor_nachname', true );
-                    $data .= '<a href="' . get_edit_post_link( $autors[ 0 ][ 'ID' ] ) . '">' . $vorname. ' '. $nachname .'</a><br>';
+            if ( false === ( $transient = get_transient( 'mp-cpt-list-material-autor-'.$post_id ) ) ) {
+                $autors = get_metadata('post', $post_id, 'material_autoren');
+                if (sizeof($autors) == 1) {
+                    if ($autors[0] !== false) {
+                        $vorname = get_post_meta($autors[0]['ID'], 'autor_vorname', true);
+                        $nachname = get_post_meta($autors[0]['ID'], 'autor_nachname', true);
+                        $data .= '<a href="' . get_edit_post_link($autors[0]['ID']) . '">' . $vorname . ' ' . $nachname . '</a><br>';
+                    } else {
+                        $data = "";
+                    }
                 } else {
-                    $data = "";
+                    foreach ($autors as $autor) {
+                        $vorname = get_post_meta($autor['ID'], 'autor_vorname', true);
+                        $nachname = get_post_meta($autor['ID'], 'autor_nachname', true);
+                        $data .= '<a href="' . get_edit_post_link($autor['ID']) . '">' . $vorname . ' ' . $nachname . '</a><br>';
+                    }
                 }
+                set_transient( 'mp-cpt-list-material-autor-'.$post_id, $data, 60*60*24*7 ); // Eine Woche zwischenspeichern
             } else {
-                foreach ( $autors as $autor ) {
-                    $vorname = get_post_meta($autor[ 'ID' ], 'autor_vorname', true );
-                    $nachname = get_post_meta($autor[ 'ID' ], 'autor_nachname', true );
-                    $data .= '<a href="' . get_edit_post_link( $autor[ 'ID' ] ) . '">' . $vorname. ' '. $nachname .'</a><br>';
-                }
+                $data .= $transient;
             }
         }
         if ( $column_name == 'material-medientyp' ) {
-            $medientyp = get_metadata( 'post', $post_id, 'material_medientyp' );
-            if ( sizeof( $medientyp ) == 1 ) {
-                if ( $medientyp[ 0 ] !== false ) {
-                    $data .= $medientyp[ 0 ][ 'name' ] .'<br>';
+            if ( false === ( $transient = get_transient( 'mp-cpt-list-material-medientyp-'.$post_id ) ) ) {
+                $medientyp = get_metadata( 'post', $post_id, 'material_medientyp' );
+                if ( sizeof( $medientyp ) == 1 ) {
+                    if ( $medientyp[ 0 ] !== false ) {
+                        $data .= $medientyp[ 0 ][ 'name' ] .'<br>';
+                    } else {
+                        $data = "";
+                    }
                 } else {
-                    $data = "";
+                    foreach ( $medientyp as $medien ) {
+                        $data .= $medien[ 'name' ] .'<br>';
+                    }
                 }
+                set_transient( 'mp-cpt-list-material-medientyp-'.$post_id, $data, 60*60*24*7 ); // Eine Woche zwischenspeichern
             } else {
-                foreach ( $medientyp as $medien ) {
-                    $data .= $medien[ 'name' ] .'<br>';
-                }
+                $data .= $transient;
             }
         }
         if ( $column_name == 'material-bildungsstufe' ) {
-            $bildungsstufe = get_metadata( 'post', $post_id, 'material_bildungsstufe' );
-            if ( sizeof( $bildungsstufe ) == 1 ) {
-                if ( $bildungsstufe[ 0 ] !== false ) {
-                    $data .= $bildungsstufe[ 0 ][ 'name' ] .'<br>';
+            if ( false === ( $transient = get_transient( 'mp-cpt-list-material-bildungsstufe-'.$post_id ) ) ) {
+                $bildungsstufe = get_metadata( 'post', $post_id, 'material_bildungsstufe' );
+                if ( sizeof( $bildungsstufe ) == 1 ) {
+                    if ( $bildungsstufe[ 0 ] !== false ) {
+                        $data .= $bildungsstufe[ 0 ][ 'name' ] .'<br>';
+                    } else {
+                        $data = "";
+                    }
                 } else {
-                    $data = "";
+                    foreach ( $bildungsstufe as $bildung ) {
+                        $data .= $bildung[ 'name' ] .'<br>';
+                    }
                 }
+                set_transient( 'mp-cpt-list-material-medientyp-'.$post_id, $data, 60*60*24*7 ); // Eine Woche zwischenspeichern
             } else {
-                foreach ( $bildungsstufe as $bildung ) {
-                    $data .= $bildung[ 'name' ] .'<br>';
-                }
+                $data .= $transient;
             }
+
         }
         if ( $column_name == 'material-owner' ) {
             $post = get_post( $post_id);
@@ -151,33 +167,43 @@ class Materialpool_Material {
             $data = $user->display_name;
         }
         if ( $column_name == 'material-schlagworte' ) {
-            $schlagworte = get_metadata( 'post', $post_id, 'material_schlagworte' );
-            if ( sizeof( $schlagworte ) == 1 ) {
-                if ( $schlagworte[ 0 ] !== false ) {
-                    $data .= $schlagworte[ 0 ][ 'name' ] .'<br>';
+            if ( false === ( $transient = get_transient( 'mp-cpt-list-material-schlagworte-'.$post_id ) ) ) {
+                $schlagworte = get_metadata( 'post', $post_id, 'material_schlagworte' );
+                if ( sizeof( $schlagworte ) == 1 ) {
+                    if ( $schlagworte[ 0 ] !== false ) {
+                        $data .= $schlagworte[ 0 ][ 'name' ] .'<br>';
+                    } else {
+                        $data = "";
+                    }
                 } else {
-                    $data = "";
+                    foreach ( $schlagworte as $schlagwort ) {
+                        $data .= $schlagwort[ 'name' ] .'<br>';
+                    }
                 }
+                set_transient( 'mp-cpt-list-material-schlagworte-'.$post_id, $data, 60*60*24*7 ); // Eine Woche zwischenspeichern
             } else {
-                foreach ( $schlagworte as $schlagwort ) {
-                    $data .= $schlagwort[ 'name' ] .'<br>';
-                }
+                $data .= $transient;
             }
         }
         if ( $column_name == 'material-organisation' ) {
-            $autors = get_metadata( 'post', $post_id, 'material_organisation' );
-            if ( sizeof( $autors ) == 1 ) {
-                if ( $autors[ 0 ] !== false ) {
-                    $post = get_post( $autors[ 0 ][ 'ID' ] );
-                    $data .= '<a href="' . get_edit_post_link( $autors[ 0 ][ 'ID' ] ) . '">' . $post->post_title .'</a><br>';
+            if ( false === ( $transient = get_transient( 'mp-cpt-list-material-organisation-'.$post_id ) ) ) {
+                $autors = get_metadata( 'post', $post_id, 'material_organisation' );
+                if ( sizeof( $autors ) == 1 ) {
+                    if ( $autors[ 0 ] !== false ) {
+                        $post = get_post( $autors[ 0 ][ 'ID' ] );
+                        $data .= '<a href="' . get_edit_post_link( $autors[ 0 ][ 'ID' ] ) . '">' . $post->post_title .'</a><br>';
+                    } else {
+                        $data = "";
+                    }
                 } else {
-                    $data = "";
+                    foreach ( $autors as $autor ) {
+                        $post = get_post( $autor[ 'ID' ] );
+                        $data .= '<a href="' . get_edit_post_link( $autor[ 'ID' ] ) . '">' . $post->post_title .'</a><br>';
+                    }
                 }
+                set_transient( 'mp-cpt-list-material-organisation-'.$post_id, $data, 60*60*24*7 ); // Eine Woche zwischenspeichern
             } else {
-                foreach ( $autors as $autor ) {
-                    $post = get_post( $autor[ 'ID' ] );
-                    $data .= '<a href="' . get_edit_post_link( $autor[ 'ID' ] ) . '">' . $post->post_title .'</a><br>';
-                }
+                $data .= $transient;
             }
         }
         if ( $column_name == 'material-status' ) {
@@ -427,7 +453,7 @@ class Materialpool_Material {
             }
 
             /*organisation_konfession zu material konfessionen hinzugügen*/
-            $konfession = get_post_meta($organisationen_meta->ID,'organisation_konfession', true);
+            $konfession = get_post_meta( $organisationen_meta->ID,'organisation_konfession', true);
             if($konfession && isset($konfession['name'])){
                 wp_set_post_tags( $post_id, $konfession['name'], true);
             }
@@ -441,6 +467,14 @@ class Materialpool_Material {
             update_post_meta( $post_id, 'material_url', $url  );
             $_POST[ 'pods_meta_material_url' ] = $url;
         }
+
+        // Transients für Backendliste löschen
+        delete_transient( 'mp-cpt-list-material-autor-'.$post_id );
+        delete_transient( 'mp-cpt-list-material-medientyp-'.$post_id );
+        delete_transient( 'mp-cpt-list-material-medientyp-'.$post_id );
+        delete_transient( 'mp-cpt-list-material-schlagworte-'.$post_id );
+        delete_transient( 'mp-cpt-list-material-organisation-'.$post_id );
+
     }
 
     /**
