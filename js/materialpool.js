@@ -162,7 +162,7 @@ jQuery(document).ready(function(){
             if ( html != ''  ) {
                 img = html;
             } else {
-                img = "https://s0.wordpress.com/mshots/v1/" + url + "?w=400&h=300";
+                img = "https://s.wordpress.com/mshots/v1/" + encodeURIComponent( url ) + "?w=400&h=300";
             }
 
             jQuery('#material-screenshot').html('');
