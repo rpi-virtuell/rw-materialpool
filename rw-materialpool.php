@@ -166,6 +166,9 @@ class Materialpool {
         remove_shortcode( 'viewerjs', 'viewerjs_shortcode_handler');
         add_shortcode( 'viewerjs', array( 'Materialpool', 'viewerjs_shortcode_handler' ) );
 
+
+        remove_filter( 'pre_oembed_result',      'wp_filter_pre_oembed_result',    10 );
+        add_filter( 'pre_oembed_result',      array( 'Materialpool', 'wp_filter_pre_oembed_result' ),    10, 3 );
         /*
          * Register as Class method throws an error
          */
@@ -333,6 +336,22 @@ class Materialpool {
             }
         }
 
+    }
+
+
+
+    function wp_filter_pre_oembed_result( $result, $url, $args ) {
+
+        $width = isset( $args['width'] ) ? $args['width'] : 0;
+
+        $data = get_oembed_response_data( $post_id, $width );
+        $data = _wp_oembed_get_object()->data2html( (object) $data, $url );
+
+        if ( ! $data ) {
+            return $result;
+        }
+
+        return $data;
     }
 
 
