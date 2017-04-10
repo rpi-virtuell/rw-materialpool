@@ -788,6 +788,11 @@ jQuery(document).ready(function(){
  */
 
 jQuery(document).ready( function($) {
+     jQuery("#inline-edit-col-center").each(function (i) {
+
+        $(this).parent().remove();
+    });
+
     $('span:contains("Altersstufen")').each(function (i) {
         $(this).parent().remove();
     });
@@ -812,10 +817,11 @@ jQuery(document).ready( function($) {
     $('span:contains("Zugänglichkeiten")').each(function (i) {
         $(this).parent().remove();
     });
-    $('span:contains("Bildungsstufen")').each(function (i) {
+/*
+    jQuery('#the-list span:contains("Bildungsstufen")').each(function (i) {
         $(this).parent().parent().remove();
     });
-
+*/
     $('.inline-edit-date').each(function (i) {
         $(this).remove();
     });
