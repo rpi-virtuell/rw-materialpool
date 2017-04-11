@@ -973,6 +973,20 @@ END;
 
     }
 
+
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_picture_source( $id = null ) {
+        global $post;
+        if ( $id == null ) $id = $post->ID;
+
+        return get_metadata( 'post', $id, 'material_cover_quelle', true );
+    }
     /**
      *
      * @since 0.0.1
