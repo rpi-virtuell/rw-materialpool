@@ -298,6 +298,10 @@ class Materialpool {
         // Register ImportPlugin End Action
         add_action( 'import_end', array( 'Materialpool_Import_Check', 'check' ) );
 
+        // Embeds
+        add_filter ( 'embed_site_title_html', array( 'Materialpool_Embeds','site_title_html') );
+        add_filter ( 'the_excerpt_embed', array( 'Materialpool_Embeds', 'the_excerpt_embed' ) );
+        add_action( 'embed_content', array( 'Materialpool_Embeds', 'embed_content' ) );
 
         //
         add_filter( 'post_row_actions', 'rw_mp_row_actions', 10, 2 );
