@@ -147,6 +147,18 @@ class Materialpool_Organisation {
         return $template;
     }
 
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function remove_from_bulk_actions( $actions ) {
+        unset( $actions[ 'edit' ] );
+        return $actions;
+    }
+
     /**
      *
      * @since 0.0.1

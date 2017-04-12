@@ -165,14 +165,14 @@ class Materialpool {
         add_shortcode( 'material-vorschlag', array( 'Materialpool_Material', 'vorschlag_shortcode' ) );
         remove_shortcode( 'viewerjs', 'viewerjs_shortcode_handler');
         add_shortcode( 'viewerjs', array( 'Materialpool', 'viewerjs_shortcode_handler' ) );
-
-
+        add_filter( 'bulk_actions-edit-material', array( 'Materialpool_Material','remove_from_bulk_actions' ) );
         remove_filter( 'pre_oembed_result',      'wp_filter_pre_oembed_result',    10 );
         add_filter( 'pre_oembed_result',      array( 'Materialpool', 'wp_filter_pre_oembed_result' ),    10, 3 );
         /*
          * Register as Class method throws an error
          */
         add_action( 'pods_meta_groups',  'materialpool_pods_material_metaboxes', 10, 2 );
+
 
         // Add Filter & Actions for Organisation
         add_filter( 'template_include', array( 'Materialpool_Organisation', 'load_template' ) );
@@ -181,6 +181,7 @@ class Materialpool {
         add_action( 'manage_edit-organisation_sortable_columns', array( 'Materialpool_Organisation', 'cpt_sort_column') );
 		add_action( 'save_post', array( 'Materialpool_Organisation', 'generate_title') );
         add_filter( 'tl_tplc_external_files', array( 'Materialpool_Organisation', 'add_template_check_external_files' ) );
+        add_filter( 'bulk_actions-edit-organisation', array( 'Materialpool_Material','remove_from_bulk_actions' ) );
 
         // Add Filter & Actions for Autor
         add_filter( 'template_include', array( 'Materialpool_Autor', 'load_template' ) );
@@ -189,6 +190,7 @@ class Materialpool {
         add_action( 'manage_edit-autor_sortable_columns', array( 'Materialpool_Autor', 'cpt_sort_column') );
         add_action( 'save_post', array( 'Materialpool_Autor', 'generate_title') );
         add_filter( 'tl_tplc_external_files', array( 'Materialpool_Autor', 'add_template_check_external_files' ) );
+        add_filter( 'bulk_actions-edit-autor', array( 'Materialpool_Material','remove_from_bulk_actions' ) );
 
         // Add Filter & Actions for Sprache
         add_filter( 'manage_edit-sprache_columns', array( 'Materialpool_Sprache', 'taxonomy_column' ) );
@@ -239,13 +241,13 @@ class Materialpool {
         add_action( 'wp_ajax_mp_synonym_check_tag',  array( 'SearchWP_Materialpool_Synonyms', 'wp_ajax_mp_synonym_check_tag' ) );
         add_filter( 'searchwp_extensions',          array( 'SearchWP_Materialpool_Synonyms', 'register' ), 10 );
         add_filter( 'searchwp_term_in',             array( 'SearchWP_Materialpool_Synonyms', 'find_synonyms' ), 10, 3 );
-        add_filter( 'post_row_actions',             array( 'Materialpool_Synonyme', 'row_actions' ), 10, 2 );
+        add_filter( 'bulk_actions-edit-synonym', array( 'Materialpool_Synonyme','remove_from_bulk_actions' ) );
 
         // Add Filter & Actions for Themenseiten
         add_filter( 'template_include', array( 'Materialpool_Themenseite', 'load_template' ) );
         add_filter( 'tl_tplc_external_files', array( 'Materialpool_Themenseite', 'add_template_check_external_files' ) );
         add_action( 'save_post', array( 'Materialpool_Themenseite', 'generate_taxonomy') );
-        add_filter( 'post_row_actions', array( 'Materialpool_Themenseite', 'row_actions' ), 10, 2 );
+        add_filter( 'bulk_actions-edit-themenseite', array( 'Materialpool_Themenseite','remove_from_bulk_actions' ) );
 
         // Add Filter & Actions for Settingspage
         add_action( 'admin_menu', array( 'Materialpool_Settings', 'options_page' ) );
@@ -295,6 +297,10 @@ class Materialpool {
 
         // Register ImportPlugin End Action
         add_action( 'import_end', array( 'Materialpool_Import_Check', 'check' ) );
+
+
+        //
+        add_filter( 'post_row_actions', 'rw_mp_row_actions', 10, 2 );
 
         do_action( 'materialpool_init' );
 	}
@@ -1039,6 +1045,32 @@ if ( class_exists( 'Materialpool' ) ) {
 	register_deactivation_hook( __FILE__, array( 'Materialpool_Installation', 'on_deactivation' ) );
 }
 
+/**
+ *
+ * @since 0.0.1
+ * @access	public
+ *
+ */
+function rw_mp_row_actions( $actions, $post )
+{
+    if ( 'themenseite' === $post->post_type ) {
+        unset ( $actions[ "inline hide-if-no-js" ] );
+    }
+
+    if ( 'synonym' === $post->post_type ) {
+        unset ( $actions[ "inline hide-if-no-js" ] );
+    }
+    if ( 'material' === $post->post_type ) {
+        unset ( $actions[ "inline hide-if-no-js" ] );
+    }
+    if ( 'autor' === $post->post_type ) {
+        unset ( $actions[ "inline hide-if-no-js" ] );
+    }
+    if ( 'organisation' === $post->post_type ) {
+        unset ( $actions[ "inline hide-if-no-js" ] );
+    }
+    return $actions;
+}
 
 /**
  *

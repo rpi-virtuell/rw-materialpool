@@ -35,7 +35,7 @@ class Materialpool_Synonyme {
      * @var     int     $post_id        ID of the current post
      */
     static public function cpt_list_column( $column_name, $post_id ) {
-
+        $data = '';
         if ( $column_name == 'normwort' ) {
             $data = get_metadata( 'post', $post_id, 'normwort' , true );
         }
@@ -56,18 +56,14 @@ class Materialpool_Synonyme {
         ) );
     }
 
-
     /**
      *
      * @since 0.0.1
      * @access	public
      *
      */
-    static public function row_actions( $actions, $post )
-    {
-        if ( 'synonym' === $post->post_type ) {
-            unset ( $actions[ "inline hide-if-no-js" ] );
-        }
+    static public function remove_from_bulk_actions( $actions ) {
+        unset( $actions[ 'edit' ] );
         return $actions;
     }
 

@@ -119,12 +119,10 @@ class Materialpool_Themenseite {
      * @access	public
      *
      */
-    static public function row_actions( $actions, $post )
-    {
-        if ( 'themenseite' === $post->post_type ) {
-            unset ( $actions[ "inline hide-if-no-js" ] );
-        }
+    static public function remove_from_bulk_actions( $actions ) {
+        unset( $actions[ 'edit' ] );
         return $actions;
     }
+
 
 }

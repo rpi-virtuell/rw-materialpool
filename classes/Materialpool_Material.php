@@ -675,6 +675,31 @@ class Materialpool_Material {
         }
     }
 
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function remove_from_bulk_actions( $actions ) {
+        unset( $actions[ 'edit' ] );
+        return $actions;
+    }
+
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function row_actions( $actions, $post ) {
+        var_dump( $actions); exit;
+        if ( $post->post_type == "material" ) {
+            unset($actions['inline hide-if-no-js']);
+        }
+        return $actions;
+    }
 
     /**
      *
