@@ -1830,7 +1830,8 @@ END;
 
         $back = false;
         $url =  get_metadata( 'post', $post->ID, 'material_url', true );
-        if ( mb_endsWith($url, '.pdf' ) ) {
+        $ignore = get_metadata( 'post', $post->ID, 'material_no_viewer', true );
+        if ( mb_endsWith($url, '.pdf' ) && $ignore != 1  ) {
             $back = true;
         }
 
@@ -1847,8 +1848,10 @@ END;
         global $post;
 
         $back = true;
+
         $url =  wp_oembed_get( get_metadata( 'post', $post->ID, 'material_url', true )) ;
-        if ($url === false ) {
+        $ignore = get_metadata( 'post', $post->ID, 'material_no_viewer', true );
+        if ($url === false || $ignore == 1 ) {
             $back = false;
         }
 

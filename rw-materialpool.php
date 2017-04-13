@@ -1086,7 +1086,7 @@ function rw_mp_row_actions( $actions, $post )
  * @param $name
  */
 function materialpool_pods_material_metaboxes ( $type, $name ) {
-    pods_group_add( 'material', __( 'Base', Materialpool::get_textdomain() ), 'material_url,material_special, material_titel,material_kurzbeschreibung,material_beschreibung' );
+    pods_group_add( 'material', __( 'Base', Materialpool::get_textdomain() ), 'material_url,material_no_viewer,material_special, material_titel,material_kurzbeschreibung,material_beschreibung' );
     pods_group_add( 'material', __( 'Owner', Materialpool::get_textdomain() ), 'material_autoren,material_autor_interim,material_organisation,material_organisation_interim' );
     pods_group_add( 'material', __( 'Meta', Materialpool::get_textdomain() ), 'material_schlagworte,material_schlagworte_interim,material_bildungsstufe,material_medientyp,material_sprache' );
     pods_group_add( 'material', __( 'Advanced Meta', Materialpool::get_textdomain() ), 'material_inklusion,material_verfuegbarkeit,material_zugaenglichkeit,material_lizenz,material_altersstufe' );
