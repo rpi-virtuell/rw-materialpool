@@ -36,9 +36,11 @@ class Materialpool_Embeds
             $output= " <div><p style='valign: top;'><img style='width:20%; padding-right: 10px; padding-bottom: 10px;  align: left; float: left;' src='". Materialpool_Material::get_picture_url() ."'>". Materialpool_Material::get_shortdescription() ."</p></div><div style='clear: both;'></div>";
         }
         if ( $post->post_type == 'autor' ) {
-            $output= " <div><p style='valign: top;'><img style='width:20%; padding-right: 10px; padding-bottom: 10px;  align: left; float: left;' src='". Materialpool_Autor::get_picture() ."'><strong>Das neuste Material</strong><br><br>". Materialpool_Autor::get_materialien_html( 5 ) ."</p></div><div style='clear: both;'></div>";
+            $output= " <div><p style='valign: top;'><img style='width:20%; padding-right: 10px; padding-bottom: 10px;  align: left; float: left;' src='". Materialpool_Autor::get_picture() ."'><strong>Das neueste Material</strong><br><br>". Materialpool_Autor::get_materialien_html( 5 ) ."</p></div><div style='clear: both;'></div>";
         }
-
+        if ( $post->post_type == 'organisation' ) {
+            $output= " <div><p style='valign: top;'><img style='width:20%; padding-right: 10px; padding-bottom: 10px;  align: left; float: left;' src='". Materialpool_Organisation::get_logo() ."'><strong>Das neueste Material</strong><br><br>". Materialpool_Organisation::get_materialien_html( 5 ) ."</p></div><div style='clear: both;'></div>";
+        }
         return $output;
     }
 

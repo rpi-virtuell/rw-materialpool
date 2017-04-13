@@ -531,6 +531,29 @@ class Materialpool_Organisation {
         }
     }
 
+
+
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_materialien_html( $max = false) {
+        $back = '';
+        $verweise = Materialpool_Organisation::get_material();
+        $count = 0;
+        foreach ( $verweise as $material ) {
+            if ( $max != false && $count >= $max ) {
+                break;
+            }
+            $url = get_permalink( $material[ 'ID' ] );
+            $back .=  '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-volumes', 'materialpool-template-material-volumes' ) .'">' . $material[ 'post_title' ] . '</a><br>';
+            $count++;
+        }
+        return $back;
+    }
+
     /**
      *
      * @since 0.0.1
