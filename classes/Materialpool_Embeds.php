@@ -1,35 +1,53 @@
 <?php
 
 /**
- * Created by PhpStorm.
- * User: frank
- * Date: 12.04.17
- * Time: 16:19
+ *
+ * @since      0.0.1
+ * @package    Materialpool
+ * @author     Frank Staude <frank@staude.net>
+ *
  */
+
 class Materialpool_Embeds
 {
 
     /**
+     *
+     * @since 0.0.1
+     * @access	public
      * @param $html
      * @return string
      */
-    function site_title_html( $html ) {
+    static public function site_title_html( $html ) {
         return "<img src='". Materialpool::$plugin_url ."/assets/rpi-logo-100-100.jpg'>";
     }
 
-
-    function the_excerpt_embed( $output ) {
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     * @param $output
+     * @return string
+     */
+    static public function the_excerpt_embed( $output ) {
         global $post;
 
         if ( $post->post_type == 'material' ) {
-
             $output= " <div><p style='valign: top;'><img style='width:20%; padding-right: 10px; padding-bottom: 10px;  align: left; float: left;' src='". Materialpool_Material::get_picture_url() ."'>". Materialpool_Material::get_shortdescription() ."</p></div><div style='clear: both;'></div>";
+        }
+        if ( $post->post_type == 'autor' ) {
+            $output= " <div><p style='valign: top;'><img style='width:20%; padding-right: 10px; padding-bottom: 10px;  align: left; float: left;' src='". Materialpool_Autor::get_picture() ."'><strong>Das neuste Material</strong><br><br>". Materialpool_Autor::get_materialien_html( 5 ) ."</p></div><div style='clear: both;'></div>";
         }
 
         return $output;
     }
 
-    function embed_content() {
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     */
+    static public function embed_content() {
         global $post;
 
         if ( $post->post_type == 'material' ) {

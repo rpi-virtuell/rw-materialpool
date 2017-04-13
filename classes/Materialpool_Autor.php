@@ -642,6 +642,27 @@ class Materialpool_Autor {
 		}
 	}
 
+    /**
+     *
+     * @since 0.0.1
+     * @access	public
+     *
+     */
+    static public function get_materialien_html( $max = false) {
+        $back = '';
+        $materialien = Materialpool_Autor::get_materialien();
+        $count = 0;
+        foreach ( $materialien as $material ) {
+            if ( $max != false && $count >= $max ) {
+                break;
+            }
+            $url = get_permalink( $material[ 'ID' ] );
+            $back .=  '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-volumes', 'materialpool-template-material-volumes' ) .'">' . $material[ 'post_title' ] . '</a><br>';
+            $count++;
+        }
+        return $back;
+    }
+
 
     /**
      *
