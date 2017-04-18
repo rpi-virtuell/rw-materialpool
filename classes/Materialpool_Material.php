@@ -51,6 +51,16 @@ class Materialpool_Material {
 
             return $template_path;
         }
+        if ( $post->post_type == "post" && Materialpool_Material::is_old_material() ) {
+            if ( is_single() ) {
+                if ( $theme_file = locate_template( array ( 'materialpool/single-material-old.php' ) ) ) {
+                    $template_path = $theme_file;
+                } else {
+                    $template_path = Materialpool::$plugin_base_dir . 'templates/single-material-old.php';
+                }
+                return $template_path;
+            }
+        }
         return $template;
     }
 
@@ -725,7 +735,7 @@ class Materialpool_Material {
     <div class="materialpool-vorschlag-hinweis">
         
     </div>
-</div
+</div>
 END;
 
 
@@ -1838,6 +1848,22 @@ END;
         return $back;
     }
 
+
+    /**
+     * @since 0.0.1
+     * @access public
+     * @return mixed
+     */
+    static public function is_old_material() {
+        global $post;
+
+        $back = false;
+        $meta = get_metadata( 'post', $post->ID, 'materialpool_old', true );
+        if ( $meta == 1 ) {
+            $back = true;
+        }
+        return $back;
+    }
 
     /**
      * @since 0.0.1
