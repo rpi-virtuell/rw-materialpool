@@ -1,4 +1,6 @@
 <?php while ( have_posts() ) : the_post(); ?>
+    <?php
+    
     if ( false === ( $transient = get_transient( 'facet_old_entry-'.$post->ID ) ) ) {
     ob_start();
 
