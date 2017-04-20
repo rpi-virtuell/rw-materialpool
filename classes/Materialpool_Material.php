@@ -258,6 +258,7 @@ class Materialpool_Material {
 	 */
 	static public function generate_title( $post_id ) {
         global $wpdb;
+
 		$post_type = get_post_type($post_id);
 		$post_status = get_post_status ($post_id);
 		$post_parent = wp_get_post_parent_id( $post_id );
@@ -484,6 +485,12 @@ class Materialpool_Material {
         delete_transient( 'mp-cpt-list-material-medientyp-'.$post_id );
         delete_transient( 'mp-cpt-list-material-schlagworte-'.$post_id );
         delete_transient( 'mp-cpt-list-material-organisation-'.$post_id );
+
+        // Transients für Frontendcache löschen
+        delete_transient( 'facet_serach_entry-'.$post_id );
+        delete_transient( 'facet_autor_entry-'.$post_id );
+        delete_transient( 'facet_themenseite_entry-'.$post_id );
+        delete_transient( 'facet_organisation_entry-'.$post_id );
 
     }
 
