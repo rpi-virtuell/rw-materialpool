@@ -162,6 +162,7 @@ class Materialpool {
         add_action( 'init', array( 'Materialpool', 'get_crossdomain_viewer_url' ) );
         add_action( 'mp_depublizierung', array( 'Materialpool_Material', 'depublizierung' ) );
         add_filter('template_redirect', array( 'Materialpool_Material', 'check_404_old_material' ) );
+        add_action( 'restrict_manage_posts', array( 'Materialpool_Material', 'add_taxonomy_filters' ) );
         add_shortcode( 'material-vorschlag', array( 'Materialpool_Material', 'vorschlag_shortcode' ) );
         remove_shortcode( 'viewerjs', 'viewerjs_shortcode_handler');
         add_shortcode( 'viewerjs', array( 'Materialpool', 'viewerjs_shortcode_handler' ) );

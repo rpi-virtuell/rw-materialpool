@@ -102,6 +102,37 @@ class Materialpool_Material {
      *
      * @since   0.0.1
      * @access	public
+     */
+    function add_taxonomy_filters() {
+        global $typenow;
+
+        // an array of all the taxonomyies you want to display. Use the taxonomy name or slug
+        $taxonomies = array('medientyp');
+
+        // must set this to the post type you want the filter(s) displayed on
+        if( $typenow == 'material' ){
+
+            foreach ($taxonomies as $tax_slug) {
+                $tax_obj = get_taxonomy($tax_slug);
+                $tax_name = $tax_obj->labels->name;
+                $terms = get_terms($tax_slug);
+                if(count($terms) > 0) {
+                    echo "<select name='$tax_slug' id='$tax_slug' class='postform'>";
+                    echo "<option value=''>Show All $tax_name</option>";
+                    foreach ($terms as $term) {
+                        echo '<option value='. $term->slug, $_GET[$tax_slug] == $term->slug ? ' selected="selected"' : '','>' . $term->name .' (' . $term->count .')</option>';
+                    }
+                    echo "</select>";
+                }
+            }
+        }
+    }
+
+    /**
+     * Add content for the custom columns in list table
+     *
+     * @since   0.0.1
+     * @access	public
      * @var     string  $column_name    name of the current column
      * @var     int     $post_id        ID of the current post
      */
