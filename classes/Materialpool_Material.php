@@ -107,7 +107,7 @@ class Materialpool_Material {
         global $typenow;
 
         // an array of all the taxonomyies you want to display. Use the taxonomy name or slug
-        $taxonomies = array('medientyp');
+        $taxonomies = array('bildungsstufe', 'schlagwort', 'medientyp');
 
         // must set this to the post type you want the filter(s) displayed on
         if( $typenow == 'material' ){
@@ -118,7 +118,7 @@ class Materialpool_Material {
                 $terms = get_terms($tax_slug);
                 if(count($terms) > 0) {
                     echo "<select name='$tax_slug' id='$tax_slug' class='postform'>";
-                    echo "<option value=''>Show All $tax_name</option>";
+                    echo "<option value=''>$tax_name</option>";
                     foreach ($terms as $term) {
                         echo '<option value='. $term->slug, $_GET[$tax_slug] == $term->slug ? ' selected="selected"' : '','>' . $term->name .' (' . $term->count .')</option>';
                     }
