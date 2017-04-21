@@ -133,7 +133,7 @@ class Materialpool_Material {
             }
         }
         if ( $column_name == 'material-medientyp' ) {
-            if ( false === ( $transient = get_transient( 'mp-cpt-list-material-medientyp-'.$post_id ) ) ) {
+            if ( false === ( $transient = get_transient( 'mp-cpt-list-material-medientyp2-'.$post_id ) ) ) {
                 $medientyp = get_metadata( 'post', $post_id, 'material_medientyp' );
                 if ( sizeof( $medientyp ) == 1 ) {
                     if ( $medientyp[ 0 ] !== false ) {
@@ -146,7 +146,7 @@ class Materialpool_Material {
                         $data .= $medien[ 'name' ] .'<br>';
                     }
                 }
-                set_transient( 'mp-cpt-list-material-medientyp-'.$post_id, $data, 60*60*24*7 ); // Eine Woche zwischenspeichern
+                set_transient( 'mp-cpt-list-material-medientyp2-'.$post_id, $data, 60*60*24*7 ); // Eine Woche zwischenspeichern
             } else {
                 $data .= $transient;
             }
@@ -165,7 +165,7 @@ class Materialpool_Material {
                         $data .= $bildung[ 'name' ] .'<br>';
                     }
                 }
-                set_transient( 'mp-cpt-list-material-medientyp-'.$post_id, $data, 60*60*24*7 ); // Eine Woche zwischenspeichern
+                set_transient( 'mp-cpt-list-material-bildungsstufe-'.$post_id, $data, 60*60*24*7 ); // Eine Woche zwischenspeichern
             } else {
                 $data .= $transient;
             }
