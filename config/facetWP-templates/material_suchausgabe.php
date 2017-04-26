@@ -1,6 +1,6 @@
 <?php while ( have_posts() ) : the_post(); ?>
     <?php
-    if ( false === ( $transient = get_transient( 'facet_serach_entry-'.$post->ID ) ) ) {
+    if ( false === ( $transient = get_transient( 'facet_serach2_entry-'.$post->ID ) ) ) {
         ob_start();
 
         ?>
@@ -62,18 +62,20 @@
                     <div style="clear: both;"></div>
                     <p class="schlagworte">
                         <strong>Schlagworte: </strong> <?php echo Materialpool_Material::get_schlagworte_html(); ?>
-                        <?php echo Materialpool_Material::cb_themenseite(); ?>
-                </div>
-                <div class="clear"></div>
 
-            </div>
         <?php endif;
         $buffer = ob_get_contents();
         ob_end_clean();
         echo $buffer;
-        set_transient( 'facet_serach_entry-'.$post->ID, $buffer );
+        set_transient( 'facet_serach2_entry-'.$post->ID, $buffer );
     } else {
         echo $transient;
     }
-    ?>
+	?>
+	<?php echo Materialpool_Material::cb_themenseite(); ?>
+    </div>
+    <div class="clear"></div>
+
+    </div>
+
 <?php endwhile; ?>
