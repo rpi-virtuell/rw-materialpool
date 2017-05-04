@@ -495,7 +495,7 @@ class Materialpool {
         $url =  esc_url_raw( $_POST['site'] ) ;
         $id =  (int) $_POST['post-id'];
 
-        $anzahl = $wpdb->get_col( $wpdb->prepare( "SELECT count( meta_id ) as anzahl  FROM  $wpdb->postmeta WHERE meta_key = %s and meta_value = %s and post_id != %d", 'material_url', $url, $id) );
+        $anzahl = $wpdb->get_col( $wpdb->prepare( "SELECT count( meta_id ) as anzahl  FROM  $wpdb->postmeta WHERE meta_key = %s and meta_value = %s and post_id != %d and post_status != 'trash' ", 'material_url', $url, $id) );
         if ( is_array( $anzahl ) && $anzahl[ 0 ] == 0 ) {
             $data = array(
                 'status' => "ok"
