@@ -518,7 +518,7 @@ class Materialpool_Material {
         delete_transient( 'mp-cpt-list-material-organisation-'.$post_id );
 
         // Transients für Frontendcache löschen
-        delete_transient( 'facet_serach_entry-'.$post_id );
+        delete_transient( 'facet_serach2_entry-'.$post_id );
         delete_transient( 'facet_autor_entry-'.$post_id );
         delete_transient( 'facet_themenseite_entry-'.$post_id );
         delete_transient( 'facet_organisation_entry-'.$post_id );
