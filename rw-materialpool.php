@@ -394,7 +394,7 @@ class Materialpool {
             $property = $meta->getAttribute('property');
             $content = $meta->getAttribute('content');
             if ( ( $property == 'og:image' ) && ( strpos( $content, 'http') === 0 ) ) {
-                echo $content;
+                echo $content; break;
             }
         }
         wp_die();
