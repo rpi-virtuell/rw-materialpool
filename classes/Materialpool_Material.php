@@ -2185,7 +2185,7 @@ END;
      *
      */
     static public function cb_themenseite() {
-        if ( wp_doing_ajax() ) {
+	    if (defined('REST_REQUEST') && REST_REQUEST) {  
             $thema = (int) $_POST[ 'mp_thema'];
             $gruppe = (int) $_POST[ 'mp_gruppe'];
 
