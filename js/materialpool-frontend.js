@@ -4,7 +4,7 @@
  */
 
 jQuery(document).ready(function(){
-     jQuery(".check_themenseite").change( function() {
+         jQuery('.material-results').on('change', 'input[type=checkbox]', function(){
          // Data Read
          var thema = jQuery(this).data("thema");
          var gruppe = jQuery(this).data("gruppe");
@@ -37,6 +37,8 @@ jQuery(document).ready(function(){
 
     })
 });
+
+
 
 
 jQuery(document).ready(function(){
