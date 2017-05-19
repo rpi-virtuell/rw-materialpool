@@ -287,7 +287,7 @@ class Materialpool {
         add_action( 'wp_head', array( 'Materialpool',  'promote_feeds' ) );
         remove_all_actions( 'do_feed_rss2' );
         add_action( 'do_feed_rss2', array( 'Materialpool', 'material_feed_rss2') , 10, 1 );
-
+        add_filter( 'request', array( 'Materialpool', 'exclude_entwurf' ) );
         add_action( 'init', array( 'Materialpool', 'custom_oembed_providers' ) , 10, 1 );
 
         // Register New Facet for Searches in Old MP
@@ -310,6 +310,13 @@ class Materialpool {
         do_action( 'materialpool_init' );
 	}
 
+
+	public static function exclude_entwurf( $qv ) {
+        if (isset($qv['feed']) && $qv['post_type'] == 'material') {
+            $qv['post_status'] = array('publish');
+        }
+        return $qv;
+    }
 
     public static function user_defaults( $user_id ) {
         update_user_meta($user_id, 'metaboxhidden_material', array("slugdiv","trackbacksdiv","commentstatusdiv","commentsdiv") );
