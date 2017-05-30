@@ -680,15 +680,79 @@ class Materialpool {
         $anzahl = $wpdb->get_col( $wpdb->prepare( "SELECT count( meta_id ) as anzahl  FROM  $wpdb->postmeta WHERE meta_key = %s and meta_value = %s", 'material_url', $url) );
         if ( is_array( $anzahl ) && $anzahl[ 0 ] == 0 ) {
             remove_action( 'save_post', array( 'Materialpool_Material', 'generate_title') );
+	        $title = '';
+	        $description = '';
+	        $keywords = '';
+	        $image = '';
+
+	        $args = array(
+		        'user-agent' => 'Mozilla/5.0 (compatible; Materialpool; +' . home_url() . ')',
+		        'timeout' => 30,
+		        'sslverify' => false,
+	        );
+	        $response = wp_remote_get($url, $args);
+	        if (!is_wp_error($response)) {
+		        $body = utf8_decode($response['body']);
+		        libxml_use_internal_errors(true);
+		        $doc = new DomDocument();
+		        $doc->loadHTML($body);
+		        $xpath = new DOMXPath($doc);
+		        $query = '//*/meta[starts-with(@property, \'og:\')]';
+		        $metas = $xpath->query($query);
+		        foreach ($metas as $meta) {
+			        $property = $meta->getAttribute('property');
+			        $content = $meta->getAttribute('content');
+			        if ($property == 'og:title') {
+				        $title = $content;
+			        }
+			        if ($property == 'og:description') {
+				        $description = $content;
+			        }
+			        if ($property == 'og:video:tag' || $property == 'video:tag') {
+				        if ($keywords != '') {
+					        $keywords .= ', ';
+				        }
+				        $keywords .= $content;
+			        }
+			        if ( ( $property == 'og:image' ) && ( strpos( $content, 'http') === 0 ) ) {
+				        $image = $content;
+			        }
+		        }
+		        $query = '//*/meta';
+		        $metas = $xpath->query($query);
+		        foreach ($metas as $meta) {
+			        $name = $meta->getAttribute('name');
+			        $content = $meta->getAttribute('content');
+			        if ($name == 'description' && $description == '') {
+				        $description = $content;
+			        }
+			        if ($name == 'title' && $title == '') {
+				        $title = $content;
+			        }
+			        if ($name == 'keywords' && $keywords == '') {
+				        $keywords = $content;
+			        }
+		        }
+		        $titleNode = $xpath->query('//title');
+		        if ($title == '') {
+			        $title = $titleNode->item(0)->textContent;
+		        }
+		        $data = array(
+			        'title' => $title,
+			        'description' => $description,
+			        'keywords' => $keywords,
+			        'image' => $image,
+		        );
+	        }
             $back = wp_insert_post(  array(
                 'post_status'   => 'vorschlag',
                 'post_type'     => 'material',
-                'post_title'    => 'Materialvorschlag',
+                'post_title'    => $data[ 'title'],
                 'post_author'   => 1,
                 'meta_input'    => array (
                     'material_url'  => $url,
-                    'material_titel' => 'Materialvorschlag',
-                    'material_beschreibung' => $description
+                    'material_titel' => $data[ 'title'],
+                    'material_beschreibung' => $description . $data[ 'description']
                 )
             ) );
             $data = "Vielen Dank f&uuml;r ihren Vorschlag. Ihr Materialvorschlag wird nun Redaktionell geprüft.";
