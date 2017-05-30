@@ -616,6 +616,7 @@ class Materialpool_Material {
      */
     static public function add_metaboxes() {
 	    add_meta_box('material_bookmarklet', __( 'Bookmarklet', Materialpool::$textdomain ), array( 'Materialpool_Material', 'bookmarklet_metabox' ), 'material', 'side', 'default');
+	    add_meta_box('material_url', __( 'Material', Materialpool::$textdomain ), array( 'Materialpool_Material', 'material_metabox' ), 'material', 'side', 'default');
 	}
 
     /**
@@ -629,6 +630,17 @@ class Materialpool_Material {
         echo "<a href='". $js ."'>". __( 'Materialpool++', Materialpool::$textdomain ) ."</a><br>";
         _e( 'Zieh den Link in deine Lesezeichenliste', Materialpool::$textdomain );
     }
+
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
+	static public function material_metabox() {
+	    $url = Materialpool_Material::get_url();
+ 		echo "<a target='_new' href='". $url ."' class='preview button' >". __( 'zum Material', Materialpool::$textdomain ) ."</a><br><br>";
+	}
 
     /**
      *
