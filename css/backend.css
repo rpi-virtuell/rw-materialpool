@@ -4,6 +4,10 @@
  *
  */
 
+body.post-type-material #post-preview {
+    display: none;
+}
+ 
 img.materialpool-admin-autor-pic {
     max-width: 100px;
 }
