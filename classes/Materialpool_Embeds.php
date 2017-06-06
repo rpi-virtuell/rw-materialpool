@@ -62,6 +62,7 @@ class Materialpool_Embeds
                         echo ", ";
                     }
                     echo $medientyp[ 'name' ];
+                    $counter++;
                 }
                 echo "&nbsp;&nbsp;&nbsp;&nbsp;";
             }
