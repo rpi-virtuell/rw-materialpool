@@ -173,7 +173,11 @@ class Materialpool_Dashboard {
             array( 'Materialpool_Dashboard', 'not_complete') // Display function.
         );
 
-
+		wp_add_dashboard_widget(
+			'mp-autor',         // Widget slug.
+			'Autorenaktivität',         // Title.
+			array( 'Materialpool_Dashboard', 'autor') // Display function.
+		);
 
 
      //   wp_add_dashboard_widget(
@@ -703,4 +707,40 @@ order by wp_posts.post_date  asc ")  );
         }
     }
 
+    static public function autor() {
+        global $wpdb;
+
+	    $result = $wpdb->get_results( $wpdb->prepare( "SELECT distinct( post_author) FROM $wpdb->posts WHERE $wpdb->posts.post_type = %s " , 'material' )  );
+        echo "<table  style='width: 100%'><tr><th style='width: 40%'>Autoren</th><th style='width: 20%'>";
+        echo date( 'F', mktime(0, 0, 0, date("m")-2  , date("d"), date("Y")) );
+        echo "</th><th style='width: 20%'>";
+	    echo date( 'F', mktime(0, 0, 0, date("m")-1  , date("d"), date("Y")) );
+	    echo "</th><th style='width: 20%'>";
+	    echo date( 'F', mktime(0, 0, 0, date("m")  , date("d"), date("Y")) );
+	    echo "</th></tr>";
+	    foreach ( $result as $obj ) {
+           $user = get_user_by( 'ID', $obj->post_author );
+           echo "<tr><td>";
+           echo $user->display_name;
+           echo "</td><td>";
+		    $start =  date( 'Y-m-d', mktime(0, 0, 0, date("m")-2  , -1, date("Y")) );
+		    $end =  date( 'Y-m-d', mktime(0, 0, 0, date("m")-1  , 1, date("Y")) );
+		    $result = $wpdb->get_results( $wpdb->prepare( "SELECT count( post_ID) as anzahl FROM $wpdb->posts , $wpdb->postmeta WHERE $wpdb->posts.post_type = %s  and $wpdb->posts.post_author = %d  and $wpdb->posts.ID = $wpdb->postmeta.post_id and $wpdb->postmeta.meta_key = %s and $wpdb->postmeta.meta_value < %s and $wpdb->postmeta.meta_value > %s" , 'material', $obj->post_author, 'create_date', $end, $start )  );
+		    echo $result[0]->anzahl;
+		   echo "</td><td>";
+		    $start =  date( 'Y-m-d', mktime(0, 0, 0, date("m")-1  , -1, date("Y")) );
+		    $end =  date( 'Y-m-d', mktime(0, 0, 0, date("m")  , 1, date("Y")) );
+		    $result = $wpdb->get_results( $wpdb->prepare( "SELECT count( post_ID) as anzahl FROM $wpdb->posts , $wpdb->postmeta WHERE $wpdb->posts.post_type = %s  and $wpdb->posts.post_author = %d  and $wpdb->posts.ID = $wpdb->postmeta.post_id and $wpdb->postmeta.meta_key = %s and $wpdb->postmeta.meta_value < %s and $wpdb->postmeta.meta_value > %s" , 'material', $obj->post_author, 'create_date', $end, $start )  );
+		    echo $result[0]->anzahl;
+		   echo "</td><td>";
+		    $start =  date( 'Y-m-d', mktime(0, 0, 0, date("m")  , -1, date("Y")) );
+		    $end =  date( 'Y-m-d', mktime(0, 0, 0, date("m")+1  , 1, date("Y")) );
+		    $result = $wpdb->get_results( $wpdb->prepare( "SELECT count( post_ID) as anzahl FROM $wpdb->posts , $wpdb->postmeta WHERE $wpdb->posts.post_type = %s  and $wpdb->posts.post_author = %d  and $wpdb->posts.ID = $wpdb->postmeta.post_id and $wpdb->postmeta.meta_key = %s and $wpdb->postmeta.meta_value < %s and $wpdb->postmeta.meta_value > %s" , 'material', $obj->post_author, 'create_date', $end, $start )  );
+		    echo $result[0]->anzahl;
+
+		   echo "</td></tr>";
+	    }
+
+        echo "</table>";
+    }
 }

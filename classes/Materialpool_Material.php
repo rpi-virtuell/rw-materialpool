@@ -523,6 +523,7 @@ class Materialpool_Material {
         delete_transient( 'facet_themenseite_entry-'.$post_id );
         delete_transient( 'facet_organisation_entry-'.$post_id );
 
+        Materialpool_Material::set_createdate( $post_id );
     }
 
     /**
@@ -2347,5 +2348,15 @@ END;
 
     }
 
+    static public function set_createdate( $postID = null ) {
+        global $post;
 
+        if ( $postID == null ) {
+            $postID = $post->ID;
+        }
+        $date = get_post_meta( $postID, 'create_date', true );
+        if ( $date == '' ) {
+            add_post_meta( $postID, 'create_date', date( 'Y-m-d' ), true );
+        }
+    }
 }

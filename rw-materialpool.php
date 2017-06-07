@@ -906,6 +906,8 @@ class Materialpool {
         }
         wp_set_object_terms( $material_id, $cat_ids, 'sprache', true );
 
+	    Materialpool_Material::set_createdate( $material_id  );
+
         echo json_encode( get_edit_post_link( $material_id, 'use' ) );
         wp_die();
     }
