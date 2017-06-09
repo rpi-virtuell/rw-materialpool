@@ -110,9 +110,9 @@ do_action( 'rss_tag_pre', 'rss2' );
                 $url = Materialpool_Material::get_cover();
 
                 if ( $url != '' ) { ?>
-                <enclosure url="<?php echo urlencode($url); ?>" />
+                    <enclosure url="<?php echo htmlentities($url); ?>"   />
                 <?php } ?>
-                <?php
+	            <?php
                 /**
                  * Fires at the end of each RSS2 feed item.
                  *
