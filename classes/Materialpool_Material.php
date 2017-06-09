@@ -1149,10 +1149,38 @@ END;
     }
 
 
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
+	static public function get_cover( $id = null) {
+		global $post;
+		if ( $id == null ) $id = $post->ID;
+
+		$url = '';
+		// Prio 1: hochgeladenes Bild
+		$pic  = Materialpool_Material::get_picture( $id );
+		if ( is_array( $pic ) ) {
+			$url = wp_get_attachment_url( $pic[ 'ID' ] );
+		}
+		// Prio 2, Cover URL
+		if ( $url == '' ) {
+			$url  = Materialpool_Material::get_picture_url( $id );
+		}
+		// Prio 3, Screenshot URL
+		if ( $url == '' ) {
+			$url  = Materialpool_Material::get_screenshot( $id );
+		}
+
+		return trim($url);
+	}
 
 
 
-    /**
+
+	/**
      *
      * @since 0.0.1
      * @access	public

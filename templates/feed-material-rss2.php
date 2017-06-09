@@ -106,7 +106,12 @@ do_action( 'rss_tag_pre', 'rss2' );
                     <wfw:commentRss><?php echo esc_url( get_post_comments_feed_link(null, 'rss2') ); ?></wfw:commentRss>
                     <slash:comments><?php echo get_comments_number(); ?></slash:comments>
                 <?php endif; ?>
-                <?php rss_enclosure(); ?>
+                <?php
+                $url = Materialpool_Material::get_cover();
+
+                if ( $url != '' ) { ?>
+                <enclosure url="<?php echo urlencode($url); ?>" />
+                <?php } ?>
                 <?php
                 /**
                  * Fires at the end of each RSS2 feed item.
