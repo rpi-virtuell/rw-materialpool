@@ -111,6 +111,7 @@ do_action( 'rss_tag_pre', 'rss2' );
 
                 if ( $url != '' ) { ?>
                     <enclosure url="<?php echo htmlentities($url); ?>"   />
+                    <thumbnail url="<?php echo htmlentities($url); ?>"   />
                 <?php } ?>
 	            <?php
                 /**
