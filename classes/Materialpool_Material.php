@@ -7,8 +7,8 @@
  *
  * @todo cpt auflistung anpassen
  */
-
-
+ 
+ 
 class Materialpool_Material {
 
     /**
@@ -1985,7 +1985,7 @@ END;
     /**
      * @since 0.0.1
      * @access public
-     * @return mixed
+     * @return string
      */
     static public function get_schlagworte() {
         global $post;
@@ -2008,7 +2008,73 @@ END;
         return $data;
     }
 
+    /**
+     * @since 0.0.1
+     * @access public
+     * @return string
+     */
+	
+	static public function get_medientypen() {
+        global $post;
 
+        $data = '';
+        $medientypen = get_metadata( 'post', $post->ID, 'material_medientyp' );
+        if ( sizeof( $medientypen ) == 1 ) {
+            if ( $medientypen[ 0 ] !== false ) {
+                if ( $data != '') $data .= ', ';
+                $data .= $medientypen[ 0 ][ 'name' ];
+            } else {
+                $data = "";
+            }
+        } else {
+            foreach ( $medientypen as $medientyp ) {
+                if ( $data != '') $data .= ', ';
+                $data .= $medientyp[ 'name' ];
+            }
+        }
+        return $data;
+    }
+
+    /**
+     * @since 0.0.1
+     * @access public
+     * prints feed item categpries
+     */
+	static public function the_rss_categories() {
+        global $post;
+		
+		$categories = explode(',',self::get_bildungsstufen());
+				
+		
+		foreach($categories as $category): if(!empty( $category )):?>
+		<category><![CDATA[<?php echo $category;?>]]></category>
+		<?php endif; endforeach;
+		
+	}
+
+    /**
+     * @since 0.0.1
+     * @access public
+     * prints tags inside item content
+     */
+	static public function the_rss_tags() {
+        global $post;
+		
+		$medientypen = explode(',',self::get_medientypen());
+		$schlagworte = explode(',',self::get_schlagworte());
+        
+		$tags = array_merge($schlagworte,$medientypen);
+		
+		echo '<p style="display:none">';
+		
+		foreach($tags as $tag): if(!empty( $tag )): ?>
+		<a rel="tag"><?php echo $tag;?></a>
+		<?php endif; endforeach;
+		
+		echo '<p>';
+	}
+	
+	
     /**
      * @since 0.0.1
      * @access public

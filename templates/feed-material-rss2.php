@@ -88,7 +88,7 @@ do_action( 'rss_tag_pre', 'rss2' );
                 <?php endif; ?>
                 <pubDate><?php echo mysql2date('D, d M Y H:i:s +0000', get_post_time('Y-m-d H:i:s', true), false); ?></pubDate>
                 <dc:creator><![CDATA[<?php Materialpool_Material::autor_list(); ?>]]></dc:creator>
-                <?php the_category_rss('rss2') ?>
+                <?php Materialpool_Material::the_rss_categories() ?>
 
                 <guid isPermaLink="false"><?php the_guid(); ?></guid>
                 <?php if (get_option('rss_use_excerpt')) : ?>
@@ -97,9 +97,9 @@ do_action( 'rss_tag_pre', 'rss2' );
                     <description><![CDATA[<?php Materialpool_Material::shortdescription(); ?>]]></description>
                     <?php $content = get_the_content_feed('rss2'); ?>
                     <?php if ( strlen( Materialpool_Material::get_description() ) > 0 ) : ?>
-                        <content:encoded><![CDATA[<?php echo Materialpool_Material::get_description(); ?>]]></content:encoded>
+                        <content:encoded><![CDATA[<?php echo Materialpool_Material::get_description(); Materialpool_Material::the_rss_tags(); ?>]]></content:encoded>
                     <?php else : ?>
-                        <content:encoded><![CDATA[<?php Materialpool_Material::shortdescription(); ?>]]></content:encoded>
+                        <content:encoded><![CDATA[<?php Materialpool_Material::shortdescription(); Materialpool_Material::the_rss_tags(); ?>]]></content:encoded>
                     <?php endif; ?>
                 <?php endif; ?>
                 <?php if ( get_comments_number() || comments_open() ) : ?>
@@ -111,7 +111,6 @@ do_action( 'rss_tag_pre', 'rss2' );
 
                 if ( $url != '' ) { ?>
                     <enclosure url="<?php echo htmlentities($url); ?>"   />
-                    <thumbnail url="<?php echo htmlentities($url); ?>"   />
                 <?php } ?>
 	            <?php
                 /**
