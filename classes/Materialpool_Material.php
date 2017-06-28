@@ -301,17 +301,17 @@ class Materialpool_Material {
 
         $url = '';
 		// Prio 1: hochgeladenes Bild
-		$pic  = Materialpool_Material::get_picture( $post_id );
-		if ( is_array( $pic ) ) {
-			$url = wp_get_attachment_url( $pic[ 'ID' ] );
+		$pic  = $_POST[ 'pods_meta_material_cover' ];
+		if ( is_int( $pic ) ) {
+			$url = wp_get_attachment_url( $pic  );
 		}
 		// Prio 2, Cover URL
 		if ( $url == '' ) {
-			$url  = Materialpool_Material::get_picture_url( $post_id );
+			$url  = $_POST[ 'pods_meta_material_cover_url' ];
 		}
 		// Prio 3, Screenshot URL
 		if ( $url == '' ) {
-			$url  = Materialpool_Material::get_screenshot( $post_id );
+			$url  = $_POST[ 'pods_meta_material_screenshot' ];
 		}
 		if ( $url != '' ) {
 			$post_content .='<img class="size-medium  alignleft" src="'. $url .'" alt="" width="300" height="169" sizes="(max-width: 300px) 100vw, 300px">';
