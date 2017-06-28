@@ -298,8 +298,28 @@ class Materialpool_Material {
 
 		$title = $_POST[ 'pods_meta_material_titel' ];
         $post_name = wp_unique_post_slug( sanitize_title( $title ), $post_id, 'publish', $post_type, $post_parent );
-        $post_content = '<strong>' . wp_unslash( apply_filters( 'content_save_pre', $_POST[ 'pods_meta_material_kurzbeschreibung' ] ) ) . '</strong>';
-        $post_content .= '<p>';
+
+        $url = '';
+		// Prio 1: hochgeladenes Bild
+		$pic  = Materialpool_Material::get_picture( $post_id );
+		if ( is_array( $pic ) ) {
+			$url = wp_get_attachment_url( $pic[ 'ID' ] );
+		}
+		// Prio 2, Cover URL
+		if ( $url == '' ) {
+			$url  = Materialpool_Material::get_picture_url( $post_id );
+		}
+		// Prio 3, Screenshot URL
+		if ( $url == '' ) {
+			$url  = Materialpool_Material::get_screenshot( $post_id );
+		}
+		if ( $url != '' ) {
+			$post_content .='<img class="size-medium  alignleft" src="'. $url .'" alt="" width="300" height="169" sizes="(max-width: 300px) 100vw, 300px">';
+
+        }
+
+        $post_content .= '<strong>' . wp_unslash( apply_filters( 'content_save_pre', $_POST[ 'pods_meta_material_kurzbeschreibung' ] ) ) . '</strong>';
+        $post_content .= "\n\n<p>";
         $text = wp_unslash( $_POST[ 'pods_meta_material_beschreibung' ] );
         $text = strip_shortcodes( $text );
         $text = apply_filters( 'the_content', $text );
@@ -2453,4 +2473,6 @@ END;
             add_post_meta( $postID, 'create_date', date( 'Y-m-d' ), true );
         }
     }
+
+
 }
