@@ -125,4 +125,47 @@ class Materialpool_Themenseite {
     }
 
 
+	/**
+	 * Change the columns for list table
+	 *
+	 * @since   0.0.1
+	 * @access	public
+	 * @var     array    $columns    Array with columns
+	 * @return  array
+	 */
+	static public function cpt_list_head( $columns ) {
+		$columns[ 'themenseite-schlagworte' ] = _x( 'Schlagworte', 'Material list field',  Materialpool::$textdomain );
+		return $columns;
+	}
+
+	/**
+	 * Add content for the custom columns in list table
+	 *
+	 * @since   0.0.1
+	 * @access	public
+	 * @var     string  $column_name    name of the current column
+	 * @var     int     $post_id        ID of the current post
+	 */
+	static public function cpt_list_column( $column_name, $post_id ) {
+		global $wpdb;
+		$data = '';
+
+		if ( $column_name == 'themenseite-schlagworte' ) {
+			$schlagworte = get_metadata( 'post', $post_id, 'thema_schlagworte' );
+			if ( sizeof( $schlagworte ) == 1 ) {
+				if ( $schlagworte[ 0 ] !== false ) {
+					$data .= $schlagworte[ 0 ][ 'name' ] .'<br>';
+				} else {
+					$data = "";
+				}
+			} else {
+				foreach ( $schlagworte as $schlagwort ) {
+					$data .= $schlagwort[ 'name' ] .'<br>';
+				}
+			}
+		}
+
+		echo $data;
+	}
+
 }

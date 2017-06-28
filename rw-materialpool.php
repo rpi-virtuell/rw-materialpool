@@ -250,8 +250,11 @@ class Materialpool {
         add_filter( 'tl_tplc_external_files', array( 'Materialpool_Themenseite', 'add_template_check_external_files' ) );
         add_action( 'save_post', array( 'Materialpool_Themenseite', 'generate_taxonomy') );
         add_filter( 'bulk_actions-edit-themenseite', array( 'Materialpool_Themenseite','remove_from_bulk_actions' ) );
+		add_action( 'manage_themenseite_posts_columns', array( 'Materialpool_Themenseite', 'cpt_list_head') );
+		add_action( 'manage_themenseite_posts_custom_column', array( 'Materialpool_Themenseite', 'cpt_list_column'), 10,2 );
 
-        // Add Filter & Actions for Settingspage
+
+		// Add Filter & Actions for Settingspage
         add_action( 'admin_menu', array( 'Materialpool_Settings', 'options_page' ) );
         add_action( 'admin_menu', array( 'Materialpool_Settings', 'settings_init' ) );
 
