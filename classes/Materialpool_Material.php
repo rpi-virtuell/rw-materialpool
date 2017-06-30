@@ -311,10 +311,10 @@ class Materialpool_Material {
 		}
 		// Prio 3, Screenshot URL
 		if ( $url == '' ) {
-			$url  = $_POST[ 'pods_meta_material_screenshot' ];
+			$url  = trim( $_POST[ 'pods_meta_material_screenshot' ] );
 		}
 		if ( $url != '' ) {
-			$post_content .='<img class="size-medium  alignleft" src="'. $url .'" alt="" width="300" height="169" sizes="(max-width: 300px) 100vw, 300px">';
+			$post_content .='<img class="size-medium  alignleft" src="'. trim( $url ) .'" alt="" width="300" height="169" sizes="(max-width: 300px) 100vw, 300px">';
 
         }
 
