@@ -2462,6 +2462,12 @@ END;
 
     }
 
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
     static public function set_createdate( $postID = null ) {
         global $post;
 
@@ -2474,5 +2480,20 @@ END;
         }
     }
 
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 * @return  int
+	 */
+    static public function submit_count() {
+	    global $wpdb;
+
+	    $query_str 		= $wpdb->prepare('SELECT count(id) as anzahl   FROM `' . $wpdb->posts . '`  
+										 WHERE post_status = %s ', "vorschlag" );
+	    $items_arr 		= $wpdb->get_results( $query_str , ARRAY_A );
+	    return $items_arr[ 0 ][ 'anzahl' ];
+
+    }
 
 }

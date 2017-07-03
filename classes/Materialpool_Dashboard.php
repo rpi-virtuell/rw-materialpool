@@ -211,6 +211,13 @@ class Materialpool_Dashboard {
                     <div style="float: left; padding-right: 20px;" >
                         Material mit Wiedervorlage: <?php echo Materialpool_Material::review_count(); ?> <br>
                         Material mit Depublizierung: <?php echo Materialpool_Material::depublication_count(); ?> <br>
+                        <?php
+                        if ( Materialpool_Material::submit_count() > 0 ) {
+	                        ?>
+                            <a href="<?php echo admin_url("edit.php?post_status=vorschlag&post_type=material"); ?>">Materialvorschläge zur Überprüfung: <?php echo Materialpool_Material::submit_count(); ?></a><br>
+	                        <?php
+                        }
+                        ?>
                     </div>
 
                     <div style="float: left; padding-right: 20px;">
