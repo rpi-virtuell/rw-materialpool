@@ -575,14 +575,14 @@ class Materialpool_Material {
     static public function custom_post_status(){
         register_post_status( 'vorschlag', array(
             'label'                     => _x( 'Vorschlag', 'material' ),
-            'public'                    => true,
+            'public'                    => false,
             'show_in_admin_all_list'    => false,
             'show_in_admin_status_list' => true,
             'label_count'               => _n_noop( 'Vorschlag <span class="count">(%s)</span>', 'Vorschläge <span class="count">(%s)</span>' )
         ) );
         register_post_status( 'check', array(
             'label'                     => _x( 'Überprüfen', 'material' ),
-            'public'                    => true,
+            'public'                    => false,
             'show_in_admin_all_list'    => false,
             'show_in_admin_status_list' => true,
             'label_count'               => _n_noop( 'Überprüfen <span class="count">(%s)</span>', 'Überprüfen <span class="count">(%s)</span>' )
