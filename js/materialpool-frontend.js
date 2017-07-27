@@ -57,6 +57,8 @@ jQuery(document).ready(function(){
         jQuery.post(ajaxurl, data, function(response ) {
             ret = response;
             jQuery('.materialpool-vorschlag-hinweis').append(ret);
+            jQuery("#vorschlag-url").val('');
+            jQuery("#vorschlag-beschreibung").val('');
         })
     })
 });
