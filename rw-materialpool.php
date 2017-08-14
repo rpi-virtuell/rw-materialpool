@@ -439,7 +439,12 @@ class Materialpool {
             );
             $response = wp_remote_get($url, $args);
             if (!is_wp_error($response)) {
-                $body = utf8_decode($response['body']);
+	            $encoding = mb_detect_encoding( $response['body'] );
+	            if ( $encoding != 'UTF-8' ) {
+		            $body = utf8_decode( $response['body'] );
+	            } else {
+		            $body = $response['body'];
+	            }
                 libxml_use_internal_errors(true);
                 $doc = new DomDocument();
                 $doc->loadHTML($body);
