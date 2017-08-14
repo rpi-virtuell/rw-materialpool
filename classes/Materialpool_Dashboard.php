@@ -730,21 +730,20 @@ order by wp_posts.post_date  asc ")  );
            echo "<tr><td>";
            echo $user->display_name;
            echo "</td><td>";
-		    $start =  date( 'Y-m-d', mktime(0, 0, 0, date("m")-2  , -1, date("Y")) );
+		    $start =  date( 'Y-m-d', mktime(0, 0, 0, date("m")-2  , 0, date("Y")) );
 		    $end =  date( 'Y-m-d', mktime(0, 0, 0, date("m")-1  , 1, date("Y")) );
 		    $result = $wpdb->get_results( $wpdb->prepare( "SELECT count( post_ID) as anzahl FROM $wpdb->posts , $wpdb->postmeta WHERE $wpdb->posts.post_type = %s  and $wpdb->posts.post_author = %d  and $wpdb->posts.ID = $wpdb->postmeta.post_id and $wpdb->postmeta.meta_key = %s and $wpdb->postmeta.meta_value < %s and $wpdb->postmeta.meta_value > %s" , 'material', $obj->post_author, 'create_date', $end, $start )  );
 		    echo $result[0]->anzahl;
-		   echo "</td><td>";
-		    $start =  date( 'Y-m-d', mktime(0, 0, 0, date("m")-1  , -1, date("Y")) );
+  		    echo "</td><td>";
+		    $start =  date( 'Y-m-d', mktime(0, 0, 0, date("m")-1  , 0, date("Y")) );
 		    $end =  date( 'Y-m-d', mktime(0, 0, 0, date("m")  , 1, date("Y")) );
 		    $result = $wpdb->get_results( $wpdb->prepare( "SELECT count( post_ID) as anzahl FROM $wpdb->posts , $wpdb->postmeta WHERE $wpdb->posts.post_type = %s  and $wpdb->posts.post_author = %d  and $wpdb->posts.ID = $wpdb->postmeta.post_id and $wpdb->postmeta.meta_key = %s and $wpdb->postmeta.meta_value < %s and $wpdb->postmeta.meta_value > %s" , 'material', $obj->post_author, 'create_date', $end, $start )  );
 		    echo $result[0]->anzahl;
-		   echo "</td><td>";
-		    $start =  date( 'Y-m-d', mktime(0, 0, 0, date("m")  , -1, date("Y")) );
+		    echo "</td><td>";
+		    $start =  date( 'Y-m-d', mktime(0, 0, 0, date("m")  , 0, date("Y")) );
 		    $end =  date( 'Y-m-d', mktime(0, 0, 0, date("m")+1  , 1, date("Y")) );
 		    $result = $wpdb->get_results( $wpdb->prepare( "SELECT count( post_ID) as anzahl FROM $wpdb->posts , $wpdb->postmeta WHERE $wpdb->posts.post_type = %s  and $wpdb->posts.post_author = %d  and $wpdb->posts.ID = $wpdb->postmeta.post_id and $wpdb->postmeta.meta_key = %s and $wpdb->postmeta.meta_value < %s and $wpdb->postmeta.meta_value > %s" , 'material', $obj->post_author, 'create_date', $end, $start )  );
 		    echo $result[0]->anzahl;
-
 		   echo "</td></tr>";
 	    }
 
