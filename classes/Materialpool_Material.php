@@ -295,8 +295,13 @@ class Materialpool_Material {
 		$post_parent = wp_get_post_parent_id( $post_id );
 
 		if ( "material" != $post_type ) return;
+        if ( "trash" == $post_status ) return;
 
-		$title = $_POST[ 'pods_meta_material_titel' ];
+        if ( isset( $_POST[ 'pods_meta_material_titel' ] ) ) {
+	        $title = $_POST[ 'pods_meta_material_titel' ];
+        } else {
+            $title =  get_metadata('post', $post_id, 'material_titel', true );
+        }
         $post_name = wp_unique_post_slug( sanitize_title( $title ), $post_id, 'publish', $post_type, $post_parent );
 
         $url = '';
