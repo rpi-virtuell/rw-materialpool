@@ -1952,6 +1952,28 @@ END;
         return $back;
     }
 
+	/**
+	 * @since 0.0.1
+	 * @access public
+	 * @return mixed
+	 */
+	static public function is_playable() {
+		global $post;
+
+		$back = false;
+		$url =  get_metadata( 'post', $post->ID, 'material_url', true );
+		$ignore = get_metadata( 'post', $post->ID, 'material_no_viewer', true );
+
+		$re = '/^(http(s)??\:\/\/)?(www\.)?((youtube\.com\/watch\?v=)|(youtu.be\/))([a-zA-Z0-9\-_])+$/';
+		preg_match_all($re, $url, $matches, PREG_SET_ORDER, 0);
+
+		if ( count ( $matches ) > 0  && $ignore != 1 )  {
+			$back = true;
+		}
+
+		return $back;
+	}
+
 
     /**
      * @since 0.0.1
