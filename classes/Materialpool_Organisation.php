@@ -359,6 +359,22 @@ class Materialpool_Organisation {
             }
             unset ($organisationen_ids );
         }
+
+
+		// Organisationen suchen die mit diesem Autoren verbunden sind
+		$autorn = $wpdb->get_col( $wpdb->prepare( "SELECT meta_value   FROM  $wpdb->postmeta WHERE meta_key = %s and post_id = %s", 'organisation_autor', $post_id ) );
+
+		delete_post_meta( $post_id, 'organisation_autor_facet' );
+		foreach ( $autorn as $autor_id ) {
+			$autor_meta = get_post( $autor_id );
+			$autor_title = $autor_meta->post_title;
+			add_post_meta( $post_id, 'organisation_autor_facet', $autor_title );
+		}
+		if ( is_object( FWP() ) ) {
+			FWP()->indexer->save_post( $post_id );
+		}
+
+
 	}
 
 
