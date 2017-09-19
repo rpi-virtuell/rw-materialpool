@@ -287,9 +287,7 @@ class Materialpool {
         add_action( 'wp_ajax_nopriv_mp_add_proposal',  array( 'Materialpool', 'my_action_callback_mp_add_proposal' ) );
         add_action( 'wp_ajax_mp_add_proposal',  array( 'Materialpool', 'my_action_callback_mp_add_proposal' ) );
         add_action( 'wp_ajax_convert2material',  array( 'Materialpool', 'my_action_callback_convert2material' ) );
-
         add_filter( 'facetwp_api_can_access', function() { return true;} );
-
         add_action( 'wp_head', array( 'Materialpool',  'promote_feeds' ) );
         remove_all_actions( 'do_feed_rss2' );
         add_action( 'do_feed_rss2', array( 'Materialpool', 'material_feed_rss2') , 10, 1 );
@@ -687,6 +685,8 @@ class Materialpool {
         global $wpdb;
         $url = esc_url_raw( $_POST['url'] );
         $description = sanitize_textarea_field( $_POST['description'] );
+        $user = sanitize_textarea_field( $_POST['user'] );
+        $email = sanitize_email( $_POST['email'] );
 
         $anzahl = $wpdb->get_col( $wpdb->prepare( "SELECT count( meta_id ) as anzahl  FROM  $wpdb->postmeta WHERE meta_key = %s and meta_value = %s", 'material_url', $url) );
         if ( is_array( $anzahl ) && $anzahl[ 0 ] == 0 ) {
@@ -763,7 +763,9 @@ class Materialpool {
                 'meta_input'    => array (
                     'material_url'  => $url,
                     'material_titel' => $data[ 'title'],
-                    'material_beschreibung' => $description . $data[ 'description']
+                    'material_beschreibung' => $description . $data[ 'description'],
+	                'material_von_name' => $user,
+	                'material_von_email' => $email
                 )
             ) );
             $data = "Vielen Dank f&uuml;r ihren Vorschlag. Ihr Materialvorschlag wird nun Redaktionell geprüft.";
@@ -1046,6 +1048,10 @@ class Materialpool {
      */
     public static function register_frontend_plugin_styles() {
         wp_enqueue_script( 'rw-materialpool-js', Materialpool::$plugin_url . 'js/materialpool-frontend.js' );
+	    wp_enqueue_script( 'rw-materialpool-js-jq-loading', Materialpool::$plugin_url . 'js/jquery.loading.min.js' );
+	    wp_enqueue_script( 'rw-materialpool-js-loading', Materialpool::$plugin_url . 'js/loading.min.js' );
+	    wp_register_style( 'rw-materialpool-loading', Materialpool::$plugin_url . 'css/loading.min.css' );
+	    wp_enqueue_style( 'rw-materialpool-loading' );
     }
 
     /**
@@ -1171,7 +1177,7 @@ function rw_mp_row_actions( $actions, $post )
  * @param $name
  */
 function materialpool_pods_material_metaboxes ( $type, $name ) {
-    pods_group_add( 'material', __( 'Base', Materialpool::get_textdomain() ), 'material_url,material_no_viewer,material_special, material_titel,material_kurzbeschreibung,material_beschreibung' );
+    pods_group_add( 'material', __( 'Base', Materialpool::get_textdomain() ), 'material_url,material_no_viewer,material_special, material_titel,material_kurzbeschreibung,material_beschreibung,material_von_name,material_von_email' );
     pods_group_add( 'material', __( 'Owner', Materialpool::get_textdomain() ), 'material_autoren,material_autor_interim,material_organisation,material_organisation_interim' );
     pods_group_add( 'material', __( 'Meta', Materialpool::get_textdomain() ), 'material_schlagworte,material_schlagworte_interim,material_bildungsstufe,material_altersstufe,material_medientyp,material_sprache' );
     pods_group_add( 'material', __( 'Advanced Meta', Materialpool::get_textdomain() ), 'material_inklusion,material_verfuegbarkeit,material_zugaenglichkeit,material_lizenz' );

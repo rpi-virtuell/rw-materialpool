@@ -93,7 +93,8 @@ class Materialpool_Material {
         $columns[ 'material-autor' ] = _x( 'Autoren', 'Material list field',  Materialpool::$textdomain );
         $columns[ 'material-online' ] = _x( 'Online', 'Material list field',  Materialpool::$textdomain );
         $columns[ 'material-status' ] = _x( 'Status', 'Material list field',  Materialpool::$textdomain );
-        $columns[ 'material-owner' ] = _x( 'Eintrager', 'Material list field',  Materialpool::$textdomain );
+        $columns[ 'material-owner' ] = _x( 'Redakteur', 'Material list field',  Materialpool::$textdomain );
+	    $columns[ 'material-vorschlag' ] = _x( 'Eintrager', 'Material list field',  Materialpool::$textdomain );
         return $columns;
     }
 
@@ -207,6 +208,10 @@ class Materialpool_Material {
             $user = get_user_by( 'ID', $post->post_author );
             $data = $user->display_name;
         }
+	    if ( $column_name == 'material-vorschlag' ) {
+		    $data = get_metadata( 'post', $post_id, 'material_von_name', true );
+	    }
+
         if ( $column_name == 'material-schlagworte' ) {
             if ( false === ( $transient = get_transient( 'mp-cpt-list-material-schlagworte-'.$post_id ) ) ) {
                 $schlagworte = get_metadata( 'post', $post_id, 'material_schlagworte' );
@@ -794,7 +799,14 @@ class Materialpool_Material {
      *
      */
     static public function vorschlag_shortcode( $args ) {
-
+        $user = "";
+        $email = "";
+        if ( is_user_logged_in() ) {
+	        $current_user = wp_get_current_user();
+            $user = $current_user->display_name;
+            if ($user == '') $user = $current_user->user_login;
+            $email = $current_user->user_email;
+        }
         $back = <<<END
 
 <div class="materialpool-vorschlag">
@@ -802,8 +814,14 @@ class Materialpool_Material {
     <div class="materialpool-vorschlag-url">
         URL: <input type="text" id="vorschlag-url" >
     </div>
+    <div class="materialpool-vorschlag-namne">
+        Dein Name: <input type="text" id="vorschlag-name" value="$user">
+    </div>    
+    <div class="materialpool-vorschlag-email">
+        Deine E-Mail: <input type="text" id="vorschlag-email"  value="$email">
+    </div>    
     <div class="materialpool-vorschlag-text">
-        Beschreibung<br>
+        Beschreibung der Seite<br>
         <textarea id="vorschlag-beschreibung" ></textarea>
     </div>
     <br>

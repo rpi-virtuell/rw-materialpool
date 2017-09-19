@@ -46,12 +46,17 @@ jQuery(document).ready(function(){
         jQuery('.materialpool-vorschlag-hinweis').html('');
         var url = jQuery("#vorschlag-url").val();
         var description = jQuery("#vorschlag-beschreibung").val();
+        var user = jQuery("#vorschlag-name").val();
+        var email = jQuery("#vorschlag-email").val();
         if ( url == '' ) {
             jQuery('.materialpool-vorschlag-hinweis').append('Eine URL muss angegeben werden.');
+            return;
         }
         var data = {
             'action': 'mp_add_proposal',
             'url': url,
+            'user' : user,
+            'email' : email,
             'description': description
         };
         jQuery.post(ajaxurl, data, function(response ) {
@@ -62,6 +67,87 @@ jQuery(document).ready(function(){
         })
     })
 });
+
+
+jQuery(document).ready(function(){
+    jQuery("#vorschlag-url").focusout( function() {
+        jQuery.showLoading({name: 'jump-pulse', allowHide: true });
+        var url = jQuery("#vorschlag-url").val();
+        var postid = jQuery("#post_ID").val();
+        if ( url == '' ) return;
+        var ret;
+
+        // url exists?
+        var data = {
+            'action': 'mp_check_url',
+            'site': url,
+            'post-id': postid
+        };
+        jQuery.post(ajaxurl, data, function(response) {
+
+            ret = response;
+            if ( ret != ''  ) {
+                var obj = jQuery.parseJSON( ret );
+                if ( obj.status == 'exists' ) {
+
+                    jQuery("#vorschlag-url").val('');
+                    jQuery("#vorschlag-url").focus();
+
+                    jQuery("body").append("<div id='" + obj.status + "' title='Hinweis'>" +
+                        "<p align='center'>Diese URL wurde schon erfasst unter diesem <a  target='_blank' href='" + obj.material_url + "'>Material</a>.</p>" +
+                        "</div>");
+
+                    jQuery( "#" + obj.status ).dialog({
+                        dialogClass: "no-close",
+                        buttons: [
+                            {
+                                text: "OK",
+                                click: function() {
+                                    jQuery( this ).dialog( "close" );
+                                }
+                            }
+                        ],
+                        width: 450,
+                        height: 280,
+                        show: {
+                            effect: "blind",
+                            duration: 1000
+                        },
+                        hide: {
+                            effect: "blind",
+                            duration: 800
+                        }
+                    });
+                    jQuery.hideLoading();
+                    return;
+                }
+
+            }
+        });
+
+
+
+        var html;
+        var data = {
+            'action': 'mp_get_description',
+            'site': url,
+            'post-id': postid
+        };
+
+        jQuery.post(ajaxurl, data, function(response) {
+            var text;
+            html = response;
+            if ( html != ''  ) {
+                var $obj = jQuery.parseJSON( html );
+                text = $obj.description + "\n\n" + jQuery("#vorschlag-beschreibung").val();
+                jQuery("#vorschlag-beschreibung").val( text );
+            }
+            jQuery.hideLoading();
+        });
+
+    })
+});
+
 
 
 // Fix for daterage facet in IE
