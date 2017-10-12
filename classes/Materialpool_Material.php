@@ -2255,7 +2255,7 @@ END;
         } else {
             $text = "Zum Material";
         }
-         return "<a class='cta-button' href='". self::get_url() ."'>".$text."</a>";
+         return "<a class='cta-button' href=\"".  self::get_url() ."\">".$text."</a>";
     }
 
     /**
