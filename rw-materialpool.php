@@ -1107,18 +1107,31 @@ class Materialpool {
      */
     public static function viewerjs_shortcode_handler($args) {
         global $viewerjs_plugin_url;
+
+        $uri = parse_url(urldecode($args[0]));
+        $host = $uri['host'];
+        $doc = substr(strrchr($uri['path'], '/'),1);
+
         $document_url = home_url().'/?vsviewer_url='.urlencode( $args[0] );
         $options = get_option('ViewerJS_PluginSettings');
         $iframe_width = $options['width'];
         $iframe_height = $options['height'];
-        return "<iframe src=\"$viewerjs_plugin_url" .
+	    $script = "<script>
+					jQuery(document).ready(function($){
+	    				$('iframe.viewerjs-frame').contents().find('#documentName').css('display','none');
+	    				$('iframe.viewerjs-frame').contents().find('#documentName').html('');
+					});
+					</script>";
+
+
+        return "<iframe class=\"viewerjs-frame\" src=\"$viewerjs_plugin_url" .
             '#' . $document_url .'" '.
             "width=\"$iframe_width\" ".
             "height=\"$iframe_height\" ".
             'style="border: 1px solid black; border-radius: 5px;" '.
-            'webkitallowfullscreen="true" '.
-            'mozallowfullscreen="true"></iframe>
-			<p class="viewerjsurlmeta">Quelle: <span class="viewerjsurl">'.$args[0].'</span></p>';
+            'allowfullscreen="true" '.
+            '></iframe><p class="viewerjsurlmeta">Quelle: <span class="viewerjsurl"><a href="'.$args[0].'">'.$host.' : '.$doc.'</a></span></p>'.$script;
+
     }
 
 
