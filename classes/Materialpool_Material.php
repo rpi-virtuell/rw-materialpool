@@ -142,13 +142,13 @@ class Materialpool_Material {
 
         $data = '';
         if ( $column_name == 'material-autor' ) {
-            if ( false === ( $transient = get_transient( 'mp-cpt-list-material-autor-'.$post_id ) ) ) {
+            if ( false === ( $transient = get_transient( 'mp-cpt-list-material-autor-2-'.$post_id ) ) ) {
                 $autors = get_metadata('post', $post_id, 'material_autoren');
                 if (sizeof($autors) == 1) {
                     if ($autors[0] !== false) {
                         $vorname = get_post_meta($autors[0]['ID'], 'autor_vorname', true);
                         $nachname = get_post_meta($autors[0]['ID'], 'autor_nachname', true);
-                        $data .= '<a href="' . get_edit_post_link($autors[0]['ID']) . '">' . $vorname . ' ' . $nachname . '</a><br>';
+                        $data .= '<a href="/wp-admin/edit.php?post_type=material&all_posts=1&AUTOR_FILTER_FIELD_NAME=' .  $autors[ 0 ][ 'ID' ]  . '">' . $vorname . ' '.$nachname  .'</a><br>';
                     } else {
                         $data = "";
                     }
@@ -156,10 +156,10 @@ class Materialpool_Material {
                     foreach ($autors as $autor) {
                         $vorname = get_post_meta($autor['ID'], 'autor_vorname', true);
                         $nachname = get_post_meta($autor['ID'], 'autor_nachname', true);
-                        $data .= '<a href="' . get_edit_post_link($autor['ID']) . '">' . $vorname . ' ' . $nachname . '</a><br>';
+                        $data .= '<a href="/wp-admin/edit.php?post_type=material&all_posts=1&AUTOR_FILTER_FIELD_NAME=' .  $autor ['ID' ]  . '">' .  $vorname . ' '.$nachname  .'</a><br>';
                     }
                 }
-                set_transient( 'mp-cpt-list-material-autor-'.$post_id, $data, 60*60*24*7 ); // Eine Woche zwischenspeichern
+                set_transient( 'mp-cpt-list-material-autor-2-'.$post_id, $data, 60*60*24*7 ); // Eine Woche zwischenspeichern
             } else {
                 $data .= $transient;
             }
@@ -232,22 +232,22 @@ class Materialpool_Material {
             }
         }
         if ( $column_name == 'material-organisation' ) {
-            if ( false === ( $transient = get_transient( 'mp-cpt-list-material-organisation-'.$post_id ) ) ) {
+            if ( false === ( $transient = get_transient( 'mp-cpt-list-material-organisation-2-'.$post_id ) ) ) {
                 $autors = get_metadata( 'post', $post_id, 'material_organisation' );
                 if ( sizeof( $autors ) == 1 ) {
                     if ( $autors[ 0 ] !== false ) {
                         $post = get_post( $autors[ 0 ][ 'ID' ] );
-                        $data .= '<a href="' . get_edit_post_link( $autors[ 0 ][ 'ID' ] ) . '">' . $post->post_title .'</a><br>';
+                        $data .= '<a href="/wp-admin/edit.php?post_type=material&all_posts=1&ORGA_FILTER_FIELD_NAME=' .  $autors[ 0 ][ 'ID' ]  . '">' . $post->post_title .'</a><br>';
                     } else {
                         $data = "";
                     }
                 } else {
                     foreach ( $autors as $autor ) {
                         $post = get_post( $autor[ 'ID' ] );
-                        $data .= '<a href="' . get_edit_post_link( $autor[ 'ID' ] ) . '">' . $post->post_title .'</a><br>';
+                        $data .= '<a href="/wp-admin/edit.php?post_type=material&all_posts=1&ORGA_FILTER_FIELD_NAME=' .  $autor[ 'ID' ]  . '">' . $post->post_title .'</a><br>';
                     }
                 }
-                set_transient( 'mp-cpt-list-material-organisation-'.$post_id, $data, 60*60*24*7 ); // Eine Woche zwischenspeichern
+                set_transient( 'mp-cpt-list-material-organisation-2-'.$post_id, $data, 60*60*24*7 ); // Eine Woche zwischenspeichern
             } else {
                 $data .= $transient;
             }
@@ -2556,5 +2556,18 @@ END;
 	    <meta property="og:description" content="<?php echo  strip_tags( Materialpool_Material::get_description() ) ; ?>" />
 	    <meta property="og:site_name" content="rpi-virtuell Materialpool" />
         <?php
+    }
+
+    static public function admin_posts_filter( $query ) {
+	    global $pagenow;
+	    if ( is_admin() && $pagenow=='edit.php' && isset($_GET['ORGA_FILTER_FIELD_NAME']) && $_GET['ORGA_FILTER_FIELD_NAME'] != '') {
+		    $query->query_vars['meta_key'] = 'material_organisation';
+		    $query->query_vars['meta_value'] = $_GET['ORGA_FILTER_FIELD_NAME'];
+	    }
+	    if ( is_admin() && $pagenow=='edit.php' && isset($_GET['AUTOR_FILTER_FIELD_NAME']) && $_GET['AUTOR_FILTER_FIELD_NAME'] != '') {
+		    $query->query_vars['meta_key'] = 'material_autoren';
+		    $query->query_vars['meta_value'] = $_GET['AUTOR_FILTER_FIELD_NAME'];
+	    }
+        return $query;
     }
 }

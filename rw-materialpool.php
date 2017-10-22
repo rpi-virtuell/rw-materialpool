@@ -168,6 +168,7 @@ class Materialpool {
         add_shortcode( 'viewerjs', array( 'Materialpool', 'viewerjs_shortcode_handler' ) );
         add_filter( 'bulk_actions-edit-material', array( 'Materialpool_Material','remove_from_bulk_actions' ) );
 		add_action( 'wp_head', array( 'Materialpool_Material','add_open_graph' ) );
+		add_filter( 'parse_query',  array( 'Materialpool_Material','admin_posts_filter' ));
 
 		//        remove_filter( 'pre_oembed_result',      'wp_filter_pre_oembed_result',    10 );
 		//        add_filter( 'pre_oembed_result',      array( 'Materialpool', 'wp_filter_pre_oembed_result' ),    10, 3 );
