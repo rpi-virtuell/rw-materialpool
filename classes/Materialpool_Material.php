@@ -121,7 +121,11 @@ class Materialpool_Material {
                     echo "<select name='$tax_slug' id='$tax_slug' class='postform'>";
                     echo "<option value=''>$tax_name</option>";
                     foreach ($terms as $term) {
-                        echo '<option value='. $term->slug, $_GET[$tax_slug] == $term->slug ? ' selected="selected"' : '','>' . $term->name .' (' . $term->count .')</option>';
+                        $selected = '';
+                        if ( isset(  $_GET[$tax_slug] )  && $_GET[$tax_slug] == $term->slug ) {
+	                        $selected = 'selected="selected"';
+                        }
+                        echo '<option value='. $term->slug . ' '. $selected . '>' . $term->name .' (' . $term->count .')</option>';
                     }
                     echo "</select>";
                 }
