@@ -654,14 +654,13 @@ class Materialpool_Dashboard {
     static public function not_complete() {
         global $wpdb;
         $count = 0;
-        $result = $wpdb->get_results( $wpdb->prepare("
+        $result = $wpdb->get_results("
         SELECT distinct( $wpdb->posts.ID ) , $wpdb->posts.post_title, DATE_FORMAT ( post_date, '%%d.%%m.%%y' ) AS datum  FROM 
 	$wpdb->posts, $wpdb->postmeta 
 WHERE 
 	$wpdb->posts.ID = $wpdb->postmeta.post_id AND  
 	$wpdb->posts.post_type = 'material' AND
 	( $wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'draft' )  AND
-
 (
 	( 
 	(
@@ -711,7 +710,7 @@ OR
 		)
 	)
 )	
-order by wp_posts.post_date  asc ")  );
+order by wp_posts.post_date  asc ") ;
         foreach ( $result as $obj ) {
             if ($count == 0 ) {
                 echo "<table><tr><th style='width: 80%;'>Material</th><th style='width: 20%;' >Datum</th></tr>";
