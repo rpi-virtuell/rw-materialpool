@@ -720,7 +720,7 @@ class Materialpool_Material {
         global $pagenow;
         $back = '';
 
-        if ( is_admin() && $pagenow=='edit.php' && $_GET['post_type']=='material' && $_GET['s'] != '') {
+        if ( is_admin() && $pagenow=='edit.php' && $_GET['post_type']=='material' && isset( $_GET['s'] ) && $_GET['s'] != '') {
             $back = " DISTINCT ";
         }
         return $back;
