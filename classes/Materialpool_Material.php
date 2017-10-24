@@ -104,7 +104,7 @@ class Materialpool_Material {
      * @since   0.0.1
      * @access	public
      */
-    function add_taxonomy_filters() {
+    static public function add_taxonomy_filters() {
         global $typenow;
 
         // an array of all the taxonomyies you want to display. Use the taxonomy name or slug
