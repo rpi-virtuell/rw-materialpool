@@ -655,7 +655,7 @@ class Materialpool_Dashboard {
         global $wpdb;
         $count = 0;
         $result = $wpdb->get_results("
-        SELECT distinct( $wpdb->posts.ID ) , $wpdb->posts.post_title, DATE_FORMAT ( post_date, '%%d.%%m.%%y' ) AS datum  FROM 
+        SELECT distinct( $wpdb->posts.ID ) , $wpdb->posts.post_title, DATE_FORMAT ( post_date, '%d.%m.%y' ) AS datum  FROM 
 	$wpdb->posts, $wpdb->postmeta 
 WHERE 
 	$wpdb->posts.ID = $wpdb->postmeta.post_id AND  
