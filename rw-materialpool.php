@@ -103,6 +103,7 @@ class Materialpool {
      */
     static public $buddypress_member_url = "http://gruppen.rpi-virtuell.de/members/";
 
+
 	/**
 	 * Plugin constructor.
 	 *
@@ -258,8 +259,8 @@ class Materialpool {
 
 
 		// Add Filter & Actions for Settingspage
-        add_action( 'admin_menu', array( 'Materialpool_Settings', 'options_page' ) );
-        add_action( 'admin_menu', array( 'Materialpool_Settings', 'settings_init' ) );
+        //add_action( 'admin_menu', array( 'Materialpool_Settings', 'options_page' ) );
+        //add_action( 'admin_menu', array( 'Materialpool_Settings', 'settings_init' ) );
 
         // Add Filter  & Actions for Posts
         add_action( 'add_meta_boxes',  array( 'Materialpool_Posts', 'add_metaboxes' ) );
@@ -312,7 +313,21 @@ class Materialpool {
         //
         add_filter( 'post_row_actions', 'rw_mp_row_actions', 10, 2 );
 
-        do_action( 'materialpool_init' );
+		// Materialpool Contribute APIs
+		add_action( 'init',             array( 'Materialpool_Contribute', 'add_endpoint'), 0 );
+		add_filter( 'query_vars',       array( 'Materialpool_Contribute', 'add_query_vars'), 0 );
+		add_action( 'parse_request',    array( 'Materialpool_Contribute', 'parse_request'), 0 );
+		add_filter( 'rw_materialpool_contribute_cmd_parser', array( 'Materialpool_Contribute', 'cmd_ping' ) );
+		add_filter( 'rw_materialpool_contribute_cmd_parser', array( 'Materialpool_Contribute', 'cmd_say_hello' ) );
+		add_filter( 'rw_materialpool_contribute_cmd_parser', array( 'Materialpool_Contribute', 'cmd_list_authors' ) );
+		add_filter( 'rw_materialpool_contribute_cmd_parser', array( 'Materialpool_Contribute', 'cmd_list_bildungsstufen' ) );
+		add_filter( 'rw_materialpool_contribute_cmd_parser', array( 'Materialpool_Contribute', 'cmd_list_altersstufen' ) );
+
+
+		add_action( 'admin_menu', array( 'Materialpool_Contribute', 'options_page' ) );
+		add_action( 'admin_menu', array( 'Materialpool_Contribute', 'settings_init' ) );
+		add_action( 'init',             array( 'Materialpool_Contribute_Clients', 'init'), 0 );
+		do_action( 'materialpool_init' );
 	}
 
 
