@@ -1853,14 +1853,18 @@ END;
         global $post;
 
         $url =  parse_url( $_SERVER[ 'REQUEST_URI' ], PHP_URL_PATH );
-        $data = '';
+        $data = array();
         $bildungsstufe = get_metadata( 'post', $post->ID, 'material_bildungsstufe' );
         foreach ( $bildungsstufe as $bildung ) {
             if ( $bildung[ 'parent'] != 0 ) {
                 $data[] =  $bildung[ 'name' ] ;
             }
         }
-        return implode(', ', $data);
+        if ( is_array( $data ) ) {
+	        return implode( ', ', $data );
+        } else {
+            return $data;
+        }
     }
 
     static public function bildungsstufen () {
