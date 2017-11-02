@@ -2578,4 +2578,29 @@ END;
 	    }
         return $query;
     }
+
+    static public function get_themenseiten_for_material( $material_id = 0 ) {
+	    global $post;
+	    global $wpdb;
+
+	    $material_id = ($material_id>0)?$material_id:$post->ID;
+	    $tablename = $wpdb->prefix . "pods_themenseitengruppen";
+        $query = "select id, post_title  from $wpdb->posts where id in ( select  pandarf_parent_post_id   from $tablename  where ( auswahl like '%,{$material_id},%' or auswahl like  '%,{$material_id}'  ) ) and post_status = 'publish'   and post_type= 'themenseite' order by post_title;";
+
+	    $count = $wpdb->get_results($query);
+	    return $count;
+    }
+
+    static public function get_themenseiten_for_material_html( $material_id  = 0) {
+        $result = Materialpool_Material::get_themenseiten_for_material( $material_id);
+        if ( is_array( $result )) {
+            echo "Dieses Material ist Teil folgender Thmenenseiten:<br>";
+	        foreach ( $result as $item ) {
+	            $url = get_permalink( $item->id );
+	            echo "<a href='" . $url  ."'>".  $item->post_title . "</a><br>";
+
+            }
+            echo "<br>";
+        }
+    }
 }
