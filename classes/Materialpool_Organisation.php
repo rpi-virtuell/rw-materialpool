@@ -370,6 +370,30 @@ class Materialpool_Organisation {
 			$autor_title = $autor_meta->post_title;
 			add_post_meta( $post_id, 'organisation_autor_facet', $autor_title );
 		}
+
+		delete_post_meta( $post_id, 'organisation_alpika_facet' );
+		clean_post_cache( $post_id );
+
+		if( $_POST[ 'pods_meta_organisation_alpika' ] == 1 ){
+			add_post_meta( $post_id, 'organisation_alpika_facet', 1 );
+		}
+
+		// Konfession der Organisation in term_rel speichern
+
+		wp_delete_object_term_relationships( $post_id, 'konfession' );
+		$cats = $_POST[ 'pods_meta_organisation_konfession' ];
+		if ( is_array( $cats ) ) {
+			foreach ( $cats as $key => $val ) {
+				$cat_ids[] = (int) $val;
+			}
+		}
+		if ( !is_array( $cats ) ) {
+			$cat_ids[] = (int) $cats;
+		}
+		wp_set_object_terms( $post_id, $cat_ids, 'konfession', true );
+
+
+
 		if ( is_object( FWP() ) ) {
 			FWP()->indexer->save_post( $post_id );
 		}
@@ -617,4 +641,19 @@ class Materialpool_Organisation {
     }
 
 
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access public
+	 * @return number of materials from the current Autor
+	 */
+	static public function get_count_posts_per_organisation ($autor_id = 0) {
+		global $post,$wpdb;
+
+		$autor_id = ($autor_id>0)?$autor_id:$post->ID;
+		$query = "select count(pod_id) from {$wpdb->prefix}podsrel where item_id = %d and field_id in ( select ID from wp_posts where post_type ='_pods_field' and post_name='organisation_material')" ;
+		$query = $wpdb->prepare($query, $autor_id);
+		$count = $wpdb->get_var($query);
+		return $count;
+	}
 }
