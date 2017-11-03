@@ -2593,7 +2593,7 @@ END;
 
     static public function get_themenseiten_for_material_html( $material_id  = 0) {
         $result = Materialpool_Material::get_themenseiten_for_material( $material_id);
-        if ( is_array( $result )) {
+        if ( is_array( $result ) &&  sizeof( $result ) > 0 ) {
             echo "Dieses Material ist Teil folgender Themenseiten:<br>";
 	        foreach ( $result as $item ) {
 	            $url = get_permalink( $item->id );
