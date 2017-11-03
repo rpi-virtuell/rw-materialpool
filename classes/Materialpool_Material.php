@@ -2603,4 +2603,13 @@ END;
             echo "<br>";
         }
     }
+
+    static public function back_to_search() {
+        if ( $_GET[ 'sq' ] ) {
+            $sq = $_GET[ 'sq' ];
+            ?>
+	        <a class='cta-button' href="<?php echo urldecode( $sq ); ?>">Zurück zur Materialsuche</a><br>
+            <?php
+        }
+    }
 }
