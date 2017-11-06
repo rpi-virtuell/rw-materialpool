@@ -2612,4 +2612,32 @@ END;
             <?php
         }
     }
+
+    static public function  rss_query_vars( $query_vars ) {
+	    $query_vars[] = 'rss_organisation';
+	    $query_vars[] = 'rss_per_page';
+	    return $query_vars;
+    }
+
+	static public function rss_pre_get_posts( $query ) {
+		if( $query->is_feed && $query->is_main_query() && $query->query[ 'post_type' ] == 'material' ) {
+			if( isset( $query->query_vars[ 'rss_organisation' ] ) && ! empty( $query->query_vars[ 'rss_organisation' ] ) ) {
+				if ( $post = get_page_by_path( $query->query_vars[ 'rss_organisation' ] , OBJECT, 'organisation' ) ) {
+					$id = $post->ID;
+				} else {
+					$id = $query->query_vars['rss_organisation'];
+				}
+				$query->set( 'meta_key', 'material_organisation' );
+				$query->set( 'meta_value', $id );
+			}
+			if( isset( $query->query_vars[ 'rss_per_page' ] ) && ! empty( $query->query_vars[ 'rss_per_page' ] ) ) {
+				$query->set( 'posts_per_rss', (int) $query->query_vars[ 'rss_per_page' ] );
+			}
+
+		}
+		//return $query;
+	}
+
+
+
 }
