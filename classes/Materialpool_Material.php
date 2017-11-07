@@ -2154,12 +2154,14 @@ END;
      * @access public
      * @return mixed
      */
-    static public function get_schlagworte_html() {
+    static public function get_schlagworte_html( $url = '' ) {
         global $post;
-        if (defined('REST_REQUEST') && REST_REQUEST) {
-            $url = esc_url_raw( $_POST[ 'mp_url'] );
-        } else {
-            $url =  parse_url( $_SERVER[ 'REQUEST_URI' ], PHP_URL_PATH );
+        if ( $url == '' ) {
+            if (defined('REST_REQUEST') && REST_REQUEST) {
+                $url = esc_url_raw( $_POST[ 'mp_url'] );
+            } else {
+                $url =  parse_url( $_SERVER[ 'REQUEST_URI' ], PHP_URL_PATH );
+            }
         }
         $data = '';
         $schlagworte = get_metadata( 'post', $post->ID, 'material_schlagworte' );
