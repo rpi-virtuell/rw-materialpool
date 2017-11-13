@@ -1549,7 +1549,40 @@ END;
     }
 
 
-    /**
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
+	static public function get_werkzeuge() {
+		global $post;
+
+		$vid = get_metadata( 'post', $post->ID, 'material_werkzeug', true );
+		if ( is_array( $vid ) ) {
+			return $vid[ 'name'];
+		}
+	}
+
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
+	static public function werkzeuge_html() {
+		global $post;
+
+		$vid = get_metadata( 'post', $post->ID, 'material_werkzeug', true );
+		if ( is_array( $vid ) ) {
+			echo "<a href='/" . $vid['taxonomy'] . "/" . $vid['slug'] . "'>" . $vid['name'] . "</a>";
+		}
+
+	}
+
+
+
+	/**
      *
      * @since 0.0.1
      * @access public
