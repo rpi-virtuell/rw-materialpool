@@ -466,6 +466,20 @@ class Materialpool_Material {
         }
         wp_set_object_terms( $post_id, $cat_ids, 'verfuegbarkeit', true );
 
+
+		// Werkzeug des Materials in term_rel speichern
+		wp_delete_object_term_relationships( $post_id, 'werkzeug' );
+		$cats = $_POST[ 'pods_meta_material_werkzeug' ];
+		if ( is_array( $cats ) ) {
+			foreach ( $cats as $key => $val ) {
+				$cat_ids[] = (int) $val;
+			}
+		}
+		if ( $cats!== null  ) {
+			$cat_ids[] = (int) $cats;
+		}
+		wp_set_object_terms( $post_id, $cat_ids, 'werkzeug', true );
+
         // Zugänglichkeit des Materials in term_rel speichern
         wp_delete_object_term_relationships( $post_id, 'zugaenglichkeit' );
         $cats = $_POST[ 'pods_meta_material_zugaenglichkeit' ];
