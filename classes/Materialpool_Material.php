@@ -2225,7 +2225,7 @@ END;
             }
         } else {
             foreach ( $schlagworte as $schlagwort ) {
-	            $link = "/facettierte-suche/?fwp_schlagworte=". $schlagworte[0][ 'slug' ];
+	            $link = "/facettierte-suche/?fwp_schlagworte=". $schlagwort[ 'slug' ];
                 if ( $data != '') $data .= ', ';
                 $data .= '<a href="' . $link . '">' . $schlagwort[ 'name' ] .'</a>';
             }
