@@ -1861,14 +1861,14 @@ END;
             if ( sizeof( $bildungsstufe ) == 1 ) {
                 if ( $bildungsstufe[ 0 ] !== false ) {
                     if ( $bildungsstufe[ 0 ][ 'parent'] != 0 ) {
-                        $link = add_query_arg( 'fwp_bildungsstufe', $bildungsstufe[0][ 'slug' ], $url );
+	                    $link = "/facettierte-suche/?fwp_bildungsstufe=". $bildungsstufe[0][ 'slug' ];
                         $data .= '<span class="facet-tag"><a href="' . $link . '">' . $bildungsstufe[0][ 'name' ] .'</a></span>';
                     }
                 }
             } else {
                 foreach ( $bildungsstufe as $bildung ) {
                     if ( $bildung[ 'parent'] != 0 ) {
-                        $link = add_query_arg( 'fwp_bildungsstufe', $bildung[ 'slug' ], $url );
+	                    $link = "/facettierte-suche/?fwp_bildungsstufe=". $bildung[0][ 'slug' ];
                         $data .= '<span class="facet-tag"><a href="' . $link . '">' . $bildung[ 'name' ] .'</a></span>';
                     }
                 }
@@ -1877,7 +1877,7 @@ END;
             if ( sizeof( $bildungsstufe ) == 1 ) {
                 $term = get_term( $bildungsstufe, "bildungsstufe" );
                 if ( $term->parent != 0 ) {
-                    $link = add_query_arg( 'fwp_bildungsstufe', $term->slug, $url );
+	                $link = "/facettierte-suche/?fwp_bildungsstufe=". $term->slug;
                     $data .= '<span class="facet-tag"><a href="' . $link . '">' . $term->name .'</a></span>';
                 }
 
@@ -1885,8 +1885,8 @@ END;
                 foreach ( $bildungsstufe as $bildung ) {
                     $term = get_term( $bildung, "bildungsstufe" );
                     if ( $term->parent != 0 ) {
-                        $link = add_query_arg( 'fwp_bildungsstufe', $term->slug, $url );
-                        $data .= '<span class="facet-tag"><a href="' . $link . '">' . $term->name .'</a></span>';
+	                    $link = "/facettierte-suche/?fwp_bildungsstufe=". $term->slug;
+	                    $data .= '<span class="facet-tag"><a href="' . $link . '">' . $term->name .'</a></span>';
                     }
                 }
             }
@@ -1937,15 +1937,15 @@ END;
         $bildungsstufe = get_metadata( 'post', $post->ID, 'material_inklusion' );
         if ( sizeof( $bildungsstufe ) == 1 ) {
             if ( $bildungsstufe[ 0 ] !== false ) {
-                $link = add_query_arg( 'fwp_bildungsstufe', $bildungsstufe[0][ 'slug' ], $url );
-                $data .= '<span class="facet-tag"><a href="' . $link . '">' . $bildungsstufe[0][ 'name' ] .'</a></span>';
+	            $link = "/facettierte-suche/?fwp_bildungsstufe=". $bildungsstufe[0][ 'slug' ];
+	            $data .= '<span class="facet-tag"><a href="' . $link . '">' . $bildungsstufe[0][ 'name' ] .'</a></span>';
             } else {
                 $data = "";
             }
         } else {
             foreach ( $bildungsstufe as $bildung ) {
-                $link = add_query_arg( 'fwp_bildungsstufe', $bildung[ 'slug' ], $url );
-                $data .= '<span class="facet-tag"><a href="' . $link . '">' . $bildung[ 'name' ] .'</a></span>';
+	            $link = "/facettierte-suche/?fwp_bildungsstufe=". $bildung[ 'slug' ];
+	            $data .= '<span class="facet-tag"><a href="' . $link . '">' . $bildung[ 'name' ] .'</a></span>';
             }
         }
         return $data;
@@ -2217,7 +2217,7 @@ END;
         $schlagworte = get_metadata( 'post', $post->ID, 'material_schlagworte' );
         if ( sizeof( $schlagworte ) == 1 ) {
             if ( $schlagworte[ 0 ] !== false ) {
-                $link = add_query_arg( 'fwp_schlagworte', $schlagworte[0][ 'slug' ], $url );
+                $link = "/facettierte-suche/?fwp_schlagworte=". $schlagworte[0][ 'slug' ];
                 if ( $data != '') $data .= ', ';
                 $data .= '<a href="' . $link . '">' . $schlagworte[0][ 'name' ] .'</a>';
             } else {
@@ -2225,7 +2225,7 @@ END;
             }
         } else {
             foreach ( $schlagworte as $schlagwort ) {
-                $link = add_query_arg( 'fwp_schlagworte', $schlagwort[ 'slug' ], $url );
+	            $link = "/facettierte-suche/?fwp_schlagworte=". $schlagworte[0][ 'slug' ];
                 if ( $data != '') $data .= ', ';
                 $data .= '<a href="' . $link . '">' . $schlagwort[ 'name' ] .'</a>';
             }
