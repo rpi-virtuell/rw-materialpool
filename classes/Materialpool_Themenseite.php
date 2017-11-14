@@ -63,6 +63,9 @@ class Materialpool_Themenseite {
 
         if ( "themenseite" != $post_type ) return;
 
+	    // Transients für Frontendcache löschen
+	    delete_transient( 'facet_serach2_entry-'.$post_id );
+
         // Schlagwort det Themenseite in term_rel speichern
         wp_delete_object_term_relationships( $post_id, 'schlagwort' );
         $cats = explode( ',', $_POST[ 'pods_meta_thema_schlagworte' ] ) ;
@@ -76,8 +79,7 @@ class Materialpool_Themenseite {
         }
         wp_set_object_terms( $post_id, $cat_ids, 'schlagwort', true );
 
-	    // Transients für Frontendcache löschen
-	    delete_transient( 'facet_serach2_entry-'.$post_id );
+
     }
     /**
      *
