@@ -1869,7 +1869,7 @@ END;
                 foreach ( $bildungsstufe as $bildung ) {
                     if ( $bildung[ 'parent'] != 0 ) {
 	                    $link = "/facettierte-suche/?fwp_bildungsstufe=". $bildung[0][ 'slug' ];
-                        $data .= '<span class="facet-tag"><a href="' . $link . '">' . $bildung[ 'name' ] .'</a></span>';
+                        $data .= '<span class="facet-tag"><a href="' . $link . '">' . $bildung[0][ 'name' ] .'</a></span>';
                     }
                 }
             }
