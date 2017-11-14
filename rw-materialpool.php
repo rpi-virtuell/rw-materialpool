@@ -513,7 +513,7 @@ class Materialpool {
         $url =  esc_url_raw( $_POST['site'] ) ;
         $id =  (int) $_POST['post-id'];
 
-        $anzahl = $wpdb->get_col( $wpdb->prepare( "SELECT count( meta_id ) as anzahl  FROM  $wpdb->postmeta WHERE meta_key = %s and meta_value = %s and post_id != %d ", 'material_url', $url, $id) );
+        $anzahl = $wpdb->get_col( $wpdb->prepare( "SELECT count( meta_id ) as anzahl  FROM  $wpdb->postmeta pm. $wpdb->posts p  WHERE pm.meta_key = %s and pm.meta_value = %s and pm.post_id != %d  and pm.post_id= p.ID and p.post_status = 'publish' ", 'material_url', $url, $id) );
         if ( is_array( $anzahl ) && $anzahl[ 0 ] == 0 ) {
             $data = array(
                 'status' => "ok"
@@ -540,7 +540,9 @@ class Materialpool {
     public static function my_action_callback_mp_check_material_title() {
         global $wpdb;
         $title =  $_POST['title'];
-        $anzahl = $wpdb->get_col( $wpdb->prepare( "SELECT count( meta_id ) as anzahl  FROM  $wpdb->postmeta WHERE meta_key = %s and meta_value = %s", 'material_titel', $title) );
+	    $id =  (int) $_POST['post-id'];
+
+        $anzahl = $wpdb->get_col( $wpdb->prepare( "SELECT count( meta_id ) as anzahl  FROM  $wpdb->postmeta WHERE meta_key = %s and meta_value = %s and post_id != %d ", 'material_titel', $title, $id ) );
         if ( is_array( $anzahl ) && $anzahl[ 0 ] == 0 ) {
             $data = array(
                 'status' => "ok"

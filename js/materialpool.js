@@ -533,11 +533,13 @@ jQuery(document).ready(function(){
 jQuery(document).ready(function(){
     jQuery("#pods-form-ui-pods-meta-material-titel").focusout( function() {
         var title = jQuery("#pods-form-ui-pods-meta-material-titel").val();
+        var postid = jQuery("#post_ID").val();
         if ( title == '' ) return;
         var ret;
         var data = {
             'action': 'mp_check_material_title',
-            'title': title
+            'title': title,
+            'post-id': postid
         };
         jQuery.post(ajaxurl, data, function(response) {
 
