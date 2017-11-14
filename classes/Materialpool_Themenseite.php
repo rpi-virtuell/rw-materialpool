@@ -40,10 +40,6 @@ class Materialpool_Themenseite {
         return $template;
     }
 
-
-
-
-
     /**
      *
      * @since 0.0.1
@@ -80,6 +76,8 @@ class Materialpool_Themenseite {
         }
         wp_set_object_terms( $post_id, $cat_ids, 'schlagwort', true );
 
+	    // Transients für Frontendcache löschen
+	    delete_transient( 'facet_serach2_entry-'.$post_id );
     }
     /**
      *
