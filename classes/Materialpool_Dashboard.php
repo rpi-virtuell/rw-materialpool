@@ -670,11 +670,7 @@ WHERE
 			wp_postmeta.meta_key = 'material_schlagworte' AND 
 			wp_postmeta.meta_value = ''  
 		)
-		) and (
-			wp_postmeta.meta_key = 'material_schlagworte_interim' AND 
-			wp_postmeta.meta_value = ''  
-		
-		)
+		) 
 	)
 OR
 	( 

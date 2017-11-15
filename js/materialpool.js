@@ -726,7 +726,7 @@ function check_material() {
         jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Beschreibung nicht angegeben.</div>");
     }
     // Schlagworte prüfen
-    if ( jQuery("#pods-form-ui-pods-meta-material-schlagworte").val() == ''  &&  jQuery("#pods-form-ui-pods-meta-material-schlagworte-interim").val() == '' ) {
+    if ( jQuery("#pods-form-ui-pods-meta-material-schlagworte").val() == ''  ) {
         jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Keine Schlagworte vergeben.</div>");
     }
     // Bildungsstufen prüfen
