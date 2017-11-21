@@ -33,8 +33,9 @@ class Materialpool_Medientyp {
 
         switch ($column_name) {
             case 'uses':
-                $anzahl = $wpdb->get_col( $wpdb->prepare( "SELECT count( meta_id ) as anzahl  FROM  $wpdb->postmeta WHERE meta_key = %s and meta_value = %s", 'material_medientyp', $term_id) );
-                $out .= $anzahl[ 0 ];
+	            $anzahl = get_term( $term_id, 'medientyp' );
+	            $url =  admin_url( 'edit.php?post_type=material&medientyp=' . $anzahl->slug );
+	            $out .=  '<a href="' . $url . '">'.$anzahl->count . '</a>';
                 break;
 
             default:
