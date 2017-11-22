@@ -317,12 +317,18 @@ class Materialpool_Material {
             $title =  get_metadata('post', $post_id, 'material_titel', true );
         }
         $post_name = wp_unique_post_slug( sanitize_title( $title ), $post_id, 'publish', $post_type, $post_parent );
-
+        $post_content = '';
         $url = '';
 		// Prio 1: hochgeladenes Bild
 		$pic  = $_POST[ 'pods_meta_material_cover' ];
-		if ( is_int( $pic ) ) {
-			$url = wp_get_attachment_url( $pic  );
+		if ( is_array( $pic ) ) {
+		    foreach ( $pic as $picArray ) {
+		        $id = (int) $picArray[ 'id' ];
+            }
+        }
+		if ( is_int( $id ) ) {
+			$urlA = wp_get_attachment_image_src( $id  );
+			$url = $urlA[ 0 ];
 		}
 		// Prio 2, Cover URL
 		if ( $url == '' ) {
@@ -333,8 +339,7 @@ class Materialpool_Material {
 			$url  = trim( $_POST[ 'pods_meta_material_screenshot' ] );
 		}
 		if ( $url != '' ) {
-			$post_content .='<img class="size-medium  alignleft" src="'. trim( $url ) .'" alt="" width="300" height="169" sizes="(max-width: 300px) 100vw, 300px">';
-
+			$post_content ='<img class="size-medium  alignleft" src="'. trim( $url ) .'" alt="" sizes="(max-width: 300px) 100vw, 300px">';
         }
 
         $post_content .= '<strong>' . wp_unslash( apply_filters( 'content_save_pre', $_POST[ 'pods_meta_material_kurzbeschreibung' ] ) ) . '</strong>';
