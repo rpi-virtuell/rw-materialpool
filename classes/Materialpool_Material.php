@@ -23,6 +23,8 @@ class Materialpool_Material {
         if (is_tax() ) {
 	        return $template;
         }
+
+	    $template_path = $template;
         if ($post->post_type == "material" && !is_embed() ){
             if ( is_single() ) {
                 if ( $theme_file = locate_template( array ( 'materialpool/single-material.php' ) ) ) {

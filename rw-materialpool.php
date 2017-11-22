@@ -836,7 +836,7 @@ class Materialpool {
             'material_url' => get_post_meta( $post_id, 'material_url', true ),
             'material_veroeffentlichungsdatum' => get_post_meta( $post_id, 'material_veroeffentlichungsdatum', true ),
             'material_verfuegbarkeit' => get_post_meta( $post_id, 'material_verfuegbarkeit', true ),
-
+            'old_slug' => get_post_meta( $post_id, 'old_slug', true ),
         );
 
         wp_delete_post($post_id );
