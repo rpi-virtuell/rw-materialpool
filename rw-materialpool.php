@@ -257,11 +257,6 @@ class Materialpool {
 		add_action( 'manage_themenseite_posts_columns', array( 'Materialpool_Themenseite', 'cpt_list_head') );
 		add_action( 'manage_themenseite_posts_custom_column', array( 'Materialpool_Themenseite', 'cpt_list_column'), 10,2 );
 
-
-		// Add Filter & Actions for Settingspage
-        add_action( 'admin_menu', array( 'Materialpool_Settings', 'options_page' ) );
-        add_action( 'admin_menu', array( 'Materialpool_Settings', 'settings_init' ) );
-
         // Add Filter  & Actions for Posts
         add_action( 'add_meta_boxes',  array( 'Materialpool_Posts', 'add_metaboxes' ) );
 
