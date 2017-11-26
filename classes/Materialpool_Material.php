@@ -792,6 +792,16 @@ class Materialpool_Material {
                     }
                 }
             }
+	        if ( strpos( $uri, '/check_autor/') == 0 ) {
+                $hash = substr( $uri, 13 );
+
+		        $result = $wpdb->get_var( $wpdb->prepare( "SELECT $wpdb->postmeta.post_id   FROM $wpdb->postmeta WHERE $wpdb->postmeta.meta_value = %s " , $hash ) );
+                if ( ! is_wp_error( $result) && $result !== false ) {
+		            add_metadata( 'post', $result, 'autor_email_read', time() );
+		            wp_redirect( get_permalink( $result) );
+		            exit;
+                }
+	        }
         }
     }
 
@@ -814,7 +824,6 @@ class Materialpool_Material {
      *
      */
     static public function row_actions( $actions, $post ) {
-        var_dump( $actions); exit;
         if ( $post->post_type == "material" ) {
             unset($actions['inline hide-if-no-js']);
         }
