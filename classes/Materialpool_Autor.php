@@ -445,9 +445,11 @@ class Materialpool_Autor {
 
 					$content = str_replace( '%material_last_material%', Materialpool_Autor::last_material_name() , $content );
 					$content = str_replace( '%redakteur_name%', Materialpool_Autor::redaktuer_name() , $content );
-					$content = str_replace( '%redakteur_reply_email%', Materialpool_Autor::redakteur_email() , $content );
+					$content = str_replace( '%redakteur_reply_email%',  'redaktion@rpi-virtuell.de'  , $content ); //Materialpool_Autor::redakteur_email() , $content );
 
-					$mail = wp_mail( $email, $subject, $content  );
+					$headers[] = 'From: Redaktion rpi-virtuell <redaktion@rpi-virtuell.de>';
+					$headers[] = 'Reply-To: Redaktion rpi-virtuell <redaktion@rpi-virtuell.de>';
+					$mail = wp_mail( $email, $subject, $content , $headers );
 					if ( $mail ) {
 						$send = add_metadata( 'post', $post_id, 'autor_email_send', time() );
 					}

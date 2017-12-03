@@ -188,6 +188,8 @@ class Materialpool_Organisation {
             'organisation_views' => _x( 'Views', 'Organisation list field', Materialpool::$textdomain ),
             'material_views' => _x( 'MaterialViews', 'Organisation list field', Materialpool::$textdomain ),
             'organisation_url' => _x( 'URL', 'Organisation list field', Materialpool::$textdomain ),
+            'organisation_email'        => _x( 'Email', 'Organisation list field', Materialpool::$textdomain ),
+            'organisation_nachricht'    => _x( 'Emailbenachrichtigung', 'Organisation list field', Materialpool::$textdomain ),
             'organisation_konfession' => _x( 'Konfession', 'Organisation list field', Materialpool::$textdomain ),
             'organisation_alpika' => _x( 'ALPIKA', 'Organisation list field', Materialpool::$textdomain ),
             'date' => __('Date'),
@@ -223,6 +225,31 @@ class Materialpool_Organisation {
         if ( $column_name == 'organisation_url' ) {
             $data = get_metadata( 'post', $post_id, 'organisation_url', true );
         }
+
+	    if ( $column_name == 'organisation_email' ) {
+		    $data = get_metadata( 'post', $post_id, 'organisation_email', true );
+	    }
+	    if ( $column_name == 'organisation_nachricht' ) {
+		    $email = get_metadata( 'post', $post_id, 'organisation_email', true );
+		    if ( $email == '' ) {
+			    $data = '<div style="color: red;">Keine Email hinterlegt</div>';
+		    } else {
+			    $send = get_metadata( 'post', $post_id, 'organisation_email_send', true );
+			    $read = get_metadata( 'post', $post_id, 'organisation_email_read', true );
+
+			    if ( $send == '' ) {
+				    $data = '<div style="color: blue;">Nicht versendet</div>';
+			    }
+			    if ( $send != '' && $read == '' ) {
+				    $data = '<div style="color: red;">Versendet, ungelesen</div>';
+			    }
+			    if ( $send != '' && $read != '' ) {
+				    $data = '<div style="color: green;">Gelesen</div>';
+			    }
+		    }
+	    }
+
+
         if ( $column_name == 'organisation_alpika' ) {
             $alpiika = get_metadata( 'post', $post_id, 'organisation_alpika', true );
             if ( $alpiika == '1' ) {
@@ -398,9 +425,52 @@ class Materialpool_Organisation {
 			FWP()->indexer->save_post( $post_id );
 		}
 
+		// generate Mail
+		$sendmail = get_option( 'einstellungen_organisationsmail_aktiv', 0 );
+		$email    = get_metadata( 'post', $post_id, 'organisation_email', true );
+		if ( $sendmail == 1 && $email != '' ) {
+			$send = get_metadata( 'post', $post_id, 'organisation_email_send', true );
+			if ( $send == '' ) {
+				$subject = get_option( 'einstellungen_organisation_mail_subject', false );
+				$content = get_option( 'einstellungen_organisationsmail_content', false );
+				if ( $subject && $content ) {
+					$content = str_replace( '%material_autor_name%', Materialpool_Autor::get_firstname() . ' ' . Materialpool_Autor::get_lastname(), $content );
+					$content = str_replace( '%materialpool_home%', get_option( 'siteurl' ), $content );
+					$content = str_replace( '%material_autor_url%', Materialpool_Autor::autor_check_url() , $content );
+					$content = str_replace( '%material_organisation_url%',  Materialpool_Organisation::organistion_check_url() , $content );
+					$content = str_replace( '%material_last_material%', Materialpool_Autor::last_material_name() , $content );
+					$content = str_replace( '%redakteur_name%', Materialpool_Autor::redaktuer_name() , $content );
+					$content = str_replace( '%redakteur_reply_email%', 'redaktion@rpi-virtuell.de' , $content ); //  Materialpool_Autor::redakteur_email() , $content );
 
+					$headers[] = 'From: Redaktion rpi-virtuell <redaktion@rpi-virtuell.de>';
+					$headers[] = 'Reply-To: Redaktion rpi-virtuell <redaktion@rpi-virtuell.de>';
+					$mail = wp_mail( $email, $subject, $content , $headers );
+					if ( $mail ) {
+						$send = add_metadata( 'post', $post_id, 'organisation_email_send', time() );
+					}
+				}
+			}
+		}
 	}
 
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 * @return  string
+	 *
+	 */
+	static public function organistion_check_url() {
+		global $post;
+
+		$hash = get_metadata( 'post', $post->ID, 'organisation_hash', true );
+		if ( $hash == '') {
+			$hash = wp_hash( 'organisation_hash' . time(). $post->ID.$post->post_title ) ;
+			add_metadata('post', $post->ID, 'organisation_hash', $hash );
+		}
+
+		return get_option( 'siteurl' ) . '/check_organisation/'.$hash ;
+	}
 
     /**
      *

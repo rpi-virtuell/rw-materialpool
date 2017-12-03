@@ -764,7 +764,7 @@ class Materialpool_Material {
 
         if ( is_404() ) {
             $uri = $_SERVER[ 'REQUEST_URI' ];
-            if ( strpos( $uri, '/material/') == 0 ) {
+            if ( strpos( $uri, '/material/') !== false ) {
                 // old_slug im Material suchen und ggf Umleiten
                 $query = $wpdb->prepare( "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = 'old_slug' and meta_value = %s",
                     $uri
@@ -778,7 +778,7 @@ class Materialpool_Material {
                     }
                 }
             }
-            if ( strpos( $uri, '/tagpage/') == 0 ) {
+            if ( strpos( $uri, '/tagpage/') !== false ) {
                 // old_slug im Material suchen und ggf Umleiten
                 $query = $wpdb->prepare( "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = 'old_slug' and meta_value = %s",
                     $uri
@@ -792,7 +792,7 @@ class Materialpool_Material {
                     }
                 }
             }
-	        if ( strpos( $uri, '/check_autor/') == 0 ) {
+	        if ( strpos( $uri, '/check_autor/') !== false ) {
                 $hash = substr( $uri, 13 );
 
 		        $result = $wpdb->get_var( $wpdb->prepare( "SELECT $wpdb->postmeta.post_id   FROM $wpdb->postmeta WHERE $wpdb->postmeta.meta_value = %s " , $hash ) );
@@ -801,6 +801,14 @@ class Materialpool_Material {
 		            wp_redirect( get_permalink( $result) );
 		            exit;
                 }
+	        }
+	        if ( strpos( $uri, '/check_organisation/') !== false ) {
+		        $hash = substr( $uri, 20 );
+		        $result = $wpdb->get_var( $wpdb->prepare( "SELECT $wpdb->postmeta.post_id   FROM $wpdb->postmeta WHERE $wpdb->postmeta.meta_value = %s " , $hash ) );
+		        if ( ! is_wp_error( $result) && $result !== false ) {
+			        add_metadata( 'post', $result, 'organisation_email_read', time() );
+			        wp_redirect( get_permalink( $result) );
+		        }
 	        }
         }
     }
