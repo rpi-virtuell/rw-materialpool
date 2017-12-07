@@ -829,3 +829,33 @@ jQuery(document).ready( function($) {
     });
 });
 
+jQuery(document).ready(function(){
+    jQuery(".mail_autor_send").click( function() {
+
+        var id = jQuery(this).data("id");
+        var data = {
+            'action': 'mp_send_autor_mail',
+            'id': id
+        };
+        jQuery.post(ajaxurl, data, function(response) {
+            ret = response;
+            jQuery('#autor_nachricht-' + id ).html( ret );
+        });
+    })
+});
+
+jQuery(document).ready(function(){
+    jQuery(".mail_organisation_send").click( function() {
+
+        var id = jQuery(this).data("id");
+        var data = {
+            'action': 'mp_send_organisation_mail',
+            'id': id
+        };
+        jQuery.post(ajaxurl, data, function(response) {
+            ret = response;
+            jQuery('#organisation_nachricht-' + id ).html( ret );
+        });
+    })
+});
+

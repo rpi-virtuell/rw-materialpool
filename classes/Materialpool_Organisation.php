@@ -230,23 +230,26 @@ class Materialpool_Organisation {
 		    $data = get_metadata( 'post', $post_id, 'organisation_email', true );
 	    }
 	    if ( $column_name == 'organisation_nachricht' ) {
+		    $data = "<div id='organisation_nachricht-". $post_id ."'>";
 		    $email = get_metadata( 'post', $post_id, 'organisation_email', true );
 		    if ( $email == '' ) {
-			    $data = '<div style="color: red;">Keine Email hinterlegt</div>';
+			    $data .= '<div style="color: red;">Keine Email hinterlegt</div>';
 		    } else {
 			    $send = get_metadata( 'post', $post_id, 'organisation_email_send', true );
 			    $read = get_metadata( 'post', $post_id, 'organisation_email_read', true );
 
 			    if ( $send == '' ) {
-				    $data = '<div style="color: blue;">Nicht versendet</div>';
+				    $data .= '<div>Nicht versendet</div>';
+				    $data .= '<div class="row-actions"><span class="edit"><a style="cursor: pointer;" data-id="'. $post_id .'" class="mail_organisation_send">Mail versenden</a></span></div>';
 			    }
 			    if ( $send != '' && $read == '' ) {
-				    $data = '<div style="color: red;">Versendet, ungelesen</div>';
+				    $data .= '<div style="color: blue;">Versendet, ungelesen</div>';
 			    }
 			    if ( $send != '' && $read != '' ) {
-				    $data = '<div style="color: green;">Gelesen</div>';
+				    $data .= '<div style="color: green;">Gelesen</div>';
 			    }
 		    }
+		    $data .= "</div>";
 	    }
 
 
@@ -425,6 +428,21 @@ class Materialpool_Organisation {
 			FWP()->indexer->save_post( $post_id );
 		}
 
+		Materialpool_Organisation::send_mail( $post_id );
+
+	}
+
+
+	/**
+	 * @param $post_id
+	 * @access	public
+	 *
+	 */
+	static public function send_mail( $post_id = 0 ) {
+
+		$post_id = ( $post_id > 0 ) ? $post_id : $post->ID;
+
+
 		// generate Mail
 		$sendmail = get_option( 'einstellungen_organisationsmail_aktiv', 0 );
 		$email    = get_metadata( 'post', $post_id, 'organisation_email', true );
@@ -436,15 +454,16 @@ class Materialpool_Organisation {
 				if ( $subject && $content ) {
 					$content = str_replace( '%material_autor_name%', Materialpool_Autor::get_firstname() . ' ' . Materialpool_Autor::get_lastname(), $content );
 					$content = str_replace( '%materialpool_home%', get_option( 'siteurl' ), $content );
-					$content = str_replace( '%material_autor_url%', Materialpool_Autor::autor_check_url() , $content );
-					$content = str_replace( '%material_organisation_url%',  Materialpool_Organisation::organistion_check_url() , $content );
-					$content = str_replace( '%material_last_material%', Materialpool_Autor::last_material_name() , $content );
-					$content = str_replace( '%redakteur_name%', Materialpool_Autor::redaktuer_name() , $content );
-					$content = str_replace( '%redakteur_reply_email%', 'redaktion@rpi-virtuell.de' , $content ); //  Materialpool_Autor::redakteur_email() , $content );
+					$content = str_replace( '%material_autor_url%', Materialpool_Autor::autor_check_url(), $content );
+					$content = str_replace( '%material_organisation_url%', Materialpool_Organisation::organistion_check_url(), $content );
+					$content = str_replace( '%material_last_material%', Materialpool_Autor::last_material_name(), $content );
+					$content = str_replace( '%redakteur_name%', Materialpool_Autor::redaktuer_name(), $content );
+					$content = str_replace( '%redakteur_reply_email%', 'redaktion@rpi-virtuell.de', $content ); //  Materialpool_Autor::redakteur_email() , $content );
 
 					$headers[] = 'From: Redaktion rpi-virtuell <redaktion@rpi-virtuell.de>';
 					$headers[] = 'Reply-To: Redaktion rpi-virtuell <redaktion@rpi-virtuell.de>';
-					$mail = wp_mail( $email, $subject, $content , $headers );
+					$headers[] = 'bcc: material@rpi-virtuell.de';
+					$mail      = wp_mail( $email, $subject, $content, $headers );
 					if ( $mail ) {
 						$send = add_metadata( 'post', $post_id, 'organisation_email_send', time() );
 					}
@@ -453,7 +472,8 @@ class Materialpool_Organisation {
 		}
 	}
 
-	/**
+
+/**
 	 *
 	 * @since 0.0.1
 	 * @access	public

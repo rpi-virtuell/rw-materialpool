@@ -281,6 +281,8 @@ class Materialpool {
         add_action( 'wp_ajax_mp_remove_thema',  array( 'Materialpool', 'my_action_callback_mp_remove_thema' ) );
         add_action( 'wp_ajax_mp_remove_thema_backend',  array( 'Materialpool', 'my_action_callback_mp_remove_thema_backend' ) );
         add_action( 'wp_ajax_mp_list_thema_backend',  array( 'Materialpool', 'my_action_callback_mp_list_thema_backend' ) );
+		add_action( 'wp_ajax_mp_send_autor_mail',  array( 'Materialpool', 'my_action_callback_mp_send_autor_mail' ) );
+		add_action( 'wp_ajax_mp_send_organisation_mail',  array( 'Materialpool', 'my_action_callback_mp_send_organisation_mail' ) );
         add_action( 'wp_ajax_nopriv_mp_add_proposal',  array( 'Materialpool', 'my_action_callback_mp_add_proposal' ) );
         add_action( 'wp_ajax_mp_add_proposal',  array( 'Materialpool', 'my_action_callback_mp_add_proposal' ) );
         add_action( 'wp_ajax_convert2material',  array( 'Materialpool', 'my_action_callback_convert2material' ) );
@@ -555,8 +557,72 @@ class Materialpool {
     }
 
 
+	/**
+	 *
+	 * @since   0.0.1
+	 * @access  public
+	 */
+	public static function my_action_callback_mp_send_autor_mail() {
+		$id = (int) $_POST['id'];
+		Materialpool_Autor::send_mail( $id );
 
-    /**
+		$email = get_metadata( 'post', $id, 'autor_email', true );
+		if ( $email == '' ) {
+			$data = '<div style="color: red;">Keine Email hinterlegt</div>';
+		} else {
+			$send = get_metadata( 'post', $id, 'autor_email_send', true );
+			$read = get_metadata( 'post', $id, 'autor_email_read', true );
+
+			if ( $send == '' ) {
+				$data = '<div>Nicht versendet</div>';
+				$data .= '<div class="row-actions"><span class="edit"><a  style="cursor: pointer;" data-id="'. $id .'" class="mail_autor_send">Mail versenden</a></span></div>';
+			}
+			if ( $send != '' && $read == '' ) {
+				$data = '<div style="color: blue;">Versendet, ungelesen</div>';
+			}
+			if ( $send != '' && $read != '' ) {
+				$data = '<div style="color: green;">Gelesen</div>';
+			}
+
+		}
+
+		echo  $data;
+		wp_die();
+	}
+
+	/**
+	 *
+	 * @since   0.0.1
+	 * @access  public
+	 */
+	public static function my_action_callback_mp_send_organisation_mail() {
+		$id = (int) $_POST['id'];
+		Materialpool_Organisation::send_mail( $id );
+
+		$email = get_metadata( 'post', $id, 'organisation_email', true );
+		if ( $email == '' ) {
+			$data = '<div style="color: red;">Keine Email hinterlegt</div>';
+		} else {
+			$send = get_metadata( 'post', $id, 'organisation_email_send', true );
+			$read = get_metadata( 'post', $id, 'organisation_email_read', true );
+
+			if ( $send == '' ) {
+				$data = '<div>Nicht versendet</div>';
+				$data .= '<div class="row-actions"><span class="edit"><a style="cursor: pointer;" data-id="'. $id .'" class="mail_organisation_send">Mail versenden</a></span></div>';
+			}
+			if ( $send != '' && $read == '' ) {
+				$data = '<div style="color: blue;">Versendet, ungelesen</div>';
+			}
+			if ( $send != '' && $read != '' ) {
+				$data = '<div style="color: green;">Gelesen</div>';
+			}
+		}
+
+		echo  $data;
+		wp_die();
+	}
+
+	/**
      *
      * @since   0.0.1
      * @access  public

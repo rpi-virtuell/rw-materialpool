@@ -242,23 +242,27 @@ class Materialpool_Autor {
 			$data = get_metadata( 'post', $post_id, 'autor_email', true );
 		}
 		if ( $column_name == 'autor_nachricht' ) {
+			$data = "<div id='autor_nachricht-". $post_id ."'>";
 			$email = get_metadata( 'post', $post_id, 'autor_email', true );
 			if ( $email == '' ) {
-				$data = '<div style="color: red;">Keine Email hinterlegt</div>';
+				$data .= '<div style="color: red;">Keine Email hinterlegt</div>';
 			} else {
 				$send = get_metadata( 'post', $post_id, 'autor_email_send', true );
 				$read = get_metadata( 'post', $post_id, 'autor_email_read', true );
 
 				if ( $send == '' ) {
-					$data = '<div style="color: blue;">Nicht versendet</div>';
+					$data .= '<div>Nicht versendet</div>';
+					$data .= '<div class="row-actions"><span class="edit"><a  style="cursor: pointer;" data-id="'. $post_id .'" class="mail_autor_send">Mail versenden</a></span></div>';
 				}
 				if ( $send != '' && $read == '' ) {
-					$data = '<div style="color: red;">Versendet, ungelesen</div>';
+					$data .= '<div style="color: blue;">Versendet, ungelesen</div>';
 				}
 				if ( $send != '' && $read != '' ) {
-					$data = '<div style="color: green;">Gelesen</div>';
+					$data .= '<div style="color: green;">Gelesen</div>';
 				}
+
 			}
+			$data .= "</div>";
 		}
 
 		if ( $column_name == 'autor_organisation' ) {
@@ -429,6 +433,20 @@ class Materialpool_Autor {
 			FWP()->indexer->save_post( $post_id );
 		}
 
+		Materialpool_Autor::send_mail( $post_id );
+	}
+
+
+	/**
+	 * @param $post_id
+	 * @access	public
+	 *
+	 */
+	static public function send_mail( $post_id = 0 ) {
+		global $post;
+
+		$post_id = ( $post_id > 0 ) ? $post_id : $post->ID;
+
 		// generate Mail
 		$sendmail = get_option( 'einstellungen_autorenmail_aktiv', 0 );
 		$email    = get_metadata( 'post', $post_id, 'autor_email', true );
@@ -449,6 +467,7 @@ class Materialpool_Autor {
 
 					$headers[] = 'From: Redaktion rpi-virtuell <redaktion@rpi-virtuell.de>';
 					$headers[] = 'Reply-To: Redaktion rpi-virtuell <redaktion@rpi-virtuell.de>';
+					$headers[] = 'bcc: material@rpi-virtuell.de';
 					$mail = wp_mail( $email, $subject, $content , $headers );
 					if ( $mail ) {
 						$send = add_metadata( 'post', $post_id, 'autor_email_send', time() );
@@ -457,7 +476,6 @@ class Materialpool_Autor {
 			}
 		}
 	}
-
 
 	/**
 	 *
