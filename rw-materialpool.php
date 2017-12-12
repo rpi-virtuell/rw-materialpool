@@ -298,6 +298,7 @@ class Materialpool {
             $facet_types['select2'] = new Materialpool_FacetWP_OldSearch();
             return $facet_types;
         });
+		add_filter( 'searchwp_posts_per_page', array( 'Materialpool', 'my_searchwp_posts_per_page' ), 99999, 4 );
 
         // Register ImportPlugin End Action
         add_action( 'import_end', array( 'Materialpool_Import_Check', 'check' ) );
@@ -313,6 +314,10 @@ class Materialpool {
         do_action( 'materialpool_init' );
 	}
 
+
+	public static function my_searchwp_posts_per_page( $posts_per_page, $engine, $terms, $page ) {
+		return 2000;
+	}
 
 	public static function exclude_entwurf( $qv ) {
         if (isset($qv['feed']) && $qv['post_type'] == 'material') {
