@@ -428,7 +428,6 @@ class Materialpool_Organisation {
 			FWP()->indexer->save_post( $post_id );
 		}
 
-		Materialpool_Organisation::send_mail( $post_id );
 
 	}
 

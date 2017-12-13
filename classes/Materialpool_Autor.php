@@ -433,7 +433,6 @@ class Materialpool_Autor {
 			FWP()->indexer->save_post( $post_id );
 		}
 
-		Materialpool_Autor::send_mail( $post_id );
 	}
 
 
