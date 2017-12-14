@@ -437,9 +437,9 @@ class Materialpool_Organisation {
 	 * @access	public
 	 *
 	 */
-	static public function send_mail( $post_id = 0 ) {
+	static public function send_mail( $post_id = false ) {
 
-		$post_id = ( $post_id > 0 ) ? $post_id : $post->ID;
+		if ( $post_id === false ) return false;
 
 
 		// generate Mail
@@ -451,12 +451,12 @@ class Materialpool_Organisation {
 				$subject = get_option( 'einstellungen_organisation_mail_subject', false );
 				$content = get_option( 'einstellungen_organisationsmail_content', false );
 				if ( $subject && $content ) {
-					$content = str_replace( '%material_autor_name%', Materialpool_Autor::get_firstname() . ' ' . Materialpool_Autor::get_lastname(), $content );
+					$content = str_replace( '%material_autor_name%', Materialpool_Autor::get_firstname($post_id) . ' ' . Materialpool_Autor::get_lastname($post_id), $content );
 					$content = str_replace( '%materialpool_home%', get_option( 'siteurl' ), $content );
-					$content = str_replace( '%material_autor_url%', Materialpool_Autor::autor_check_url(), $content );
-					$content = str_replace( '%material_organisation_url%', Materialpool_Organisation::organistion_check_url(), $content );
-					$content = str_replace( '%material_last_material%', Materialpool_Autor::last_material_name(), $content );
-					$content = str_replace( '%redakteur_name%', Materialpool_Autor::redaktuer_name(), $content );
+					$content = str_replace( '%material_autor_url%', Materialpool_Autor::autor_check_url($post_id), $content );
+					$content = str_replace( '%material_organisation_url%', Materialpool_Organisation::organistion_check_url($post_id), $content );
+					$content = str_replace( '%material_last_material%', Materialpool_Autor::last_material_name($post_id), $content );
+					$content = str_replace( '%redakteur_name%', Materialpool_Autor::redaktuer_name($post_id), $content );
 					$content = str_replace( '%redakteur_reply_email%', 'redaktion@rpi-virtuell.de', $content ); //  Materialpool_Autor::redakteur_email() , $content );
 
 					$headers[] = 'From: Redaktion rpi-virtuell <redaktion@rpi-virtuell.de>';
@@ -479,13 +479,13 @@ class Materialpool_Organisation {
 	 * @return  string
 	 *
 	 */
-	static public function organistion_check_url() {
+	static public function organistion_check_url($id = 0 ) {
 		global $post;
-
-		$hash = get_metadata( 'post', $post->ID, 'organisation_hash', true );
+		$id = ($id>0)?$id:$post->ID;
+		$hash = get_metadata( 'post', $id, 'organisation_hash', true );
 		if ( $hash == '') {
-			$hash = wp_hash( 'organisation_hash' . time(). $post->ID.$post->post_title ) ;
-			add_metadata('post', $post->ID, 'organisation_hash', $hash );
+			$hash = wp_hash( 'organisation_hash' . time(). $id ) ;
+			add_metadata('post', $id, 'organisation_hash', $hash );
 		}
 
 		return get_option( 'siteurl' ) . '/check_organisation/'.$hash ;
