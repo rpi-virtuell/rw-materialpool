@@ -441,10 +441,10 @@ class Materialpool_Autor {
 	 * @access	public
 	 *
 	 */
-	static public function send_mail( $post_id = 0 ) {
-		global $post;
+	static public function send_mail( $post_id = false ) {
 
-		$post_id = ( $post_id > 0 ) ? $post_id : $post->ID;
+		if ( $post_id === false ) return false;
+
 
 		// generate Mail
 		$sendmail = get_option( 'einstellungen_autorenmail_aktiv', 0 );
@@ -456,13 +456,15 @@ class Materialpool_Autor {
 				$subject = get_option( 'einstellungen_autorenmail_subject', false );
 				$content = get_option( 'einstellungen_autorenmail_content', false );
 				if ( $subject && $content ) {
-					$content = str_replace( '%material_autor_name%', Materialpool_Autor::get_firstname() . ' ' . Materialpool_Autor::get_lastname(), $content );
+					$content = str_replace( '%material_autor_name%', Materialpool_Autor::get_firstname($post_id)  . ' ' . Materialpool_Autor::get_lastname($post_id ), $content );
 					$content = str_replace( '%materialpool_home%', get_option( 'siteurl' ), $content );
-					$content = str_replace( '%material_autor_url%', Materialpool_Autor::autor_check_url() , $content );
+					$content = str_replace( '%material_autor_url%', Materialpool_Autor::autor_check_url( $post_id ) , $content );
 
-					$content = str_replace( '%material_last_material%', Materialpool_Autor::last_material_name() , $content );
-					$content = str_replace( '%redakteur_name%', Materialpool_Autor::redaktuer_name() , $content );
+					$content = str_replace( '%material_last_material%', Materialpool_Autor::last_material_name( $post_id ) , $content );
+					$content = str_replace( '%redakteur_name%', Materialpool_Autor::redaktuer_name($post_id ) , $content );
 					$content = str_replace( '%redakteur_reply_email%',  'redaktion@rpi-virtuell.de'  , $content ); //Materialpool_Autor::redakteur_email() , $content );
+
+					$content .= " id ist : " . $post_id ;
 
 					$headers[] = 'From: Redaktion rpi-virtuell <redaktion@rpi-virtuell.de>';
 					$headers[] = 'Reply-To: Redaktion rpi-virtuell <redaktion@rpi-virtuell.de>';
@@ -483,11 +485,11 @@ class Materialpool_Autor {
 	 * @return  string
 	 *
 	 */
-	static public function last_material_name() {
+	static public function last_material_name( $id = 0 ) {
 		global $post;
 		global $wpdb;
-
-		$result = $wpdb->get_var( $wpdb->prepare( "SELECT $wpdb->posts.id  FROM $wpdb->posts, $wpdb->postmeta WHERE $wpdb->posts.id = $wpdb->postmeta.post_id AND  $wpdb->postmeta.meta_key = 'material_autoren' AND $wpdb->postmeta.meta_value = %s AND $wpdb->posts.post_status = 'publish' ORDER BY $wpdb->posts.post_date " , $post->ID ) );
+		$id = ($id>0)?$id:$post->ID;
+		$result = $wpdb->get_var( $wpdb->prepare( "SELECT $wpdb->posts.id  FROM $wpdb->posts, $wpdb->postmeta WHERE $wpdb->posts.id = $wpdb->postmeta.post_id AND  $wpdb->postmeta.meta_key = 'material_autoren' AND $wpdb->postmeta.meta_value = %s AND $wpdb->posts.post_status = 'publish' ORDER BY $wpdb->posts.post_date " , $id) );
 		if ( ! is_wp_error( $result) && $result !== false ) {
 			$material = get_post( $result);
 			return $material->post_title;
@@ -502,10 +504,12 @@ class Materialpool_Autor {
 	 * @return  string
 	 *
 	 */
-	static public function redaktuer_name() {
+	static public function redaktuer_name( $id = 0  ) {
 		global $post;
+		$id = ($id>0)?$id:$post->ID;
 
-		$user_id = $post->post_author;
+		$p = get_post( $id );
+		$user_id = $p->post_author;
 		$user = get_user_by( 'id', $user_id );
 		return $user->user_nicename;
 	}
@@ -517,10 +521,11 @@ class Materialpool_Autor {
 	 * @return  string
 	 *
 	 */
-	static public function redakteur_email() {
+	static public function redakteur_email( $id = 0 ) {
 		global $post;
-
-		$user_id = $post->post_author;
+		$id = ($id>0)?$id:$post->ID;
+		$p = get_post( $id );
+		$user_id = $p->post_author;
 		$user = get_user_by( 'id', $user_id );
 		return $user->user_email;
 	}
@@ -534,25 +539,26 @@ class Materialpool_Autor {
 	 * @return  string
 	 *
 	 */
-	static public function autor_check_url() {
+	static public function autor_check_url( $id = 0 ) {
 		global $post;
-
-		$hash = get_metadata( 'post', $post->ID, 'autor_hash', true );
+		$id = ($id>0)?$id:$post->ID;
+		$hash = get_metadata( 'post', $id, 'autor_hash', true );
 		if ( $hash == '') {
-			$hash = wp_hash( 'autor_hash' . time(). $post->ID.$post->post_title ) ;
-			add_metadata('post', $post->ID, 'autor_hash', $hash );
+			$hash = wp_hash( 'autor_hash' . time(). $id ) ;
+			add_metadata('post', $id, 'autor_hash', $hash );
 		}
 
 		return get_option( 'siteurl' ) . '/check_autor/'.$hash ;
 	}
+
     /**
      *
      * @since 0.0.1
      * @access	public
      *
      */
-    static public function firstname() {
-        echo Materialpool_Autor::get_firstname();
+    static public function firstname( $id = 0 ) {
+        echo Materialpool_Autor::get_firstname( $id );
     }
 
     /**
@@ -561,10 +567,11 @@ class Materialpool_Autor {
      * @access	public
      *
      */
-    static public function get_firstname() {
+    static public function get_firstname( $id = 0 ) {
         global $post;
+	    $id = ($id>0)?$id:$post->ID;
 
-        return get_metadata( 'post', $post->ID, 'autor_vorname', true );
+        return get_metadata( 'post', $id, 'autor_vorname', true );
     }
 
     /**
@@ -573,8 +580,8 @@ class Materialpool_Autor {
      * @access	public
      *
      */
-    static public function lastname() {
-        echo Materialpool_Autor::get_lastname();
+    static public function lastname( $id = 0  ) {
+        echo Materialpool_Autor::get_lastname( $id );
     }
 
     /**
@@ -583,10 +590,10 @@ class Materialpool_Autor {
      * @access	public
      *
      */
-    static public function get_lastname() {
+    static public function get_lastname(  $id = 0) {
         global $post;
-
-        return get_metadata( 'post', $post->ID, 'autor_nachname', true );
+	    $id = ($id>0)?$id:$post->ID;
+        return get_metadata( 'post', $id, 'autor_nachname', true );
     }
 
     /**
@@ -595,8 +602,8 @@ class Materialpool_Autor {
      * @access	public
      *
      */
-    static public function url() {
-        echo Materialpool_Autor::get_url();
+    static public function url( $id = 0) {
+        echo Materialpool_Autor::get_url( $id  );
     }
 
     /**
@@ -605,8 +612,8 @@ class Materialpool_Autor {
      * @access	public
      * @filters materialpool-template-autor-url
      */
-    static public function url_html() {
-        $url = Materialpool_Autor::get_url();
+    static public function url_html( $id = 0) {
+        $url = Materialpool_Autor::get_url( $id );
         echo '<a href="' . $url . '" class="'. apply_filters( '', 'materialpool-template-autor-url' ) .'">' . $url . '</a>';
     }
 
@@ -616,10 +623,10 @@ class Materialpool_Autor {
      * @access	public
      *
      */
-    static public function get_url() {
+    static public function get_url( $id = 0 ) {
         global $post;
-
-        return get_metadata( 'post', $post->ID, 'autor_url', true );
+		$id = ($id>0)?$id:$post->ID;
+        return get_metadata( 'post', $id, 'autor_url', true );
     }
 
     /**
