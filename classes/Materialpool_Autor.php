@@ -463,8 +463,7 @@ class Materialpool_Autor {
 					$content = str_replace( '%material_last_material%', Materialpool_Autor::last_material_name( $post_id ) , $content );
 					$content = str_replace( '%redakteur_name%', Materialpool_Autor::redaktuer_name($post_id ) , $content );
 					$content = str_replace( '%redakteur_reply_email%',  'redaktion@rpi-virtuell.de'  , $content ); //Materialpool_Autor::redakteur_email() , $content );
-
-					$content .= " id ist : " . $post_id ;
+					
 
 					$headers[] = 'From: Redaktion rpi-virtuell <redaktion@rpi-virtuell.de>';
 					$headers[] = 'Reply-To: Redaktion rpi-virtuell <redaktion@rpi-virtuell.de>';
