@@ -15,19 +15,22 @@
  * @todo Zuordnungen im Backend Pflegbar
  */
 
-jQuery(document).ready(function(){
+
+jQuery(window).on('load', function() {
     var url = document.URL;
     if ( url.indexOf( 'post-new.php?post_type=material') !== -1 ) {
-        // set verfuegbarkeit
-        jQuery("#pods-form-ui-pods-meta-material-verfuegbarkeit").val("51");
 
-        // set sprache
-        jQuery(".pods-form-ui-field-name-pods-meta-material-sprache").each( function() {
+        // Sprache
+        jQuery( "input[name^='pods_meta_material_sprache']" ).each(function(){
             if ( jQuery(this).val() == 4 ) {
                 // checkbox deutsch
                 jQuery(this).attr('checked', true);
             }
-        })
+        });
+
+        // set verfuegbarkeit
+        jQuery("#pods-form-ui-pods-meta-material-verfuegbarkeit").val("51");
+
     }
 });
 
@@ -38,8 +41,8 @@ jQuery(document).ready(function(){
  * @todo Zuordnungen im Backend Pflegbar
  */
 
-jQuery(document).ready(function(){
-    jQuery(".pods-form-ui-field-name-pods-meta-material-bildungsstufe").click( function() {
+jQuery(window).on('load', function() {
+    jQuery("input[name^='pods_meta_material_bildungsstufe']").click( function() {
         switch ( jQuery(this).val() ) {
             case "7":    // Elementarbereich
                 set_altersstufe( 37 ); // 1-5
@@ -81,7 +84,7 @@ jQuery(document).ready(function(){
 
 
 function set_altersstufe( id ) {
-    jQuery(".pods-form-ui-field-name-pods-meta-material-altersstufe").each( function() {
+    jQuery("input[name^='pods_meta_material_altersstufe']").each( function() {
         if ( jQuery(this).val() == id ) {
             jQuery(this).attr('checked', true);
         }
@@ -186,7 +189,24 @@ jQuery(document).ready(function(){
  * MaterialEdit Schlagworte
  */
 
-jQuery(document).ready(function(){
+jQuery(window).on('load', function() {
+    jQuery('.pods-form-ui-row-name-material-schlagworte').on('DOMSubtreeModified', function(event) {
+        jQuery(".pods-form-ui-row-name-material-schlagworte > td > div > div > div >span >span > span > ul > li ").each(function() {
+            alert( jQuery(this).text() );
+            //var list = $(this).find('li span');
+
+        });
+
+        // checkselect options
+        jQuery("#pods-form-ui-pods-meta-material-schlagworte > option").each(function() {
+            //alert(this.text + ' ' + this.value);
+        });
+    });
+
+    return;
+
+
+
     jQuery('#pods-form-ui-pods-meta-material-schlagworte').on('change', function(){
         var keystring = jQuery('#pods-form-ui-pods-meta-material-schlagworte').val();
         var keys = keystring.split(',');
@@ -206,34 +226,34 @@ jQuery(document).ready(function(){
                         jo = JSON.parse( html );
                         switch  ( jo.status ) {
                             case 'replace-new':
-                                    keys.forEach( function( s2, i2, o2 ) {
-                                        if ( s2 ==  jo.orig) {
-                                            keys[ i2 ] = jo.id;
+                                keys.forEach( function( s2, i2, o2 ) {
+                                    if ( s2 ==  jo.orig) {
+                                        keys[ i2 ] = jo.id;
 
-                                        }
-                                    })
-                                    jQuery('#pods-form-ui-pods-meta-material-schlagworte').val( keys.toString()  );
-                                    jQuery('#s2id_pods-form-ui-pods-meta-material-schlagworte > ul > li').each( function () {
-                                        old = jQuery(this).find('div').html();
-                                        if ( old == jo.orig ) {
-                                            jQuery(this).find('div').html( jo.name );
-                                        }
-                                    })
+                                    }
+                                })
+                                jQuery('#pods-form-ui-pods-meta-material-schlagworte').val( keys.toString()  );
+                                jQuery('#s2id_pods-form-ui-pods-meta-material-schlagworte > ul > li').each( function () {
+                                    old = jQuery(this).find('div').html();
+                                    if ( old == jo.orig ) {
+                                        jQuery(this).find('div').html( jo.name );
+                                    }
+                                })
                                 break;
                             case 'replace-exist':
-                                    keys.forEach( function( s2, i2, o2 ) {
-                                        if ( s2 ==  jo.orig) {
-                                            keys[ i2 ] = jo.id;
+                                keys.forEach( function( s2, i2, o2 ) {
+                                    if ( s2 ==  jo.orig) {
+                                        keys[ i2 ] = jo.id;
 
-                                        }
-                                    })
-                                    jQuery('#pods-form-ui-pods-meta-material-schlagworte').val( keys.toString()  );
-                                    jQuery('#s2id_pods-form-ui-pods-meta-material-schlagworte > ul > li').each( function () {
-                                        old = jQuery(this).find('div').html();
-                                        if ( old == jo.orig ) {
-                                            jQuery(this).find('div').html( jo.name );
-                                        }
-                                    })
+                                    }
+                                })
+                                jQuery('#pods-form-ui-pods-meta-material-schlagworte').val( keys.toString()  );
+                                jQuery('#s2id_pods-form-ui-pods-meta-material-schlagworte > ul > li').each( function () {
+                                    old = jQuery(this).find('div').html();
+                                    if ( old == jo.orig ) {
+                                        jQuery(this).find('div').html( jo.name );
+                                    }
+                                })
 
                                 break;
                             case 'error' :
@@ -646,7 +666,7 @@ jQuery(document).ready(function(){
  */
 
 jQuery(document).ready(function(){
-        jQuery('body').on('change', '.uncheck_themenseite', function() {
+    jQuery('body').on('change', '.uncheck_themenseite', function() {
         // Data Read
         var gruppe = jQuery(this).data("gruppe");
         var post = jQuery(this).data("post");
@@ -706,6 +726,7 @@ jQuery(document).ready(function(){
 
 
 function check_material() {
+
     jQuery("#mppubinfo").empty();
     var text;
     // URL prüfen
@@ -725,16 +746,58 @@ function check_material() {
     if ( text == '' ) {
         jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Beschreibung nicht angegeben.</div>");
     }
+
+
     // Schlagworte prüfen
-    if ( jQuery("#pods-form-ui-pods-meta-material-schlagworte").val() == ''  ) {
+    var schlagworte  = '';
+    jQuery("tr.pods-form-ui-row-name-material-schlagworte > td > div > div > div >span > span > span > ul > li ").each(function() {
+        var temp;
+        var classname;
+        classname = jQuery(this).attr("class" );
+        temp = jQuery(this).attr("title" );
+        if ( typeof temp !== "undefined"  && ( classname == "select2-selection__choice ui-sortable-handle" || classname == "select2-selection__choice" ) )  {
+            schlagworte = schlagworte + temp;
+        }
+    })
+    if ( schlagworte !== "undefined" && schlagworte == '' ) {
         jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Keine Schlagworte vergeben.</div>");
     }
+
     // Bildungsstufen prüfen
-    if ( jQuery(".pods-form-ui-field-name-pods-meta-material-bildungsstufe:checked").length == 0 ) {
+    var bildungsstufe = '';
+    jQuery("input[data-label]").each(function(){
+        var label = jQuery(this).data('label');
+        var temp;
+        if ( label == "Bildungsstufe" ) {
+            if ( jQuery(this ).is(':checked') )
+            {
+                temp = jQuery(this).val();
+                if ( typeof temp !== "undefined" ) {
+                    bildungsstufe = bildungsstufe + temp;
+                }
+            }
+        }
+    })
+    if ( bildungsstufe !== "undefined" && bildungsstufe == '' ) {
         jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Keine Bildungsstufe gewählt.</div>");
     }
+
     // Medientyp prüfen
-    if ( jQuery(".pods-form-ui-field-name-pods-meta-material-medientyp:checked").length == 0 ) {
+    var medientyp = '';
+    jQuery("input[data-label]").each(function(){
+        var label = jQuery(this).data('label');
+        var temp;
+        if ( label == "Medientyp" ) {
+            if ( jQuery(this ).is(':checked') )
+            {
+                temp = jQuery(this).val();
+                if ( typeof temp !== "undefined" ) {
+                    medientyp = medientyp + temp;
+                }
+            }
+        }
+    })
+    if ( medientyp !== "undefined" && medientyp == '' ) {
         jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Kein Medientyp gewählt.</div>");
     }
 
@@ -790,7 +853,7 @@ jQuery(document).ready(function(){
  */
 
 jQuery(document).ready( function($) {
-     jQuery("#inline-edit-col-center").each(function (i) {
+    jQuery("#inline-edit-col-center").each(function (i) {
 
         $(this).parent().remove();
     });
@@ -819,11 +882,11 @@ jQuery(document).ready( function($) {
     $('span:contains("Zugänglichkeiten")').each(function (i) {
         $(this).parent().remove();
     });
-/*
-    jQuery('#the-list span:contains("Bildungsstufen")').each(function (i) {
-        $(this).parent().parent().remove();
-    });
-*/
+    /*
+        jQuery('#the-list span:contains("Bildungsstufen")').each(function (i) {
+            $(this).parent().parent().remove();
+        });
+    */
     $('.inline-edit-date').each(function (i) {
         $(this).remove();
     });
@@ -857,5 +920,7 @@ jQuery(document).ready(function(){
             jQuery('#organisation_nachricht-' + id ).html( ret );
         });
     })
+
+
 });
 
