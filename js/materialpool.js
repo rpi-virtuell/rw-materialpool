@@ -276,6 +276,20 @@ jQuery(document).ready(function(){
             }
         })
 
+        // Synonyme aktualisieren in der Ansicht darunter
+        var synonyme = jQuery('#pods-form-ui-pods-meta-material-schlagworte').val();
+        var data = {
+            'action': 'mp_synonym_list',
+            'list': synonyme
+        };
+        jQuery.post(ajaxurl, data, function(response ) {
+            html = response;
+
+            jQuery('#pods_synonymlist').replaceWith( html );
+
+        });
+
+
     });
 
 

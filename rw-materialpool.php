@@ -276,6 +276,7 @@ class Materialpool {
 
         pods_register_field_type( 'screenshot', self::$plugin_base_dir . 'classes/Materialpool_Pods_Screenshot.php' );
         pods_register_field_type( 'facette', self::$plugin_base_dir . 'classes/Materialpool_Pods_Facette.php' );
+		pods_register_field_type( 'synonymlist', self::$plugin_base_dir . 'classes/Materialpool_Pods_Synonymlist.php' );
 
         add_action( 'wp_ajax_mp_get_html',  array( 'Materialpool', 'my_action_callback_mp_get_html' ) );
         add_action( 'wp_ajax_mp_get_description',  array( 'Materialpool', 'my_action_callback_mp_get_description' ) );
@@ -290,6 +291,7 @@ class Materialpool {
 		add_action( 'wp_ajax_mp_send_organisation_mail',  array( 'Materialpool', 'my_action_callback_mp_send_organisation_mail' ) );
         add_action( 'wp_ajax_nopriv_mp_add_proposal',  array( 'Materialpool', 'my_action_callback_mp_add_proposal' ) );
         add_action( 'wp_ajax_mp_add_proposal',  array( 'Materialpool', 'my_action_callback_mp_add_proposal' ) );
+		add_action( 'wp_ajax_mp_synonym_list',  array( 'Materialpool', 'my_action_callback_mp_synonym_list' ) );
         add_action( 'wp_ajax_convert2material',  array( 'Materialpool', 'my_action_callback_convert2material' ) );
         add_filter( 'facetwp_api_can_access', function() { return true;} );
         add_action( 'wp_head', array( 'Materialpool',  'promote_feeds' ) );
@@ -420,6 +422,34 @@ class Materialpool {
         wp_die();
     }
 
+	/**
+	 *
+	 */
+	public static function my_action_callback_mp_synonym_list() {
+    	$liste = $_POST['list'];
+
+		$counter = 0;
+		$schlagworte = explode( ',', $liste );
+		foreach ($schlagworte as $schlagwort ) {
+			$term = get_term( $schlagwort , 'schlagwort' );
+			$posts = get_posts( array(
+				'post_type' => 'synonym',
+				'orderby' => 'post_title',
+				'post_status' => 'published',
+				'meta_key' => 'normwort',
+				'meta_value' => $term->slug,
+			));
+			foreach ( $posts as $post ) {
+				if ( $counter > 0 ) {
+					echo  ', ';
+				}
+				echo  $post->post_title;
+				$counter++;
+			}
+		}
+
+    	wp_die();
+    }
     /**
      * Load HTML from remote site
      *
@@ -1267,7 +1297,7 @@ function rw_mp_row_actions( $actions, $post )
 function materialpool_pods_material_metaboxes ( $type, $name ) {
     pods_group_add( 'material', __( 'Base', Materialpool::get_textdomain() ), 'material_url,material_no_viewer,material_special, material_titel,material_kurzbeschreibung,material_beschreibung,material_von_name,material_von_email' );
     pods_group_add( 'material', __( 'Owner', Materialpool::get_textdomain() ), 'material_autoren,material_autor_interim,material_organisation,material_organisation_interim' );
-    pods_group_add( 'material', __( 'Meta', Materialpool::get_textdomain() ), 'material_schlagworte,material_schlagworte_interim,material_bildungsstufe,material_altersstufe,material_medientyp,material_sprache' );
+    pods_group_add( 'material', __( 'Meta', Materialpool::get_textdomain() ), 'material_schlagworte,schlagwortsynonyme, material_schlagworte_interim,material_bildungsstufe,material_altersstufe,material_medientyp,material_sprache' );
     pods_group_add( 'material', __( 'Advanced Meta', Materialpool::get_textdomain() ), 'material_inklusion,material_verfuegbarkeit,material_zugaenglichkeit,material_lizenz, material_werkzeug' );
     pods_group_add( 'material', __( 'Date', Materialpool::get_textdomain() ), 'material_veroeffentlichungsdatum,material_jahr, material_erstellungsdatum,material_depublizierungsdatum,material_wiedervorlagedatum' );
     pods_group_add( 'material', __( 'Relationships', Materialpool::get_textdomain() ), 'material_werk,material_band,material_verweise' );
