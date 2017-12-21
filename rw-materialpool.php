@@ -248,6 +248,11 @@ class Materialpool {
         add_filter( 'searchwp_extensions',          array( 'SearchWP_Materialpool_Synonyms', 'register' ), 10 );
         add_filter( 'searchwp_term_in',             array( 'SearchWP_Materialpool_Synonyms', 'find_synonyms' ), 10, 3 );
         add_filter( 'bulk_actions-edit-synonym', array( 'Materialpool_Synonyme','remove_from_bulk_actions' ) );
+		add_filter( 'posts_join', array( 'Materialpool_Synonyme', 'material_list_post_join' ) );
+		add_filter( 'posts_where', array( 'Materialpool_Synonyme', 'material_list_post_where' ) );
+		add_filter( 'posts_distinct', array( 'Materialpool_Synonyme', 'material_list_post_distinct' ) );
+
+
 
         // Add Filter & Actions for Themenseiten
         add_filter( 'template_include', array( 'Materialpool_Themenseite', 'load_template' ) );
