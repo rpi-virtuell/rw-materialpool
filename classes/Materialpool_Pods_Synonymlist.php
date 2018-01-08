@@ -107,21 +107,26 @@ class PodsField_Synonymlist extends PodsField {
 			$counter = 0;
 			$schlagworte = get_metadata( 'post', $post->ID, 'material_schlagworte', false );
 			foreach ($schlagworte as $schlagwort ) {
-				$term = get_term( $schlagwort[ 'term_id'], 'schlagwort' );
-				$posts = get_posts( array(
-					'post_type' => 'synonym',
-					'orderby' => 'post_title',
-					'post_status' => 'published',
-					'meta_key' => 'normwort',
-					'meta_value' => $term->slug,
-				));
-				foreach ( $posts as $post ) {
-					if ( $counter > 0 ) {
-						echo  ', ';
-					}
-					echo  $post->post_title;
-					$counter++;
-				}
+			    if ( $schlagwort !== false ) {
+                    $term = get_term( $schlagwort[ 'term_id'], 'schlagwort' );
+				    if ( ! is_wp_error( $term ) ) {
+					    $posts = get_posts( array(
+						    'post_type'   => 'synonym',
+						    'orderby'     => 'post_title',
+						    'post_status' => 'published',
+						    'meta_key'    => 'normwort',
+						    'meta_value'  => $term->name,
+                            'numberposts' => 0,
+					    ) );
+					    foreach ( $posts as $post ) {
+						    if ( $counter > 0 ) {
+							    echo ', ';
+						    }
+						    echo $post->post_title;
+						    $counter ++;
+					    }
+				    }
+                }
 			}
 			?>
 		</div>
