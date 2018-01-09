@@ -99,9 +99,9 @@ class PodsField_Screenshot extends PodsField {
 	 * @since 2.0
 	 */
 	public function input ( $name, $value = null, $options = null, $pod = null, $id = null ) {
-        global $post;
 
-        $screenshot = get_metadata( 'post', $post->ID, 'material_screenshot', true );
+        $screenshot = trim( get_metadata( 'post', $id, 'material_screenshot', true ) );
+
         ?>
         <div id="material-screenshot">
         <?php if( $screenshot != '' ) { ?>
@@ -111,7 +111,7 @@ class PodsField_Screenshot extends PodsField {
         <div id="generate-screenshot-container">
         <a class="button"  id="generate-screenshot">Screenshot erzeugen</a> <a class="button"  id="delete-screenshot">Screenshot löschen</a>
         </div>
-        <input id="pods-form-ui-pods-meta-material-screenshot"  name="pods_meta_material_screenshot"  value=" <?php if( $screenshot != '' ) { echo $screenshot; } ?>"  type="hidden">
+        <input id="pods-form-ui-pods-meta-material-screenshot"  name="pods_meta_material_screenshot"  value="<?php if( $screenshot != '' ) { echo $screenshot; } ?>"  type="hidden">
         <?php
 	}
 

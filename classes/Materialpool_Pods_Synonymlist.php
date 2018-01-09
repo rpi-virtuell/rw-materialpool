@@ -99,13 +99,12 @@ class PodsField_Synonymlist extends PodsField {
 	 * @since 2.0
 	 */
 	public function input ( $name, $value = null, $options = null, $pod = null, $id = null ) {
-		global $post;
 
 		?>
 		<div id="pods_synonymlist">
 			<?php
 			$counter = 0;
-			$schlagworte = get_metadata( 'post', $post->ID, 'material_schlagworte', false );
+			$schlagworte = get_metadata( 'post', $id, 'material_schlagworte', false );
 			foreach ($schlagworte as $schlagwort ) {
 			    if ( $schlagwort !== false ) {
                     $term = get_term( $schlagwort[ 'term_id'], 'schlagwort' );
