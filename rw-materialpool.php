@@ -14,7 +14,7 @@
  * Plugin URI:        https://github.com/rpi-virtuell/rw-materialpool
  * Description:       RPI Virtuell Materialpool
  * Version:           0.0.1
- * Author:            Frank Staude
+ * Author:            Frank Neumann-Staude
  * Author URI:        https://staude.net
  * License:           GNU General Public License v2
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.html
@@ -170,7 +170,8 @@ class Materialpool {
         add_filter( 'bulk_actions-edit-material', array( 'Materialpool_Material','remove_from_bulk_actions' ) );
 		add_action( 'wp_head', array( 'Materialpool_Material','add_open_graph' ) );
 		add_filter( 'parse_query',  array( 'Materialpool_Material','admin_posts_filter' ));
-
+		add_filter( 'query_vars', array( 'Materialpool_Material', 'rss_query_vars' ) );
+		add_action( 'pre_get_posts', array( 'Materialpool_Material',  'rss_pre_get_posts' ) );
 		//        remove_filter( 'pre_oembed_result',      'wp_filter_pre_oembed_result',    10 );
 		//        add_filter( 'pre_oembed_result',      array( 'Materialpool', 'wp_filter_pre_oembed_result' ),    10, 3 );
 
@@ -248,6 +249,11 @@ class Materialpool {
         add_filter( 'searchwp_extensions',          array( 'SearchWP_Materialpool_Synonyms', 'register' ), 10 );
         add_filter( 'searchwp_term_in',             array( 'SearchWP_Materialpool_Synonyms', 'find_synonyms' ), 10, 3 );
         add_filter( 'bulk_actions-edit-synonym', array( 'Materialpool_Synonyme','remove_from_bulk_actions' ) );
+		add_filter( 'posts_join', array( 'Materialpool_Synonyme', 'material_list_post_join' ) );
+		add_filter( 'posts_where', array( 'Materialpool_Synonyme', 'material_list_post_where' ) );
+		add_filter( 'posts_distinct', array( 'Materialpool_Synonyme', 'material_list_post_distinct' ) );
+
+
 
         // Add Filter & Actions for Themenseiten
         add_filter( 'template_include', array( 'Materialpool_Themenseite', 'load_template' ) );
@@ -257,11 +263,14 @@ class Materialpool {
 		add_action( 'manage_themenseite_posts_columns', array( 'Materialpool_Themenseite', 'cpt_list_head') );
 		add_action( 'manage_themenseite_posts_custom_column', array( 'Materialpool_Themenseite', 'cpt_list_column'), 10,2 );
 
+<<<<<<< HEAD
 
 		// Add Filter & Actions for Settingspage
         //add_action( 'admin_menu', array( 'Materialpool_Settings', 'options_page' ) );
         //add_action( 'admin_menu', array( 'Materialpool_Settings', 'settings_init' ) );
 
+=======
+>>>>>>> master
         // Add Filter  & Actions for Posts
         add_action( 'add_meta_boxes',  array( 'Materialpool_Posts', 'add_metaboxes' ) );
 
@@ -276,6 +285,7 @@ class Materialpool {
 
         pods_register_field_type( 'screenshot', self::$plugin_base_dir . 'classes/Materialpool_Pods_Screenshot.php' );
         pods_register_field_type( 'facette', self::$plugin_base_dir . 'classes/Materialpool_Pods_Facette.php' );
+		pods_register_field_type( 'synonymlist', self::$plugin_base_dir . 'classes/Materialpool_Pods_Synonymlist.php' );
 
         add_action( 'wp_ajax_mp_get_html',  array( 'Materialpool', 'my_action_callback_mp_get_html' ) );
         add_action( 'wp_ajax_mp_get_description',  array( 'Materialpool', 'my_action_callback_mp_get_description' ) );
@@ -286,8 +296,11 @@ class Materialpool {
         add_action( 'wp_ajax_mp_remove_thema',  array( 'Materialpool', 'my_action_callback_mp_remove_thema' ) );
         add_action( 'wp_ajax_mp_remove_thema_backend',  array( 'Materialpool', 'my_action_callback_mp_remove_thema_backend' ) );
         add_action( 'wp_ajax_mp_list_thema_backend',  array( 'Materialpool', 'my_action_callback_mp_list_thema_backend' ) );
+		add_action( 'wp_ajax_mp_send_autor_mail',  array( 'Materialpool', 'my_action_callback_mp_send_autor_mail' ) );
+		add_action( 'wp_ajax_mp_send_organisation_mail',  array( 'Materialpool', 'my_action_callback_mp_send_organisation_mail' ) );
         add_action( 'wp_ajax_nopriv_mp_add_proposal',  array( 'Materialpool', 'my_action_callback_mp_add_proposal' ) );
         add_action( 'wp_ajax_mp_add_proposal',  array( 'Materialpool', 'my_action_callback_mp_add_proposal' ) );
+		add_action( 'wp_ajax_mp_synonym_list',  array( 'Materialpool', 'my_action_callback_mp_synonym_list' ) );
         add_action( 'wp_ajax_convert2material',  array( 'Materialpool', 'my_action_callback_convert2material' ) );
         add_filter( 'facetwp_api_can_access', function() { return true;} );
         add_action( 'wp_head', array( 'Materialpool',  'promote_feeds' ) );
@@ -301,6 +314,7 @@ class Materialpool {
             $facet_types['select2'] = new Materialpool_FacetWP_OldSearch();
             return $facet_types;
         });
+		add_filter( 'searchwp_posts_per_page', array( 'Materialpool', 'my_searchwp_posts_per_page' ), 99999, 4 );
 
         // Register ImportPlugin End Action
         add_action( 'import_end', array( 'Materialpool_Import_Check', 'check' ) );
@@ -330,6 +344,10 @@ class Materialpool {
 		do_action( 'materialpool_init' );
 	}
 
+
+	public static function my_searchwp_posts_per_page( $posts_per_page, $engine, $terms, $page ) {
+		return 2000;
+	}
 
 	public static function exclude_entwurf( $qv ) {
         if (isset($qv['feed']) && $qv['post_type'] == 'material') {
@@ -427,6 +445,39 @@ class Materialpool {
         wp_die();
     }
 
+	/**
+	 *
+	 */
+	public static function my_action_callback_mp_synonym_list() {
+    	$liste = $_POST['list'];
+
+		$counter = 0;
+		$schlagworte = explode( ',', $liste );
+		foreach ($schlagworte as $schlagwort ) {
+			if ( $schlagwort !== false ) {
+				$term  = get_term( $schlagwort, 'schlagwort' );
+				if ( ! is_wp_error( $term ) ) {
+					$posts = get_posts( array(
+						'post_type'   => 'synonym',
+						'orderby'     => 'post_title',
+						'post_status' => 'published',
+						'meta_key'    => 'normwort',
+						'meta_value'  => $term->name,
+						'numberposts' => 0,
+					) );
+					foreach ( $posts as $post ) {
+						if ( $counter > 0 ) {
+							echo ', ';
+						}
+						echo $post->post_title;
+						$counter ++;
+					}
+				}
+			}
+		}
+
+    	wp_die();
+    }
     /**
      * Load HTML from remote site
      *
@@ -527,7 +578,7 @@ class Materialpool {
         $url =  esc_url_raw( $_POST['site'] ) ;
         $id =  (int) $_POST['post-id'];
 
-        $anzahl = $wpdb->get_col( $wpdb->prepare( "SELECT count( meta_id ) as anzahl  FROM  $wpdb->postmeta WHERE meta_key = %s and meta_value = %s and post_id != %d ", 'material_url', $url, $id) );
+        $anzahl = $wpdb->get_col( $wpdb->prepare( "SELECT count( meta_id ) as anzahl  FROM  $wpdb->postmeta pm. $wpdb->posts p  WHERE pm.meta_key = %s and pm.meta_value = %s and pm.post_id != %d  and pm.post_id= p.ID and p.post_status = 'publish' ", 'material_url', $url, $id) );
         if ( is_array( $anzahl ) && $anzahl[ 0 ] == 0 ) {
             $data = array(
                 'status' => "ok"
@@ -554,7 +605,9 @@ class Materialpool {
     public static function my_action_callback_mp_check_material_title() {
         global $wpdb;
         $title =  $_POST['title'];
-        $anzahl = $wpdb->get_col( $wpdb->prepare( "SELECT count( meta_id ) as anzahl  FROM  $wpdb->postmeta WHERE meta_key = %s and meta_value = %s", 'material_titel', $title) );
+	    $id =  (int) $_POST['post-id'];
+
+        $anzahl = $wpdb->get_col( $wpdb->prepare( "SELECT count( meta_id ) as anzahl  FROM  $wpdb->postmeta WHERE meta_key = %s and meta_value = %s and post_id != %d ", 'material_titel', $title, $id ) );
         if ( is_array( $anzahl ) && $anzahl[ 0 ] == 0 ) {
             $data = array(
                 'status' => "ok"
@@ -572,8 +625,72 @@ class Materialpool {
     }
 
 
+	/**
+	 *
+	 * @since   0.0.1
+	 * @access  public
+	 */
+	public static function my_action_callback_mp_send_autor_mail() {
+		$id = (int) $_POST['id'];
+		Materialpool_Autor::send_mail( $id );
 
-    /**
+		$email = get_metadata( 'post', $id, 'autor_email', true );
+		if ( $email == '' ) {
+			$data = '<div style="color: red;">Keine Email hinterlegt</div>';
+		} else {
+			$send = get_metadata( 'post', $id, 'autor_email_send', true );
+			$read = get_metadata( 'post', $id, 'autor_email_read', true );
+
+			if ( $send == '' ) {
+				$data = '<div>Nicht versendet</div>';
+				$data .= '<div class="row-actions"><span class="edit"><a  style="cursor: pointer;" data-id="'. $id .'" class="mail_autor_send">Mail versenden</a></span></div>';
+			}
+			if ( $send != '' && $read == '' ) {
+				$data = '<div style="color: blue;">Versendet, ungelesen</div>';
+			}
+			if ( $send != '' && $read != '' ) {
+				$data = '<div style="color: green;">Gelesen</div>';
+			}
+
+		}
+
+		echo  $data;
+		wp_die();
+	}
+
+	/**
+	 *
+	 * @since   0.0.1
+	 * @access  public
+	 */
+	public static function my_action_callback_mp_send_organisation_mail() {
+		$id = (int) $_POST['id'];
+		Materialpool_Organisation::send_mail( $id );
+
+		$email = get_metadata( 'post', $id, 'organisation_email', true );
+		if ( $email == '' ) {
+			$data = '<div style="color: red;">Keine Email hinterlegt</div>';
+		} else {
+			$send = get_metadata( 'post', $id, 'organisation_email_send', true );
+			$read = get_metadata( 'post', $id, 'organisation_email_read', true );
+
+			if ( $send == '' ) {
+				$data = '<div>Nicht versendet</div>';
+				$data .= '<div class="row-actions"><span class="edit"><a style="cursor: pointer;" data-id="'. $id .'" class="mail_organisation_send">Mail versenden</a></span></div>';
+			}
+			if ( $send != '' && $read == '' ) {
+				$data = '<div style="color: blue;">Versendet, ungelesen</div>';
+			}
+			if ( $send != '' && $read != '' ) {
+				$data = '<div style="color: green;">Gelesen</div>';
+			}
+		}
+
+		echo  $data;
+		wp_die();
+	}
+
+	/**
      *
      * @since   0.0.1
      * @access  public
@@ -848,7 +965,7 @@ class Materialpool {
             'material_url' => get_post_meta( $post_id, 'material_url', true ),
             'material_veroeffentlichungsdatum' => get_post_meta( $post_id, 'material_veroeffentlichungsdatum', true ),
             'material_verfuegbarkeit' => get_post_meta( $post_id, 'material_verfuegbarkeit', true ),
-
+            'old_slug' => get_post_meta( $post_id, 'old_slug', true ),
         );
 
         wp_delete_post($post_id );
@@ -1208,8 +1325,8 @@ function rw_mp_row_actions( $actions, $post )
 function materialpool_pods_material_metaboxes ( $type, $name ) {
     pods_group_add( 'material', __( 'Base', Materialpool::get_textdomain() ), 'material_url,material_no_viewer,material_special, material_titel,material_kurzbeschreibung,material_beschreibung,material_von_name,material_von_email' );
     pods_group_add( 'material', __( 'Owner', Materialpool::get_textdomain() ), 'material_autoren,material_autor_interim,material_organisation,material_organisation_interim' );
-    pods_group_add( 'material', __( 'Meta', Materialpool::get_textdomain() ), 'material_schlagworte,material_schlagworte_interim,material_bildungsstufe,material_altersstufe,material_medientyp,material_sprache' );
-    pods_group_add( 'material', __( 'Advanced Meta', Materialpool::get_textdomain() ), 'material_inklusion,material_verfuegbarkeit,material_zugaenglichkeit,material_lizenz' );
+    pods_group_add( 'material', __( 'Meta', Materialpool::get_textdomain() ), 'material_schlagworte,schlagwortsynonyme, material_schlagworte_interim,material_bildungsstufe,material_altersstufe,material_medientyp,material_sprache' );
+    pods_group_add( 'material', __( 'Advanced Meta', Materialpool::get_textdomain() ), 'material_inklusion,material_verfuegbarkeit,material_zugaenglichkeit,material_lizenz, material_werkzeug' );
     pods_group_add( 'material', __( 'Date', Materialpool::get_textdomain() ), 'material_veroeffentlichungsdatum,material_jahr, material_erstellungsdatum,material_depublizierungsdatum,material_wiedervorlagedatum' );
     pods_group_add( 'material', __( 'Relationships', Materialpool::get_textdomain() ), 'material_werk,material_band,material_verweise' );
     pods_group_add( 'material', __( 'Image', Materialpool::get_textdomain() ), 'material_cover,material_cover_url,material_cover_quelle,material_screenshot' );

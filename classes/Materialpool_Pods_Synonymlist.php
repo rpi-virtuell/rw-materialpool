@@ -1,6 +1,6 @@
 <?php
 
-class PodsField_Screenshot extends PodsField {
+class PodsField_Synonymlist extends PodsField {
 
 	/**
 	 * Field Type Group
@@ -16,7 +16,7 @@ class PodsField_Screenshot extends PodsField {
 	 * @var string
 	 * @since 2.0
 	 */
-	public static $type = 'screenshot';
+	public static $type = 'synonymlist';
 
 	/**
 	 * Field Type Label
@@ -24,7 +24,7 @@ class PodsField_Screenshot extends PodsField {
 	 * @var string
 	 * @since 2.0
 	 */
-	public static $label = 'Screenshot';
+	public static $label = 'Synonymlist';
 
 	/**
 	 * Field Type Preparation
@@ -65,7 +65,7 @@ class PodsField_Screenshot extends PodsField {
 	 * @since 2.0
 	 */
 	public function schema ( $options = null ) {
- 		$schema = 'LONGTEXT';
+		$schema = 'LONGTEXT';
 		return $schema;
 	}
 
@@ -100,19 +100,36 @@ class PodsField_Screenshot extends PodsField {
 	 */
 	public function input ( $name, $value = null, $options = null, $pod = null, $id = null ) {
 
-        $screenshot = trim( get_metadata( 'post', $id, 'material_screenshot', true ) );
-
-        ?>
-        <div id="material-screenshot">
-        <?php if( $screenshot != '' ) { ?>
-            <img style="max-width: 400px;" src="<?php echo $screenshot; ?>">
-        <?php } ?>
-        </div>
-        <div id="generate-screenshot-container">
-        <a class="button"  id="generate-screenshot">Screenshot erzeugen</a> <a class="button"  id="delete-screenshot">Screenshot löschen</a>
-        </div>
-        <input id="pods-form-ui-pods-meta-material-screenshot"  name="pods_meta_material_screenshot"  value="<?php if( $screenshot != '' ) { echo $screenshot; } ?>"  type="hidden">
-        <?php
+		?>
+		<div id="pods_synonymlist">
+			<?php
+			$counter = 0;
+			$schlagworte = get_metadata( 'post', $id, 'material_schlagworte', false );
+			foreach ($schlagworte as $schlagwort ) {
+			    if ( $schlagwort !== false ) {
+                    $term = get_term( $schlagwort[ 'term_id'], 'schlagwort' );
+				    if ( ! is_wp_error( $term ) ) {
+					    $posts = get_posts( array(
+						    'post_type'   => 'synonym',
+						    'orderby'     => 'post_title',
+						    'post_status' => 'published',
+						    'meta_key'    => 'normwort',
+						    'meta_value'  => $term->name,
+                            'numberposts' => 0,
+					    ) );
+					    foreach ( $posts as $post ) {
+						    if ( $counter > 0 ) {
+							    echo ', ';
+						    }
+						    echo $post->post_title;
+						    $counter ++;
+					    }
+				    }
+                }
+			}
+			?>
+		</div>
+		<?php
 	}
 
 	/**

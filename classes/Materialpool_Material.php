@@ -20,6 +20,11 @@ class Materialpool_Material {
     static public function load_template($template) {
         global $post;
 
+        if (is_tax() ) {
+	        return $template;
+        }
+
+	    $template_path = $template;
         if ($post->post_type == "material" && !is_embed() ){
             if ( is_single() ) {
                 if ( $theme_file = locate_template( array ( 'materialpool/single-material.php' ) ) ) {
@@ -312,12 +317,18 @@ class Materialpool_Material {
             $title =  get_metadata('post', $post_id, 'material_titel', true );
         }
         $post_name = wp_unique_post_slug( sanitize_title( $title ), $post_id, 'publish', $post_type, $post_parent );
-
+        $post_content = '';
         $url = '';
 		// Prio 1: hochgeladenes Bild
 		$pic  = $_POST[ 'pods_meta_material_cover' ];
-		if ( is_int( $pic ) ) {
-			$url = wp_get_attachment_url( $pic  );
+		if ( is_array( $pic ) ) {
+		    foreach ( $pic as $picArray ) {
+		        $id = (int) $picArray[ 'id' ];
+            }
+        }
+		if ( is_int( $id ) ) {
+			$urlA = wp_get_attachment_image_src( $id  );
+			$url = $urlA[ 0 ];
 		}
 		// Prio 2, Cover URL
 		if ( $url == '' ) {
@@ -328,8 +339,7 @@ class Materialpool_Material {
 			$url  = trim( $_POST[ 'pods_meta_material_screenshot' ] );
 		}
 		if ( $url != '' ) {
-			$post_content .='<img class="size-medium  alignleft" src="'. trim( $url ) .'" alt="" width="300" height="169" sizes="(max-width: 300px) 100vw, 300px">';
-
+			$post_content ='<img class="size-medium  alignleft" src="'. trim( $url ) .'" alt="" sizes="(max-width: 300px) 100vw, 300px">';
         }
 
         $post_content .= '<strong>' . wp_unslash( apply_filters( 'content_save_pre', $_POST[ 'pods_meta_material_kurzbeschreibung' ] ) ) . '</strong>';
@@ -466,6 +476,20 @@ class Materialpool_Material {
         }
         wp_set_object_terms( $post_id, $cat_ids, 'verfuegbarkeit', true );
 
+
+		// Werkzeug des Materials in term_rel speichern
+		wp_delete_object_term_relationships( $post_id, 'werkzeug' );
+		$cats = $_POST[ 'pods_meta_material_werkzeug' ];
+		if ( is_array( $cats ) ) {
+			foreach ( $cats as $key => $val ) {
+				$cat_ids[] = (int) $val;
+			}
+		}
+		if ( $cats!== null  ) {
+			$cat_ids[] = (int) $cats;
+		}
+		wp_set_object_terms( $post_id, $cat_ids, 'werkzeug', true );
+
         // Zugänglichkeit des Materials in term_rel speichern
         wp_delete_object_term_relationships( $post_id, 'zugaenglichkeit' );
         $cats = $_POST[ 'pods_meta_material_zugaenglichkeit' ];
@@ -553,6 +577,7 @@ class Materialpool_Material {
 
         // Transients für Frontendcache löschen
         delete_transient( 'facet_serach2_entry-'.$post_id );
+		delete_transient( 'rss_material_entry-'.$post_id );
         delete_transient( 'facet_autor_entry-'.$post_id );
         delete_transient( 'facet_themenseite_entry-'.$post_id );
         delete_transient( 'facet_organisation_entry-'.$post_id );
@@ -739,7 +764,7 @@ class Materialpool_Material {
 
         if ( is_404() ) {
             $uri = $_SERVER[ 'REQUEST_URI' ];
-            if ( strpos( $uri, '/material/') == 0 ) {
+            if ( strpos( $uri, '/material/') !== false ) {
                 // old_slug im Material suchen und ggf Umleiten
                 $query = $wpdb->prepare( "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = 'old_slug' and meta_value = %s",
                     $uri
@@ -753,7 +778,7 @@ class Materialpool_Material {
                     }
                 }
             }
-            if ( strpos( $uri, '/tagpage/') == 0 ) {
+            if ( strpos( $uri, '/tagpage/') !== false ) {
                 // old_slug im Material suchen und ggf Umleiten
                 $query = $wpdb->prepare( "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = 'old_slug' and meta_value = %s",
                     $uri
@@ -767,6 +792,24 @@ class Materialpool_Material {
                     }
                 }
             }
+	        if ( strpos( $uri, '/check_autor/') !== false ) {
+                $hash = substr( $uri, 13 );
+
+		        $result = $wpdb->get_var( $wpdb->prepare( "SELECT $wpdb->postmeta.post_id   FROM $wpdb->postmeta WHERE $wpdb->postmeta.meta_value = %s " , $hash ) );
+                if ( ! is_wp_error( $result) && $result !== false ) {
+		            add_metadata( 'post', $result, 'autor_email_read', time() );
+		            wp_redirect( get_permalink( $result) );
+		            exit;
+                }
+	        }
+	        if ( strpos( $uri, '/check_organisation/') !== false ) {
+		        $hash = substr( $uri, 20 );
+		        $result = $wpdb->get_var( $wpdb->prepare( "SELECT $wpdb->postmeta.post_id   FROM $wpdb->postmeta WHERE $wpdb->postmeta.meta_value = %s " , $hash ) );
+		        if ( ! is_wp_error( $result) && $result !== false ) {
+			        add_metadata( 'post', $result, 'organisation_email_read', time() );
+			        wp_redirect( get_permalink( $result) );
+		        }
+	        }
         }
     }
 
@@ -789,7 +832,6 @@ class Materialpool_Material {
      *
      */
     static public function row_actions( $actions, $post ) {
-        var_dump( $actions); exit;
         if ( $post->post_type == "material" ) {
             unset($actions['inline hide-if-no-js']);
         }
@@ -1531,7 +1573,40 @@ END;
     }
 
 
-    /**
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
+	static public function get_werkzeuge() {
+		global $post;
+
+		$vid = get_metadata( 'post', $post->ID, 'material_werkzeug', true );
+		if ( is_array( $vid ) ) {
+			return $vid[ 'name'];
+		}
+	}
+
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
+	static public function werkzeuge_html() {
+		global $post;
+
+		$vid = get_metadata( 'post', $post->ID, 'material_werkzeug', true );
+		if ( is_array( $vid ) ) {
+			echo "<a href='/" . $vid['taxonomy'] . "/" . $vid['slug'] . "'>" . $vid['name'] . "</a>";
+		}
+
+	}
+
+
+
+	/**
      *
      * @since 0.0.1
      * @access public
@@ -1810,14 +1885,14 @@ END;
             if ( sizeof( $bildungsstufe ) == 1 ) {
                 if ( $bildungsstufe[ 0 ] !== false ) {
                     if ( $bildungsstufe[ 0 ][ 'parent'] != 0 ) {
-                        $link = add_query_arg( 'fwp_bildungsstufe', $bildungsstufe[0][ 'slug' ], $url );
+	                    $link = "/facettierte-suche/?fwp_bildungsstufe=". $bildungsstufe[0][ 'slug' ];
                         $data .= '<span class="facet-tag"><a href="' . $link . '">' . $bildungsstufe[0][ 'name' ] .'</a></span>';
                     }
                 }
             } else {
                 foreach ( $bildungsstufe as $bildung ) {
                     if ( $bildung[ 'parent'] != 0 ) {
-                        $link = add_query_arg( 'fwp_bildungsstufe', $bildung[ 'slug' ], $url );
+	                    $link = "/facettierte-suche/?fwp_bildungsstufe=". $bildung[ 'slug' ];
                         $data .= '<span class="facet-tag"><a href="' . $link . '">' . $bildung[ 'name' ] .'</a></span>';
                     }
                 }
@@ -1826,7 +1901,7 @@ END;
             if ( sizeof( $bildungsstufe ) == 1 ) {
                 $term = get_term( $bildungsstufe, "bildungsstufe" );
                 if ( $term->parent != 0 ) {
-                    $link = add_query_arg( 'fwp_bildungsstufe', $term->slug, $url );
+	                $link = "/facettierte-suche/?fwp_bildungsstufe=". $term->slug;
                     $data .= '<span class="facet-tag"><a href="' . $link . '">' . $term->name .'</a></span>';
                 }
 
@@ -1834,8 +1909,8 @@ END;
                 foreach ( $bildungsstufe as $bildung ) {
                     $term = get_term( $bildung, "bildungsstufe" );
                     if ( $term->parent != 0 ) {
-                        $link = add_query_arg( 'fwp_bildungsstufe', $term->slug, $url );
-                        $data .= '<span class="facet-tag"><a href="' . $link . '">' . $term->name .'</a></span>';
+	                    $link = "/facettierte-suche/?fwp_bildungsstufe=". $term->slug;
+	                    $data .= '<span class="facet-tag"><a href="' . $link . '">' . $term->name .'</a></span>';
                     }
                 }
             }
@@ -1853,14 +1928,18 @@ END;
         global $post;
 
         $url =  parse_url( $_SERVER[ 'REQUEST_URI' ], PHP_URL_PATH );
-        $data = '';
+        $data = array();
         $bildungsstufe = get_metadata( 'post', $post->ID, 'material_bildungsstufe' );
         foreach ( $bildungsstufe as $bildung ) {
             if ( $bildung[ 'parent'] != 0 ) {
                 $data[] =  $bildung[ 'name' ] ;
             }
         }
-        return implode(', ', $data);
+        if ( is_array( $data ) ) {
+	        return implode( ', ', $data );
+        } else {
+            return $data;
+        }
     }
 
     static public function bildungsstufen () {
@@ -1882,15 +1961,15 @@ END;
         $bildungsstufe = get_metadata( 'post', $post->ID, 'material_inklusion' );
         if ( sizeof( $bildungsstufe ) == 1 ) {
             if ( $bildungsstufe[ 0 ] !== false ) {
-                $link = add_query_arg( 'fwp_bildungsstufe', $bildungsstufe[0][ 'slug' ], $url );
-                $data .= '<span class="facet-tag"><a href="' . $link . '">' . $bildungsstufe[0][ 'name' ] .'</a></span>';
+	            $link = "/facettierte-suche/?fwp_bildungsstufe=". $bildungsstufe[0][ 'slug' ];
+	            $data .= '<span class="facet-tag"><a href="' . $link . '">' . $bildungsstufe[0][ 'name' ] .'</a></span>';
             } else {
                 $data = "";
             }
         } else {
             foreach ( $bildungsstufe as $bildung ) {
-                $link = add_query_arg( 'fwp_bildungsstufe', $bildung[ 'slug' ], $url );
-                $data .= '<span class="facet-tag"><a href="' . $link . '">' . $bildung[ 'name' ] .'</a></span>';
+	            $link = "/facettierte-suche/?fwp_bildungsstufe=". $bildung[ 'slug' ];
+	            $data .= '<span class="facet-tag"><a href="' . $link . '">' . $bildung[ 'name' ] .'</a></span>';
             }
         }
         return $data;
@@ -2149,18 +2228,20 @@ END;
      * @access public
      * @return mixed
      */
-    static public function get_schlagworte_html() {
+    static public function get_schlagworte_html( $url = '' ) {
         global $post;
-        if (defined('REST_REQUEST') && REST_REQUEST) {
-            $url = esc_url_raw( $_POST[ 'mp_url'] );
-        } else {
-            $url =  parse_url( $_SERVER[ 'REQUEST_URI' ], PHP_URL_PATH );
+        if ( $url == '' ) {
+            if (defined('REST_REQUEST') && REST_REQUEST) {
+                $url = esc_url_raw( $_POST[ 'mp_url'] );
+            } else {
+                $url =  parse_url( $_SERVER[ 'REQUEST_URI' ], PHP_URL_PATH );
+            }
         }
         $data = '';
         $schlagworte = get_metadata( 'post', $post->ID, 'material_schlagworte' );
         if ( sizeof( $schlagworte ) == 1 ) {
             if ( $schlagworte[ 0 ] !== false ) {
-                $link = add_query_arg( 'fwp_schlagworte', $schlagworte[0][ 'slug' ], $url );
+                $link = "/facettierte-suche/?fwp_schlagworte=". $schlagworte[0][ 'slug' ];
                 if ( $data != '') $data .= ', ';
                 $data .= '<a href="' . $link . '">' . $schlagworte[0][ 'name' ] .'</a>';
             } else {
@@ -2168,7 +2249,7 @@ END;
             }
         } else {
             foreach ( $schlagworte as $schlagwort ) {
-                $link = add_query_arg( 'fwp_schlagworte', $schlagwort[ 'slug' ], $url );
+	            $link = "/facettierte-suche/?fwp_schlagworte=". $schlagwort[ 'slug' ];
                 if ( $data != '') $data .= ', ';
                 $data .= '<a href="' . $link . '">' . $schlagwort[ 'name' ] .'</a>';
             }
@@ -2574,4 +2655,66 @@ END;
 	    }
         return $query;
     }
+
+    static public function get_themenseiten_for_material( $material_id = 0 ) {
+	    global $post;
+	    global $wpdb;
+
+	    $material_id = ($material_id>0)?$material_id:$post->ID;
+	    $tablename = $wpdb->prefix . "pods_themenseitengruppen";
+        $query = "select id, post_title  from $wpdb->posts where id in ( select  pandarf_parent_post_id   from $tablename  where ( auswahl like '%,{$material_id},%' or auswahl like  '%,{$material_id}'  ) ) and post_status = 'publish'   and post_type= 'themenseite' order by post_title;";
+
+	    $count = $wpdb->get_results($query);
+	    return $count;
+    }
+
+    static public function get_themenseiten_for_material_html( $material_id  = 0) {
+        $result = Materialpool_Material::get_themenseiten_for_material( $material_id);
+        if ( is_array( $result ) &&  sizeof( $result ) > 0 ) {
+            echo "Dieses Material ist Teil folgender Themenseiten:<br>";
+	        foreach ( $result as $item ) {
+	            $url = get_permalink( $item->id );
+	            echo "<a href='" . $url  ."'>".  $item->post_title . "</a><br>";
+
+            }
+            echo "<br>";
+        }
+    }
+
+    static public function back_to_search() {
+        if ( $_GET[ 'sq' ] ) {
+            $sq = $_GET[ 'sq' ];
+            ?>
+	        <a class='cta-button' href="<?php echo urldecode( $sq ); ?>">Zurück zur Materialsuche</a><br>
+            <?php
+        }
+    }
+
+    static public function  rss_query_vars( $query_vars ) {
+	    $query_vars[] = 'rss_organisation';
+	    $query_vars[] = 'rss_per_page';
+	    return $query_vars;
+    }
+
+	static public function rss_pre_get_posts( $query ) {
+		if( $query->is_feed && $query->is_main_query() && $query->query[ 'post_type' ] == 'material' ) {
+			if( isset( $query->query_vars[ 'rss_organisation' ] ) && ! empty( $query->query_vars[ 'rss_organisation' ] ) ) {
+				if ( $post = get_page_by_path( $query->query_vars[ 'rss_organisation' ] , OBJECT, 'organisation' ) ) {
+					$id = $post->ID;
+				} else {
+					$id = $query->query_vars['rss_organisation'];
+				}
+				$query->set( 'meta_key', 'material_organisation' );
+				$query->set( 'meta_value', $id );
+			}
+			if( isset( $query->query_vars[ 'rss_per_page' ] ) && ! empty( $query->query_vars[ 'rss_per_page' ] ) ) {
+				$query->set( 'posts_per_rss', (int) $query->query_vars[ 'rss_per_page' ] );
+			}
+
+		}
+		//return $query;
+	}
+
+
+
 }

@@ -271,10 +271,26 @@ jQuery(document).ready(function(){
                                 })
                                 break;
                         }
+
+                        // Synonyme aktualisieren in der Ansicht darunter
+                        var synonyme = jQuery('#pods-form-ui-pods-meta-material-schlagworte').val();
+                        var data = {
+                            'action': 'mp_synonym_list',
+                            'list': synonyme
+                        };
+                        jQuery.post(ajaxurl, data, function(response ) {
+                            html = response;
+
+                            jQuery('#pods_synonymlist').replaceWith( html );
+
+                        });
+
                     }
                 })
             }
         })
+
+
 
     });
 
@@ -533,11 +549,13 @@ jQuery(document).ready(function(){
 jQuery(document).ready(function(){
     jQuery("#pods-form-ui-pods-meta-material-titel").focusout( function() {
         var title = jQuery("#pods-form-ui-pods-meta-material-titel").val();
+        var postid = jQuery("#post_ID").val();
         if ( title == '' ) return;
         var ret;
         var data = {
             'action': 'mp_check_material_title',
-            'title': title
+            'title': title,
+            'post-id': postid
         };
         jQuery.post(ajaxurl, data, function(response) {
 
@@ -724,7 +742,7 @@ function check_material() {
         jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Beschreibung nicht angegeben.</div>");
     }
     // Schlagworte prüfen
-    if ( jQuery("#pods-form-ui-pods-meta-material-schlagworte").val() == ''  &&  jQuery("#pods-form-ui-pods-meta-material-schlagworte-interim").val() == '' ) {
+    if ( jQuery("#pods-form-ui-pods-meta-material-schlagworte").val() == ''  ) {
         jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Keine Schlagworte vergeben.</div>");
     }
     // Bildungsstufen prüfen
@@ -825,5 +843,35 @@ jQuery(document).ready( function($) {
     $('.inline-edit-date').each(function (i) {
         $(this).remove();
     });
+});
+
+jQuery(document).ready(function(){
+    jQuery(".mail_autor_send").click( function() {
+
+        var id = jQuery(this).data("id");
+        var data = {
+            'action': 'mp_send_autor_mail',
+            'id': id
+        };
+        jQuery.post(ajaxurl, data, function(response) {
+            ret = response;
+            jQuery('#autor_nachricht-' + id ).html( ret );
+        });
+    })
+});
+
+jQuery(document).ready(function(){
+    jQuery(".mail_organisation_send").click( function() {
+
+        var id = jQuery(this).data("id");
+        var data = {
+            'action': 'mp_send_organisation_mail',
+            'id': id
+        };
+        jQuery.post(ajaxurl, data, function(response) {
+            ret = response;
+            jQuery('#organisation_nachricht-' + id ).html( ret );
+        });
+    })
 });
 

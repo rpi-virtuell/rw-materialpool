@@ -39,8 +39,6 @@ jQuery(document).ready(function(){
 });
 
 
-
-
 jQuery(document).ready(function(){
     jQuery(".materialpool-vorschlag-send").click( function() {
         jQuery('.materialpool-vorschlag-hinweis').html('');

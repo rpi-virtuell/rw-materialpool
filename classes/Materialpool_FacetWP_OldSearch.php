@@ -14,8 +14,12 @@ class Materialpool_FacetWP_OldSearch
 
 
     function render( $params ) {
-        $output = '';
-        $search = $_REQUEST[ 'mp_search' ];
+	    $output = '';
+	    if (defined('REST_REQUEST') && REST_REQUEST) {
+	        $search = $_REQUEST['mp_search'];
+        } else {
+	        $search = $_REQUEST[ 'fwp_suche' ];
+	    }
         if ( $search != '' ) {
             $swp_query = new SWP_Query(
                 array(

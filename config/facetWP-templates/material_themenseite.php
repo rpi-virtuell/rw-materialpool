@@ -1,25 +1,28 @@
 <div class="themenseite-gruppen">
 	<?php
+	/**
+	 * loop content facetwp template: thema
+	 */
 	global $wp_query;
 
 	$id = 0;
-
 	if(isset($_POST['data'])){
 		$post = get_page_by_path( str_replace( 'themenseite/', '', $_POST['data']['http_params']['uri'] ), OBJECT, 'themenseite' );
 		$id = $post->ID;
 	}
 
-
 	foreach ( Materialpool_Themenseite::get_gruppen($id ) as $gruppe ) {
-		$themenseite_material_id_list = explode( ',', $gruppe['auswahl'] );
 
 		$query = $wp_query->query_vars;
 
+		$themenseite_material_id_list = explode( ',', $gruppe['auswahl'] );
+
+		$themenseite_material_id_list = array_intersect($themenseite_material_id_list,$query['post__in']);
+
+		$query['post__in'] = $themenseite_material_id_list ;
 
 
-		$query['post__in'] = array_intersect($themenseite_material_id_list,$query['post__in']);
-
-		if(count($query['post__in'])>0){
+		if( count( $themenseite_material_id_list ) > 0 ){
 
 			$loop = new WP_Query( $query );
 
@@ -41,12 +44,11 @@
 									?>
                                     <div class="facet-treffer<?php echo ( Materialpool_Material::is_alpika() ) ? ' alpika' : ''; ?><?php echo ( Materialpool_Material::is_special() ) ? ' special' : ''; ?>">
                                         <div class="facet-treffer-content">
-											<?php if ( Materialpool_Material::cover_facet_html() && ! in_array( strrchr( Materialpool_Material::get_url(), '.' ), array(
-													'.pdf',
-													'.docx',
-													'.doc',
-													'.odt'
-												) )
+											<?php if ( Materialpool_Material::cover_facet_html() && ( ! in_array( strrchr( Materialpool_Material::get_url(), '.' ), array(
+												                                                                                                                        '.docx',
+												                                                                                                                        '.doc',
+												                                                                                                                        '.odt'
+											                                                                                                                        )  ||  Materialpool_Material::get_picture() != '' ))
 											): ?>
                                                 <div class="material-cover">
 													<?php echo Materialpool_Material::cover_facet_html(); ?>

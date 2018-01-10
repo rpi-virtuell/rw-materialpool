@@ -188,6 +188,8 @@ class Materialpool_Organisation {
             'organisation_views' => _x( 'Views', 'Organisation list field', Materialpool::$textdomain ),
             'material_views' => _x( 'MaterialViews', 'Organisation list field', Materialpool::$textdomain ),
             'organisation_url' => _x( 'URL', 'Organisation list field', Materialpool::$textdomain ),
+            'organisation_email'        => _x( 'Email', 'Organisation list field', Materialpool::$textdomain ),
+            'organisation_nachricht'    => _x( 'Emailbenachrichtigung', 'Organisation list field', Materialpool::$textdomain ),
             'organisation_konfession' => _x( 'Konfession', 'Organisation list field', Materialpool::$textdomain ),
             'organisation_alpika' => _x( 'ALPIKA', 'Organisation list field', Materialpool::$textdomain ),
             'date' => __('Date'),
@@ -223,6 +225,34 @@ class Materialpool_Organisation {
         if ( $column_name == 'organisation_url' ) {
             $data = get_metadata( 'post', $post_id, 'organisation_url', true );
         }
+
+	    if ( $column_name == 'organisation_email' ) {
+		    $data = get_metadata( 'post', $post_id, 'organisation_email', true );
+	    }
+	    if ( $column_name == 'organisation_nachricht' ) {
+		    $data = "<div id='organisation_nachricht-". $post_id ."'>";
+		    $email = get_metadata( 'post', $post_id, 'organisation_email', true );
+		    if ( $email == '' ) {
+			    $data .= '<div style="color: red;">Keine Email hinterlegt</div>';
+		    } else {
+			    $send = get_metadata( 'post', $post_id, 'organisation_email_send', true );
+			    $read = get_metadata( 'post', $post_id, 'organisation_email_read', true );
+
+			    if ( $send == '' ) {
+				    $data .= '<div>Nicht versendet</div>';
+				    $data .= '<div class="row-actions"><span class="edit"><a style="cursor: pointer;" data-id="'. $post_id .'" class="mail_organisation_send">Mail versenden</a></span></div>';
+			    }
+			    if ( $send != '' && $read == '' ) {
+				    $data .= '<div style="color: blue;">Versendet, ungelesen</div>';
+			    }
+			    if ( $send != '' && $read != '' ) {
+				    $data .= '<div style="color: green;">Gelesen</div>';
+			    }
+		    }
+		    $data .= "</div>";
+	    }
+
+
         if ( $column_name == 'organisation_alpika' ) {
             $alpiika = get_metadata( 'post', $post_id, 'organisation_alpika', true );
             if ( $alpiika == '1' ) {
@@ -370,6 +400,30 @@ class Materialpool_Organisation {
 			$autor_title = $autor_meta->post_title;
 			add_post_meta( $post_id, 'organisation_autor_facet', $autor_title );
 		}
+
+		delete_post_meta( $post_id, 'organisation_alpika_facet' );
+		clean_post_cache( $post_id );
+
+		if( $_POST[ 'pods_meta_organisation_alpika' ] == 1 ){
+			add_post_meta( $post_id, 'organisation_alpika_facet', 1 );
+		}
+
+		// Konfession der Organisation in term_rel speichern
+
+		wp_delete_object_term_relationships( $post_id, 'konfession' );
+		$cats = $_POST[ 'pods_meta_organisation_konfession' ];
+		if ( is_array( $cats ) ) {
+			foreach ( $cats as $key => $val ) {
+				$cat_ids[] = (int) $val;
+			}
+		}
+		if ( !is_array( $cats ) ) {
+			$cat_ids[] = (int) $cats;
+		}
+		wp_set_object_terms( $post_id, $cat_ids, 'konfession', true );
+
+
+
 		if ( is_object( FWP() ) ) {
 			FWP()->indexer->save_post( $post_id );
 		}
@@ -377,6 +431,65 @@ class Materialpool_Organisation {
 
 	}
 
+
+	/**
+	 * @param $post_id
+	 * @access	public
+	 *
+	 */
+	static public function send_mail( $post_id = false ) {
+
+		if ( $post_id === false ) return false;
+
+
+		// generate Mail
+		$sendmail = get_option( 'einstellungen_organisationsmail_aktiv', 0 );
+		$email    = get_metadata( 'post', $post_id, 'organisation_email', true );
+		if ( $sendmail == 1 && $email != '' ) {
+			$send = get_metadata( 'post', $post_id, 'organisation_email_send', true );
+			if ( $send == '' ) {
+				$subject = get_option( 'einstellungen_organisation_mail_subject', false );
+				$content = get_option( 'einstellungen_organisationsmail_content', false );
+				if ( $subject && $content ) {
+					$content = str_replace( '%material_autor_name%', Materialpool_Autor::get_firstname($post_id) . ' ' . Materialpool_Autor::get_lastname($post_id), $content );
+					$content = str_replace( '%materialpool_home%', get_option( 'siteurl' ), $content );
+					$content = str_replace( '%material_autor_url%', Materialpool_Autor::autor_check_url($post_id), $content );
+					$content = str_replace( '%material_organisation_url%', Materialpool_Organisation::organistion_check_url($post_id), $content );
+					$content = str_replace( '%material_last_material%', Materialpool_Autor::last_material_name($post_id), $content );
+					$content = str_replace( '%redakteur_name%', Materialpool_Autor::redaktuer_name($post_id), $content );
+					$content = str_replace( '%redakteur_reply_email%', 'redaktion@rpi-virtuell.de', $content ); //  Materialpool_Autor::redakteur_email() , $content );
+
+					$headers[] = 'From: Redaktion rpi-virtuell <redaktion@rpi-virtuell.de>';
+					$headers[] = 'Reply-To: Redaktion rpi-virtuell <redaktion@rpi-virtuell.de>';
+					$headers[] = 'bcc: material@rpi-virtuell.de';
+					$mail      = wp_mail( $email, $subject, $content, $headers );
+					if ( $mail ) {
+						$send = add_metadata( 'post', $post_id, 'organisation_email_send', time() );
+					}
+				}
+			}
+		}
+	}
+
+
+/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 * @return  string
+	 *
+	 */
+	static public function organistion_check_url($id = 0 ) {
+		global $post;
+		$id = ($id>0)?$id:$post->ID;
+		$hash = get_metadata( 'post', $id, 'organisation_hash', true );
+		if ( $hash == '') {
+			$hash = wp_hash( 'organisation_hash' . time(). $id ) ;
+			add_metadata('post', $id, 'organisation_hash', $hash );
+		}
+
+		return get_option( 'siteurl' ) . '/check_organisation/'.$hash ;
+	}
 
     /**
      *
@@ -617,4 +730,19 @@ class Materialpool_Organisation {
     }
 
 
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access public
+	 * @return number of materials from the current Autor
+	 */
+	static public function get_count_posts_per_organisation ($autor_id = 0) {
+		global $post,$wpdb;
+
+		$autor_id = ($autor_id>0)?$autor_id:$post->ID;
+		$query = "select count(pod_id) from {$wpdb->prefix}podsrel where item_id = %d and field_id in ( select ID from wp_posts where post_type ='_pods_field' and post_name='organisation_material')" ;
+		$query = $wpdb->prepare($query, $autor_id);
+		$count = $wpdb->get_var($query);
+		return $count;
+	}
 }

@@ -79,7 +79,12 @@ do_action( 'rss_tag_pre', 'rss2' );
         do_action( 'rss2_head');
 
         while( have_posts()) : the_post();
-            ?>
+
+            if ( false === ( $transient = get_transient( 'rss_material_entry-'.$post->ID ) ) ) {
+            ob_start();
+
+        ?>
+
             <item>
                 <title><?php the_title_rss() ?></title>
                 <link><?php the_permalink_rss() ?></link>
@@ -121,6 +126,15 @@ do_action( 'rss_tag_pre', 'rss2' );
                 do_action( 'rss2_item' );
                 ?>
             </item>
+        <?php
+        $buffer = ob_get_contents();
+        ob_end_clean();
+        echo $buffer;
+        set_transient( 'rss_material_entry-'.$post->ID, $buffer );
+        } else {
+        echo $transient;
+        }
+        ?>
         <?php endwhile; ?>
     </channel>
 </rss>
