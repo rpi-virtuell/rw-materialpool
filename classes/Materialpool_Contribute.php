@@ -521,6 +521,8 @@ class Materialpool_Contribute {
 		                        $term = get_term_by( 'name', $item, 'bildungsstufe' );
 		                        $pod->add_to( 'material_bildungsstufe', $term->term_id);
 	                        }
+                            // remove Pods Handverlesen default
+                            $pod->remove_from( 'material_vorauswahl', 2206 );
 
 	                        $post_type   = get_post_type( $material_id );
 	                        $post_parent = wp_get_post_parent_id( $material_id );
