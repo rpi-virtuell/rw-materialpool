@@ -241,11 +241,12 @@ class Materialpool_Contribute {
 	static protected function handle_request(){
 		global $wp;
 
+		self::log( 'handle_request');
+		self::log( $wp->query_vars[ 'data' ]);
+		$request = json_decode( stripslashes( urldecode( $wp->query_vars[ 'data' ] ) ) ) ;
+ 		if( ! $request || !isset($request->cmd) || !isset($request->data) ) {
 
-		$request = json_decode( stripslashes( $wp->query_vars[ 'data' ] ) );
-		if( ! $request || !isset($request->cmd) || !isset($request->data) ) {
-
-			Materialpool_Contribute::send_response('Please send commands in json.');
+			Materialpool_Contribute::send_response('Please send commands in json. ' . json_last_error_msg() );
 
 		} else {
 
@@ -448,6 +449,106 @@ class Materialpool_Contribute {
 		return $request;
 	}
 
+
+	/**
+	 * @param   $request
+	 * @return  mixed
+	 */
+	static public function cmd_send_post( $request ) {
+	    global $wpdb;
+		self::log('HIER send_post, CMD: ' .$request->cmd  );
+		if ( 'send_post' == $request->cmd ) {
+
+			$data = false;
+
+			$user =  base64_decode( $request->data->material_user );
+
+            $status = false;
+			$query = $wpdb->prepare( "SELECT user_id FROM {$wpdb->usermeta} WHERE meta_key = 'autor_hash' and meta_value = %s",
+				$user
+			);
+			$autor = $wpdb->get_var(  $query );
+			if ( $autor != null ) {
+                $query = $wpdb->prepare( "SELECT user_id FROM {$wpdb->usermeta} WHERE meta_key = 'autor_status' and meta_value = 'ok' and user_id = %s",
+                    $autor
+                );
+				$autor = $wpdb->get_var(  $query );
+				if ( $autor != null ) {
+					$query = $wpdb->prepare( "SELECT meta_value FROM {$wpdb->usermeta} WHERE meta_key = 'autor_link' and  user_id = %s",
+						$autor
+					);
+					$autorid = $wpdb->get_var(  $query );
+
+					// URL Check
+					$url              = urldecode( $request->data->material_url );
+					$query = $wpdb->prepare( "SELECT count( meta_id ) as anzahl  FROM  $wpdb->postmeta pm, $wpdb->posts p  WHERE pm.meta_key = %s and pm.meta_value = %s and pm.post_id= p.ID and p.post_status = 'publish' ", 'material_url', $url );
+					$anzahl = $wpdb->get_col( $query );
+					if ( is_array( $anzahl ) && $anzahl[ 0 ] == 0 ) {
+
+                        if ($autorid != null ) $status=true;
+
+                        if (  $status == true ) {
+	                        $pod              = pods( 'material' );
+	                        $url              = urldecode( $request->data->material_url );
+	                        $title            = urldecode( $request->data->material_title );
+	                        $shortdescription = base64_decode( $request->data->material_shortdescription );
+	                        $description      = base64_decode( $request->data->material_description );
+	                        $keywords         = urldecode( $request->data->material_interim_keywords );
+	                        $altersstufe      = base64_decode( $request->data->material_altersstufe );
+	                        $bildungsstufe    = base64_decode( $request->data->material_bildungsstufe );
+
+	                        $data = array(
+		                        'material_special'             => 0,
+		                        'material_titel'               => $title,
+		                        'material_kurzbeschreibung'    => $shortdescription,
+		                        'material_beschreibung'        => $description,
+		                        'material_schlagworte_interim' => $keywords,
+		                        'material_url'                 => $url,
+	                        );
+
+	                        $material_id = $pod->add( $data );
+	                        $pod         = pods( 'material', $material_id );
+	                        $pod->add_to( 'material_autoren', $autorid );
+	                        $alter = unserialize( $altersstufe );
+	                        self::log('alter : ' .$alter  );
+	                        foreach ( $alter as $item ) {
+		                        self::log('item: ' .$item  );
+	                            $term = get_term_by( 'name', $item, 'altersstufe' );
+		                        $pod->add_to( 'material_altersstufe', $term->term_id);
+	                        }
+	                        $bildung = unserialize( $bildungsstufe );
+	                        foreach ( $bildung as $item ) {
+		                        $term = get_term_by( 'name', $item, 'bildungsstufe' );
+		                        $pod->add_to( 'material_bildungsstufe', $term->term_id);
+	                        }
+
+	                        $post_type   = get_post_type( $material_id );
+	                        $post_parent = wp_get_post_parent_id( $material_id );
+	                        $post_name   = wp_unique_post_slug( sanitize_title( $title ), $material_id, 'publish', $post_type, $post_parent );
+
+	                        wp_publish_post( $material_id );
+	                        $data = true;
+                        }
+                    }
+                }
+			}
+
+			$data = array(
+				'notice'=> $data,
+				'answer' => $data,
+			);
+
+			Materialpool_Contribute::send_response(
+				$request->cmd ,
+				$data,
+				false
+			);
+
+		}
+		return $request;
+	}
+
+
 	public static function settings_init() {
 
 		register_setting( 'rw_materialpool_contribute_options', 'rw_materialpool_contribute_options_whitelist_active' );
@@ -460,14 +561,113 @@ class Materialpool_Contribute {
 		add_submenu_page(
 			'materialpool',
 			_x('Materialpool Settings', Materialpool::$textdomain, 'Page Title' ),
-			_x('Settings', Materialpool::$textdomain, 'Menu Title' ),
+			_x('Verknüpfte Blogs', Materialpool::$textdomain, 'Menu Title' ),
 			'manage_options',
-			__FILE__,
+			__FILE__ . '1',
 			array( 'Materialpool_Contribute', 'create_options' )
 		);
+
+		add_submenu_page(
+			'materialpool',
+			_x('Materialpool Autoren Verknüpfungen', Materialpool::$textdomain, 'Page Title' ),
+			_x('Autoren Verknüpfungen', Materialpool::$textdomain, 'Menu Title' ),
+			'manage_options',
+			__FILE__. '2',
+			array( 'Materialpool_Contribute', 'create_autor_options' )
+		);
+
+
 	}
 
 
+	/**
+	 * Generate the options page for the plugin
+	 *
+	 * @since   0.1
+	 * @access  public
+	 * @static
+	 *
+	 * @return  void
+	 */
+	static public function create_autor_options() {
+		if ( !current_user_can( 'manage_options' ) )  {
+			wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
+		}
+	    ?>
+        <div class="wrap"  id="rwremoteauthserveroptions">
+            <h2><?php _e( 'Autorenverknüpfungen', Materialpool::$textdomain ); ?></h2>
+            <p><?php _e( 'Verknüpfungen von Entfernten Blogautoren zu Mateerialpool Autoren.', Materialpool::$textdomain ); ?></p>
+            <form method="POST" action="options.php"><fieldset class="widefat">
+                    <?php
+                    $args = array(
+                        'meta_query'     => array(
+                            array(
+                                'key'     => 'autor_link',
+                                'compare' => 'EXISTS',
+                            ),
+                        ),
+                    );
+
+                    $user_query = new WP_User_Query( $args );
+
+                    $treffer = $user_query->results;
+
+                    $counter = 0;
+                    foreach ($treffer as $user ) {
+                        if ( $counter == 0 ) {
+                            echo "<table>";
+                            echo "<tr><th>User</th><th>Autor</th><th>Status</th><th>Aktionen</th></tr>";
+                        }
+                        $counter++;
+                        $user_id = $user->data->ID;
+                        $name = $user->data->user_login;
+                        $user_link = get_edit_user_link( $user_id );
+                        $autor = get_user_meta( $user_id, 'autor_link', true );
+                        $autor_link = '';
+                        $autor_frontend = get_permalink( $autor );
+                        $autor_post = get_post( $autor );
+                        $autor_name = $autor_post->post_title;
+                        $status = get_user_meta( $user_id, 'autor_status', true );
+	                    $action = '';
+	                    switch ( $status ) {
+                            case 'pending' :
+                                $status_output = "wartend";
+                                $action .= "<a data-user=\"{$user_id}\" data-autor=\"{$autor}\" data-action=\"add\" class=\"button contribute\" >Zulassen</a> ";
+	                            $action .= "<a data-user=\"{$user_id}\" data-autor=\"{$autor}\" data-action=\"del\" class=\"button contribute\" >Löschen</a>";
+                                break;
+                            case 'ok' :
+                                $status_output = "zugelassen";
+	                            $action .= "<a data-user=\"{$user_id}\" data-autor=\"{$autor}\" data-action=\"del\" class=\"button contribute\" >Löschen</a>";
+                                break;
+                            case 'forbidden' :
+                                $status_output = "verboten";
+	                            $action .= "<a data-user=\"{$user_id}\" data-autor=\"{$autor}\" data-action=\"del\" class=\"button contribute\" >Löschen</a>";
+                                break;
+                            default:
+                                $status_output = "unbekannt";
+	                            $action .= "<a data-user=\"{$user_id}\" data-autor=\"{$autor}\" data-action=\"del\" class=\"button contribute\" >Löschen</a>";
+                                break;
+                        }
+
+                        ?>
+                            <tr id="user-autor">
+                                <td><?php echo $name; ?> ( <a href="<?php echo $user_link; ?>" target="_blank">Ansehen</a> )</td>
+                                <td><?php echo $autor_name; ?> ( <a href="<?php echo $autor_frontend; ?>" target="_blank">Ansehen</a> ) </td>
+                                <td><?php echo $status_output; ?></td>
+                                <td><?php echo $action; ?> </td>
+                            </tr>
+                        <?php
+                    }
+                    if ( $counter > 0 ) {
+                        echo "<table>";
+                    }
+
+                    ?>
+
+            </form>
+        </div>
+        <?php
+	}
 
 	/**
 	 * Generate the options page for the plugin
@@ -527,6 +727,25 @@ class Materialpool_Contribute {
 
 	}
 
+	static public function edit_user_profile( $profiluser ) {
+	    $hash = get_user_meta( $profiluser->data->ID, 'autor_hash', true );
+	    if ( $hash != '' ) {
+		    ?>
+            <h2>Materialeinlieferung</h2>
+            <table class="form-table">
+                <tr>
+                    <th>Materialkey</th>
+                    <td>
+                        <p>
+                            <label for="configstr"><?php _e( 'Kopiere den folgenden Code und füge ihn in deinem Blog unter Benutzer &gt; Materialpool ein, um Blogbeiträge an den Materialpool zu übermitteln..', Materialpool::$textdomain ); ?></label><br>
+                            <input id="configstr" type="text" class="regular-text" value="<?php echo $hash; ?>">
+                        </p>
+                    </td>
+                </tr>
+            </table>
+		    <?php
+	    }
+    }
 
 }
 

@@ -299,6 +299,15 @@ class Materialpool {
         add_action( 'wp_ajax_mp_add_proposal',  array( 'Materialpool', 'my_action_callback_mp_add_proposal' ) );
 		add_action( 'wp_ajax_mp_synonym_list',  array( 'Materialpool', 'my_action_callback_mp_synonym_list' ) );
         add_action( 'wp_ajax_convert2material',  array( 'Materialpool', 'my_action_callback_convert2material' ) );
+		add_action( 'wp_ajax_mp_edit_subscription',  array( 'Materialpool', 'my_action_callback_edit_subscription' ) );
+
+
+        add_action( 'wp_ajax_mp_check_subscription',  array( 'Materialpool', 'my_action_callback_check_subscription' ) );
+		add_action( 'wp_ajax_mp_add_subscription',  array( 'Materialpool', 'my_action_callback_add_subscription' ) );
+
+
+
+
         add_filter( 'facetwp_api_can_access', function() { return true;} );
         add_action( 'wp_head', array( 'Materialpool',  'promote_feeds' ) );
         remove_all_actions( 'do_feed_rss2' );
@@ -328,6 +337,11 @@ class Materialpool {
 		add_action( 'init',             array( 'Materialpool_Contribute', 'add_endpoint'), 0 );
 		add_filter( 'query_vars',       array( 'Materialpool_Contribute', 'add_query_vars'), 0 );
 		add_action( 'parse_request',    array( 'Materialpool_Contribute', 'parse_request'), 0 );
+		add_action( 'edit_user_profile',array( 'Materialpool_Contribute', 'edit_user_profile' ) );
+		add_action( 'show_user_profile',array( 'Materialpool_Contribute', 'edit_user_profile' ) );
+
+
+		add_filter( 'rw_materialpool_contribute_cmd_parser', array( 'Materialpool_Contribute', 'cmd_send_post' ) );
 		add_filter( 'rw_materialpool_contribute_cmd_parser', array( 'Materialpool_Contribute', 'cmd_ping' ) );
 		add_filter( 'rw_materialpool_contribute_cmd_parser', array( 'Materialpool_Contribute', 'cmd_say_hello' ) );
 		add_filter( 'rw_materialpool_contribute_cmd_parser', array( 'Materialpool_Contribute', 'cmd_list_authors' ) );
@@ -441,6 +455,105 @@ class Materialpool {
         }
         wp_die();
     }
+
+
+	/**
+	 *
+	 * @since   0.0.1
+	 * @access  public
+	 */
+	public static function my_action_callback_edit_subscription() {
+
+		$autor_id =  (int) $_POST['autor'];
+		$user =  (int) $_POST['user'];
+		$cmd = $_POST['cmd'];
+
+		if ( $user == 0 ) {     // Benutzer nicht angemeldet.
+			wp_die();
+		}
+
+        if ( $cmd == 'del' ) {
+	        delete_user_meta( $user, 'autor_status' );
+	        delete_user_meta( $user, 'autor_hash' );
+	        delete_user_meta( $user, 'autor_link' );
+	        delete_post_meta( $autor_id, 'user_status' );
+	        delete_post_meta( $autor_id, 'user_link' );
+
+        }
+		if ( $cmd == 'add' ) {
+            update_user_meta( $user, 'autor_status', 'ok' );
+			update_post_meta( $autor_id, 'user_status', 'ok' );
+            $hash = password_hash( $user . '___' . $autor_id, PASSWORD_DEFAULT );
+            add_user_meta( $user, 'autor_hash', $hash );
+		}
+		?>
+		ok
+        <?php
+		wp_die();
+	}
+
+
+
+	/**
+	 *
+	 * @since   0.0.1
+	 * @access  public
+	 */
+    public static function my_action_callback_check_subscription() {
+
+	    $autor_id =  (int) $_POST['autor'];
+	    $user =  (int) $_POST['user'];
+
+	    if ( $user == 0 ) {     // Benutzer nicht angemeldet.
+		    wp_die();
+	    }
+	    // Hat User schon eine Autorenverknüpfung gestellt?
+	    if ( get_user_meta( $user, 'autor_link', true ) != '' ) {
+		    wp_die();
+	    }
+	    // Ist Autor schon mit einem User verknüpft?
+	    if ( get_post_meta( $autor_id, 'user_link', true ) != '' ) {
+		    wp_die();
+	    }
+
+    	?>
+	    <a class="cta-button" >Ich bin dieser Autor</a>
+		<?php
+    	wp_die();
+    }
+
+
+	/**
+	 *
+	 * @since   0.0.1
+	 * @access  public
+	 */
+	public static function my_action_callback_add_subscription() {
+		$autor_id =  (int) $_POST['autor'];
+		$user =  (int) $_POST['user'];
+
+		if ( $user == 0 ) {     // Benutzer nicht angemeldet.
+			wp_die();
+		}
+		// Hat User schon eine Autorenverknüpfung gestellt?
+		if ( get_user_meta( $user, 'autor_link', true ) != '' ) {
+			wp_die();
+		}
+		// Ist Autor schon mit einem User verknüpft?
+		if ( get_post_meta( $autor_id, 'user_link', true ) != '' ) {
+			wp_die();
+		}
+
+		add_post_meta( $autor_id, 'user_link', $user );
+		add_post_meta( $autor_id, 'user_status', 'pending' );
+		add_user_meta( $user, 'autor_link', $autor_id );
+		add_user_meta( $user, 'autor_status', 'pending' );
+		?>
+		<a class="cta-button" >Autorenverknüpfung beantragt.</a>
+		<?php
+		wp_die();
+	}
+
 
 	/**
 	 *
@@ -1322,7 +1435,7 @@ function rw_mp_row_actions( $actions, $post )
 function materialpool_pods_material_metaboxes ( $type, $name ) {
     pods_group_add( 'material', __( 'Base', Materialpool::get_textdomain() ), 'material_url,material_no_viewer,material_special, material_titel,material_kurzbeschreibung,material_beschreibung,material_von_name,material_von_email' );
     pods_group_add( 'material', __( 'Owner', Materialpool::get_textdomain() ), 'material_autoren,material_autor_interim,material_organisation,material_organisation_interim' );
-    pods_group_add( 'material', __( 'Meta', Materialpool::get_textdomain() ), 'material_schlagworte,schlagwortsynonyme, material_schlagworte_interim,material_bildungsstufe,material_altersstufe,material_medientyp,material_sprache' );
+    pods_group_add( 'material', __( 'Meta', Materialpool::get_textdomain() ), 'material_schlagworte,schlagwortsynonyme, material_schlagworte_interim,material_bildungsstufe,material_altersstufe,material_medientyp,material_sprache,vorauswahl' );
     pods_group_add( 'material', __( 'Advanced Meta', Materialpool::get_textdomain() ), 'material_inklusion,material_verfuegbarkeit,material_zugaenglichkeit,material_lizenz, material_werkzeug' );
     pods_group_add( 'material', __( 'Date', Materialpool::get_textdomain() ), 'material_veroeffentlichungsdatum,material_jahr, material_erstellungsdatum,material_depublizierungsdatum,material_wiedervorlagedatum' );
     pods_group_add( 'material', __( 'Relationships', Materialpool::get_textdomain() ), 'material_werk,material_band,material_verweise' );
