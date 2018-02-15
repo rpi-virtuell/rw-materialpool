@@ -873,5 +873,23 @@ jQuery(document).ready(function(){
             jQuery('#organisation_nachricht-' + id ).html( ret );
         });
     })
+
+
+    jQuery(".contribute").click( function() {
+
+        var autor  = jQuery(this).data("autor");
+        var user  = jQuery(this).data("user");
+        var action = jQuery(this).data("action");
+        var data = {
+            'action': 'mp_edit_subscription',
+            'autor': autor,
+            'user' : user,
+            'cmd'  : action,
+        };
+        jQuery.post(ajaxurl, data, function(response ) {
+            location.reload();
+        });
+    });
+
 });
 

@@ -490,6 +490,21 @@ class Materialpool_Material {
 		}
 		wp_set_object_terms( $post_id, $cat_ids, 'werkzeug', true );
 
+
+		// Vorauswahl des Materials in term_rel speichern
+		wp_delete_object_term_relationships( $post_id, 'vorauswahl' );
+		$cats = $_POST[ 'pods_meta_material_vorauswahl' ];
+		if ( is_array( $cats ) ) {
+			foreach ( $cats as $key => $val ) {
+				$cat_ids[] = (int) $val;
+			}
+		}
+		if ( $cats!== null  ) {
+			$cat_ids[] = (int) $cats;
+		}
+		wp_set_object_terms( $post_id, $cat_ids, 'vorauswahl', true );
+
+
         // Zugänglichkeit des Materials in term_rel speichern
         wp_delete_object_term_relationships( $post_id, 'zugaenglichkeit' );
         $cats = $_POST[ 'pods_meta_material_zugaenglichkeit' ];
@@ -602,6 +617,8 @@ class Materialpool_Material {
         remove_meta_box( 'tagsdiv-sprache' , 'material' , 'normal' );
         remove_meta_box( 'tagsdiv-verfuegbarkeit' , 'material' , 'normal' );
         remove_meta_box( 'tagsdiv-zugaenglichkeit' , 'material' , 'normal' );
+	    remove_meta_box( 'vorauswahldiv' , 'material' , 'normal' );
+	    remove_meta_box( 'tagsdiv-werkzeug' , 'material' , 'normal' );
     }
 
 
