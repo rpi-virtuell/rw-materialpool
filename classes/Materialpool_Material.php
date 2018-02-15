@@ -1378,7 +1378,7 @@ END;
     static public function is_werk() {
         global $post;
         global $wpdb;
-        $result = $wpdb->get_row( $wpdb->prepare("SELECT count(post_id) as count FROM $wpdb->postmeta WHERE meta_key = %s and meta_value = %s", 'material_werk', $post->ID ) );
+        $result = $wpdb->get_row( $wpdb->prepare("SELECT count(post_id) as count FROM $wpdb->postmeta WHERE meta_key = %s and meta_value = %s ", 'material_werk', $post->ID ) );
         if ( is_object( $result)  && $result->count == 0 ) {
             return false;
         } else {
@@ -1416,7 +1416,7 @@ END;
         global $post;
 
         if ( self::is_werk() ) {
-            $result = $wpdb->get_results( $wpdb->prepare( "SELECT $wpdb->posts.*  FROM $wpdb->posts, $wpdb->postmeta WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id AND  $wpdb->postmeta.meta_key = %s AND $wpdb->postmeta.meta_value = %s and $wpdb->posts.post_status = 'publish'  order by post_title asc" , 'material_werk', $post->ID ) );
+            $result = $wpdb->get_results( $wpdb->prepare( "SELECT $wpdb->posts.*  FROM $wpdb->posts, $wpdb->postmeta WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id AND  $wpdb->postmeta.meta_key = %s AND $wpdb->postmeta.meta_value = %s  and $wpdb->posts.post_status = 'publish'  order by post_title asc" , 'material_werk', $post->ID ) );
             foreach ( $result as $material ) {
                 echo $material->post_title . '<br>';
             }
@@ -1436,7 +1436,7 @@ END;
         global $post;
 
         if ( self::is_werk() ) {
-            $result = $wpdb->get_results( $wpdb->prepare( "SELECT $wpdb->posts.*  FROM $wpdb->posts, $wpdb->postmeta WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id AND  $wpdb->postmeta.meta_key = %s AND $wpdb->postmeta.meta_value = %s  and $wpdb->posts.post_status = 'publish' order by post_title asc" , 'material_werk', $post->ID ) );
+            $result = $wpdb->get_results( $wpdb->prepare( "SELECT $wpdb->posts.*  FROM $wpdb->posts, $wpdb->postmeta WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id AND  $wpdb->postmeta.meta_key = %s AND $wpdb->postmeta.meta_value = %s  and $wpdb->posts.post_status = 'publish'  order by post_title asc" , 'material_werk', $post->ID ) );
             foreach ( $result as $material ) {
                 $url = get_permalink( $material->ID );
                 echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-volumes', 'materialpool-template-material-volumes' ) .'">' . $material->post_title . '</a><br>';
@@ -1456,7 +1456,7 @@ END;
 
 		if ( self::is_part_of_werk() ) {
 			$werk = self::get_werk_id();
-			$result = $wpdb->get_results( $wpdb->prepare( "SELECT $wpdb->posts.*  FROM $wpdb->posts, $wpdb->postmeta WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id AND  $wpdb->postmeta.meta_key = %s AND $wpdb->postmeta.meta_value = %s  and $wpdb->posts.post_status = 'publish'  order by post_title asc" , 'material_werk', $werk ) );
+			$result = $wpdb->get_results( $wpdb->prepare( "SELECT $wpdb->posts.*  FROM $wpdb->posts, $wpdb->postmeta WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id AND  $wpdb->postmeta.meta_key = %s AND $wpdb->postmeta.meta_value = %s and $wpdb->posts.post_status = 'publish'   order by post_title asc" , 'material_werk', $werk ) );
 			foreach ( $result as $material ) {
 				if ( ! $selfinclude ) {
 					if ( $material->ID == $post->ID ) {
