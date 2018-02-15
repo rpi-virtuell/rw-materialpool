@@ -1085,7 +1085,8 @@ class Materialpool {
         $pod->add_to( 'material_medientyp', implode( ',', $medientype[ 0 ] ) );
         $pod->add_to( 'material_bildungsstufe', implode( ',', $bildungsstufe[ 0 ] ) );
         $pod->add_to( 'material_altersstufe', implode( ',', $altersstufe[ 0 ] ) );
-
+        // Zu Handverlesen hinzufügen
+        $pod->add_to( 'material_vorauswahl', 2206 );
 
         $post_type = get_post_type($material_id);
         $post_parent = wp_get_post_parent_id( $material_id );
@@ -1160,6 +1161,21 @@ class Materialpool {
             $cat_ids[] = (int) $cats;
         }
         wp_set_object_terms( $material_id, $cat_ids, 'sprache', true );
+
+
+        // Vorauswahl des Materials in term_rel speichern
+        wp_delete_object_term_relationships( $post_id, 'vorauswahl' );
+        $cats = 2206;
+        if ( is_array( $cats ) ) {
+            foreach ( $cats as $key => $val ) {
+                $cat_ids[] = (int) $val;
+            }
+        }
+        if ( $cats!== null  ) {
+            $cat_ids[] = (int) $cats;
+        }
+        wp_set_object_terms( $post_id, $cat_ids, 'vorauswahl', true );
+
 
 	    Materialpool_Material::set_createdate( $material_id  );
 
