@@ -456,7 +456,6 @@ class Materialpool_Contribute {
 	 */
 	static public function cmd_send_post( $request ) {
 	    global $wpdb;
-		self::log('HIER send_post, CMD: ' .$request->cmd  );
 		if ( 'send_post' == $request->cmd ) {
 
 			$data = false;
@@ -467,6 +466,7 @@ class Materialpool_Contribute {
 			$query = $wpdb->prepare( "SELECT user_id FROM {$wpdb->usermeta} WHERE meta_key = 'autor_hash' and meta_value = %s",
 				$user
 			);
+			self::log('Query1: ' .$query  );
 			$autor = $wpdb->get_var(  $query );
 			if ( $autor != null ) {
                 $query = $wpdb->prepare( "SELECT user_id FROM {$wpdb->usermeta} WHERE meta_key = 'autor_status' and meta_value = 'ok' and user_id = %s",
@@ -482,7 +482,9 @@ class Materialpool_Contribute {
 					// URL Check
 					$url              = urldecode( $request->data->material_url );
 					$query = $wpdb->prepare( "SELECT count( meta_id ) as anzahl  FROM  $wpdb->postmeta pm, $wpdb->posts p  WHERE pm.meta_key = %s and pm.meta_value = %s and pm.post_id= p.ID and p.post_status = 'publish' ", 'material_url', $url );
+                self::log( $query);
 					$anzahl = $wpdb->get_col( $query );
+					self::log( $anzahl );
 					if ( is_array( $anzahl ) && $anzahl[ 0 ] == 0 ) {
 
                         if ($autorid != null ) $status=true;
@@ -496,7 +498,16 @@ class Materialpool_Contribute {
 	                        $keywords         = urldecode( $request->data->material_interim_keywords );
 	                        $altersstufe      = base64_decode( $request->data->material_altersstufe );
 	                        $bildungsstufe    = base64_decode( $request->data->material_bildungsstufe );
-
+	                        $material_screenshot_url = base64_decode( $request->data->material_screenshot );
+	                        self::log( "screen:" . $material_screenshot_url.':' );
+	                        $material_cover_url = '';
+	                        $material_screenshot = '';
+	                        if ( $material_screenshot_url ==  '') {
+	                            $material_screenshot = "https://s.wordpress.com/mshots/v1/" . urlencode( $url ) . "?w=400&h=300";
+                            } else {
+		                        $material_cover_url = $material_screenshot_url;
+                            }
+	                        self::log( "screen:" . $material_screenshot.':' );
 	                        $data = array(
 		                        'material_special'             => 0,
 		                        'material_titel'               => $title,
@@ -504,6 +515,8 @@ class Materialpool_Contribute {
 		                        'material_beschreibung'        => $description,
 		                        'material_schlagworte_interim' => $keywords,
 		                        'material_url'                 => $url,
+                                'material_cover_url'           => $material_screenshot ,
+                                'material_screenshot'          => $material_screenshot,
 	                        );
 
 	                        $material_id = $pod->add( $data );
