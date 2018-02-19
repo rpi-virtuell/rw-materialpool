@@ -340,7 +340,7 @@ class Materialpool {
 		add_action( 'edit_user_profile',array( 'Materialpool_Contribute', 'edit_user_profile' ) );
 		add_action( 'show_user_profile',array( 'Materialpool_Contribute', 'edit_user_profile' ) );
 
-
+		add_filter( 'rw_materialpool_contribute_cmd_parser', array( 'Materialpool_Contribute', 'cmd_list_medientypen' ) );
 		add_filter( 'rw_materialpool_contribute_cmd_parser', array( 'Materialpool_Contribute', 'cmd_send_post' ) );
 		add_filter( 'rw_materialpool_contribute_cmd_parser', array( 'Materialpool_Contribute', 'cmd_ping' ) );
 		add_filter( 'rw_materialpool_contribute_cmd_parser', array( 'Materialpool_Contribute', 'cmd_say_hello' ) );

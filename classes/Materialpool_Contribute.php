@@ -76,7 +76,7 @@ class Materialpool_Contribute {
 
 
 	static public function log($content){
-		if ( WP_DEBUG  ) {
+		if ( true  ) {
 			file_put_contents( Materialpool::$plugin_base_dir.'/clients.log' , $content ."\n",FILE_APPEND );
 		}
 	}
@@ -454,6 +454,33 @@ class Materialpool_Contribute {
 	 * @param   $request
 	 * @return  mixed
 	 */
+	static public function cmd_list_medientypen( $request ) {
+		if ( 'list_medientypen' == $request->cmd ) {
+			self::log('list_medientypen');
+
+
+			$terms = get_terms( array (
+				'taxonomy' => 'medientyp',
+			));
+
+			$data = array(
+				'notice'=> "ok",
+				'answer' => $terms,
+			);
+
+			Materialpool_Contribute::send_response(
+				$request->cmd ,
+				$data,
+				false
+			);
+
+		}
+		return $request;
+	}
+	/**
+	 * @param   $request
+	 * @return  mixed
+	 */
 	static public function cmd_send_post( $request ) {
 	    global $wpdb;
 		if ( 'send_post' == $request->cmd ) {
@@ -499,6 +526,8 @@ class Materialpool_Contribute {
 	                        $altersstufe      = base64_decode( $request->data->material_altersstufe );
 	                        $bildungsstufe    = base64_decode( $request->data->material_bildungsstufe );
 	                        $material_screenshot_url = base64_decode( $request->data->material_screenshot );
+	                        $medientyp        = base64_decode( $request->data->material_medientyp );
+
 	                        self::log( "screen:" . $material_screenshot_url.':' );
 	                        $material_cover_url = '';
 	                        $material_screenshot = '';
@@ -534,6 +563,12 @@ class Materialpool_Contribute {
 		                        $term = get_term_by( 'name', $item, 'bildungsstufe' );
 		                        $pod->add_to( 'material_bildungsstufe', $term->term_id);
 	                        }
+	                        $medien = unserialize( $medientyp );
+	                        foreach ( $medien as $item ) {
+		                        $term = get_term_by( 'name', $item, 'medientyp' );
+		                        $pod->add_to( 'material_medientyp', $term->term_id);
+	                        }
+
                             // remove Pods Handverlesen default
                             $pod->remove_from( 'material_vorauswahl', 2206 );
 
@@ -542,6 +577,12 @@ class Materialpool_Contribute {
 	                        $post_name   = wp_unique_post_slug( sanitize_title( $title ), $material_id, 'publish', $post_type, $post_parent );
 
 	                        wp_publish_post( $material_id );
+
+                            // remove FacetCache
+	                        if ( class_exists( 'FacetWP_Cache' )) {
+		                        $facecache = new FacetWP_Cache();
+		                        $facecache->cleanup( 'all' );
+                            }
 	                        $data = true;
                         }
                     }
