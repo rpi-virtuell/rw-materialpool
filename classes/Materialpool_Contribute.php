@@ -546,6 +546,7 @@ class Materialpool_Contribute {
 		                        'material_url'                 => $url,
                                 'material_cover_url'           => $material_cover_url ,
                                 'material_screenshot'          => $material_screenshot,
+                                'post_author'                  => $autor,
 	                        );
 
 	                        $material_id = $pod->add( $data );
