@@ -485,6 +485,21 @@ class Materialpool {
 			update_post_meta( $autor_id, 'user_status', 'ok' );
             $hash = password_hash( $user . '___' . $autor_id, PASSWORD_DEFAULT );
             add_user_meta( $user, 'autor_hash', $hash );
+
+			// Wenn User Abonnent oder Mitarbeiter ist, auf Autor hochstufen.
+
+			$user_meta = get_userdata( $user );
+			$user_roles = $user_meta->roles;
+			if ( in_array("subscriber", $user_roles ) || in_array("contributor", $user_roles ) ) {
+				$u = new WP_User( $user );
+				if ( in_array( "subscriber", $user_roles ) ) {
+					$u->remove_role( "subscriber" );
+				}
+				if ( in_array( "contributor", $user_roles ) ) {
+					$u->remove_role( "contributor" );
+				}
+				$u->add_role( "author" );
+			}
 		}
 		?>
 		ok
