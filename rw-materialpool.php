@@ -239,7 +239,6 @@ class Materialpool {
         add_filter( 'manage_edit-altersstufe_columns', array( 'Materialpool_Altersstufen', 'taxonomy_column' ) );
         add_filter( 'manage_altersstufe_custom_column', array( 'Materialpool_Altersstufen', 'taxonomy_column_data' ), 10, 3);
 
-
         // Add Filter & Actions for Synonyme
 
         add_filter( 'manage_edit-synonym_columns', array( 'Materialpool_Synonyme', 'cpt_list_head' ) );
@@ -253,8 +252,6 @@ class Materialpool {
 		add_filter( 'posts_where', array( 'Materialpool_Synonyme', 'material_list_post_where' ) );
 		add_filter( 'posts_distinct', array( 'Materialpool_Synonyme', 'material_list_post_distinct' ) );
 
-
-
         // Add Filter & Actions for Themenseiten
         add_filter( 'template_include', array( 'Materialpool_Themenseite', 'load_template' ) );
         add_filter( 'tl_tplc_external_files', array( 'Materialpool_Themenseite', 'add_template_check_external_files' ) );
@@ -262,7 +259,7 @@ class Materialpool {
         add_filter( 'bulk_actions-edit-themenseite', array( 'Materialpool_Themenseite','remove_from_bulk_actions' ) );
 		add_action( 'manage_themenseite_posts_columns', array( 'Materialpool_Themenseite', 'cpt_list_head') );
 		add_action( 'manage_themenseite_posts_custom_column', array( 'Materialpool_Themenseite', 'cpt_list_column'), 10,2 );
-
+		add_action( 'admin_menu' , array( 'Materialpool_Themenseite', 'remove_post_custom_fields' ) );
 
 		// Add Filter & Actions for Settingspage
         //add_action( 'admin_menu', array( 'Materialpool_Settings', 'options_page' ) );
