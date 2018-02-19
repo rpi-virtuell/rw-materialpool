@@ -515,7 +515,7 @@ class Materialpool_Contribute {
 		                        'material_beschreibung'        => $description,
 		                        'material_schlagworte_interim' => $keywords,
 		                        'material_url'                 => $url,
-                                'material_cover_url'           => $material_screenshot ,
+                                'material_cover_url'           => $material_cover_url ,
                                 'material_screenshot'          => $material_screenshot,
 	                        );
 
