@@ -172,6 +172,7 @@ class Materialpool {
 		add_filter( 'parse_query',  array( 'Materialpool_Material','admin_posts_filter' ));
 		add_filter( 'query_vars', array( 'Materialpool_Material', 'rss_query_vars' ) );
 		add_action( 'pre_get_posts', array( 'Materialpool_Material',  'rss_pre_get_posts' ) );
+		add_filter( 'views_edit-material', array( 'Materialpool_Material', 'add_material_filter_view' ) );
 		//        remove_filter( 'pre_oembed_result',      'wp_filter_pre_oembed_result',    10 );
 		//        add_filter( 'pre_oembed_result',      array( 'Materialpool', 'wp_filter_pre_oembed_result' ),    10, 3 );
 

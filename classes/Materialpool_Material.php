@@ -2661,7 +2661,7 @@ END;
     }
 
     static public function admin_posts_filter( $query ) {
-	    global $pagenow;
+	    global $pagenow, $wpdb;
 	    if ( is_admin() && $pagenow=='edit.php' && isset($_GET['ORGA_FILTER_FIELD_NAME']) && $_GET['ORGA_FILTER_FIELD_NAME'] != '') {
 		    $query->query_vars['meta_key'] = 'material_organisation';
 		    $query->query_vars['meta_value'] = $_GET['ORGA_FILTER_FIELD_NAME'];
@@ -2670,7 +2670,70 @@ END;
 		    $query->query_vars['meta_key'] = 'material_autoren';
 		    $query->query_vars['meta_value'] = $_GET['AUTOR_FILTER_FIELD_NAME'];
 	    }
-        return $query;
+
+	    if ( is_admin() && $pagenow=='edit.php' && isset( $_REQUEST[ 'mode'] ) &&  $_REQUEST[ 'mode'] == 'incomplete' )  {
+		    $result = $wpdb->get_results("
+        SELECT distinct( $wpdb->posts.ID ) , $wpdb->posts.post_title, DATE_FORMAT ( post_date, '%d.%m.%y' ) AS datum  FROM 
+	$wpdb->posts, $wpdb->postmeta 
+WHERE 
+	$wpdb->posts.ID = $wpdb->postmeta.post_id AND  
+	$wpdb->posts.post_type = 'material' AND
+	( $wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'draft' )  AND
+(
+	( 
+	(
+	   not exists( select * from wp_postmeta where meta_key='material_schlagworte' and post_id = wp_posts.ID )
+	 OR  
+		( 
+			wp_postmeta.meta_key = 'material_schlagworte' AND 
+			wp_postmeta.meta_value = ''  
+		)
+		) 
+	)
+OR
+	( 
+		$wpdb->postmeta.meta_key = 'material_url' AND 
+ 			$wpdb->postmeta.meta_value = ''  
+	)
+OR
+	( 
+		$wpdb->postmeta.meta_key = 'material_beschreibung' AND 
+ 			$wpdb->postmeta.meta_value = ''  
+	)
+OR
+	( 
+		$wpdb->postmeta.meta_key = 'material_kurzbeschreibung' AND 
+ 			$wpdb->postmeta.meta_value = ''  
+	)
+OR	
+	( 
+	   not exists( select * from $wpdb->postmeta where meta_key='_pods_material_medientyp' and post_id = $wpdb->posts.ID )
+	 OR  
+		( 
+			$wpdb->postmeta.meta_key = '_pods_material_medientyp' AND 
+			$wpdb->postmeta.meta_value = ''  
+		)
+	)
+	OR	
+	( 
+	   not exists( select * from $wpdb->postmeta where meta_key='material_bildungsstufe' and post_id = $wpdb->posts.ID )
+	 OR  
+		( 
+			$wpdb->postmeta.meta_key = 'material_bildungsstufe' AND 
+			$wpdb->postmeta.meta_value = ''  
+		)
+	)
+)	
+order by wp_posts.post_date  asc ") ;
+		    $idlist = array();
+		    foreach ( $result as $obj ) {
+			    $idlist[] = $obj->ID ;
+		    }
+		    $query->query_vars['post__in'] = $idlist;
+	    }
+
+
+	    return $query;
     }
 
     static public function get_themenseiten_for_material( $material_id = 0 ) {
@@ -2732,6 +2795,81 @@ END;
 		//return $query;
 	}
 
+	static public function add_material_filter_view( $view ) {
+		global $wpdb;
+		$count = 0;
+		$result = $wpdb->get_results("
+        SELECT distinct( $wpdb->posts.ID ) , $wpdb->posts.post_title, DATE_FORMAT ( post_date, '%d.%m.%y' ) AS datum  FROM 
+	$wpdb->posts, $wpdb->postmeta 
+WHERE 
+	$wpdb->posts.ID = $wpdb->postmeta.post_id AND  
+	$wpdb->posts.post_type = 'material' AND
+	( $wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'draft' )  AND
+(
+	( 
+	(
+	   not exists( select * from wp_postmeta where meta_key='material_schlagworte' and post_id = wp_posts.ID )
+	 OR  
+		( 
+			wp_postmeta.meta_key = 'material_schlagworte' AND 
+			wp_postmeta.meta_value = ''  
+		)
+		) 
+	)
+OR
+	( 
+		$wpdb->postmeta.meta_key = 'material_url' AND 
+ 			$wpdb->postmeta.meta_value = ''  
+	)
+OR
+	( 
+		$wpdb->postmeta.meta_key = 'material_beschreibung' AND 
+ 			$wpdb->postmeta.meta_value = ''  
+	)
+OR
+	( 
+		$wpdb->postmeta.meta_key = 'material_kurzbeschreibung' AND 
+ 			$wpdb->postmeta.meta_value = ''  
+	)
+OR	
+	( 
+	   not exists( select * from $wpdb->postmeta where meta_key='_pods_material_medientyp' and post_id = $wpdb->posts.ID )
+	 OR  
+		( 
+			$wpdb->postmeta.meta_key = '_pods_material_medientyp' AND 
+			$wpdb->postmeta.meta_value = ''  
+		)
+	)
+	OR	
+	( 
+	   not exists( select * from $wpdb->postmeta where meta_key='material_bildungsstufe' and post_id = $wpdb->posts.ID )
+	 OR  
+		( 
+			$wpdb->postmeta.meta_key = 'material_bildungsstufe' AND 
+			$wpdb->postmeta.meta_value = ''  
+		)
+	)
+)	
+order by wp_posts.post_date  asc ") ;
+		foreach ( $result as $obj ) {
+			$count++;
+		}
+
+        $url= admin_url( 'edit.php?post_type=material&mode=incomplete' );
+		$active = false;
+		if ( isset( $_REQUEST[ 'mode'] ) &&  $_REQUEST[ 'mode'] == 'incomplete' ) {
+		    $active = trueM;
+        }
+		$string = '<a href="'. $url  .'" ';
+        if ( $active ) {
+            $string .= ' class="current" ';
+        }
+		$string .= '>Unvollständig</a> (' . $count . ')';
+
+
+		$view[ 'incomplete'] = $string;
+        return $view;
+    }
 
 
 }
