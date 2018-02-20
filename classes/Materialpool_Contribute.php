@@ -804,6 +804,39 @@ class Materialpool_Contribute {
 	    }
     }
 
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 * @return  int
+	 */
+	static public function submit_count() {
+		$args = array(
+			'meta_query'     => array(
+				array(
+					'key'     => 'autor_link',
+					'compare' => 'EXISTS',
+				),
+			),
+		);
+
+		$user_query = new WP_User_Query( $args );
+
+		$treffer = $user_query->results;
+
+		$counter = 0;
+		foreach ($treffer as $user ) {
+			$user_id        = $user->data->ID;
+			$status         = get_user_meta( $user_id, 'autor_status', true );
+			if ( $status == 'pending' ) {
+			    $counter++;
+            }
+		}
+		return $counter;
+
+	}
+
+
 }
 
 

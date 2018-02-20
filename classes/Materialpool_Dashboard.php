@@ -228,6 +228,13 @@ class Materialpool_Dashboard {
 	                        <?php
                         }
                         ?>
+	                    <?php
+	                    if ( Materialpool_Contribute::submit_count() > 0 ) {
+		                    ?>
+                            <a href="<?php echo admin_url("admin.php?page=rw-materialpool%2Fclasses%2FMaterialpool_Contribute.php2"); ?>">Autorenverknüpfungen zur Überprüfung: <?php echo Materialpool_Contribute::submit_count(); ?></a><br>
+		                    <?php
+	                    }
+	                    ?>
                     </div>
 
                     <div style="float: left; padding-right: 20px;">
