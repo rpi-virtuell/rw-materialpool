@@ -478,12 +478,12 @@ class Materialpool {
 	        delete_post_meta( $autor_id, 'user_link' );
 
 	        // generate Mail
-	        $sendmail = get_option( 'autor_user_false', 0 );
+	        $sendmail = get_option( 'einstellungen_autor_user_false', 0 );
 	        $userObj = get_userdata( $user );
 	        $email    = $userObj->user_email;
 	        if ( $sendmail == 1 && $email != '' ) {
-                $subject = get_option( 'autor_user_false_subject', false );
-                $content = get_option( 'autor_user_false_content', false );
+                $subject = get_option( 'einstellungen_autor_user_false_subject', false );
+                $content = get_option( 'einstellungen_autor_user_false_content', false );
                 if ( $subject && $content ) {
                     $headers[] = 'From: Redaktion rpi-virtuell <redaktion@rpi-virtuell.de>';
                     $headers[] = 'Reply-To: Redaktion rpi-virtuell <redaktion@rpi-virtuell.de>';
@@ -515,12 +515,12 @@ class Materialpool {
 			}
 
 			// generate Mail
-			$sendmail = get_option( 'autor_user_true', 0 );
+			$sendmail = get_option( 'einstellungen_autor_user_true', 0 );
 			$userObj = get_userdata( $user );
 	        $email    = $userObj->user_email;
 	        if ( $sendmail == 1 && $email != '' ) {
-		        $subject = get_option( 'autor_user_true_subject', false );
-		        $content = get_option( 'autor_user_true_content', false );
+		        $subject = get_option( 'einstellungen_autor_user_true_subject', false );
+		        $content = get_option( 'einstellungen_autor_user_true_content', false );
 		        if ( $subject && $content ) {
 
 			        $headers[] = 'From: Redaktion rpi-virtuell <redaktion@rpi-virtuell.de>';
