@@ -584,7 +584,21 @@ class Materialpool_Contribute {
 		                        $facecache = new FacetWP_Cache();
 		                        $facecache->cleanup( 'all' );
                             }
-	                        $data = true;
+                            wp_cache_flush(); // to get new permalink
+	                        $data = array(
+		                        'notice'=> true,
+		                        'answer' => array(
+		                                'status' => true,
+		                                'url' => get_permalink( $material_id),
+                                ),
+	                        );
+
+	                        Materialpool_Contribute::send_response(
+		                        $request->cmd ,
+		                        $data,
+		                        false
+	                        );
+	                        return $request;
                         }
                     }
                 }
@@ -794,7 +808,7 @@ class Materialpool_Contribute {
                     <th>Materialkey</th>
                     <td>
                         <p>
-                            <label for="configstr"><?php _e( 'Kopiere den folgenden Code und füge ihn in deinem Blog unter Benutzer &gt; Materialpool ein, um Blogbeiträge an den Materialpool zu übermitteln..', Materialpool::$textdomain ); ?></label><br>
+                            <label for="configstr"><?php _e( 'Kopiere den folgenden Code und füge ihn in deinem Blog unter Benutzer &gt; Dein Profil  in das Feld Materialkey im Abschnitt Materialpool ein, um Blogbeiträge an den Materialpool zu übermitteln.', Materialpool::$textdomain ); ?></label><br>
                             <input id="configstr" type="text" class="regular-text" value="<?php echo $hash; ?>">
                         </p>
                     </td>
