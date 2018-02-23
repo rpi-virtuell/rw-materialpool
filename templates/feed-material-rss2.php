@@ -7,7 +7,6 @@
 
 header('Content-Type: ' . feed_content_type('rss2') . '; charset=' . get_option('blog_charset'), true);
 $more = 1;
-
 echo '<?xml version="1.0" encoding="'.get_option('blog_charset').'"?'.'>';
 
 /**
@@ -113,9 +112,9 @@ do_action( 'rss_tag_pre', 'rss2' );
                 <?php endif; ?>
                 <?php
                 $url = Materialpool_Material::get_cover();
-
-                if ( $url != '' ) { ?>
-                    <enclosure url="<?php echo htmlentities($url); ?>"   />
+                $url = esc_url( htmlentities($url, ENT_XHTML) );
+                if ( $url != '' && false === strpos ( $url, '&')) { ?>
+                    <enclosure  url="<?php echo  $url; ?>"   />
                 <?php } ?>
 	            <?php
                 /**
