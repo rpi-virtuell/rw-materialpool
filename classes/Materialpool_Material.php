@@ -1548,7 +1548,7 @@ END;
         $back = array();
         $verweise = Materialpool_Material::get_verweise();
         foreach ( $verweise as $verweis ) {
-            $back[] = $verweis[ 'ID' ];
+            $back[] = (int) $verweis[ 'ID' ];
         }
         return $back;
     }
