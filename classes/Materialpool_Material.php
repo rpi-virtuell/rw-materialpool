@@ -2725,6 +2725,34 @@ OR
 	)
 )	
 order by wp_posts.post_date  asc ") ;
+
+		    $idlist = array();
+		    foreach ( $result as $obj ) {
+			    $idlist[] = $obj->ID ;
+		    }
+		    $query->query_vars['post__in'] = $idlist;
+	    }
+        if ( is_admin() && $pagenow=='edit.php' && isset( $_REQUEST[ 'mode'] ) &&  $_REQUEST[ 'mode'] == 'supply' )  {
+			    $result = $wpdb->get_results("
+        SELECT distinct( $wpdb->posts.ID ) , $wpdb->posts.post_title, DATE_FORMAT ( post_date, '%d.%m.%y' ) AS datum  FROM 
+	$wpdb->posts, $wpdb->postmeta 
+WHERE 
+	$wpdb->posts.ID = $wpdb->postmeta.post_id AND  
+	$wpdb->posts.post_type = 'material' AND
+	( $wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'draft' )  AND
+(
+	(
+	   not exists( select * from wp_postmeta where meta_key='material_vorauswahl' and post_id = wp_posts.ID )
+	 OR  
+		( 
+			wp_postmeta.meta_key = 'material_vorauswahl' AND 
+			wp_postmeta.meta_value != 2206  
+		) 
+	)
+)	
+order by wp_posts.post_date  asc ") ;
+
+
 		    $idlist = array();
 		    foreach ( $result as $obj ) {
 			    $idlist[] = $obj->ID ;
@@ -2799,7 +2827,7 @@ order by wp_posts.post_date  asc ") ;
 		global $wpdb;
 		$count = 0;
 		$result = $wpdb->get_results("
-        SELECT distinct( $wpdb->posts.ID ) , $wpdb->posts.post_title, DATE_FORMAT ( post_date, '%d.%m.%y' ) AS datum  FROM 
+        SELECT distinct( $wpdb->posts.ID )  FROM 
 	$wpdb->posts, $wpdb->postmeta 
 WHERE 
 	$wpdb->posts.ID = $wpdb->postmeta.post_id AND  
@@ -2866,8 +2894,48 @@ order by wp_posts.post_date  asc ") ;
         }
 		$string .= '>Unvollständig</a> (' . $count . ')';
 
-
 		$view[ 'incomplete'] = $string;
+
+
+		$count = 0;
+		$result = $wpdb->get_results("
+        SELECT distinct( $wpdb->posts.ID )  FROM 
+	$wpdb->posts, $wpdb->postmeta 
+WHERE 
+	$wpdb->posts.ID = $wpdb->postmeta.post_id AND  
+	$wpdb->posts.post_type = 'material' AND
+	( $wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'draft' )  AND
+(
+	(
+	   not exists( select * from wp_postmeta where meta_key='material_vorauswahl' and post_id = wp_posts.ID )
+	 OR  
+		( 
+			wp_postmeta.meta_key = 'material_vorauswahl' AND 
+			wp_postmeta.meta_value != 2206  
+		) 
+	)
+)	
+order by wp_posts.post_date  asc ") ;
+
+
+		foreach ( $result as $obj ) {
+			$count++;
+		}
+
+
+		$url= admin_url( 'edit.php?post_type=material&mode=supply' );
+		$active = false;
+		if ( isset( $_REQUEST[ 'mode'] ) &&  $_REQUEST[ 'mode'] == 'incomplete' ) {
+			$active = trueM;
+		}
+		$string = '<a href="'. $url  .'" ';
+		if ( $active ) {
+			$string .= ' class="current" ';
+		}
+		$string .= '>Zugeliefert</a> (' . $count . ')';
+
+		$view[ 'supply'] = $string;
+
         return $view;
     }
 
