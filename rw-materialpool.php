@@ -974,12 +974,11 @@ class Materialpool {
         $description = sanitize_textarea_field( $_POST['description'] );
         $user = sanitize_textarea_field( $_POST['user'] );
         $email = sanitize_email( $_POST['email'] );
-
+	    $description .= "\n\n";
         $anzahl = $wpdb->get_col( $wpdb->prepare( "SELECT count( meta_id ) as anzahl  FROM  $wpdb->postmeta WHERE meta_key = %s and meta_value = %s", 'material_url', $url) );
         if ( is_array( $anzahl ) && $anzahl[ 0 ] == 0 ) {
             remove_action( 'save_post', array( 'Materialpool_Material', 'generate_title') );
 	        $title = '';
-	        $description = '';
 	        $keywords = '';
 	        $image = '';
 
@@ -997,6 +996,7 @@ class Materialpool {
 		        $xpath = new DOMXPath($doc);
 		        $query = '//*/meta[starts-with(@property, \'og:\')]';
 		        $metas = $xpath->query($query);
+
 		        foreach ($metas as $meta) {
 			        $property = $meta->getAttribute('property');
 			        $content = $meta->getAttribute('content');
@@ -1004,7 +1004,7 @@ class Materialpool {
 				        $title = $content;
 			        }
 			        if ($property == 'og:description') {
-				        $description = $content;
+				        $description .=  $content;
 			        }
 			        if ($property == 'og:video:tag' || $property == 'video:tag') {
 				        if ($keywords != '') {
@@ -1022,7 +1022,7 @@ class Materialpool {
 			        $name = $meta->getAttribute('name');
 			        $content = $meta->getAttribute('content');
 			        if ($name == 'description' && $description == '') {
-				        $description = $content;
+				        $description .= $content;
 			        }
 			        if ($name == 'title' && $title == '') {
 				        $title = $content;
@@ -1050,7 +1050,7 @@ class Materialpool {
                 'meta_input'    => array (
                     'material_url'  => $url,
                     'material_titel' => $data[ 'title'],
-                    'material_beschreibung' => $description . $data[ 'description'],
+                    'material_beschreibung' => $description,
 	                'material_von_name' => $user,
 	                'material_von_email' => $email
                 )
