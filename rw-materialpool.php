@@ -303,6 +303,7 @@ class Materialpool {
 		add_action( 'wp_ajax_mp_check_autor_request2',  array( 'Materialpool', 'my_action_callback_check_autor_request2' ) );
 
         add_action( 'wp_ajax_mp_check_subscription',  array( 'Materialpool', 'my_action_callback_check_subscription' ) );
+		add_action( 'wp_ajax_mp_check_subscription2',  array( 'Materialpool', 'my_action_callback_check_subscription2' ) );
 		add_action( 'wp_ajax_mp_add_subscription',  array( 'Materialpool', 'my_action_callback_add_subscription' ) );
 
 
@@ -567,6 +568,34 @@ class Materialpool {
 		<?php
     	wp_die();
     }
+
+	/**
+	 *
+	 * @since   0.0.1
+	 * @access  public
+	 */
+	public static function my_action_callback_check_subscription2() {
+
+		$autor_id =  (int) $_POST['autor'];
+		$user =  (int) $_POST['user'];
+
+		if ( $user == 0 ) {     // Benutzer nicht angemeldet.
+			wp_die();
+		}
+		// Hat User schon eine Autorenverknüpfung gestellt?
+		if ( get_user_meta( $user, 'autor_link', true ) != '' ) {
+			wp_die();
+		}
+		// Ist Autor schon mit einem User verknüpft?
+		if ( get_post_meta( $autor_id, 'user_link', true ) != '' ) {
+			wp_die();
+		}
+
+		?>
+        <a href="/autor-werden" class="cta-button" >AutorIn werden</a>
+		<?php
+		wp_die();
+	}
 
 
 	/**

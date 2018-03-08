@@ -872,7 +872,7 @@ class Materialpool_Autor {
 	 * @access public
 	 * @param int $autor_id
 	 */
-    static public function autor_request_button( $autor_id = 0 ) {
+    static public function autor_request_button2( $autor_id = 0 ) {
 	    global $post;
 
 	    $autor_id = ($autor_id>0)?$autor_id:$post->ID;
@@ -890,7 +890,7 @@ class Materialpool_Autor {
 			return;
 	    }
     	?>
-	    <div id="autor-subscription" data-autor="<?php echo $autor_id; ?>" data-user="<?php echo $user; ?>">
+	    <div id="autor-subscription2" data-autor="<?php echo $autor_id; ?>" data-user="<?php echo $user; ?>">
 
 	    </div>
 		<?php
@@ -898,6 +898,37 @@ class Materialpool_Autor {
 
 	}
 
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access public
+	 * @param int $autor_id
+	 */
+	static public function autor_request_button( $autor_id = 0 ) {
+		global $post;
+
+		$autor_id = ($autor_id>0)?$autor_id:$post->ID;
+
+		$user = get_current_user_id();
+		if ( $user == 0 ) {     // Benutzer nicht angemeldet.
+			return;
+		}
+		// Hat User schon eine Autorenverknüpfung gestellt?
+		if ( get_user_meta( $user, 'autor_link', true ) != '' ) {
+			return;
+		}
+		// Ist Autor schon mit einem User verknüpft?
+		if ( get_post_meta( $autor_id, 'user_link', true ) != '' ) {
+			return;
+		}
+		?>
+        <div id="autor-subscription" data-autor="<?php echo $autor_id; ?>" data-user="<?php echo $user; ?>">
+
+        </div>
+		<?php
+
+
+	}
 
 	/**
 	 *

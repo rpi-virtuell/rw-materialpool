@@ -71,7 +71,22 @@ jQuery(document).ready(function(){
     });
 });
 
+jQuery(document).ready(function(){
+    var element = jQuery("#autor-subscription2");
+    var autor  = jQuery(element).data("autor");
+    var user  = jQuery(element).data("user");
 
+    var data = {
+        'action': 'mp_check_subscription2',
+        'autor': autor,
+        'user' : user,
+    };
+    jQuery.post(ajaxurl, data, function(response ) {
+        ret = response;
+        jQuery(element).html('');
+        jQuery(element).append(ret);
+    });
+});
 
 jQuery(document).ready(function(){
     jQuery(".materialpool-vorschlag-send").click( function() {
