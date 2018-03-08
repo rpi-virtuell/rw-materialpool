@@ -897,4 +897,42 @@ class Materialpool_Autor {
 
 
 	}
+
+
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access public
+	 */
+	static public function shortcode_register_autor() {
+		if ( ! is_user_logged_in() ) {
+		    return;
+		}
+
+		$userID = get_current_user_id();
+		$back = <<<END
+
+<div class="materialpool-vorschlag">
+    Ich möchte als AutorIn im Materialpool geführt werden.<br><br>
+    <div class="materialpoolautorvorname">
+        Vorname: <input type="text" id="materialpoolautorvorname" >
+    </div>
+    <div class="materialpoolautorname">
+        Name: <input type="text" id="materialpoolautorname">
+    </div>    
+    <div class="materialpoolautoremail">
+        E-Mail: <input type="text" id="materialpoolautoremail">
+    </div>    
+    <input type="hidden" id="materialpoolautorid"  value="$userID">
+    <br>
+    <button class="materialpoolautorregister">Absenden</button>
+    <div class="materialpoolautorhinweis">
+        <button class="materialpoolautorregister2" style="display: none;"></button>
+    </div>
+</div>
+END;
+
+
+		return $back;
+    }
 }

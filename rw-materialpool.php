@@ -199,6 +199,7 @@ class Materialpool {
         add_action( 'save_post', array( 'Materialpool_Autor', 'generate_title') );
         add_filter( 'tl_tplc_external_files', array( 'Materialpool_Autor', 'add_template_check_external_files' ) );
         add_filter( 'bulk_actions-edit-autor', array( 'Materialpool_Material','remove_from_bulk_actions' ) );
+		add_shortcode( 'autor_register', array( 'Materialpool_Autor', 'shortcode_register_autor' ) );
 
         // Add Filter & Actions for Sprache
         add_filter( 'manage_edit-sprache_columns', array( 'Materialpool_Sprache', 'taxonomy_column' ) );
@@ -298,7 +299,8 @@ class Materialpool {
 		add_action( 'wp_ajax_mp_synonym_list',  array( 'Materialpool', 'my_action_callback_mp_synonym_list' ) );
         add_action( 'wp_ajax_convert2material',  array( 'Materialpool', 'my_action_callback_convert2material' ) );
 		add_action( 'wp_ajax_mp_edit_subscription',  array( 'Materialpool', 'my_action_callback_edit_subscription' ) );
-
+		add_action( 'wp_ajax_mp_check_autor_request',  array( 'Materialpool', 'my_action_callback_check_autor_request' ) );
+		add_action( 'wp_ajax_mp_check_autor_request2',  array( 'Materialpool', 'my_action_callback_check_autor_request2' ) );
 
         add_action( 'wp_ajax_mp_check_subscription',  array( 'Materialpool', 'my_action_callback_check_subscription' ) );
 		add_action( 'wp_ajax_mp_add_subscription',  array( 'Materialpool', 'my_action_callback_add_subscription' ) );
@@ -1228,8 +1230,148 @@ class Materialpool {
     }
 
 
+	/**
+	 *
+	 * @since   0.0.1
+	 * @access  public
+	 */
+    public static function my_action_callback_check_autor_request() {
+	    global $wpdb;
 
-    /**
+	    $vorname = sanitize_text_field( $_REQUEST['vorname'] );
+	    $name    = sanitize_text_field( $_REQUEST['name'] );
+	    $userID  = (int) $_REQUEST['user'];
+	    $email   = sanitize_email( $_REQUEST['email'] );
+
+	    // check if user avaliable
+        if ( $userID == 0 ) {
+            echo "Fehler: kein gültiger Benutzer";
+            wp_die();
+        }
+
+        $autorlink = get_user_meta( $userID, 'autor_link', true );
+        if ( $autorlink != '' ) {
+            echo "Fehler: Benutzer ist schon mit AutorIn verknüpft.";
+            wp_die();
+        }
+
+        // check if possible that author exists
+	    $query = new WP_Query(
+	            array(
+	                    'post_type' => 'autor',
+	                    'meta_query' => array(
+		                    'relation' => 'AND',
+		                    array(
+			                    'key'     => 'autor_vorname',
+			                    'value'   => $vorname,
+			                    'compare' => 'LIKE',
+		                    ),
+		                    array(
+			                    'key'     => 'autor_nachname',
+			                    'value'   => $name,
+			                    'compare' => 'LIKE',
+		                    ),
+	                    ),
+                    )
+        );
+
+	    if ( $query->have_posts() ) {
+	        echo '<br>Eventuell sind sie schon als AutorIn erfasst. Bitte Überprüfen sie folgende Autoreneinträge.<br>';
+		    echo '<ul>';
+		    while ( $query->have_posts() ) {
+			    $query->the_post();
+			    echo '<li><a href="'. get_permalink().'" target="_new">' . get_the_title() . '</a></li>';
+		    }
+		    echo '</ul>';
+		    echo '<br>';
+		    echo '<button class="materialpoolautorregister2">Ich bin noch nicht erfasst, bitte neue/n AutorIn anlegen</button>';
+	    }
+
+	    wp_die();
+    }
+
+
+	/**
+	 *
+	 * @since   0.0.1
+	 * @access  public
+	 */
+	public static function my_action_callback_check_autor_request2() {
+		global $wpdb;
+
+		$vorname = sanitize_text_field( $_REQUEST['vorname'] );
+		$name    = sanitize_text_field( $_REQUEST['name'] );
+		$userID  = (int) $_REQUEST['user'];
+		$email   = sanitize_email( $_REQUEST['email'] );
+
+		// check if user avaliable
+		if ( $userID == 0 ) {
+			echo "Fehler: kein gültiger Benutzer";
+			wp_die();
+		}
+
+		$autorlink = get_user_meta( $userID, 'autor_link', true );
+		if ( $autorlink != '' ) {
+			echo "Fehler: Benutzer ist schon mit AutorIn verknüpft.";
+            wp_die();
+		}
+
+		// Check Gravatar
+		$hash = md5(strtolower(trim($email)));
+		$uri = 'http://www.gravatar.com/avatar/' . $hash . '?d=404';
+		$headers = @get_headers($uri);
+		if (!preg_match("|200|", $headers[0])) {
+			$gravatar = '';
+		} else {
+			$gravatar = $uri;
+		}
+		$pod = pods( 'autor' );
+		$title = $vorname . ' ' . $name;
+		$data = array(
+		    'autor_vorname' => $vorname,
+            'autor_nachname' => $name,
+            'autor_email' => $email,
+            'autor_bild_url' => $gravatar,
+        );
+		$autor_id = $pod->add( $data );
+		$post_type = get_post_type($autor_id);
+		$post_parent = wp_get_post_parent_id( $autor_id );
+		$post_name = wp_unique_post_slug( sanitize_title( $title ), $autor_id, 'publish', $post_type, $post_parent );
+
+		wp_publish_post( $autor_id);
+
+		$x = $wpdb->update(
+			$wpdb->posts,
+			array(
+				'post_title' => stripslashes( $title ),
+				'post_name' => $post_name,
+				'post_content' => $title,
+			),
+			array( 'ID' => $autor_id ),
+			array(
+				'%s',
+				'%s'
+			),
+			array( '%d' )
+		);
+
+		// connect author to user
+		add_post_meta( $autor_id, 'user_link', $userID );
+		add_post_meta( $autor_id, 'user_status', 'ok' );
+		add_user_meta( $userID, 'autor_link', $autor_id );
+		add_user_meta( $userID, 'autor_status', 'ok' );
+		$hash = password_hash( $userID . '___' . $autor_id, PASSWORD_DEFAULT );
+		add_user_meta( $userID, 'autor_hash', $hash );
+
+		if ( is_object( FWP() ) ) {
+			FWP()->indexer->save_post( $autor_id );
+		}
+
+		echo 'AutorIn wurde angelegt und mit dem/der BenutzerIn verknüpft.';
+		wp_die();
+	}
+
+	/**
 	 * Creates an Instance of this Class
 	 *
 	 * @since   0.0.1

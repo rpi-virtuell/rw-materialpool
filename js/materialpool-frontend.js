@@ -101,6 +101,59 @@ jQuery(document).ready(function(){
 });
 
 
+
+jQuery(document).ready(function(){
+    jQuery(".materialpoolautorregister").click( function() {
+        jQuery('.materialpoolautorhinweis').html('');
+        var vorname = jQuery("#materialpoolautorvorname").val();
+        var name = jQuery("#materialpoolautorname").val();
+        var user = jQuery("#materialpoolautorid").val();
+        var email = jQuery("#materialpoolautoremail").val();
+        if ( vorname == '' || name == '' || user == '' || email == ''  ) {
+            jQuery('.materialpoolautorhinweis').append('Bitte alle Felder ausfüllen!');
+            return;
+        }
+        var data = {
+            'action': 'mp_check_autor_request',
+            'vorname': vorname,
+            'name' : name,
+            'user' : user,
+            'email' : email
+        };
+        jQuery.post(ajaxurl, data, function(response ) {
+            ret = response;
+            jQuery('.materialpoolautorhinweis').append(ret);
+
+
+        })
+    })
+    jQuery(".materialpoolautorhinweis").on("click",".materialpoolautorregister2", ( function() {
+        jQuery('.materialpoolautorhinweis').html('');
+        var vorname = jQuery("#materialpoolautorvorname").val();
+        var name = jQuery("#materialpoolautorname").val();
+        var user = jQuery("#materialpoolautorid").val();
+        var email = jQuery("#materialpoolautoremail").val();
+        if ( vorname == '' || name == '' || user == '' || email == ''  ) {
+            jQuery('.materialpoolautorhinweis').append('Bitte alle Felder ausfüllen!');
+            return;
+        }
+        var data = {
+            'action': 'mp_check_autor_request2',
+            'vorname': vorname,
+            'name' : name,
+            'user' : user,
+            'email' : email
+        };
+        jQuery.post(ajaxurl, data, function(response ) {
+            ret = response;
+            jQuery('.materialpoolautorhinweis').append(ret);
+
+        })
+    }))
+
+});
+
+
 jQuery(document).ready(function(){
     jQuery("#vorschlag-url").focusout( function() {
         jQuery.showLoading({name: 'jump-pulse', allowHide: true });
