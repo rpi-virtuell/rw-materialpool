@@ -152,7 +152,7 @@ class Materialpool {
         add_action( 'admin_menu' , array( 'Materialpool_Material', 'remove_post_custom_fields' ) );
         add_filter( 'posts_join', array( 'Materialpool_Material', 'material_list_post_join' ) );
         add_filter( 'posts_where', array( 'Materialpool_Material', 'material_list_post_where' ) );
-        add_filter( 'posts_distinct', array( 'Materialpool_Material', 'material_list_post_distinct' ) );
+        add_filter( 'posts_distinct', array( 'Materialpool_Material', 'material_list_post_distinct' ), 10,1  );
         add_action( 'add_meta_boxes',  array( 'Materialpool_Material', 'add_metaboxes' ) );
         add_action( 'init', array( 'Materialpool_Material', 'custom_post_status' ) );
         add_action( 'admin_footer-post.php', array( 'Materialpool_Material', 'append_post_status_list' ) );
@@ -252,7 +252,7 @@ class Materialpool {
         add_filter( 'bulk_actions-edit-synonym', array( 'Materialpool_Synonyme','remove_from_bulk_actions' ) );
 		add_filter( 'posts_join', array( 'Materialpool_Synonyme', 'material_list_post_join' ) );
 		add_filter( 'posts_where', array( 'Materialpool_Synonyme', 'material_list_post_where' ) );
-		add_filter( 'posts_distinct', array( 'Materialpool_Synonyme', 'material_list_post_distinct' ) );
+		add_filter( 'posts_distinct', array( 'Materialpool_Synonyme', 'material_list_post_distinct' ),10 ,1 );
 
         // Add Filter & Actions for Themenseiten
         add_filter( 'template_include', array( 'Materialpool_Themenseite', 'load_template' ) );

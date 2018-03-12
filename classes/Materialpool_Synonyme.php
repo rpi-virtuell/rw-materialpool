@@ -91,14 +91,13 @@ class Materialpool_Synonyme {
 	 * @access	public
 	 *
 	 */
-	static public function material_list_post_distinct( ) {
+	static public function material_list_post_distinct(  $distinct ) {
 		global $pagenow;
-		$back = '';
 
 		if ( is_admin() && $pagenow=='edit.php' && $_GET['post_type']=='synonym' && isset( $_GET['s'] ) && $_GET['s'] != '') {
-			$back = " DISTINCT ";
+			$distinct = " DISTINCT ";
 		}
-		return $back;
+		return $distinct;
 	}
 
 	/**
