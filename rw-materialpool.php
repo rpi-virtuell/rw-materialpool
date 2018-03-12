@@ -576,7 +576,6 @@ class Materialpool {
 	 */
 	public static function my_action_callback_check_subscription2() {
 
-		$autor_id =  (int) $_POST['autor'];
 		$user =  (int) $_POST['user'];
 
 		if ( $user == 0 ) {     // Benutzer nicht angemeldet.
@@ -584,10 +583,6 @@ class Materialpool {
 		}
 		// Hat User schon eine Autorenverknüpfung gestellt?
 		if ( get_user_meta( $user, 'autor_link', true ) != '' ) {
-			wp_die();
-		}
-		// Ist Autor schon mit einem User verknüpft?
-		if ( get_post_meta( $autor_id, 'user_link', true ) != '' ) {
 			wp_die();
 		}
 
@@ -1313,8 +1308,61 @@ class Materialpool {
 		    }
 		    echo '</ul>';
 		    echo '<br>';
-		    echo '<button class="materialpoolautorregister2">Ich bin noch nicht erfasst, bitte neue/n AutorIn anlegen</button>';
-	    }
+		    echo '<a href="#" class="materialpoolautorregister2">Ich bin noch nicht erfasst, bitte neue/n AutorIn anlegen</a>';
+	    } else {
+		    // Check Gravatar
+		    $hash = md5(strtolower(trim($email)));
+		    $uri = 'http://www.gravatar.com/avatar/' . $hash . '?d=404';
+		    $headers = @get_headers($uri);
+		    if (!preg_match("|200|", $headers[0])) {
+			    $gravatar = '';
+		    } else {
+			    $gravatar = $uri;
+		    }
+		    $pod = pods( 'autor' );
+		    $title = $vorname . ' ' . $name;
+		    $data = array(
+			    'autor_vorname' => $vorname,
+			    'autor_nachname' => $name,
+			    'autor_email' => $email,
+			    'autor_bild_url' => $gravatar,
+		    );
+		    $autor_id = $pod->add( $data );
+		    $post_type = get_post_type($autor_id);
+		    $post_parent = wp_get_post_parent_id( $autor_id );
+		    $post_name = wp_unique_post_slug( sanitize_title( $title ), $autor_id, 'publish', $post_type, $post_parent );
+
+		    wp_publish_post( $autor_id);
+
+		    $x = $wpdb->update(
+			    $wpdb->posts,
+			    array(
+				    'post_title' => stripslashes( $title ),
+				    'post_name' => $post_name,
+				    'post_content' => $title,
+			    ),
+			    array( 'ID' => $autor_id ),
+			    array(
+				    '%s',
+				    '%s'
+			    ),
+			    array( '%d' )
+		    );
+
+		    // connect author to user
+		    add_post_meta( $autor_id, 'user_link', $userID );
+		    add_post_meta( $autor_id, 'user_status', 'ok' );
+		    add_user_meta( $userID, 'autor_link', $autor_id );
+		    add_user_meta( $userID, 'autor_status', 'ok' );
+		    $hash = password_hash( $userID . '___' . $autor_id, PASSWORD_DEFAULT );
+		    add_user_meta( $userID, 'autor_hash', $hash );
+
+		    if ( is_object( FWP() ) ) {
+			    FWP()->indexer->save_post( $autor_id );
+		    }
+
+		    echo 'AutorIn wurde angelegt und mit dem/der BenutzerIn verknüpft.';
+        }
 
 	    wp_die();
     }
