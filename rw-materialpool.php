@@ -618,6 +618,22 @@ class Materialpool {
 		add_post_meta( $autor_id, 'user_status', 'pending' );
 		add_user_meta( $user, 'autor_link', $autor_id );
 		add_user_meta( $user, 'autor_status', 'pending' );
+
+		// Wenn User Abonnent oder Mitarbeiter ist, auf Autor hochstufen.
+
+		$user_meta = get_userdata( $user );
+		$user_roles = $user_meta->roles;
+		if ( in_array("subscriber", $user_roles ) || in_array("contributor", $user_roles ) ) {
+			$u = new WP_User( $user );
+			if ( in_array( "subscriber", $user_roles ) ) {
+				$u->remove_role( "subscriber" );
+			}
+			if ( in_array( "contributor", $user_roles ) ) {
+				$u->remove_role( "contributor" );
+			}
+			$u->add_role( "author" );
+		}
+
 		?>
 		<a class="cta-button" >Autorenverknüpfung beantragt.</a>
 		<?php

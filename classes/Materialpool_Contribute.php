@@ -519,10 +519,10 @@ class Materialpool_Contribute {
                         if (  $status == true ) {
 	                        $pod              = pods( 'material' );
 	                        $url              = urldecode( $request->data->material_url );
-	                        $title            = urldecode( $request->data->material_title );
+	                        $title            = base64_decode( $request->data->material_title );
 	                        $shortdescription = base64_decode( $request->data->material_shortdescription );
 	                        $description      = base64_decode( $request->data->material_description );
-	                        $keywords         = urldecode( $request->data->material_interim_keywords );
+	                        $keywords         = base64_decode( $request->data->material_interim_keywords );
 	                        $altersstufe      = base64_decode( $request->data->material_altersstufe );
 	                        $bildungsstufe    = base64_decode( $request->data->material_bildungsstufe );
 	                        $material_screenshot_url = base64_decode( $request->data->material_screenshot );
