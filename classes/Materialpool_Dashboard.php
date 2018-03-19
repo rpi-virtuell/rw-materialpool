@@ -18,13 +18,10 @@ class Materialpool_Dashboard {
 	 *
 	 */
 	static public function register_dashboard_page() {
-		global $wpdb;
-
 	    $count = '';
-		$query_str 		= $wpdb->prepare('SELECT count(id) as anzahl   FROM `' . $wpdb->posts . '`  
-										 WHERE post_status = %s ', "vorschlag" );
-		$items_arr 		= $wpdb->get_results( $query_str , ARRAY_A );
-		$counts = $items_arr[ 0 ][ 'anzahl' ];
+        $counts = Materialpool_Material::submit_count();
+		$counts = $counts + Materialpool_Contribute::submit_count();
+
 		if ( $counts > 0 ) {
 		    $count = "<span class='update-plugins count-". $counts . "'><span class='plugin-count'>" . number_format_i18n($counts) . "</span></span>";
 		}

@@ -638,10 +638,17 @@ class Materialpool_Contribute {
 			array( 'Materialpool_Contribute', 'create_options' )
 		);
 
+
+		$count = '';
+		$counts = Materialpool_Contribute::submit_count();
+
+		if ( $counts > 0 ) {
+			$count = "<span class='update-plugins count-". $counts . "'><span class='plugin-count'>" . number_format_i18n($counts) . "</span></span>";
+		}
 		add_submenu_page(
 			'materialpool',
 			_x('Materialpool Autoren Verknüpfungen', Materialpool::$textdomain, 'Page Title' ),
-			_x('Autoren Verknüpfungen', Materialpool::$textdomain, 'Menu Title' ),
+			_x('Autoren Verknüpfungen' . $count , Materialpool::$textdomain, 'Menu Title' ),
 			'manage_options',
 			__FILE__. '2',
 			array( 'Materialpool_Contribute', 'create_autor_options' )
