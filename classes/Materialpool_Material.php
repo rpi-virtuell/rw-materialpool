@@ -2650,12 +2650,16 @@ END;
             return;
         }
         ?>
-	    <meta property="og:title" content="<?php Materialpool_Material::title(); ?>" />
+        <meta name="keywords" content="<?php echo  strip_tags( Materialpool_Material::get_schlagworte() ) ; ?>">
+        <meta name="description" content="<?php echo  strip_tags( Materialpool_Material::get_description() ) ; ?>">
+        <meta name="author" content="<?php echo  strip_tags( Materialpool_Material::get_autor() ) ; ?>">
+        <meta property="og:title" content="<?php Materialpool_Material::title(); ?>" />
 	    <meta property="og:type" content="article" />
 	    <meta property="og:image" content="<?php echo Materialpool_Material::get_cover(); ?>" />
 	    <meta property="og:url" content="<?php echo get_permalink(); ?>" />
 	    <meta property="og:description" content="<?php echo  strip_tags( Materialpool_Material::get_description() ) ; ?>" />
 	    <meta property="og:site_name" content="rpi-virtuell Materialpool" />
+
         <?php
     }
 
