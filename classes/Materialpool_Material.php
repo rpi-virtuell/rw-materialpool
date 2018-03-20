@@ -2763,6 +2763,59 @@ order by wp_posts.post_date  asc ") ;
 	    return $query;
     }
 
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
+    static public function cleanup_themenseiten(  $material_id, $post, $update ) {
+	    global $wpdb;
+	    $post_type = get_post_type($material_id);
+	    if ( "material" != $post_type ) {
+	        return;
+        }
+        if ( $material_id == 0 ) {
+	        return;
+        }
+        if ( $post->post_status == 'trash' && $update == true ) {
+	        // Dazugehörige Themenseiten ermittln um nach dem entfernen des Materials aus den Themengruppen den Cache der Themenseite zu verwerfen.
+            $themen = Materialpool_Material::get_themenseiten_for_material( $material_id );
+
+	        $tablename = $wpdb->prefix . "pods_themenseitengruppen";
+	        $query     = "select  id   from $tablename  where  auswahl like '%,{$material_id},%' or auswahl like  '%,{$material_id}' ;";
+	        $result = $wpdb->get_results( $query );
+	        if ( is_array( $result ) && sizeof( $result ) > 0 ) {
+		        foreach ( $result as $item ) {
+			        $id      = $item->id;
+			        $query2  = "select  auswahl   from $tablename  where id = {$id};";
+			        $result2 = $wpdb->get_var( $query2 );
+			        $arr2    = explode( ',', $result2 );
+			        if (($key = array_search($material_id, $arr2)) !== false) {
+				        unset($arr2[$key]);
+			        }
+			        $string = implode( ',', $arr2 );
+			        $query3 = "update $tablename  set auswahl = '$string'  where id = {$id};";
+			        $wpdb->get_results( $query3 );
+		        }
+	        }
+	        // Seitencache der dazugehörigen Themenseiten verwerfen
+	        if ( is_array( $themen ) &&  sizeof( $themen ) > 0 ) {
+		        foreach ( $themen as $item ) {
+		            if (  function_exists( 'rocket_clean_post' ) ) {
+		                rocket_clean_post( $item->id );
+                    }
+		        }
+	        }
+        }
+    }
+
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
     static public function get_themenseiten_for_material( $material_id = 0 ) {
 	    global $post;
 	    global $wpdb;
@@ -2775,6 +2828,12 @@ order by wp_posts.post_date  asc ") ;
 	    return $count;
     }
 
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
     static public function get_themenseiten_for_material_html( $material_id  = 0) {
         $result = Materialpool_Material::get_themenseiten_for_material( $material_id);
         if ( is_array( $result ) &&  sizeof( $result ) > 0 ) {
@@ -2788,6 +2847,12 @@ order by wp_posts.post_date  asc ") ;
         }
     }
 
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
     static public function back_to_search() {
         if ( $_GET[ 'sq' ] ) {
             $sq = $_GET[ 'sq' ];
@@ -2797,12 +2862,24 @@ order by wp_posts.post_date  asc ") ;
         }
     }
 
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
     static public function  rss_query_vars( $query_vars ) {
 	    $query_vars[] = 'rss_organisation';
 	    $query_vars[] = 'rss_per_page';
 	    return $query_vars;
     }
 
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
 	static public function rss_pre_get_posts( $query ) {
 		if( $query->is_feed && $query->is_main_query() && $query->query[ 'post_type' ] == 'material' ) {
 			if( isset( $query->query_vars[ 'rss_organisation' ] ) && ! empty( $query->query_vars[ 'rss_organisation' ] ) ) {
@@ -2822,6 +2899,12 @@ order by wp_posts.post_date  asc ") ;
 		//return $query;
 	}
 
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
 	static public function add_material_filter_view( $view ) {
 		global $wpdb;
 		$count = 0;
