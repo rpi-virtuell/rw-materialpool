@@ -970,8 +970,18 @@ END;
 
     }
 
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
+    static public function material_von_name() {
+	    global $post;
 
-    /**
+	    return get_metadata( 'post', $post->ID, 'material_von_name', true );
+    }
+
     /**
      *
      * @since 0.0.1
@@ -983,6 +993,9 @@ END;
 
         $user = get_user_by( 'ID', $post->post_author );
         $ts = strtotime( $post->post_date );
+        if ( Materialpool_Material::material_von_name() != '' ) {
+	        echo "Material vorgeschlagen von " . Materialpool_Material::material_von_name() . "<br>";
+        }
         echo "Im Materialpool eingetragen: " . date( 'd.m.Y', $ts) ." von " . $user->display_name;
     }
 
