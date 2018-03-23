@@ -801,49 +801,7 @@ jQuery(document).ready(function(){
     });
 });
 
-/*
- * Quickedit Elemente ausblenden
- */
-
-jQuery(document).ready( function($) {
-     jQuery("#inline-edit-col-center").each(function (i) {
-
-        $(this).parent().remove();
-    });
-
-    $('span:contains("Altersstufen")').each(function (i) {
-        $(this).parent().remove();
-    });
-    $('span:contains("Inklusion")').each(function (i) {
-        $(this).parent().remove();
-    });
-    $('span:contains("Konfession")').each(function (i) {
-        $(this).parent().remove();
-    });
-    $('span:contains("Lizenzen")').each(function (i) {
-        $(this).parent().remove();
-    });
-    $('span:contains("Schlagworte")').each(function (i) {
-        $(this).parent().remove();
-    });
-    $('span:contains("Sprachen")').each(function (i) {
-        $(this).parent().remove();
-    });
-    $('span:contains("Verfügbarkeiten")').each(function (i) {
-        $(this).parent().remove();
-    });
-    $('span:contains("Zugänglichkeiten")').each(function (i) {
-        $(this).parent().remove();
-    });
-/*
-    jQuery('#the-list span:contains("Bildungsstufen")').each(function (i) {
-        $(this).parent().parent().remove();
-    });
-*/
-    $('.inline-edit-date').each(function (i) {
-        $(this).remove();
-    });
-});
+ 
 
 jQuery(document).ready(function(){
     jQuery(".mail_autor_send").click( function() {
