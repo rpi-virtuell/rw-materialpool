@@ -75,6 +75,11 @@ class Materialpool_Statistic
         ));
     }
 
+    static public function log_api_request( $response, $post, $request  ) {
+	    Materialpool_Statistic::log( $post->ID, $post->post_type );
+        return $response;
+    }
+
     /**
      *
      */
