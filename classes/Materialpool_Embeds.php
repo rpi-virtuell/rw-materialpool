@@ -34,12 +34,15 @@ class Materialpool_Embeds
 
         if ( $post->post_type == 'material' ) {
             $output= " <div><p style='valign: top;'><img style='width:20%; padding-right: 10px; padding-bottom: 10px;  align: left; float: left;' src='". Materialpool_Material::get_picture_url() ."'>". Materialpool_Material::get_shortdescription() ."</p></div><div style='clear: both;'></div>";
+	        Materialpool_Statistic::log( $post->ID, $post->post_type );
         }
         if ( $post->post_type == 'autor' ) {
             $output= " <div><p style='valign: top;'><img style='width:20%; padding-right: 10px; padding-bottom: 10px;  align: left; float: left;' src='". Materialpool_Autor::get_picture() ."'><strong>Das neueste Material</strong><br><br>". Materialpool_Autor::get_materialien_html( 5 ) ."</p></div><div style='clear: both;'></div>";
+	        Materialpool_Statistic::log( $post->ID, $post->post_type );
         }
         if ( $post->post_type == 'organisation' ) {
             $output= " <div><p style='valign: top;'><img style='width:20%; padding-right: 10px; padding-bottom: 10px;  align: left; float: left;' src='". Materialpool_Organisation::get_logo() ."'><strong>Das neueste Material</strong><br><br>". Materialpool_Organisation::get_materialien_html( 5 ) ."</p></div><div style='clear: both;'></div>";
+	        Materialpool_Statistic::log( $post->ID, $post->post_type );
         }
         return $output;
     }
