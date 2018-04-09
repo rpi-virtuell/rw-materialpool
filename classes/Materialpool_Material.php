@@ -3265,4 +3265,14 @@ order by wp_posts.post_date  asc ") ;
     }
 
 
+    static public function default_hide_meta_box( $hidden, $screen ) {
+	    if ( ('post' == $screen->base) && ('material' == $screen->id) ){
+		    $hidden[] = 'pods-meta-zusaetzliche-metadaten';
+		    $hidden[] = 'trackbacksdiv';
+		    $hidden[] = 'commentstatusdiv';
+		    $hidden[] = 'commentsdiv';
+		    $hidden[] = 'authordiv';
+	    }
+	    return $hidden;
+    }
 }

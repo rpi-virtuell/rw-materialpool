@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: RW Materialpool\n"
-"POT-Creation-Date: 2017-02-23 13:22+0100\n"
-"PO-Revision-Date: 2017-02-23 13:29+0100\n"
+"POT-Creation-Date: 2018-04-09 11:41+0200\n"
+"PO-Revision-Date: 2018-04-09 11:43+0200\n"
 "Last-Translator: Frank Staude <frank@staude.net>\n"
 "Language-Team: Frank Staude <frank@staude.net>\n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.12\n"
+"X-Generator: Poedit 2.0.6\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-WPHeader: rw-materialpool.php\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -25,7 +25,7 @@ msgstr ""
 #: classes/Materialpool_Inklusionen.php:21
 #: classes/Materialpool_Konfessionen.php:21
 #: classes/Materialpool_Lizenzen.php:21 classes/Materialpool_Medientyp.php:21
-#: classes/Materialpool_Schlagworte.php:21 classes/Materialpool_Sprache.php:21
+#: classes/Materialpool_Schlagworte.php:22 classes/Materialpool_Sprache.php:21
 #: classes/Materialpool_Verfuegbarkeiten.php:21
 #: classes/Materialpool_Zugaenglichkeiten.php:21
 msgid "Anzahl"
@@ -99,79 +99,202 @@ msgctxt "Author Editpage Fielddescription"
 msgid "URL of author picture"
 msgstr "URL des Autoren Bilds"
 
-#: classes/Materialpool_Autor.php:189
+#: classes/Materialpool_Autor.php:192
 msgctxt "Autor list field"
 msgid "ID"
 msgstr "ID"
 
-#: classes/Materialpool_Autor.php:190
+#: classes/Materialpool_Autor.php:193
 msgctxt "Autor list field"
 msgid "Picture"
 msgstr "Bild"
 
-#: classes/Materialpool_Autor.php:191
+#: classes/Materialpool_Autor.php:194
 msgctxt "Autor list field"
 msgid "Lastname"
 msgstr "Nachname"
 
-#: classes/Materialpool_Autor.php:192
+#: classes/Materialpool_Autor.php:195
 msgctxt "Autor list field"
 msgid "Firstname"
 msgstr "Vorname"
 
-#: classes/Materialpool_Autor.php:193
+#: classes/Materialpool_Autor.php:196
 msgctxt "Autor list field"
 msgid "Views"
 msgstr "Aufrufe"
 
-#: classes/Materialpool_Autor.php:194
+#: classes/Materialpool_Autor.php:197
 msgctxt "Autor list field"
 msgid "MaterialViews"
 msgstr "Material Aufrufe"
 
-#: classes/Materialpool_Autor.php:195
+#: classes/Materialpool_Autor.php:198
 msgctxt "Autor list field"
 msgid "BuddyPress"
 msgstr "BuddyPress"
 
-#: classes/Materialpool_Autor.php:196
+#: classes/Materialpool_Autor.php:199
 msgctxt "Autor list field"
 msgid "Email"
 msgstr "E-Mail"
 
-#: classes/Materialpool_Autor.php:197 classes/Materialpool_Organisation.php:181
-#: classes/Materialpool_Synonyme.php:24 rw-materialpool.php:882
+#: classes/Materialpool_Autor.php:200
+msgctxt "Autor list field"
+msgid "Emailbenachrichtigung"
+msgstr ""
+
+#: classes/Materialpool_Autor.php:201 classes/Materialpool_Organisation.php:195
+#: classes/Materialpool_Synonyme.php:24 rw-materialpool.php:1737
 msgid "Date"
 msgstr "Datum"
 
-#: classes/Materialpool_Autor.php:198
+#: classes/Materialpool_Autor.php:202
 msgctxt "Autor list field"
 msgid "Organisationen"
 msgstr "Organisationen"
 
-#: classes/Materialpool_Autor.php:199
+#: classes/Materialpool_Autor.php:203
 msgctxt "Autor list field"
 msgid "#Material"
 msgstr "#Material"
 
-#: classes/Materialpool_Autor.php:200
+#: classes/Materialpool_Autor.php:204
 msgctxt "Autor list field"
 msgid "Eintrager"
 msgstr "Eintrager"
 
-#: classes/Materialpool_Dashboard.php:22
+#: classes/Materialpool_Contribute.php:101
+msgid "Invalid user agent."
+msgstr ""
+
+#: classes/Materialpool_Contribute.php:109
+msgid "Invalid arguments in client version "
+msgstr ""
+
+#: classes/Materialpool_Contribute.php:115
+msgid "You use a deprecated client"
+msgstr ""
+
+#: classes/Materialpool_Contribute.php:116
+msgid "Please update your MP Contribute Client plugin. "
+msgstr ""
+
+#: classes/Materialpool_Contribute.php:172
+msgid "Your host ist not allowed to connect to this Auth - Server"
+msgstr ""
+
+#: classes/Materialpool_Contribute.php:192
+msgid "Client is suspended by remote service."
+msgstr ""
+
+#: classes/Materialpool_Contribute.php:193
+msgid "Please ask for (re)activation"
+msgstr ""
+
+#: classes/Materialpool_Contribute.php:217
+msgid ""
+"Invalid API Key! Your Client is suspended. The Admin of the Auth Service may "
+"enable your client again."
+msgstr ""
+
+#: classes/Materialpool_Contribute.php:224
+msgid "Attention"
+msgstr ""
+
+#: classes/Materialpool_Contribute.php:331
+msgid "Connection established. Everything works fine. "
+msgstr ""
+
+#: classes/Materialpool_Contribute.php:334
+msgid "Connected"
+msgstr ""
+
+#: classes/Materialpool_Contribute.php:672
+#: classes/Materialpool_Contribute.php:761
+msgid "You do not have sufficient permissions to access this page."
+msgstr ""
+
+#: classes/Materialpool_Contribute.php:676
+msgid "Autorenverknüpfungen"
+msgstr ""
+
+#: classes/Materialpool_Contribute.php:677
+msgid "Verknüpfungen von Entfernten Blogautoren zu Mateerialpool Autoren."
+msgstr ""
+
+#: classes/Materialpool_Contribute.php:765
+msgid "Remote Contribute Server Options"
+msgstr ""
+
+#: classes/Materialpool_Contribute.php:766
+msgid "Settings for Remote Contribute Server"
+msgstr ""
+
+#: classes/Materialpool_Contribute.php:775
+msgid "Settings"
+msgstr ""
+
+#: classes/Materialpool_Contribute.php:780
+msgid "Whitelist active"
+msgstr ""
+
+#: classes/Materialpool_Contribute.php:785
+msgid "Activate the whitelist. Only whitelisted hosts can access the API."
+msgstr ""
+
+#: classes/Materialpool_Contribute.php:791
+msgid "Whitelist"
+msgstr ""
+
+#: classes/Materialpool_Contribute.php:795
+msgid "Whitelisted hosts can access the API. One hostname or ip per line."
+msgstr ""
+
+#: classes/Materialpool_Contribute.php:801
+msgid "Save Changes"
+msgstr ""
+
+#: classes/Materialpool_Contribute.php:818
+msgid ""
+"Kopiere den folgenden Code und füge ihn in deinem Blog unter Benutzer &gt; "
+"Dein Profil  in das Feld Materialkey im Abschnitt Materialpool ein, um "
+"Blogbeiträge an den Materialpool zu übermitteln."
+msgstr ""
+
+#: classes/Materialpool_Contribute_Clients.php:50
+msgid "Server Clients"
+msgstr ""
+
+#: classes/Materialpool_Contribute_Clients.php:51
+msgid "Server Client"
+msgstr ""
+
+#: classes/Materialpool_Contribute_Clients.php:87
+msgid "Disable"
+msgstr ""
+
+#: classes/Materialpool_Contribute_Clients.php:87
+msgid "Enable"
+msgstr ""
+
+#: classes/Materialpool_Dashboard.php:29
 msgctxt "Page title"
 msgid "Materialpool"
 msgstr "Materialpool"
 
-#: classes/Materialpool_Dashboard.php:23
+#: classes/Materialpool_Dashboard.php:30
 msgctxt "Menu title"
-msgid "Materialpool"
-msgstr "Materialpool"
+msgid "Materialpool "
+msgstr "Materialpool "
+
+#: classes/Materialpool_FacetWP_OldSearch.php:12
+msgid "Treffer im alten Materialpool"
+msgstr "Treffer im alten Materialpool"
 
 #: classes/Materialpool_Installation.php:31
 msgid "This plugin requires WordPress 4.0 or newer to work"
-msgstr "Dieses Plugin benötigt Wordpress 4.0 oder neuer."
+msgstr "Dieses Plugin benötigt Wordpress 4.0 oder neuer"
 
 #: classes/Materialpool_Installation.php:44
 #, php-format
@@ -182,86 +305,100 @@ msgstr ""
 "Dieses Plugin benötigt PHP 5.3 oder höher. Deine aktuellen PHP-Version ist"
 "% 1s, bitte aktualisieren."
 
-#: classes/Materialpool_Material.php:78
+#: classes/Materialpool_Material.php:93
 msgctxt "Material list field"
 msgid "Views"
 msgstr "Aufrufe"
 
-#: classes/Materialpool_Material.php:79
+#: classes/Materialpool_Material.php:94
 msgctxt "Material list field"
 msgid "Bildungsstufe"
 msgstr "Bildungsstufe"
 
-#: classes/Materialpool_Material.php:80
-msgctxt "Material list field"
-msgid "Eintrager"
-msgstr "Eintrager"
-
-#: classes/Materialpool_Material.php:81
+#: classes/Materialpool_Material.php:95
+#: classes/Materialpool_Themenseite.php:150
 msgctxt "Material list field"
 msgid "Schlagworte"
 msgstr "Schlagworte"
 
-#: classes/Materialpool_Material.php:82
-msgctxt "Material list field"
-msgid "Organisation"
-msgstr "Organisation"
-
-#: classes/Materialpool_Material.php:83
-msgctxt "Material list field"
-msgid "Autoren"
-msgstr "Autoren"
-
-#: classes/Materialpool_Material.php:84
+#: classes/Materialpool_Material.php:96
 msgctxt "Material list field"
 msgid "Medientyp"
 msgstr "Medientyp"
 
-#: classes/Materialpool_Material.php:85
+#: classes/Materialpool_Material.php:97
+msgctxt "Material list field"
+msgid "Organisation"
+msgstr "Organisation"
+
+#: classes/Materialpool_Material.php:98
+msgctxt "Material list field"
+msgid "Autoren"
+msgstr "Autoren"
+
+#: classes/Materialpool_Material.php:99
 msgctxt "Material list field"
 msgid "Online"
 msgstr "Online"
 
-#: classes/Materialpool_Material.php:86
+#: classes/Materialpool_Material.php:100
 msgctxt "Material list field"
 msgid "Status"
 msgstr "Status"
 
-#: classes/Materialpool_Material.php:474
+#: classes/Materialpool_Material.php:101
+msgctxt "Material list field"
+msgid "Redakteur"
+msgstr "Redakteur"
+
+#: classes/Materialpool_Material.php:102
+msgctxt "Material list field"
+msgid "Eintrager"
+msgstr "Eintrager"
+
+#: classes/Materialpool_Material.php:633
 msgctxt "material"
 msgid "Vorschlag"
 msgstr "Vorschlag"
 
-#: classes/Materialpool_Material.php:478
+#: classes/Materialpool_Material.php:637
 #, php-format
 msgid "Vorschlag <span class=\"count\">(%s)</span>"
 msgid_plural "Vorschläge <span class=\"count\">(%s)</span>"
 msgstr[0] "Vorschlag <span class=\"count\">(%s)</span>"
 msgstr[1] "Vorschlag <span class=\"count\">(%s)</span>"
 
-#: classes/Materialpool_Material.php:481
+#: classes/Materialpool_Material.php:640
 msgctxt "material"
 msgid "Überprüfen"
 msgstr "Überprüfen"
 
-#: classes/Materialpool_Material.php:485
+#: classes/Materialpool_Material.php:644
 #, php-format
 msgid "Überprüfen <span class=\"count\">(%s)</span>"
 msgid_plural "Überprüfen <span class=\"count\">(%s)</span>"
 msgstr[0] "Überprüfen <span class=\"count\">(%s)</span>"
 msgstr[1] "Überprüfen <span class=\"count\">(%s)</span>"
 
-#: classes/Materialpool_Material.php:536
+#: classes/Materialpool_Material.php:695
 msgid "Bookmarklet"
 msgstr "Bookmarklet"
 
-#: classes/Materialpool_Material.php:547
+#: classes/Materialpool_Material.php:696
+msgid "Material"
+msgstr "Material"
+
+#: classes/Materialpool_Material.php:707
 msgid "Materialpool++"
 msgstr "Materialpool++"
 
-#: classes/Materialpool_Material.php:548
+#: classes/Materialpool_Material.php:708
 msgid "Zieh den Link in deine Lesezeichenliste"
 msgstr "Zieh den Link in deine Lesezeichenliste"
+
+#: classes/Materialpool_Material.php:719
+msgid "zum Material"
+msgstr "zum Material"
 
 #: classes/Materialpool_Organisation.php:24
 #: classes/Materialpool_Organisation.php:29
@@ -316,96 +453,118 @@ msgctxt "Organisation Editpage Fielddescription"
 msgid "Konfession of organisation"
 msgstr "Konfession der Organisation"
 
-#: classes/Materialpool_Organisation.php:173
+#: classes/Materialpool_Organisation.php:185
 msgctxt "Organisation list field"
 msgid "ID"
 msgstr "ID"
 
-#: classes/Materialpool_Organisation.php:174
+#: classes/Materialpool_Organisation.php:186
 msgctxt "Organisation list field"
 msgid "Organisation"
 msgstr "Organisation"
 
-#: classes/Materialpool_Organisation.php:175
+#: classes/Materialpool_Organisation.php:187
 msgctxt "Organisation list field"
 msgid "Logo"
 msgstr "Logo"
 
-#: classes/Materialpool_Organisation.php:176
+#: classes/Materialpool_Organisation.php:188
 msgctxt "Organisation list field"
 msgid "Views"
 msgstr "Aufrufe"
 
-#: classes/Materialpool_Organisation.php:177
+#: classes/Materialpool_Organisation.php:189
 msgctxt "Organisation list field"
 msgid "MaterialViews"
 msgstr "Material Aufrufe"
 
-#: classes/Materialpool_Organisation.php:178
+#: classes/Materialpool_Organisation.php:190
 msgctxt "Organisation list field"
 msgid "URL"
 msgstr "URL"
 
-#: classes/Materialpool_Organisation.php:179
+#: classes/Materialpool_Organisation.php:191
+msgctxt "Organisation list field"
+msgid "Email"
+msgstr "E-Mail"
+
+#: classes/Materialpool_Organisation.php:192
+msgctxt "Organisation list field"
+msgid "Emailbenachrichtigung"
+msgstr ""
+
+#: classes/Materialpool_Organisation.php:193
 msgctxt "Organisation list field"
 msgid "Konfession"
 msgstr "Konfession"
 
-#: classes/Materialpool_Organisation.php:180
+#: classes/Materialpool_Organisation.php:194
 msgctxt "Organisation list field"
 msgid "ALPIKA"
 msgstr "ALPIKA"
 
-#: classes/Materialpool_Organisation.php:182
+#: classes/Materialpool_Organisation.php:196
 msgctxt "Organisation list field"
 msgid "#Autoren"
 msgstr "#Autoren"
 
-#: classes/Materialpool_Organisation.php:183
+#: classes/Materialpool_Organisation.php:197
 msgctxt "Organisation list field"
 msgid "#Material"
 msgstr "#Material"
 
-#: classes/Materialpool_Organisation.php:184
+#: classes/Materialpool_Organisation.php:198
 msgctxt "Organisation list field"
 msgid "Eintrager"
 msgstr "Eintrager"
 
+#: classes/Materialpool_Posts.php:18
+msgid "Konvert"
+msgstr "Konvert"
+
 #: classes/Materialpool_Ratings.php:19
 msgid "Bewertung"
 msgstr "Bewertung"
+
+#: classes/Materialpool_Schlagworte.php:21
+msgid "Synonyme"
+msgstr "Synonyme"
 
 #: classes/Materialpool_Synonyme.php:23
 msgctxt "Synonym list field"
 msgid "Normwort"
 msgstr "Normwort"
 
-#: rw-materialpool.php:794
+#: rw-materialpool.php:1608
 #, php-format
 msgid "<link rel=\"%1$s\" type=\"%2$s\" href=\"%3$s\" />"
 msgstr "<link rel=\"%1$s\" type=\"%2$s\" href=\"%3$s\" />"
 
-#: rw-materialpool.php:878
+#: rw-materialpool.php:1732
 msgid "Base"
 msgstr "Basis"
 
-#: rw-materialpool.php:879
+#: rw-materialpool.php:1733
 msgid "Owner"
 msgstr "Eigentümer"
 
-#: rw-materialpool.php:880
+#: rw-materialpool.php:1734
 msgid "Meta"
 msgstr "Meta"
 
-#: rw-materialpool.php:881
+#: rw-materialpool.php:1735
 msgid "Advanced Meta"
 msgstr "Erweiterte Metadaten"
 
-#: rw-materialpool.php:883
+#: rw-materialpool.php:1736
+msgid "Additional Meta"
+msgstr "Zusätzliche Metadaten"
+
+#: rw-materialpool.php:1738
 msgid "Relationships"
 msgstr "Verknüpfungen"
 
-#: rw-materialpool.php:884
+#: rw-materialpool.php:1739
 msgid "Image"
 msgstr "Titelbild"
 
@@ -422,8 +581,8 @@ msgid "RPI Virtuell Materialpool"
 msgstr "RPI Virtuell Materialpool"
 
 #. Author of the plugin/theme
-msgid "Frank Staude"
-msgstr "Frank Staude"
+msgid "Frank Neumann-Staude"
+msgstr "Frank Neumann-Staude"
 
 #. Author URI of the plugin/theme
 msgid "https://staude.net"

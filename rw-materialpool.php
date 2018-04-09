@@ -4,7 +4,7 @@
  * RW Materialpool
  *
  * @package   Materialpool
- * @author    Frank Staude
+ * @author    Frank Neumann-Staude
  * @license   GPL-2.0+
  * @link      https://github.com/rpi-virtuell/rw-materialpool
  */
@@ -174,6 +174,7 @@ class Materialpool {
 		add_action( 'pre_get_posts', array( 'Materialpool_Material',  'rss_pre_get_posts' ) );
 		add_filter( 'views_edit-material', array( 'Materialpool_Material', 'add_material_filter_view' ) );
 		add_action( 'save_post', array( 'Materialpool_Material','cleanup_themenseiten' ), 10, 3 );
+		add_filter( 'default_hidden_meta_boxes', array( 'Materialpool_Material', 'default_hide_meta_box' ) ,10,2);
 		//        remove_filter( 'pre_oembed_result',      'wp_filter_pre_oembed_result',    10 );
 		//        add_filter( 'pre_oembed_result',      array( 'Materialpool', 'wp_filter_pre_oembed_result' ),    10, 3 );
 
@@ -1731,8 +1732,9 @@ function rw_mp_row_actions( $actions, $post )
 function materialpool_pods_material_metaboxes ( $type, $name ) {
     pods_group_add( 'material', __( 'Base', Materialpool::get_textdomain() ), 'material_url,material_no_viewer,material_special, material_titel,material_kurzbeschreibung,material_beschreibung,material_von_name,material_von_email' );
     pods_group_add( 'material', __( 'Owner', Materialpool::get_textdomain() ), 'material_autoren,material_autor_interim,material_organisation,material_organisation_interim' );
-    pods_group_add( 'material', __( 'Meta', Materialpool::get_textdomain() ), 'material_schlagworte,schlagwortsynonyme, material_schlagworte_interim,material_rubrik,material_bildungsstufe,material_altersstufe,material_medientyp,material_sprache,material_vorauswahl' );
+    pods_group_add( 'material', __( 'Meta', Materialpool::get_textdomain() ), 'material_schlagworte,schlagwortsynonyme, material_schlagworte_interim,material_bildungsstufe,material_altersstufe,material_medientyp,material_sprache,material_vorauswahl' );
     pods_group_add( 'material', __( 'Advanced Meta', Materialpool::get_textdomain() ), 'material_inklusion,material_verfuegbarkeit,material_zugaenglichkeit,material_lizenz, material_werkzeug' );
+	pods_group_add( 'material', __( 'Additional Meta', Materialpool::get_textdomain() ), 'material_rubrik' );
     pods_group_add( 'material', __( 'Date', Materialpool::get_textdomain() ), 'material_veroeffentlichungsdatum,material_jahr, material_erstellungsdatum,material_depublizierungsdatum,material_wiedervorlagedatum' );
     pods_group_add( 'material', __( 'Relationships', Materialpool::get_textdomain() ), 'material_werk,material_band,material_verweise' );
     pods_group_add( 'material', __( 'Image', Materialpool::get_textdomain() ), 'material_cover,material_cover_url,material_cover_quelle,material_screenshot' );
