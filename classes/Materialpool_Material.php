@@ -2888,15 +2888,24 @@ END;
         if ( 'material' != $post->post_type ) {
             return;
         }
+        $autorn = Materialpool_Material::get_autor();
+	    foreach ( $autorn as $autor ) {
+            $autor = strip_tags( $autor );
+        }
+
+	    $description = Materialpool_Material::get_description();
+	    if ( $description != '' ) {
+		    $description = strip_tags( $description );
+	    }
         ?>
         <meta name="keywords" content="<?php echo  strip_tags( Materialpool_Material::get_schlagworte() ) ; ?>">
-        <meta name="description" content="<?php echo  strip_tags( Materialpool_Material::get_description() ) ; ?>">
-        <meta name="author" content="<?php echo  strip_tags( Materialpool_Material::get_autor() ) ; ?>">
+        <meta name="description" content="<?php echo  $description ; ?>">
+        <meta name="author" content="<?php echo  $autor ; ?>">
         <meta property="og:title" content="<?php Materialpool_Material::title(); ?>" />
 	    <meta property="og:type" content="article" />
 	    <meta property="og:image" content="<?php echo Materialpool_Material::get_cover(); ?>" />
 	    <meta property="og:url" content="<?php echo get_permalink(); ?>" />
-	    <meta property="og:description" content="<?php echo  strip_tags( Materialpool_Material::get_description() ) ; ?>" />
+	    <meta property="og:description" content="<?php echo  $description ; ?>" />
 	    <meta property="og:site_name" content="rpi-virtuell Materialpool" />
 
         <?php
