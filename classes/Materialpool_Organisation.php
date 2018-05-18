@@ -183,7 +183,7 @@ class Materialpool_Organisation {
         unset( $columns );
         $columns = array(
             'organisation-id' => _x( 'ID', 'Organisation list field',  Materialpool::$textdomain ),
-            'title' => _x( 'Organisation', 'Organisation list field',  Materialpool::$textdomain ),
+            'organisation_title' => _x( 'Organisation', 'Organisation list field',  Materialpool::$textdomain ),
             'organisation_logo_url' => _x( 'Logo', 'Organisation list field', Materialpool::$textdomain ),
             'organisation_views' => _x( 'Views', 'Organisation list field', Materialpool::$textdomain ),
             'material_views' => _x( 'MaterialViews', 'Organisation list field', Materialpool::$textdomain ),
@@ -213,9 +213,13 @@ class Materialpool_Organisation {
         global $wpdb;
 
         $data = '';
-        if ( $column_name == 'organisation-id' ) {
-            $data = $post_id;
+
+        if ( $column_name == 'organisation_title' ) {
+	        $data = Materialpool_Organisation::get_title();
         }
+        if ( $column_name == 'organisation-id' ) {
+		    $data = $post_id;
+	    }
         if ( $column_name == 'organisation_logo_url' ) {
             $url = get_metadata( 'post', $post_id, 'organisation_logo_url', true );
             if ( $url !== false ) {
@@ -510,7 +514,7 @@ class Materialpool_Organisation {
     static public function get_title() {
         global $post;
 
-        return $post->post_title;
+        return stripslashes( $post->post_title );
     }
 
 
@@ -533,7 +537,7 @@ class Materialpool_Organisation {
     static public function get_title_long() {
         global $post;
 
-        return get_metadata( 'post', $post->ID, 'organisation_titel_lang', true );
+        return stripslashes( get_metadata( 'post', $post->ID, 'organisation_titel_lang', true ) );
     }
 
     /**
