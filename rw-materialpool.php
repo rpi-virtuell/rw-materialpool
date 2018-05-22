@@ -1848,6 +1848,7 @@ order by wp_posts.post_date  asc  limit 0, 10 ") ;
 		    if ( ! is_dir( WP_CONTENT_DIR . '/screenshots/' )) {
 		        mkdir ( WP_CONTENT_DIR . '/screenshots/' );
             }
+		    update_post_meta( $id, 'material_v2_screesnhot_status', $result->status );
 		    if  ( $result->status == 'ready' ) {
 		        // Bild runterladen
 			    $img = WP_CONTENT_DIR . '/screenshots/'. $key . '.png';
