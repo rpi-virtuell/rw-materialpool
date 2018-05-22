@@ -152,17 +152,14 @@ jQuery(document).ready(function(){
         var url = jQuery("#pods-form-ui-pods-meta-material-url").val();
         var html;
         var data = {
-            'action': 'mp_get_html',
+            'action': 'mp_get_screenshot',
             'site': url
         };
 
         jQuery.post(ajaxurl, data, function(response) {
-
             html = response;
             if ( html != ''  ) {
                 img = html;
-            } else {
-                img = "https://s.wordpress.com/mshots/v1/" + encodeURIComponent( url ) + "?w=400&h=300";
             }
 
             jQuery('#material-screenshot').html('');

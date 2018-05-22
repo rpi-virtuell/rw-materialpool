@@ -130,11 +130,16 @@ class Materialpool_Installation {
          * Register CronJobs
          */
 
+
         if (! wp_next_scheduled ( 'mp_depublizierung' ) ) {
             wp_schedule_event(time(), 'hourly', 'mp_depublizierung');
         }
+		if (! wp_next_scheduled ( 'mp_screenshot_generation' ) ) {
+			wp_schedule_event(time(), 'fivemin', 'mp_screenshot_generation');
+		}
 
     }
+
 
 	/**
 	 * Clean up after deactivation
@@ -151,6 +156,7 @@ class Materialpool_Installation {
          * Deregister CronJobs
          */
         wp_clear_scheduled_hook('mp_depublizierung');
+		wp_clear_scheduled_hook('mp_screenshot_generation');
 
 	}
 

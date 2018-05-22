@@ -162,6 +162,7 @@ class Materialpool {
         add_filter( 'tl_tplc_external_files', array( 'Materialpool_Material', 'add_template_check_external_files' ) );
         add_action( 'init', array( 'Materialpool', 'get_crossdomain_viewer_url' ) );
         add_action( 'mp_depublizierung', array( 'Materialpool_Material', 'depublizierung' ) );
+		add_action( 'mp_screenshot_generation', array( 'Materialpool', 'mp_screenshot_generation' ) );
         add_filter('template_redirect', array( 'Materialpool_Material', 'check_404_old_material' ) );
         add_action( 'restrict_manage_posts', array( 'Materialpool_Material', 'add_taxonomy_filters' ) );
         add_shortcode( 'material-vorschlag', array( 'Materialpool_Material', 'vorschlag_shortcode' ) );
@@ -286,6 +287,7 @@ class Materialpool {
 		pods_register_field_type( 'synonymlist', self::$plugin_base_dir . 'classes/Materialpool_Pods_Synonymlist.php' );
 
         add_action( 'wp_ajax_mp_get_html',  array( 'Materialpool', 'my_action_callback_mp_get_html' ) );
+		add_action( 'wp_ajax_mp_get_screenshot',  array( 'Materialpool', 'my_action_callback_mp_get_screenshot' ) );
         add_action( 'wp_ajax_mp_get_description',  array( 'Materialpool', 'my_action_callback_mp_get_description' ) );
         add_action( 'wp_ajax_mp_check_url',  array( 'Materialpool', 'my_action_callback_mp_check_url' ) );
         add_action( 'wp_ajax_mp_check_material_title',  array( 'Materialpool', 'my_action_callback_mp_check_material_title' ) );
@@ -308,6 +310,7 @@ class Materialpool {
 		add_action( 'wp_ajax_mp_check_subscription2',  array( 'Materialpool', 'my_action_callback_check_subscription2' ) );
 		add_action( 'wp_ajax_mp_add_subscription',  array( 'Materialpool', 'my_action_callback_add_subscription' ) );
 		add_filter( 'rest_prepare_material', array( 'Materialpool_Statistic', 'log_api_request'), 10, 3 );
+		add_filter( 'cron_schedules', array( 'Materialpool', 'custom_cron_job_recurrence' ) );
 
 
 
@@ -355,6 +358,7 @@ class Materialpool {
 		add_action( 'admin_menu', array( 'Materialpool_Contribute', 'options_page' ) );
 		add_action( 'admin_menu', array( 'Materialpool_Contribute', 'settings_init' ) );
 		add_action( 'init',             array( 'Materialpool_Contribute_Clients', 'init'), 0 );
+
 		do_action( 'materialpool_init' );
 	}
 
@@ -458,6 +462,73 @@ class Materialpool {
         }
         wp_die();
     }
+
+	/**
+	 * Create Screenshot via screenshotapi.io
+	 *
+	 * @since   0.0.1
+	 * @access  public
+	 */
+	public static function my_action_callback_mp_get_screenshot() {
+
+		$url =  esc_url_raw( $_POST['site'] );
+		$apikey = "f18c29cc-d0a3-427b-ac4e-274c89273513";
+
+		$obj = new stdClass();
+		$obj->url = $url;
+		$obj->viewport = "1280x1024";
+		$obj->fullpage = false;
+		$obj->javascript = true;
+		$obj->webdriver = "firefox";
+		$obj->waitSeconds = 5;
+		$obj->fresh = false;
+
+		$json = json_encode($obj);
+
+		$ch = curl_init('https://api.screenshotapi.io/capture');
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+				'apikey: '.$apikey,
+				'Content-Type: application/json',
+				'Content-Length: ' . strlen($json))
+		);
+
+		$result = curl_exec($ch);
+		$result = json_decode( $result );
+
+		$key = $result->key;
+
+		do {
+		    sleep( 3 );
+			$ch2 = curl_init( 'https://api.screenshotapi.io/retrieve?key=' . $key );
+			curl_setopt( $ch2, CURLOPT_RETURNTRANSFER, true );
+			curl_setopt( $ch2, CURLOPT_HTTPHEADER, array(
+					'apikey: ' . $apikey
+				)
+			);
+
+			$result = curl_exec( $ch2 );
+			$result = json_decode( $result );
+		} while ( $result->status == 'processing' );
+
+		// Screenshot runterladen
+
+		$img = WP_CONTENT_DIR . '/screenshots/'. $key . '.png';
+
+		$ch = curl_init( $result->imageUrl );
+		$fp = fopen($img, 'wb');
+		curl_setopt($ch, CURLOPT_FILE, $fp);
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+		curl_exec($ch);
+		curl_close($ch);
+		fclose($fp);
+
+		echo WP_CONTENT_URL . '/screenshots/'. $key . '.png';
+		wp_die();
+	}
 
 
 	/**
@@ -1640,6 +1711,14 @@ class Materialpool {
         }
     }
 
+	function custom_cron_job_recurrence( $schedules ) {
+		$schedules['fivemin'] = array(
+			'display' => __( '5 Minutes', Materialpool::$textdomain ),
+			'interval' => 300,
+		);
+		return $schedules;
+	}
+
     /**
      *
      * @since   0.0.1
@@ -1674,8 +1753,139 @@ class Materialpool {
 
     }
 
+    public static function mp_screenshot_generation() {
+         global $wpdb;
 
-}
+	    $apikey = "f18c29cc-d0a3-427b-ac4e-274c89273513";
+
+	    $count = 0;
+	    $result = $wpdb->get_results("
+        SELECT distinct($wpdb->posts.ID)   FROM 
+	$wpdb->posts, $wpdb->postmeta 
+WHERE 
+	$wpdb->posts.ID = $wpdb->postmeta.post_id AND  
+	$wpdb->posts.post_type = 'material' AND
+	( $wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'draft' )  AND
+(
+	( 
+	(
+	   not exists( select * from wp_postmeta where meta_key='material_v2_screesnhot_gen' and post_id = wp_posts.ID )
+	 OR  
+		( 
+			wp_postmeta.meta_key = 'material_v2_screesnhot_gen' AND 
+			wp_postmeta.meta_value = ''  
+		)
+		) 
+	)
+)	
+order by wp_posts.post_date  asc  limit 0, 10 ") ;
+	    foreach ( $result as $obj ) {
+            $id = $obj->ID;
+		    $post = get_post( $id );
+
+		    $url = get_metadata( 'post', $id, 'material_url', true );
+
+
+		    $obj = new stdClass();
+		    $obj->url = $url;
+		    $obj->viewport = "1280x1024";
+		    $obj->fullpage = false;
+		    $obj->javascript = true;
+		    $obj->webdriver = "firefox";
+		    $obj->waitSeconds = 5;
+		    $obj->fresh = false;
+
+		    $json = json_encode($obj);
+
+		    $ch = curl_init('https://api.screenshotapi.io/capture');
+		    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+		    curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+		    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+				    'apikey: '.$apikey,
+				    'Content-Type: application/json',
+				    'Content-Length: ' . strlen($json))
+		    );
+
+		    $result = curl_exec($ch);
+		    $result = json_decode( $result );
+
+		    $key = $result->key;
+		    add_post_meta( $id, 'material_v2_screesnhot_key', $key );
+		    add_post_meta( $id, 'material_v2_screesnhot_gen', 'working' );
+
+	    }
+
+	    // Bilder holen
+	    $result = $wpdb->get_results("
+        SELECT distinct($wpdb->posts.ID)   FROM 
+	$wpdb->posts, $wpdb->postmeta 
+WHERE 
+	$wpdb->posts.ID = $wpdb->postmeta.post_id AND  
+	$wpdb->posts.post_type = 'material' AND
+	( $wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'draft' )  AND
+
+  
+		( 
+			wp_postmeta.meta_key = 'material_v2_screesnhot_gen' AND 
+			wp_postmeta.meta_value = 'working'  
+		)
+
+
+order by wp_posts.post_date  asc  limit 0, 10 ") ;
+	    foreach ( $result as $obj ) {
+		    $id = $obj->ID;
+            $key = get_metadata( 'post', $id, 'material_v2_screesnhot_key', true );
+		    $ch2 = curl_init( 'https://api.screenshotapi.io/retrieve?key=' . $key );
+		    curl_setopt( $ch2, CURLOPT_RETURNTRANSFER, true );
+		    curl_setopt( $ch2, CURLOPT_HTTPHEADER, array(
+				    'apikey: ' . $apikey
+			    )
+		    );
+
+		    $result = curl_exec( $ch2 );
+		    $result = json_decode( $result );
+		    if ( ! is_dir( WP_CONTENT_DIR . '/screenshots/' )) {
+		        mkdir ( WP_CONTENT_DIR . '/screenshots/' );
+            }
+		    if  ( $result->status == 'ready' ) {
+		        // Bild runterladen
+			    $img = WP_CONTENT_DIR . '/screenshots/'. $key . '.png';
+
+			    $ch = curl_init( $result->imageUrl );
+			    $fp = fopen($img, 'wb');
+			    curl_setopt($ch, CURLOPT_FILE, $fp);
+			    curl_setopt($ch, CURLOPT_HEADER, 0);
+			    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+			    curl_exec($ch);
+			    curl_close($ch);
+			    fclose($fp);
+                update_post_meta( $id, 'material_v2_screesnhot_gen', 'ready');
+			    update_post_meta( $id, 'material_screenshot', WP_CONTENT_URL . '/screenshots/'. $key . '.png' );
+
+			    // Caches verwerfen
+
+			    // Transients für Backendliste löschen
+			    delete_transient( 'mp-cpt-list-material-autor-'.$id );
+			    delete_transient( 'mp-cpt-list-material-medientyp-'.$id );
+			    delete_transient( 'mp-cpt-list-material-medientyp-'.$id );
+			    delete_transient( 'mp-cpt-list-material-schlagworte-'.$id );
+			    delete_transient( 'mp-cpt-list-material-organisation-'.$id );
+
+			    // Transients für Frontendcache löschen
+			    delete_transient( 'facet_serach2_entry-'.$id );
+			    delete_transient( 'rss_material_entry-'.$id );
+			    delete_transient( 'facet_autor_entry-'.$id );
+			    delete_transient( 'facet_themenseite_entry-'.$id );
+			    delete_transient( 'facet_organisation_entry-'.$id );
+            }
+	    }
+    }
+
+
+
+
+} // end Class
 
 
 if ( class_exists( 'Materialpool' ) ) {
