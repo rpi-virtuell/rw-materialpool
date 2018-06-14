@@ -202,6 +202,7 @@ class Materialpool_Autor {
 			'autor_organisation' => _x( 'Organisationen', 'Autor list field', Materialpool::$textdomain ),
 			'autor_material'     => _x( '#Material', 'Autor list field', Materialpool::$textdomain ),
 			'autor_owner'        => _x( 'Eintrager', 'Autor list field', Materialpool::$textdomain ),
+			'autor_einverstaendnis' => _x( 'Einverständnis', 'Autor list field', Materialpool::$textdomain ),
 		);
 
 		return $columns;
@@ -280,6 +281,16 @@ class Materialpool_Autor {
 					$data .= '<a href="' . get_edit_post_link( $autor['ID'] ) . '">' . $post->post_title . '</a><br>';
 				}
 			}
+		}
+		if ( $column_name == 'autor_einverstaendnis' ) {
+			$einverstaendnis = get_metadata( 'post', $post_id, 'einverstaendnis', true );
+            if ( $einverstaendnis == 1 ) {
+                $check = " checked=checked ";
+            } else  {
+                $check = '';
+            }
+
+            $data = "<div><input data-id=\"". $post_id ."\" class=\"einverstaendnis_autor\" type='checkbox' $check ></div>";
 		}
 		if ( $column_name == 'autor_material' ) {
 			$autors = get_metadata( 'post', $post_id, 'autor_material' );

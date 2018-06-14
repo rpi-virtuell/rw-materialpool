@@ -196,6 +196,7 @@ class Materialpool_Organisation {
             'organisation_autoren' => _x( '#Autoren', 'Organisation list field', Materialpool::$textdomain ),
             'organisation_material' => _x( '#Material', 'Organisation list field', Materialpool::$textdomain ),
             'organisation_owner' => _x( 'Eintrager', 'Organisation list field', Materialpool::$textdomain ),
+            'organisation_einverstaendnis' => _x( 'Einverständnis', 'Organisation list field', Materialpool::$textdomain ),
         );
         return $columns;
     }
@@ -219,6 +220,16 @@ class Materialpool_Organisation {
         }
         if ( $column_name == 'organisation-id' ) {
 		    $data = $post_id;
+	    }
+	    if ( $column_name == 'organisation_einverstaendnis' ) {
+		    $einverstaendnis = get_metadata( 'post', $post_id, 'einverstaendnis', true );
+		    if ( $einverstaendnis == 1 ) {
+			    $check = " checked=checked ";
+		    } else  {
+			    $check = '';
+		    }
+
+		    $data = "<div><input data-id=\"". $post_id ."\" class=\"einverstaendnis_organisation\" type='checkbox' $check ></div>";
 	    }
         if ( $column_name == 'organisation_logo_url' ) {
             $url = get_metadata( 'post', $post_id, 'organisation_logo_url', true );

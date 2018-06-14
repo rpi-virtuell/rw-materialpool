@@ -298,6 +298,8 @@ class Materialpool {
         add_action( 'wp_ajax_mp_list_thema_backend',  array( 'Materialpool', 'my_action_callback_mp_list_thema_backend' ) );
 		add_action( 'wp_ajax_mp_send_autor_mail',  array( 'Materialpool', 'my_action_callback_mp_send_autor_mail' ) );
 		add_action( 'wp_ajax_mp_send_organisation_mail',  array( 'Materialpool', 'my_action_callback_mp_send_organisation_mail' ) );
+		add_action( 'wp_ajax_mp_change_autor_einverstaendnis',  array( 'Materialpool', 'my_action_callback_mp_change_autor_einverstaendnis' ) );
+		add_action( 'wp_ajax_mp_change_organisation_einverstaendnis',  array( 'Materialpool', 'my_action_callback_mp_change_organisation_einverstaendnis' ) );
         add_action( 'wp_ajax_nopriv_mp_add_proposal',  array( 'Materialpool', 'my_action_callback_mp_add_proposal' ) );
         add_action( 'wp_ajax_mp_add_proposal',  array( 'Materialpool', 'my_action_callback_mp_add_proposal' ) );
 		add_action( 'wp_ajax_mp_synonym_list',  array( 'Materialpool', 'my_action_callback_mp_synonym_list' ) );
@@ -311,8 +313,6 @@ class Materialpool {
 		add_action( 'wp_ajax_mp_add_subscription',  array( 'Materialpool', 'my_action_callback_add_subscription' ) );
 		add_filter( 'rest_prepare_material', array( 'Materialpool_Statistic', 'log_api_request'), 10, 3 );
 		add_filter( 'cron_schedules', array( 'Materialpool', 'custom_cron_job_recurrence' ) );
-
-
 
         add_filter( 'facetwp_api_can_access', function() { return true;} );
         add_action( 'wp_head', array( 'Materialpool',  'promote_feeds' ) );
@@ -954,6 +954,55 @@ class Materialpool {
 				$data = '<div style="color: green;">Gelesen</div>';
 			}
 		}
+
+		echo  $data;
+		wp_die();
+	}
+
+
+	/**
+	 *
+	 * @since   0.0.1
+	 * @access  public
+	 */
+	public static function my_action_callback_mp_change_autor_einverstaendnis() {
+		$id = (int) $_POST['id'];
+
+		$einverstaendnis = get_metadata( 'post', $id, 'einverstaendnis', true );
+		if ( $einverstaendnis == 1 ) {
+            update_metadata( 'post', $id, 'einverstaendnis', 0 );
+			$check = " checked=checked ";
+
+		} else {
+			update_metadata( 'post', $id, 'einverstaendnis', 1 );
+			$check = " ";
+        }
+		$data = "<div><input data-id=\"". $id ."\" class=\"einverstaendnis_autor\" type='checkbox' $check ></div>";
+
+		echo  $data;
+		wp_die();
+	}
+
+
+
+	/**
+	 *
+	 * @since   0.0.1
+	 * @access  public
+	 */
+	public static function my_action_callback_mp_change_organisation_einverstaendnis() {
+		$id = (int) $_POST['id'];
+
+		$einverstaendnis = get_metadata( 'post', $id, 'einverstaendnis', true );
+		if ( $einverstaendnis == 1 ) {
+			update_metadata( 'post', $id, 'einverstaendnis', 0 );
+			$check = " checked=checked ";
+
+		} else {
+			update_metadata( 'post', $id, 'einverstaendnis', 1 );
+			$check = " ";
+		}
+		$data = "<div><input data-id=\"". $id ."\" class=\"einverstaendnis_organisation\" type='checkbox' $check ></div>";
 
 		echo  $data;
 		wp_die();
@@ -1756,8 +1805,13 @@ class Materialpool {
     public static function mp_screenshot_generation() {
          global $wpdb;
 
-	    $apikey = "f18c29cc-d0a3-427b-ac4e-274c89273513";
+	    $secret =  get_option( 'urlbox_secret') ;
+	    $key = get_option( 'urlbox_key') ;
+        $screenshotapi_key = get_option( 'screenshotapi_key') ;
 
+        if ( $secret == '' || $key == '' || $screenshotapi_key == '' ) return;
+
+        
 	    $count = 0;
 	    $result = $wpdb->get_results("
         SELECT distinct($wpdb->posts.ID)   FROM 
@@ -1785,34 +1839,20 @@ order by wp_posts.post_date  asc  limit 0, 10 ") ;
 
 		    $url = get_metadata( 'post', $id, 'material_url', true );
 
+		    $urlbox = Urlbox::fromCredentials($key, $secret );
+		    $options['url'] = $url;
+		    $options['width'] = 1280;
+		    $options['height'] = 1024;
+		    $options['delay'] = 5000;
+		    $options['flash'] = true;
 
-		    $obj = new stdClass();
-		    $obj->url = $url;
-		    $obj->viewport = "1280x1024";
-		    $obj->fullpage = false;
-		    $obj->javascript = true;
-		    $obj->webdriver = "firefox";
-		    $obj->waitSeconds = 5;
-		    $obj->fresh = false;
-
-		    $json = json_encode($obj);
-
-		    $ch = curl_init('https://api.screenshotapi.io/capture');
-		    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-		    curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+		    $urlboxUrl = $urlbox->generateUrl($options);
+		    $ch = curl_init($urlboxUrl );
 		    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-				    'apikey: '.$apikey,
-				    'Content-Type: application/json',
-				    'Content-Length: ' . strlen($json))
-		    );
-
 		    $result = curl_exec($ch);
-		    $result = json_decode( $result );
 
-		    $key = $result->key;
-		    add_post_meta( $id, 'material_v2_screesnhot_key', $key );
-		    add_post_meta( $id, 'material_v2_screesnhot_gen', 'working' );
+		    add_post_meta( $id, 'material_v2_screesnhot_url', $urlboxUrl );
+		    add_post_meta( $id, 'material_v2_screesnhot_gen', 'generating' );
 
 	    }
 
@@ -1828,32 +1868,26 @@ WHERE
   
 		( 
 			wp_postmeta.meta_key = 'material_v2_screesnhot_gen' AND 
-			wp_postmeta.meta_value = 'working'  
+			wp_postmeta.meta_value = 'generating'  
 		)
 
 
-order by wp_posts.post_date  asc  limit 0, 10 ") ;
+order by wp_posts.post_date  asc  limit 0, 100") ;
 	    foreach ( $result as $obj ) {
 		    $id = $obj->ID;
-            $key = get_metadata( 'post', $id, 'material_v2_screesnhot_key', true );
-		    $ch2 = curl_init( 'https://api.screenshotapi.io/retrieve?key=' . $key );
-		    curl_setopt( $ch2, CURLOPT_RETURNTRANSFER, true );
-		    curl_setopt( $ch2, CURLOPT_HTTPHEADER, array(
-				    'apikey: ' . $apikey
-			    )
-		    );
+            $bildurl = get_metadata( 'post', $id, 'material_v2_screesnhot_url', true );
 
-		    $result = curl_exec( $ch2 );
-		    $result = json_decode( $result );
-		    if ( ! is_dir( WP_CONTENT_DIR . '/screenshots/' )) {
-		        mkdir ( WP_CONTENT_DIR . '/screenshots/' );
-            }
-		    update_post_meta( $id, 'material_v2_screesnhot_status', $result->status );
-		    if  ( $result->status == 'ready' ) {
 		        // Bild runterladen
-			    $img = WP_CONTENT_DIR . '/screenshots/'. $key . '.png';
+			    $img = WP_CONTENT_DIR . '/screenshots/'. $id . '.png';
 
-			    $ch = curl_init( $result->imageUrl );
+
+    		    $ch = curl_init( $bildurl );
+    		    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+		        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    		    $result = curl_exec($ch);
+                //if ( Materialpool::isJson( $result ) ) return;
+
+			    $ch = curl_init( $bildurl );
 			    $fp = fopen($img, 'wb');
 			    curl_setopt($ch, CURLOPT_FILE, $fp);
 			    curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -1862,7 +1896,7 @@ order by wp_posts.post_date  asc  limit 0, 10 ") ;
 			    curl_close($ch);
 			    fclose($fp);
                 update_post_meta( $id, 'material_v2_screesnhot_gen', 'ready');
-			    update_post_meta( $id, 'material_screenshot', WP_CONTENT_URL . '/screenshots/'. $key . '.png' );
+			    update_post_meta( $id, 'material_screenshot', WP_CONTENT_URL . '/screenshots/'. $id . '.png' );
 
 			    // Caches verwerfen
 
@@ -1881,10 +1915,11 @@ order by wp_posts.post_date  asc  limit 0, 10 ") ;
 			    delete_transient( 'facet_organisation_entry-'.$id );
             }
 	    }
-    }
 
-
-
+	function isJson($string) {
+		json_decode($string);
+		return (json_last_error() == JSON_ERROR_NONE);
+	}
 
 } // end Class
 

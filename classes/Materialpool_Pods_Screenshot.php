@@ -109,7 +109,7 @@ class PodsField_Screenshot extends PodsField {
         <?php } ?>
         </div>
         <div id="generate-screenshot-container">
-        <a class="button"  id="generate-screenshot">Screenshot erzeugen</a> <a class="button"  id="delete-screenshot">Screenshot löschen</a>
+       <!-- <a class="button"  id="generate-screenshot">Screenshot erzeugen</a> <a class="button"  id="delete-screenshot">Screenshot löschen</a> -->
         </div>
         <input id="pods-form-ui-pods-meta-material-screenshot"  name="pods_meta_material_screenshot"  value="<?php if( $screenshot != '' ) { echo $screenshot; } ?>"  type="hidden">
         <?php

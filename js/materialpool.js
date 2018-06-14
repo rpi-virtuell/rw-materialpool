@@ -829,6 +829,27 @@ jQuery(document).ready(function(){
         });
     })
 
+    jQuery(".einverstaendnis_autor").click( function() {
+        var id = jQuery(this).data("id");
+        var data = {
+            'action': 'mp_change_autor_einverstaendnis',
+            'id': id
+        };
+        jQuery.post(ajaxurl, data, function(response) {
+            ret = response;
+        });
+    })
+
+    jQuery(".einverstaendnis_organisation").click( function() {
+        var id = jQuery(this).data("id");
+        var data = {
+            'action': 'mp_change_organisation_einverstaendnis',
+            'id': id
+        };
+        jQuery.post(ajaxurl, data, function(response) {
+            ret = response;
+        });
+    })
 
     jQuery(".contribute").click( function() {
 
