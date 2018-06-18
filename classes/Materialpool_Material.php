@@ -597,6 +597,10 @@ class Materialpool_Material {
         delete_transient( 'facet_themenseite_entry-'.$post_id );
         delete_transient( 'facet_organisation_entry-'.$post_id );
 
+        delete_metadata( 'post', $post_id, 'material_v2_screesnhot_url' );
+		delete_metadata( 'post', $post_id, 'material_v2_screesnhot_gen' );
+
+
         Materialpool_Material::set_createdate( $post_id );
     }
 

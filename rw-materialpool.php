@@ -1805,13 +1805,13 @@ class Materialpool {
     public static function mp_screenshot_generation() {
          global $wpdb;
 
-	    $secret =  get_option( 'urlbox_secret') ;
-	    $key = get_option( 'urlbox_key') ;
-        $screenshotapi_key = get_option( 'screenshotapi_key') ;
+	    $secret =  get_option( 'einstellungen_urlbox_secret') ;
+	    $key = get_option( 'einstellungen_urlbox_key') ;
+        $screenshotapi_key = get_option( 'einstellungen_screenshotapi_key') ;
 
         if ( $secret == '' || $key == '' || $screenshotapi_key == '' ) return;
 
-        
+
 	    $count = 0;
 	    $result = $wpdb->get_results("
         SELECT distinct($wpdb->posts.ID)   FROM 
@@ -1832,7 +1832,7 @@ WHERE
 		) 
 	)
 )	
-order by wp_posts.post_date  asc  limit 0, 10 ") ;
+order by wp_posts.ID  desc  limit 0, 10 ") ;
 	    foreach ( $result as $obj ) {
             $id = $obj->ID;
 		    $post = get_post( $id );
@@ -1845,6 +1845,7 @@ order by wp_posts.post_date  asc  limit 0, 10 ") ;
 		    $options['height'] = 1024;
 		    $options['delay'] = 5000;
 		    $options['flash'] = true;
+		    $options['cookie'] = "rw-dsgvo=yes";
 
 		    $urlboxUrl = $urlbox->generateUrl($options);
 		    $ch = curl_init($urlboxUrl );
