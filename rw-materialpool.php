@@ -1839,22 +1839,48 @@ order by wp_posts.ID  desc  limit 0, 10 ") ;
 
 		    $url = get_metadata( 'post', $id, 'material_url', true );
 
-		    $urlbox = Urlbox::fromCredentials($key, $secret );
-		    $options['url'] = $url;
-		    $options['width'] = 1280;
-		    $options['height'] = 1024;
-		    $options['delay'] = 5000;
-		    $options['flash'] = true;
-		    $options['cookie'] = "rw-dsgvo=yes";
+		    if ( Materialpool::endsWith( $url, '.pdf' )  || Materialpool::endsWith( $url, '.odt' ) || Materialpool::endsWith( $url, '.doc' ) || Materialpool::endsWith( $url, '.docx' ) ) {
+			    $obj = new stdClass();
+			    $obj->url = $url;
+			    $obj->viewport = "1280x1024";
+			    $obj->fullpage = false;
+			    $obj->javascript = true;
+			    $obj->webdriver = "firefox";
+			    $obj->waitSeconds = 5;
+			    $obj->fresh = false;
+			    $json = json_encode($obj);
+			    $ch = curl_init('https://api.screenshotapi.io/capture');
+			    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+			    curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+			    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+					    'apikey: '.$screenshotapi_key,
+					    'Content-Type: application/json',
+					    'Content-Length: ' . strlen($json))
+			    );
+			    $result = curl_exec($ch);
+			    $result = json_decode( $result );
+			    $key = $result->key;
+			    add_post_meta( $id, 'material_v2_screesnhot_key', $key );
+			    add_post_meta( $id, 'material_v2_screesnhot_gen', 'working' );
+            } else {
 
-		    $urlboxUrl = $urlbox->generateUrl($options);
-		    $ch = curl_init($urlboxUrl );
-		    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		    $result = curl_exec($ch);
+                $urlbox = Urlbox::fromCredentials($key, $secret );
+                $options['url'] = $url;
+                $options['width'] = 1280;
+                $options['height'] = 1024;
+                $options['delay'] = 5000;
+                $options['flash'] = true;
+                $options['cookie'] = "rw-dsgvo=yes";
 
-		    add_post_meta( $id, 'material_v2_screesnhot_url', $urlboxUrl );
-		    add_post_meta( $id, 'material_v2_screesnhot_gen', 'generating' );
+                $urlboxUrl = $urlbox->generateUrl($options);
+                $ch = curl_init($urlboxUrl );
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $result = curl_exec($ch);
 
+                add_post_meta( $id, 'material_v2_screesnhot_url', $urlboxUrl );
+                add_post_meta( $id, 'material_v2_screesnhot_gen', 'generating' );
+		    }
 	    }
 
 	    // Bilder holen
@@ -1864,62 +1890,117 @@ order by wp_posts.ID  desc  limit 0, 10 ") ;
 WHERE 
 	$wpdb->posts.ID = $wpdb->postmeta.post_id AND  
 	$wpdb->posts.post_type = 'material' AND
-	( $wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'draft' )  AND
+	( $wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'draft' )  AND (
 
   
 		( 
 			wp_postmeta.meta_key = 'material_v2_screesnhot_gen' AND 
 			wp_postmeta.meta_value = 'generating'  
 		)
+  OR 
+		( 
+			wp_postmeta.meta_key = 'material_v2_screesnhot_gen' AND 
+			wp_postmeta.meta_value = 'working'  
+		)
+
+)
+
+order by wp_posts.ID  desc   limit 0, 20") ;
+	        foreach ( $result as $obj ) {
+                $id = $obj->ID;
+                $bildurl = get_metadata( 'post', $id, 'material_v2_screesnhot_url', true );
+		        $url = get_metadata( 'post', $id, 'material_url', true );
+		        if ( Materialpool::endsWith( $url, '.pdf' )  || Materialpool::endsWith( $url, '.odt' ) || Materialpool::endsWith( $url, '.doc' ) || Materialpool::endsWith( $url, '.docx' ) ) {
+
+			        $key = get_metadata( 'post', $id, 'material_v2_screesnhot_key', true );
+			        $ch2 = curl_init( 'https://api.screenshotapi.io/retrieve?key=' . $key );
+			        curl_setopt( $ch2, CURLOPT_RETURNTRANSFER, true );
+			        curl_setopt( $ch2, CURLOPT_HTTPHEADER, array(
+					        'apikey: ' . $screenshotapi_key
+				        )
+			        );
+			        $result = curl_exec( $ch2 );
+			        $result = json_decode( $result );
+			        if  ( $result->status == 'ready' ) {
+				        // Bild runterladen
+				        $img = WP_CONTENT_DIR . '/screenshots/'. $id . '.png';
+				        $ch = curl_init( $result->imageUrl );
+				        $fp = fopen($img, 'wb');
+				        curl_setopt($ch, CURLOPT_FILE, $fp);
+				        curl_setopt($ch, CURLOPT_HEADER, 0);
+				        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+				        curl_exec($ch);
+				        curl_close($ch);
+				        fclose($fp);
+				        update_post_meta( $id, 'material_v2_screesnhot_gen', 'ready');
+				        update_post_meta( $id, 'material_screenshot', WP_CONTENT_URL . '/screenshots/'. $id . '.png' );
+				        // Caches verwerfen
+				        // Transients für Backendliste löschen
+				        delete_transient( 'mp-cpt-list-material-autor-'.$id );
+				        delete_transient( 'mp-cpt-list-material-medientyp-'.$id );
+				        delete_transient( 'mp-cpt-list-material-medientyp-'.$id );
+				        delete_transient( 'mp-cpt-list-material-schlagworte-'.$id );
+				        delete_transient( 'mp-cpt-list-material-organisation-'.$id );
+				        // Transients für Frontendcache löschen
+				        delete_transient( 'facet_serach2_entry-'.$id );
+				        delete_transient( 'rss_material_entry-'.$id );
+				        delete_transient( 'facet_autor_entry-'.$id );
+				        delete_transient( 'facet_themenseite_entry-'.$id );
+				        delete_transient( 'facet_organisation_entry-'.$id );
+			        }
+
+		        } else {
+			        // Bild runterladen
+			        $img = WP_CONTENT_DIR . '/screenshots/' . $id . '.png';
 
 
-order by wp_posts.post_date  asc  limit 0, 100") ;
-	    foreach ( $result as $obj ) {
-		    $id = $obj->ID;
-            $bildurl = get_metadata( 'post', $id, 'material_v2_screesnhot_url', true );
+			        $ch = curl_init( $bildurl );
+			        curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, "POST" );
+			        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+			        $result = curl_exec( $ch );
+			        //if ( Materialpool::isJson( $result ) ) return;
 
-		        // Bild runterladen
-			    $img = WP_CONTENT_DIR . '/screenshots/'. $id . '.png';
+			        $ch = curl_init( $bildurl );
+			        $fp = fopen( $img, 'wb' );
+			        curl_setopt( $ch, CURLOPT_FILE, $fp );
+			        curl_setopt( $ch, CURLOPT_HEADER, 0 );
+			        curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
+			        curl_exec( $ch );
+			        curl_close( $ch );
+			        fclose( $fp );
+			        update_post_meta( $id, 'material_v2_screesnhot_gen', 'ready' );
+			        update_post_meta( $id, 'material_screenshot', WP_CONTENT_URL . '/screenshots/' . $id . '.png' );
 
+			        // Caches verwerfen
 
-    		    $ch = curl_init( $bildurl );
-    		    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-		        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    		    $result = curl_exec($ch);
-                //if ( Materialpool::isJson( $result ) ) return;
+			        // Transients für Backendliste löschen
+			        delete_transient( 'mp-cpt-list-material-autor-' . $id );
+			        delete_transient( 'mp-cpt-list-material-medientyp-' . $id );
+			        delete_transient( 'mp-cpt-list-material-medientyp-' . $id );
+			        delete_transient( 'mp-cpt-list-material-schlagworte-' . $id );
+			        delete_transient( 'mp-cpt-list-material-organisation-' . $id );
 
-			    $ch = curl_init( $bildurl );
-			    $fp = fopen($img, 'wb');
-			    curl_setopt($ch, CURLOPT_FILE, $fp);
-			    curl_setopt($ch, CURLOPT_HEADER, 0);
-			    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-			    curl_exec($ch);
-			    curl_close($ch);
-			    fclose($fp);
-                update_post_meta( $id, 'material_v2_screesnhot_gen', 'ready');
-			    update_post_meta( $id, 'material_screenshot', WP_CONTENT_URL . '/screenshots/'. $id . '.png' );
-
-			    // Caches verwerfen
-
-			    // Transients für Backendliste löschen
-			    delete_transient( 'mp-cpt-list-material-autor-'.$id );
-			    delete_transient( 'mp-cpt-list-material-medientyp-'.$id );
-			    delete_transient( 'mp-cpt-list-material-medientyp-'.$id );
-			    delete_transient( 'mp-cpt-list-material-schlagworte-'.$id );
-			    delete_transient( 'mp-cpt-list-material-organisation-'.$id );
-
-			    // Transients für Frontendcache löschen
-			    delete_transient( 'facet_serach2_entry-'.$id );
-			    delete_transient( 'rss_material_entry-'.$id );
-			    delete_transient( 'facet_autor_entry-'.$id );
-			    delete_transient( 'facet_themenseite_entry-'.$id );
-			    delete_transient( 'facet_organisation_entry-'.$id );
+			        // Transients für Frontendcache löschen
+			        delete_transient( 'facet_serach2_entry-' . $id );
+			        delete_transient( 'rss_material_entry-' . $id );
+			        delete_transient( 'facet_autor_entry-' . $id );
+			        delete_transient( 'facet_themenseite_entry-' . $id );
+			        delete_transient( 'facet_organisation_entry-' . $id );
+		        }
             }
 	    }
 
 	function isJson($string) {
 		json_decode($string);
 		return (json_last_error() == JSON_ERROR_NONE);
+	}
+
+	function endsWith($check, $endStr) {
+		if (!is_string($check) || !is_string($endStr) || strlen($check)<strlen($endStr)) {
+			return false;
+		}
+
+		return (substr($check, strlen($check)-strlen($endStr), strlen($endStr)) === $endStr);
 	}
 
 } // end Class
