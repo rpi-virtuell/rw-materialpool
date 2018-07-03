@@ -1831,7 +1831,11 @@ WHERE
 		)
 		) 
 	)
-)	
+)	AND 
+( 
+			wp_postmeta.meta_key = 'material_special' AND 
+			wp_postmeta.meta_value = 0
+		)
 order by wp_posts.ID  desc  limit 0, 10 ") ;
 	    foreach ( $result as $obj ) {
             $id = $obj->ID;
