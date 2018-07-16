@@ -600,6 +600,15 @@ class Materialpool_Material {
         delete_metadata( 'post', $post_id, 'material_v2_screesnhot_url' );
 		delete_metadata( 'post', $post_id, 'material_v2_screesnhot_gen' );
 
+		// ggf Abhängige Themenseiten aus dem RocketCache entfernen
+		$themen = Materialpool_Material::get_themenseiten_for_material( $post_id );
+		if ( is_array( $themen ) &&  sizeof( $themen ) > 0 ) {
+			foreach ( $themen as $item ) {
+				if (  function_exists( 'rocket_clean_post' ) ) {
+					rocket_clean_post( $item->id );
+				}
+			}
+		}
 
         Materialpool_Material::set_createdate( $post_id );
     }
