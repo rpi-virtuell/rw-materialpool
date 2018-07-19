@@ -1154,9 +1154,10 @@ class Materialpool {
 	        $response = wp_remote_get($url, $args);
 	        if (!is_wp_error($response)) {
 		        $body = utf8_decode($response['body']);
+
 		        libxml_use_internal_errors(true);
 		        $doc = new DomDocument();
-		        $doc->loadHTML($body);
+		        $doc->loadHTML(mb_convert_encoding($body, 'HTML-ENTITIES', 'UTF-8'));
 		        $xpath = new DOMXPath($doc);
 		        $query = '//*/meta[starts-with(@property, \'og:\')]';
 		        $metas = $xpath->query($query);
@@ -1199,27 +1200,35 @@ class Materialpool {
 		        if ($title == '') {
 			        $title = $titleNode->item(0)->textContent;
 		        }
+		        if ( $title == '' ) {
+		            $title = __( 'Der Titel der Webseite konnte nicht automatisch ermittelt werden', Materialpool::$textdomain );
+                }
 		        $data = array(
 			        'title' => $title,
 			        'description' => $description,
 			        'keywords' => $keywords,
 			        'image' => $image,
 		        );
-	        }
+	        } else {
+	            echo "wperror";
+            }
+
             $back = wp_insert_post(  array(
                 'post_status'   => 'vorschlag',
                 'post_type'     => 'material',
-                'post_title'    => $data[ 'title'],
+                'post_title'    => Materialpool::char_replace ( $data[ 'title'] ) ,
                 'post_author'   => 1,
                 'meta_input'    => array (
                     'material_url'  => $url,
-                    'material_titel' => $data[ 'title'],
-                    'material_beschreibung' => $description,
+                    'material_titel' => Materialpool::char_replace ( $data[ 'title'] ),
+                    'material_beschreibung' => Materialpool::char_replace ( $data[ 'description'] ),
 	                'material_von_name' => $user,
 	                'material_von_email' => $email
                 )
             ) );
+
             $data = "Vielen Dank f&uuml;r ihren Vorschlag. Ihr Materialvorschlag wird nun Redaktionell geprüft.";
+
         } else {
             $post_id = $wpdb->get_var( $wpdb->prepare( "SELECT post_id   FROM  $wpdb->postmeta WHERE meta_key = %s and meta_value = %s", 'material_url', $url) );
             $data = "Vielen Dank f&uuml;r ihren Vorschlag. Das <a href='";
@@ -1230,6 +1239,41 @@ class Materialpool {
         wp_die();
     }
 
+    public static function char_replace( $string ) {
+ 
+	    $string = strtr($string, array(
+		    '\u00A0'    => ' ',
+		    '\u0026'    => '&',
+		    '\u003C'    => '<',
+		    '\u003E'    => '>',
+		    '\u00E4'    => 'ä',
+		    '\u00C4'    => 'Ä',
+		    '\u00F6'    => 'ö',
+		    '\u00D6'    => 'Ö',
+		    '\u00FC'    => 'ü',
+		    '\u00DC'    => 'Ü',
+		    '\u00DF'    => 'ß',
+		    '\u20AC'    => '€',
+		    '\u0024'    => '$',
+		    '\u00A3'    => '£',
+
+		    '\u00a0'    => ' ',
+		    '\u003c'    => '<',
+		    '\u003e'    => '>',
+		    '\u00e4'    => 'ä',
+		    '\u00c4'    => 'Ä',
+		    '\u00f6'    => 'ö',
+		    '\u00d6'    => 'Ö',
+		    '\u00fc'    => 'ü',
+		    '\u00dc'    => 'Ü',
+		    '\u00df'    => 'ß',
+		    '\u20ac'    => '€',
+		    '\u00a3'    => '£',
+	    ));
+	    $string = utf8_decode( $string );
+
+	    return $string;
+    }
     /**
      *
      * @since   0.0.1
@@ -1760,7 +1804,7 @@ class Materialpool {
         }
     }
 
-	function custom_cron_job_recurrence( $schedules ) {
+    public static function custom_cron_job_recurrence( $schedules ) {
 		$schedules['fivemin'] = array(
 			'display' => __( '5 Minutes', Materialpool::$textdomain ),
 			'interval' => 300,
