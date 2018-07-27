@@ -760,4 +760,94 @@ class Materialpool_Organisation {
 		$count = $wpdb->get_var($query);
 		return $count;
 	}
+
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
+	static public function top_orga() {
+		$top_orgaID =  Materialpool_Organisation::get_top_orga_id();
+		if ( false === $top_orgaID ) {
+			return;
+		}
+		$top_orga = get_post( $top_orgaID );
+		echo $top_orga->post_title;
+	}
+
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access public
+	 * @filters materialpool-template-material-werk
+	 *
+	 */
+	static public function top_orga_html() {
+		$top_orgaID =  Materialpool_Organisation::get_top_orga_id();
+		if ( $top_orgaID != '' ) {
+			$top_orga = get_post( $top_orgaID );
+			$url = get_permalink( $top_orgaID );
+			echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-organisation-top', 'materialpool-template-organisation-top' ) .'">' . $top_orga->post_title . '</a>';
+		}
+	}
+
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
+	static public function get_top_orga_id() {
+		global $post;
+
+		$top_orga = get_metadata( 'post', $post->ID, 'top_organisation', true );
+		if ( is_array( $top_orga ) ) {
+			return ( $top_orga["ID"] );
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access public
+	 * @filters materialpool-template-material-verweise
+	 */
+	static public function bottom_orga_html () {
+		$verweise = Materialpool_Organisation::get_bottom_orga();
+		foreach ( $verweise as $verweis ) {
+			$url = get_permalink( $verweis[ 'ID' ] );
+			echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-organisation-bottom', 'materialpool-template-organisation-bottom' ) .'">' . $verweis[ 'post_title' ] . '</a><br>';
+
+		}
+	}
+
+
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access public
+	 * @filters materialpool-template-material-verweise
+	 */
+	static public function get_bottom_orga_ids () {
+		$back = array();
+		$verweise = Materialpool_Organisation::get_bottom_orga();
+		foreach ( $verweise as $verweis ) {
+			$back[] = (int) $verweis[ 'ID' ];
+		}
+		return $back;
+	}
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
+	static public function get_bottom_orga() {
+		global $post;
+
+		return get_metadata( 'post', $post->ID, 'bottom_organisationen', false );
+	}
 }
