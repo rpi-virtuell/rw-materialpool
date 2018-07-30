@@ -768,6 +768,8 @@ class Materialpool_Organisation {
 	 *
 	 */
 	static public function top_orga() {
+
+
 		$top_orgaID =  Materialpool_Organisation::get_top_orga_id();
 		if ( false === $top_orgaID ) {
 			return;
@@ -783,8 +785,11 @@ class Materialpool_Organisation {
 	 * @filters materialpool-template-material-werk
 	 *
 	 */
-	static public function top_orga_html() {
-		$top_orgaID =  Materialpool_Organisation::get_top_orga_id();
+	static public function top_orga_html( $orga_id = 0 ) {
+		global $post;
+
+		$top_orgaID = ($orga_id>0)?$orga_id:Materialpool_Organisation::get_top_orga_id( $orga_id );
+
 		if ( $top_orgaID != '' ) {
 			$top_orga = get_post( $top_orgaID );
 			$url = get_permalink( $top_orgaID );
@@ -798,12 +803,13 @@ class Materialpool_Organisation {
 	 * @access	public
 	 *
 	 */
-	static public function get_top_orga_id() {
+	static public function get_top_orga_id( $orga_id = 0 ) {
 		global $post;
 
-		$top_orga = get_metadata( 'post', $post->ID, 'top_organisation', true );
+		$orga_id = ($orga_id>0)?$orga_id:$post->ID;
+		$top_orga = get_metadata( 'post', $orga_id, 'top_organisation', true );
 		if ( is_array( $top_orga ) ) {
-			return ( $top_orga["ID"] );
+			return ( $top_orga[ "ID" ] );
 		} else {
 			return false;
 		}
