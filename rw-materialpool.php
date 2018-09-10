@@ -183,6 +183,7 @@ class Materialpool {
          * Register as Class method throws an error
          */
         add_action( 'pods_meta_groups',  'materialpool_pods_material_metaboxes', 10, 2 );
+		add_action( 'rest_api_init', 'register_mymaterial_rest_routes' );
 
 
         // Add Filter & Actions for Organisation
@@ -353,7 +354,6 @@ class Materialpool {
 		add_filter( 'rw_materialpool_contribute_cmd_parser', array( 'Materialpool_Contribute', 'cmd_list_authors' ) );
 		add_filter( 'rw_materialpool_contribute_cmd_parser', array( 'Materialpool_Contribute', 'cmd_list_bildungsstufen' ) );
 		add_filter( 'rw_materialpool_contribute_cmd_parser', array( 'Materialpool_Contribute', 'cmd_list_altersstufen' ) );
-
 
 		add_action( 'admin_menu', array( 'Materialpool_Contribute', 'options_page' ) );
 		add_action( 'admin_menu', array( 'Materialpool_Contribute', 'settings_init' ) );
@@ -2038,12 +2038,12 @@ order by wp_posts.ID  desc   limit 0, 20") ;
             }
 	    }
 
-	function isJson($string) {
+	public static  function isJson($string) {
 		json_decode($string);
 		return (json_last_error() == JSON_ERROR_NONE);
 	}
 
-	function endsWith($check, $endStr) {
+	public static function endsWith($check, $endStr) {
 		if (!is_string($check) || !is_string($endStr) || strlen($check)<strlen($endStr)) {
 			return false;
 		}
@@ -2123,5 +2123,47 @@ function mb_endsWith($check, $endStr) {
     }
 
     return (mb_substr($check, mb_strlen($check)-mb_strlen($endStr), mb_strlen($endStr)) === $endStr);
+}
+
+
+//add_action( 'rest_api_init', 'rest_api_filter_add_filters' );
+/**
+ * Add the necessary filter to each post type
+ **/
+function rest_api_filter_add_filters() {
+	foreach ( get_post_types( array( 'show_in_rest' => true ), 'objects' ) as $post_type ) {
+		add_filter( 'rest_' . $post_type->name . '_query', 'rest_api_filter_add_filter_param', 10, 2 );
+	}
+}
+/**
+ * Add the filter parameter
+ *
+ * @param  array           $args    The query arguments.
+ * @param  WP_REST_Request $request Full details about the request.
+ * @return array $args.
+ **/
+function rest_api_filter_add_filter_param( $args, $request ) {
+	// Bail out if no filter parameter is set.
+	if ( empty( $request['filter'] ) || ! is_array( $request['filter'] ) ) {
+		return $args;
+	}
+	$filter = $request['filter'];
+	if ( isset( $filter['posts_per_page'] ) && ( (int) $filter['posts_per_page'] >= 1 && (int) $filter['posts_per_page'] <= 100 ) ) {
+		$args['posts_per_page'] = $filter['posts_per_page'];
+	}
+	global $wp;
+	$vars = apply_filters( 'query_vars', $wp->public_query_vars );
+	foreach ( $vars as $var ) {
+		if ( isset( $filter[ $var ] ) ) {
+			$args[ $var ] = $filter[ $var ];
+		}
+	}
+	return $args;
+}
+
+// Function to register our new routes from the controller.
+function register_mymaterial_rest_routes() {
+	$controller = new Materialpool_REST_MyMaterial();
+	$controller->register_routes();
 }
 
