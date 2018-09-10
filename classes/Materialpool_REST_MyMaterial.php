@@ -17,7 +17,7 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 				'callback'            => array( $this, 'get_items' ),
 				'args'                => array(
 					'page' => array (
-						'required' => true
+						'required' => false
 					),
 				),
 			),
@@ -53,6 +53,36 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 				array(
 					'key' => 'material_autor_facet',
 					'value' => self::get_autor_title_by_slug( $request[ 'autor' ] ),
+				)
+			);
+		}
+
+		if ( isset ( $request[ 'bildungsstufe' ] ) ) {
+			$args[ 'tax_query' ] = array(
+				array(
+					'taxonomy' => 'bildungsstufe',
+					'field' => 'slug',
+					'terms' => $request[ 'bildungsstufe' ] ,
+				)
+			);
+		}
+
+		if ( isset ( $request[ 'altersstufe' ] ) ) {
+			$args[ 'tax_query' ] = array(
+				array(
+					'taxonomy' => 'altersstufe',
+					'field' => 'slug',
+					'terms' => $request[ 'altersstufe' ] ,
+				)
+			);
+		}
+
+		if ( isset ( $request[ 'medientyp' ] ) ) {
+			$args[ 'tax_query' ] = array(
+				array(
+					'taxonomy' => 'medientyp',
+					'field' => 'slug',
+					'terms' => $request[ 'medientyp' ] ,
 				)
 			);
 		}
