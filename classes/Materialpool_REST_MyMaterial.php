@@ -86,6 +86,15 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 				)
 			);
 		}
+		if ( isset ( $request[ 'inklusion' ] ) ) {
+			$args[ 'tax_query' ] = array(
+				array(
+					'taxonomy' => 'inklusion',
+					'field' => 'slug',
+					'terms' => $request[ 'inklusion' ] ,
+				)
+			);
+		}
 
 		$materials = get_posts( $args );
 		// set max number of pages and total num of posts
