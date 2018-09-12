@@ -99,6 +99,16 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 			);
 		}
 
+		if ( isset ( $request[ 'schlagwort' ] ) ) {
+			$args[ 'tax_query' ] = array(
+				array(
+					'taxonomy' => 'schlagwort',
+					'field' => 'slug',
+					'terms' => $request[ 'schlagwort' ] ,
+				)
+			);
+		}
+
 		$materials = get_posts( $args );
 		// set max number of pages and total num of posts
 		$query = new WP_Query( $args );
