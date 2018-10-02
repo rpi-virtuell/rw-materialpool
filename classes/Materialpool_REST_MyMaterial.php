@@ -205,6 +205,27 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 				'term_id' => $to->term_id,
 			);
 		}
+
+		// Schlagworte
+		$swArray = array();
+		$sw =  get_post_meta( $item->ID, 'material_schlagworte', false );
+		if ( is_array( $sw ) ) {
+			foreach ( $sw as $switem ) {
+				$so = get_term_by( 'term_taxonomy_id', $switem );
+				$swArray[] = array(
+					'name' => $so->name,
+					'term_id' => $so->term_id,
+				);
+
+			}
+		} else {
+			$so = get_term_by( 'term_taxonomy_id', $sw );
+			$swArray[] = array(
+				'name' => $so->name,
+				'term_id' => $so->term_id,
+			);
+		}
+
 		$data = array(
 			'id'      => $item->ID,
 			'slug'      => $item->post_name,
@@ -216,7 +237,7 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 			'material_altersstufe'   => $asArray,
 			'material_medientyp'   => $mtArray,
 			'material_bildungsstufe'   => $bsArray,
-
+			'material_schlagworte'   => $swArray,
 		);
 
 		return $data;
