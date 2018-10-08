@@ -238,6 +238,7 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 			'material_medientyp'   => $mtArray,
 			'material_bildungsstufe'   => $bsArray,
 			'material_schlagworte'   => $swArray,
+			'material_review_url' => get_permalink( $item->ID ),
 		);
 
 		return $data;
