@@ -3170,11 +3170,55 @@ order by wp_posts.post_date  asc ") ;
 	 * @access	public
 	 *
 	 */
-	static public function add_material_filter_view( $view ) {
+    static public function default_hide_meta_box( $hidden, $screen ) {
+	    if ( ('post' == $screen->base) && ('material' == $screen->id) ){
+		    $hidden[] = 'pods-meta-zusaetzliche-metadaten';
+		    $hidden[] = 'trackbacksdiv';
+		    $hidden[] = 'commentstatusdiv';
+		    $hidden[] = 'commentsdiv';
+		    $hidden[] = 'authordiv';
+	    }
+	    return $hidden;
+    }
+
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
+	public static function options_page() {
+		add_submenu_page(
+			'materialpool',
+			_x('Material (Unvollständig)', Materialpool::$textdomain, 'Page Title' ),
+			_x('Material (Unvollständig)', Materialpool::$textdomain, 'Menu Title' ),
+			'manage_options',
+			__FILE__ . '1',
+			array( 'Materialpool_Material', 'list_unvollstaendig' )
+		);
+
+		add_submenu_page(
+			'materialpool',
+			_x('Material (Zugeliefert)', Materialpool::$textdomain, 'Page Title' ),
+			_x('Material (Zugeliefert)', Materialpool::$textdomain, 'Menu Title' ),
+			'manage_options',
+			__FILE__ . '2',
+			array( 'Materialpool_Material', 'list_zugeliefert' )
+		);
+
+	}
+
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
+	public static function list_unvollstaendig() {
 		global $wpdb;
 		$count = 0;
 		$result = $wpdb->get_results("
-        SELECT distinct( $wpdb->posts.ID )  FROM 
+        SELECT distinct( $wpdb->posts.ID ) , $wpdb->posts.post_title, DATE_FORMAT ( post_date, '%d.%m.%y' ) AS datum  FROM 
 	$wpdb->posts, $wpdb->postmeta 
 WHERE 
 	$wpdb->posts.ID = $wpdb->postmeta.post_id AND  
@@ -3227,74 +3271,58 @@ OR
 )	
 order by wp_posts.post_date  asc ") ;
 		foreach ( $result as $obj ) {
+			if ($count == 0 ) {
+				echo "<table><tr><th style='width: 80%;'>Material</th><th style='width: 20%;' >Datum</th></tr>";
+			}
+			echo "<tr><td><a href='". get_edit_post_link( $obj->ID) ."'>" . $obj->post_title . "</a></td><td>" . $obj->datum ."</td></tr>";
 			$count++;
 		}
+		if ( $count > 0) {
+			echo "</table>";
+		}
+	}
 
-        $url= admin_url( 'edit.php?post_type=material&mode=incomplete' );
-		$active = false;
-		if ( isset( $_REQUEST[ 'mode'] ) &&  $_REQUEST[ 'mode'] == 'incomplete' ) {
-		    $active = trueM;
-        }
-		$string = '<a href="'. $url  .'" ';
-        if ( $active ) {
-            $string .= ' class="current" ';
-        }
-		$string .= '>Unvollständig</a> (' . $count . ')';
-
-		$view[ 'incomplete'] = $string;
-
-
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
+	public static function list_zugeliefert() {
+		global $wpdb;
 		$count = 0;
 		$result = $wpdb->get_results("
-        SELECT distinct( $wpdb->posts.ID )  FROM 
+        SELECT distinct( $wpdb->posts.ID ) , $wpdb->posts.post_title, DATE_FORMAT ( post_date, '%d.%m.%y' ) AS datum  FROM 
 	$wpdb->posts, $wpdb->postmeta 
 WHERE 
-	$wpdb->posts.ID = $wpdb->postmeta.post_id AND  
+	$wpdb->posts.ID = $wpdb->postmeta.post_id AND
 	$wpdb->posts.post_type = 'material' AND
 	( $wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'draft' )  AND
-(
 	(
-	   not exists( select * from wp_postmeta where meta_key='material_vorauswahl' and post_id = wp_posts.ID )
+	(
+	not exists( select * from wp_postmeta where meta_key='material_vorauswahl' and post_id = wp_posts.ID )
 	 OR  
-		( 
-			wp_postmeta.meta_key = 'material_vorauswahl' AND 
-			wp_postmeta.meta_value != 2206  
+		(
+			wp_postmeta.meta_key = 'material_vorauswahl' AND
+			wp_postmeta.meta_value != 2206
 		) 
 	)
 )	
-order by wp_posts.post_date  asc ") ;
-
+order by wp_posts.post_date  asc  ") ;
 
 		foreach ( $result as $obj ) {
+			if ($count == 0 ) {
+				echo "<table><tr><th style='width: 80%;'>Material</th><th style='width: 20%;' >Datum</th></tr>";
+			}
+			echo "<tr><td><a href='". get_edit_post_link( $obj->ID) ."'>" . $obj->post_title . "</a></td><td>" . $obj->datum ."</td></tr>";
 			$count++;
 		}
-
-
-		$url= admin_url( 'edit.php?post_type=material&mode=supply' );
-		$active = false;
-		if ( isset( $_REQUEST[ 'mode'] ) &&  $_REQUEST[ 'mode'] == 'incomplete' ) {
-			$active = trueM;
+		if ( $count > 0) {
+			echo "</table>";
 		}
-		$string = '<a href="'. $url  .'" ';
-		if ( $active ) {
-			$string .= ' class="current" ';
-		}
-		$string .= '>Zugeliefert</a> (' . $count . ')';
+	}
 
-		$view[ 'supply'] = $string;
-
-        return $view;
-    }
-
-
-    static public function default_hide_meta_box( $hidden, $screen ) {
-	    if ( ('post' == $screen->base) && ('material' == $screen->id) ){
-		    $hidden[] = 'pods-meta-zusaetzliche-metadaten';
-		    $hidden[] = 'trackbacksdiv';
-		    $hidden[] = 'commentstatusdiv';
-		    $hidden[] = 'commentsdiv';
-		    $hidden[] = 'authordiv';
-	    }
-	    return $hidden;
-    }
 }
+
+
+
