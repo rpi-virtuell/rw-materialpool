@@ -226,6 +226,26 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 			);
 		}
 
+		// Rubrik
+		$ruArray = array();
+		$ru =  get_post_meta( $item->ID, 'material_rubrik', false );
+		if ( is_array( $ru ) ) {
+			foreach ( $ru as $ruitem ) {
+				$so = get_term_by( 'term_taxonomy_id', $ruitem );
+				$ruArray[] = array(
+					'name' => $so->name,
+					'term_id' => $so->term_id,
+				);
+
+			}
+		} else {
+			$so = get_term_by( 'term_taxonomy_id', $ru );
+			$ruArray[] = array(
+				'name' => $so->name,
+				'term_id' => $so->term_id,
+			);
+		}
+
 		$data = array(
 			'id'      => $item->ID,
 			'slug'      => $item->post_name,
@@ -238,6 +258,7 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 			'material_medientyp'   => $mtArray,
 			'material_bildungsstufe'   => $bsArray,
 			'material_schlagworte'   => $swArray,
+			'material_rubrik'   => $ruArray,
 			'material_review_url' => get_permalink( $item->ID ),
 		);
 
