@@ -261,7 +261,12 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 				'name' => $au,
 			);
 		}
-
+		$au =  get_post_meta( $item->ID, 'material_autor_interim', true );
+		if ( $au !=  '' ) {
+			$auArray[] = array(
+				'name' => $au,
+			);
+		}
 
 		$data = array(
 			'id'      => $item->ID,
