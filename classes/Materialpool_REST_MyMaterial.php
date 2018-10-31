@@ -246,6 +246,23 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 			);
 		}
 
+		// Autoren
+		$auArray = array();
+		$au =  get_post_meta( $item->ID, 'material_autor_facet', false );
+		if ( is_array( $au ) ) {
+			foreach ( $au as $auitem ) {
+				$auArray[] = array(
+					'name' => $auitem,
+				);
+
+			}
+		} else {
+			$auArray[] = array(
+				'name' => $au,
+			);
+		}
+
+
 		$data = array(
 			'id'      => $item->ID,
 			'slug'      => $item->post_name,
@@ -260,6 +277,7 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 			'material_schlagworte'   => $swArray,
 			'material_rubrik'   => $ruArray,
 			'material_review_url' => get_permalink( $item->ID ),
+			'material_autoren'   => $auArray,
 		);
 
 		return $data;
