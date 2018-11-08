@@ -54,6 +54,7 @@ class Materialpool_Contribute {
 	static public function add_query_vars( $vars ) {
 		$vars[] = '__rwmpapi';
 		$vars[] = 'data';
+		self::log( "add_query_vars");
 		return $vars;
 	}
 
@@ -68,6 +69,7 @@ class Materialpool_Contribute {
 	 */
 	static public function parse_request(){
 		global $wp;
+		self::log("parse_request");
 		if( isset( $wp->query_vars[ '__rwmpapi' ] ) ) {
 			Materialpool_Contribute::handle_request();
 			exit;
@@ -241,15 +243,17 @@ class Materialpool_Contribute {
 	static protected function handle_request(){
 		global $wp;
 
-		self::log( 'handle_request');
-		self::log( $wp->query_vars[ 'data' ]);
-		$request = json_decode( stripslashes( urldecode( $wp->query_vars[ 'data' ] ) ) ) ;
- 		if( ! $request || !isset($request->cmd) || !isset($request->data) ) {
+		if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+			$request = json_decode( stripslashes( urldecode( $wp->query_vars['data'] ) ) );
+		}
+		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+			$request =  $_POST ;
+ 			$request =  json_decode( stripslashes( urldecode( $request[0] ) ) );
+		}
 
+		if( ! $request || !isset($request->cmd) || !isset($request->data) ) {
 			Materialpool_Contribute::send_response('Please send commands in json. ' . json_last_error_msg() );
-
 		} else {
-
 			//validate client
 			$valid = self::is_validate_trustet_client();
 
@@ -279,7 +283,6 @@ class Materialpool_Contribute {
 			apply_filters( 'rw_materialpool_contribute_cmd_parser', $request );
 		}
 	}
-
 
 
 	/**
@@ -482,6 +485,7 @@ class Materialpool_Contribute {
 	 * @return  mixed
 	 */
 	static public function cmd_send_post( $request ) {
+
 	    global $wpdb;
 		if ( 'send_post' == $request->cmd ) {
 
@@ -518,7 +522,7 @@ class Materialpool_Contribute {
 
                         if (  $status == true ) {
 	                        $pod              = pods( 'material' );
-	                        $url              = urldecode( $request->data->material_url );
+	                        $url              = base64_decode( $request->data->material_url );
 	                        $title            = base64_decode( $request->data->material_title );
 	                        $shortdescription = base64_decode( $request->data->material_shortdescription );
 	                        $description      = base64_decode( $request->data->material_description );
