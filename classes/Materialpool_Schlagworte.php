@@ -65,4 +65,7 @@ class Materialpool_Schlagworte {
         return $out;
     }
 
+    static public function pods_form_ui_field_pick_autocomplete_limit( $limit ) {
+    	return 50;
+    }
 }

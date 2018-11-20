@@ -220,6 +220,8 @@ class Materialpool {
         // Add Filter & Actions for Schlagworte
         add_filter( 'manage_edit-schlagwort_columns', array( 'Materialpool_Schlagworte', 'taxonomy_column' ) );
         add_filter( 'manage_schlagwort_custom_column', array( 'Materialpool_Schlagworte', 'taxonomy_column_data' ), 10, 3);
+		add_filter( 'pods_form_ui_field_pick_autocomplete_limit', array( 'Materialpool_Schlagworte', 'pods_form_ui_field_pick_autocomplete_limit' ), 10, 1);
+
 
         // Add Filter & Actions for Medientypem
         add_filter( 'manage_edit-medientyp_columns', array( 'Materialpool_Medientyp', 'taxonomy_column' ) );
