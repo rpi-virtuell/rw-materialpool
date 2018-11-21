@@ -96,8 +96,10 @@ class SearchWP_Materialpool_Synonyms {
         // 1. ist als Schlagwort im System, dann alles ok.
         $term = get_term_by( 'name', $tag, 'schlagwort' );
         if ( $term != false ) {
-            $output[ 'status' ] = 'ok';
-            $output[ 'orig' ] = $tag;
+	        $output[ 'status' ] = 'replace-exist';
+	        $output[ 'name' ] = $term->name;
+	        $output[ 'id' ] = $term->term_id;
+	        $output[ 'orig' ] = $tag;
         } else {
             // 2. SynonymDB prüfen
             $postids=$wpdb->get_col( $wpdb->prepare(
