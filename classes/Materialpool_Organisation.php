@@ -381,6 +381,7 @@ class Materialpool_Organisation {
         $materialien = $wpdb->get_col( $wpdb->prepare( "SELECT post_id   FROM  $wpdb->postmeta WHERE meta_key = %s and meta_value = %s", 'material_organisation', $post_id ) );
 
         foreach ( $materialien as $material_id ) {
+	        delete_transient( 'facet_serach2_entry-'.$material_id );
             delete_post_meta( $material_id, 'material_organisation_facet' );
             $organisationen = get_metadata( 'post', $material_id, 'material_organisation', false );
             if ( is_array( $organisationen ) ) {
