@@ -382,6 +382,9 @@ class Materialpool_Organisation {
 
         foreach ( $materialien as $material_id ) {
 	        delete_transient( 'facet_serach2_entry-'.$material_id );
+	        delete_transient( 'facet_organisation_entry-'.$material_id );
+	        delete_transient( 'rss_material_entry-'.$material_id );
+	        	        
             delete_post_meta( $material_id, 'material_organisation_facet' );
             $organisationen = get_metadata( 'post', $material_id, 'material_organisation', false );
             if ( is_array( $organisationen ) ) {
