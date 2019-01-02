@@ -1651,6 +1651,27 @@ END;
         }
     }
 
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access public
+	 *
+	 * @todo
+	 */
+	static public function volumes_ids() {
+		global $wpdb;
+		global $post;
+
+		if ( self::is_werk() ) {
+		    $ar = array();
+			$result = $wpdb->get_results( $wpdb->prepare( "SELECT $wpdb->posts.*  FROM $wpdb->posts, $wpdb->postmeta WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id AND  $wpdb->postmeta.meta_key = %s AND $wpdb->postmeta.meta_value = %s  and $wpdb->posts.post_status = 'publish'  order by post_title asc" , 'material_werk', $post->ID ) );
+			foreach ( $result as $material ) {
+				$ar[] = $material->ID;
+			}
+			return $ar;
+		}
+		return false;
+	}
     /**
      *
      * @since 0.0.1
