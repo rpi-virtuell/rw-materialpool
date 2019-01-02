@@ -1823,6 +1823,32 @@ END;
 	 * @access	public
 	 *
 	 */
+	static public function inklusion() {
+		echo Materialpool_Material::get_inklusion();
+	}
+
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
+	static public function get_inklusion() {
+		global $post;
+
+		$vid = get_metadata( 'post', $post->ID, 'material_inklusion', true );
+		if ( is_array( $vid ) ) {
+			return $vid[ 'name'];
+		}
+	}
+
+
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access	public
+	 *
+	 */
 	static public function lizenz() {
 		echo Materialpool_Material::get_lizenz();
 	}
