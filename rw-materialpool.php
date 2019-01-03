@@ -139,6 +139,8 @@ class Materialpool {
             add_action( 'wp_enqueue_scripts', array( 'Materialpool', 'register_frontend_plugin_styles' ) );
         }
 
+		add_action('wp_enqueue_scripts',array( 'Materialpool','enqueue_our_required_stylesheets') );
+
         // Add Filter & Actions for Dashboard
 		add_action( 'admin_menu', array( 'Materialpool_Dashboard', 'register_dashboard_page' ), 8 );
 		//add_action( 'admin_menu', array( 'Materialpool_Dashboard', 'register_settings_page' ) );
@@ -364,6 +366,9 @@ class Materialpool {
 		do_action( 'materialpool_init' );
 	}
 
+    public static function enqueue_our_required_stylesheets(){
+		wp_enqueue_style('font-awesome', '//use.fontawesome.com/releases/v5.6.3/css/all.css');
+	}
 
 	public static function my_searchwp_posts_per_page( $posts_per_page, $engine, $terms, $page ) {
 		return 2000;

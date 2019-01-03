@@ -230,6 +230,8 @@ class Materialpool_Organisation {
 		    }
 
 		    $data = "<div><input data-id=\"". $post_id ."\" class=\"einverstaendnis_organisation\" type='checkbox' $check ></div>";
+		    if ( $einverstaendnis == 2 ) {
+		    	$data = '<div><i class="fas fa-times"></i> Nein</div>';		    }
 	    }
         if ( $column_name == 'organisation_logo_url' ) {
             $url = get_metadata( 'post', $post_id, 'organisation_logo_url', true );
