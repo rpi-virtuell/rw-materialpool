@@ -1750,9 +1750,12 @@ END;
 	 *
 	 */
 	static public function verweise () {
+	    global $post;
 		$verweise = Materialpool_Material::get_verweise();
 		foreach ( $verweise as $verweis ) {
-			echo $verweis[ 'post_title' ] . '<br>';
+			if ( (int) $verweis[ 'ID' ] != $post->ID ) {
+				echo $verweis['post_title'] . '<br>';
+			}
 		}
 	}
 
@@ -1778,11 +1781,13 @@ END;
  	 * @filters materialpool-template-material-verweise
 	 */
 	static public function verweise_html () {
+		global $post;
 		$verweise = Materialpool_Material::get_verweise();
 		foreach ( $verweise as $verweis ) {
-			$url = get_permalink( $verweis[ 'ID' ] );
-			echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-verweise' ) .'">' . $verweis[ 'post_title' ] . '</a><br>';
-
+			if ( (int) $verweis[ 'ID' ] != $post->ID ) {
+				$url = get_permalink( $verweis['ID'] );
+				echo '<a href="' . $url . '" class="' . apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-verweise' ) . '">' . $verweis['post_title'] . '</a><br>';
+			}
 		}
 	}
 
@@ -1794,10 +1799,13 @@ END;
      * @filters materialpool-template-material-verweise
      */
     static public function get_verweise_ids () {
+        global $post;
         $back = array();
         $verweise = Materialpool_Material::get_verweise();
         foreach ( $verweise as $verweis ) {
-            $back[] = (int) $verweis[ 'ID' ];
+            if ( (int) $verweis[ 'ID' ] != $post->ID ) {
+	            $back[] = (int) $verweis[ 'ID' ];
+            }
         }
         return $back;
     }
