@@ -1859,6 +1859,8 @@ class Materialpool {
 	    $secret =  get_option( 'einstellungen_urlbox_secret') ;
 	    $key = get_option( 'einstellungen_urlbox_key') ;
         $screenshotapi_key = get_option( 'einstellungen_screenshotapi_key') ;
+	    $screenshotlayersecret =  get_option( 'einstellungen_screenshot_layer_secret') ;
+	    $screenshotlayerkey = get_option( 'einstellungen_screenshot_layer_key') ;
 
         if ( $secret == '' || $key == '' || $screenshotapi_key == '' ) return;
 
@@ -1895,24 +1897,19 @@ order by wp_posts.ID  desc  limit 0, 10 ") ;
 		    $url = get_metadata( 'post', $id, 'material_url', true );
 
 		    if ( Materialpool::endsWith( $url, '.pdf' )  || Materialpool::endsWith( $url, '.odt' ) || Materialpool::endsWith( $url, '.doc' ) || Materialpool::endsWith( $url, '.docx' ) ) {
-			    $obj = new stdClass();
-			    $obj->url = $url;
-			    $obj->viewport = "1280x1024";
-			    $obj->fullpage = false;
-			    $obj->javascript = true;
-			    $obj->webdriver = "firefox";
-			    $obj->waitSeconds = 5;
-			    $obj->fresh = false;
-			    $json = json_encode($obj);
-			    $ch = curl_init('https://api.screenshotapi.io/capture');
-			    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-			    curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+                $params['url'] =  urlencode($url);
+                $params['viewport']  = '1280x1024';
+                foreach($params as $key => $value) { $parts[] = "$key=$value"; }
+                $query = implode("&", $parts);
+                $secret_key = md5($url . $screenshotlayersecret);
+
+                $requesturl = "https://api.screenshotlayer.com/api/capture?access_key=$screenshotlayerkey&secret_key=$secret_key&$query";
+
+			    $ch = curl_init($requesturl );
+			    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
 			    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-					    'apikey: '.$screenshotapi_key,
-					    'Content-Type: application/json',
-					    'Content-Length: ' . strlen($json))
-			    );
+
+
 			    $result = curl_exec($ch);
 			    $result = json_decode( $result );
 			    $key = $result->key;
