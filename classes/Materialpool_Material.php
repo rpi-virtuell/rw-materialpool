@@ -518,7 +518,22 @@ class Materialpool_Material {
         }
         wp_set_object_terms( $post_id, $cat_ids, 'zugaenglichkeit', true );
 
-        // Autoren für FacetWP spiechern
+		// Kompetenzen des Materials in term_rel speichern
+		wp_delete_object_term_relationships( $post_id, 'kompetenz' );
+		$cats = $_POST[ 'pods_meta_material_kompetenz' ];
+		if ( is_array( $cats ) ) {
+			foreach ( $cats as $key => $val ) {
+				$cat_ids[] = (int) $val;
+			}
+		}
+		if ( is_int( $cats ) ) {
+			$cat_ids[] = $cats;
+		}
+		wp_set_object_terms( $post_id, $cat_ids, 'kompetenz', true );
+
+
+
+		// Autoren für FacetWP spiechern
         delete_post_meta( $post_id, 'material_autor_facet' );
         $autoren = explode( ',', $_POST[ 'pods_meta_material_autoren' ] ) ;
         $autoren_ids = array();

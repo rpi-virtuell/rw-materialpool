@@ -271,6 +271,11 @@ class Materialpool {
 		add_action( 'manage_themenseite_posts_custom_column', array( 'Materialpool_Themenseite', 'cpt_list_column'), 10,2 );
 		add_action( 'admin_menu' , array( 'Materialpool_Themenseite', 'remove_post_custom_fields' ) );
 
+		// Add Filter & Actions for Kompetenz
+		add_filter( 'manage_edit-kompetenz_columns', array( 'Materialpool_Kompetenzen', 'taxonomy_column' ) );
+		add_filter( 'manage_kompetenz_custom_column', array( 'Materialpool_Kompetenzen', 'taxonomy_column_data' ), 10, 3);
+
+
 		// Add Filter & Actions for Settingspage
         //add_action( 'admin_menu', array( 'Materialpool_Settings', 'options_page' ) );
         //add_action( 'admin_menu', array( 'Materialpool_Settings', 'settings_init' ) );
@@ -2112,7 +2117,7 @@ function rw_mp_row_actions( $actions, $post )
 function materialpool_pods_material_metaboxes ( $type, $name ) {
     pods_group_add( 'material', __( 'Base', Materialpool::get_textdomain() ), 'material_url,material_no_viewer,material_special, material_titel,material_kurzbeschreibung,material_beschreibung,material_von_name,material_von_email' );
     pods_group_add( 'material', __( 'Owner', Materialpool::get_textdomain() ), 'material_autoren,material_autor_interim,material_organisation,material_organisation_interim' );
-    pods_group_add( 'material', __( 'Meta', Materialpool::get_textdomain() ), 'material_schlagworte,schlagwortsynonyme, material_schlagworte_interim,material_bildungsstufe,material_altersstufe,material_medientyp,material_sprache,material_vorauswahl' );
+    pods_group_add( 'material', __( 'Meta', Materialpool::get_textdomain() ), 'material_schlagworte,schlagwortsynonyme, material_schlagworte_interim,material_bildungsstufe,material_kompetenz,material_altersstufe,material_medientyp,material_sprache,material_vorauswahl' );
     pods_group_add( 'material', __( 'Advanced Meta', Materialpool::get_textdomain() ), 'material_inklusion,material_verfuegbarkeit,material_zugaenglichkeit,material_lizenz, material_werkzeug' );
 	pods_group_add( 'material', __( 'Additional Meta', Materialpool::get_textdomain() ), 'material_rubrik' );
     pods_group_add( 'material', __( 'Date', Materialpool::get_textdomain() ), 'material_veroeffentlichungsdatum,material_jahr, material_erstellungsdatum,material_depublizierungsdatum,material_wiedervorlagedatum' );

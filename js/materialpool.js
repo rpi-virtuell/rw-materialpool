@@ -750,7 +750,20 @@ function check_material() {
     if ( jQuery(".pods-form-ui-field-name-pods-meta-material-medientyp:checked").length == 0 ) {
         jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Kein Medientyp gewählt.</div>");
     }
+    if ( jQuery(".pods-form-ui-field-name-pods-meta-material-kompetenz:checked").length == 0 ) {
+        if (jQuery(".pods-form-ui-field-name-pods-meta-material-medientyp:checked").length > 0) {
+            elements = jQuery(".pods-form-ui-field-name-pods-meta-material-medientyp:checked");
+            var text = "";
+            elements.each(function () {
+                var element = $(this).get(0);
+                if (element.value == 17) text = "<div class='materialpool-notice-error'>Keine Kompetenz gewählt.</div>";
+                if (element.value == 30) text = "<div class='materialpool-notice-error'>Keine Kompetenz gewählt.</div>";
+                if (element.value == 55) text = "<div class='materialpool-notice-error'>Keine Kompetenz gewählt.</div>";
 
+            })
+            jQuery("#mppubinfo").append(text);
+        }
+    }
 }
 /**
  * Hnweise bei Material auf Pseudo Pflichtfelder
