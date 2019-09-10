@@ -271,11 +271,12 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 		$data = array(
 			'id'      => $item->ID,
 			'slug'      => $item->post_name,
+			'date' => $item->post_date,
 			'material_titel' => get_post_meta( $item->ID, 'material_titel', true ),
 			'material_beschreibung'    => get_post_meta( $item->ID, 'material_beschreibung', true ),
 			'material_kurzbeschreibung'  => get_post_meta( $item->ID, 'material_kurzbeschreibung', true ),
 			'material_url' => get_post_meta( $item->ID, 'material_url', true ),
-			'material_screenshot'   => get_post_meta( $item->ID, 'material_screenshot', true ),
+			'material_screenshot'   =>  get_post_meta( $item->ID, 'material_cover_url', true )?get_post_meta( $item->ID, 'material_cover_url', true ): get_post_meta( $item->ID, 'material_screenshot', true ),
 			'material_altersstufe'   => $asArray,
 			'material_medientyp'   => $mtArray,
 			'material_bildungsstufe'   => $bsArray,
@@ -283,6 +284,8 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 			'material_rubrik'   => $ruArray,
 			'material_review_url' => get_permalink( $item->ID ),
 			'material_autoren'   => $auArray,
+			'material_jahr'   => get_post_meta( $item->ID, 'material_jahr', true ),
+			'parent' =>get_post_meta( $item->ID, 'material_werk', true )
 		);
 
 		return $data;
