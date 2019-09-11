@@ -109,6 +109,16 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 			);
 		}
 
+		if ( isset ( $request[ 'kompetenz' ] ) ) {
+			$args[ 'tax_query' ] = array(
+				array(
+					'taxonomy' => 'kompetenz',
+					'field' => 'slug',
+					'terms' => $request[ 'kompetenz' ] ,
+				)
+			);
+		}
+
 		$materials = get_posts( $args );
 		// set max number of pages and total num of posts
 		$query = new WP_Query( $args );
@@ -246,6 +256,26 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 			);
 		}
 
+		// kompetenz
+		$kuArray = array();
+		$ku =  get_post_meta( $item->ID, 'material_kompetenz', false );
+		if ( is_array( $ku ) ) {
+			foreach ( $ku as $kuitem ) {
+				$so = get_term_by( 'term_taxonomy_id', $kuitem );
+				$kuArray[] = array(
+					'name' => $so->name,
+					'term_id' => $so->term_id,
+				);
+
+			}
+		} else {
+			$so = get_term_by( 'term_taxonomy_id', $ku );
+			$kuArray[] = array(
+				'name' => $so->name,
+				'term_id' => $so->term_id,
+			);
+		}
+
 		// Autoren
 		$auArray = array();
 		$au =  get_post_meta( $item->ID, 'material_autor_facet', false );
@@ -284,6 +314,7 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 			'material_rubrik'   => $ruArray,
 			'material_review_url' => get_permalink( $item->ID ),
 			'material_autoren'   => $auArray,
+			'material_kompetenzen'   => $kuArray,
 			'material_jahr'   => get_post_meta( $item->ID, 'material_jahr', true ),
 			'parent' =>get_post_meta( $item->ID, 'material_werk', true )
 		);
