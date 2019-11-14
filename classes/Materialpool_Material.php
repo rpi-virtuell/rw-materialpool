@@ -14,17 +14,17 @@ class Materialpool_Material {
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function load_template($template) {
         global $post;
 
         if (is_tax() ) {
-	        return $template;
+            return $template;
         }
 
-	    $template_path = $template;
+        $template_path = $template;
         if ($post->post_type == "material" && !is_embed() ){
             if ( is_single() ) {
                 if ( $theme_file = locate_template( array ( 'materialpool/single-material.php' ) ) ) {
@@ -72,7 +72,7 @@ class Materialpool_Material {
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function add_template_check_external_files ( $checkArray ) {
@@ -85,7 +85,7 @@ class Materialpool_Material {
      * Change the columns for list table
      *
      * @since   0.0.1
-     * @access	public
+     * @access  public
      * @var     array    $columns    Array with columns
      * @return  array
      */
@@ -99,7 +99,7 @@ class Materialpool_Material {
         $columns[ 'material-online' ] = _x( 'Online', 'Material list field',  Materialpool::$textdomain );
         $columns[ 'material-status' ] = _x( 'Status', 'Material list field',  Materialpool::$textdomain );
         $columns[ 'material-owner' ] = _x( 'Redakteur', 'Material list field',  Materialpool::$textdomain );
-	    $columns[ 'material-vorschlag' ] = _x( 'Eintrager', 'Material list field',  Materialpool::$textdomain );
+        $columns[ 'material-vorschlag' ] = _x( 'Eintrager', 'Material list field',  Materialpool::$textdomain );
         return $columns;
     }
 
@@ -107,7 +107,7 @@ class Materialpool_Material {
      * Add content for the custom columns in list table
      *
      * @since   0.0.1
-     * @access	public
+     * @access  public
      */
     static public function add_taxonomy_filters() {
         global $typenow;
@@ -128,7 +128,7 @@ class Materialpool_Material {
                     foreach ($terms as $term) {
                         $selected = '';
                         if ( isset(  $_GET[$tax_slug] )  && $_GET[$tax_slug] == $term->slug ) {
-	                        $selected = 'selected="selected"';
+                            $selected = 'selected="selected"';
                         }
                         echo '<option value='. $term->slug . ' '. $selected . '>' . $term->name .' (' . $term->count .')</option>';
                     }
@@ -142,7 +142,7 @@ class Materialpool_Material {
      * Add content for the custom columns in list table
      *
      * @since   0.0.1
-     * @access	public
+     * @access  public
      * @var     string  $column_name    name of the current column
      * @var     int     $post_id        ID of the current post
      */
@@ -217,9 +217,9 @@ class Materialpool_Material {
             $user = get_user_by( 'ID', $post->post_author );
             $data = $user->display_name;
         }
-	    if ( $column_name == 'material-vorschlag' ) {
-		    $data = get_metadata( 'post', $post_id, 'material_von_name', true );
-	    }
+        if ( $column_name == 'material-vorschlag' ) {
+            $data = get_metadata( 'post', $post_id, 'material_von_name', true );
+        }
 
         if ( $column_name == 'material-schlagworte' ) {
             if ( false === ( $transient = get_transient( 'mp-cpt-list-material-schlagworte-'.$post_id ) ) ) {
@@ -283,7 +283,7 @@ class Materialpool_Material {
      * Set the sortable columns
      *
      * @since   0.0.1
-     * @access	public
+     * @access  public
      * @param   array   $columns    array with the default sortable columns
      * @return  array   Array with sortable columns
      */
@@ -295,20 +295,20 @@ class Materialpool_Material {
     }
 
 
-	/**
-	 *
-	 * @since 0.0.1
-	 * @access	public
-	 *
-	 */
-	static public function generate_title( $post_id ) {
+    /**
+     *
+     * @since 0.0.1
+     * @access  public
+     *
+     */
+    static public function generate_title( $post_id ) {
         global $wpdb;
 
-		$post_type = get_post_type($post_id);
-		$post_status = get_post_status ($post_id);
-		$post_parent = wp_get_post_parent_id( $post_id );
+        $post_type = get_post_type($post_id);
+        $post_status = get_post_status ($post_id);
+        $post_parent = wp_get_post_parent_id( $post_id );
 
-		if ( "material" != $post_type ) return;
+        if ( "material" != $post_type ) return;
         if ( "trash" == $post_status ) return;
 
         $title =  get_metadata('post', $post_id, 'material_titel', true );
@@ -316,27 +316,27 @@ class Materialpool_Material {
         $post_name = wp_unique_post_slug( sanitize_title( $title ), $post_id, 'publish', $post_type, $post_parent );
         $post_content = '';
         $url = '';
-		// Prio 1: hochgeladenes Bild
-		$pic  = $_POST[ 'pods_meta_material_cover' ];
-		if ( is_array( $pic ) ) {
-		    foreach ( $pic as $picArray ) {
-		        $id = (int) $picArray[ 'id' ];
+        // Prio 1: hochgeladenes Bild
+        $pic  = $_POST[ 'pods_meta_material_cover' ];
+        if ( is_array( $pic ) ) {
+            foreach ( $pic as $picArray ) {
+                $id = (int) $picArray[ 'id' ];
             }
         }
-		if ( is_int( $id ) ) {
-			$urlA = wp_get_attachment_image_src( $id  );
-			$url = $urlA[ 0 ];
-		}
-		// Prio 2, Cover URL
-		if ( $url == '' ) {
-			$url  = $_POST[ 'pods_meta_material_cover_url' ];
-		}
-		// Prio 3, Screenshot URL
-		if ( $url == '' ) {
-			$url  = trim( $_POST[ 'pods_meta_material_screenshot' ] );
-		}
-		if ( $url != '' ) {
-			$post_content ='<img class="size-medium  alignleft" src="'. trim( $url ) .'" alt="" sizes="(max-width: 300px) 100vw, 300px">';
+        if ( is_int( $id ) ) {
+            $urlA = wp_get_attachment_image_src( $id  );
+            $url = $urlA[ 0 ];
+        }
+        // Prio 2, Cover URL
+        if ( $url == '' ) {
+            $url  = $_POST[ 'pods_meta_material_cover_url' ];
+        }
+        // Prio 3, Screenshot URL
+        if ( $url == '' ) {
+            $url  = trim( $_POST[ 'pods_meta_material_screenshot' ] );
+        }
+        if ( $url != '' ) {
+            $post_content ='<img class="size-medium  alignleft" src="'. trim( $url ) .'" alt="" sizes="(max-width: 300px) 100vw, 300px">';
         }
 
         $post_content .= '<strong>' . wp_unslash( apply_filters( 'content_save_pre', $_POST[ 'pods_meta_material_kurzbeschreibung' ] ) ) . '</strong>';
@@ -443,23 +443,23 @@ class Materialpool_Material {
 
         // Transients für Frontendcache löschen
         delete_transient( 'facet_serach2_entry-'.$post_id );
-		delete_transient( 'rss_material_entry-'.$post_id );
+        delete_transient( 'rss_material_entry-'.$post_id );
         delete_transient( 'facet_autor_entry-'.$post_id );
         delete_transient( 'facet_themenseite_entry-'.$post_id );
         delete_transient( 'facet_organisation_entry-'.$post_id );
 
         delete_metadata( 'post', $post_id, 'material_v2_screesnhot_url' );
-		delete_metadata( 'post', $post_id, 'material_v2_screesnhot_gen' );
+        delete_metadata( 'post', $post_id, 'material_v2_screesnhot_gen' );
 
-		// ggf Abhängige Themenseiten aus dem RocketCache entfernen
-		$themen = Materialpool_Material::get_themenseiten_for_material( $post_id );
-		if ( is_array( $themen ) &&  sizeof( $themen ) > 0 ) {
-			foreach ( $themen as $item ) {
-				if (  function_exists( 'rocket_clean_post' ) ) {
-					rocket_clean_post( $item->id );
-				}
-			}
-		}
+        // ggf Abhängige Themenseiten aus dem RocketCache entfernen
+        $themen = Materialpool_Material::get_themenseiten_for_material( $post_id );
+        if ( is_array( $themen ) &&  sizeof( $themen ) > 0 ) {
+            foreach ( $themen as $item ) {
+                if (  function_exists( 'rocket_clean_post' ) ) {
+                    rocket_clean_post( $item->id );
+                }
+            }
+        }
 
         Materialpool_Material::set_createdate( $post_id );
     }
@@ -467,7 +467,7 @@ class Materialpool_Material {
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function remove_post_custom_fields() {
@@ -481,15 +481,15 @@ class Materialpool_Material {
         //remove_meta_box( 'tagsdiv-sprache' , 'material' , 'normal' );
         //remove_meta_box( 'tagsdiv-verfuegbarkeit' , 'material' , 'normal' );
         //remove_meta_box( 'tagsdiv-zugaenglichkeit' , 'material' , 'normal' );
-	    //remove_meta_box( 'vorauswahldiv' , 'material' , 'normal' );
-	    //remove_meta_box( 'tagsdiv-werkzeug' , 'material' , 'normal' );
+        //remove_meta_box( 'vorauswahldiv' , 'material' , 'normal' );
+        //remove_meta_box( 'tagsdiv-werkzeug' , 'material' , 'normal' );
     }
 
 
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function custom_post_status(){
@@ -513,7 +513,7 @@ class Materialpool_Material {
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function append_post_status_list(){
@@ -552,41 +552,41 @@ class Materialpool_Material {
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function add_metaboxes() {
-	    add_meta_box('material_bookmarklet', __( 'Bookmarklet', Materialpool::$textdomain ), array( 'Materialpool_Material', 'bookmarklet_metabox' ), 'material', 'side', 'default');
-	    add_meta_box('material_url', __( 'Material', Materialpool::$textdomain ), array( 'Materialpool_Material', 'material_metabox' ), 'material', 'side', 'default');
-	}
+        add_meta_box('material_bookmarklet', __( 'Bookmarklet', Materialpool::$textdomain ), array( 'Materialpool_Material', 'bookmarklet_metabox' ), 'material', 'side', 'default');
+        add_meta_box('material_url', __( 'Material', Materialpool::$textdomain ), array( 'Materialpool_Material', 'material_metabox' ), 'material', 'side', 'default');
+    }
 
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
-	static public function bookmarklet_metabox() {
-	    $js = file_get_contents( Materialpool::$plugin_base_dir . 'js/bookmarklet.js' );
+    static public function bookmarklet_metabox() {
+        $js = file_get_contents( Materialpool::$plugin_base_dir . 'js/bookmarklet.js' );
         echo "<a href='". $js ."'>". __( 'Materialpool++', Materialpool::$textdomain ) ."</a><br>";
         _e( 'Zieh den Link in deine Lesezeichenliste', Materialpool::$textdomain );
     }
 
-	/**
-	 *
-	 * @since 0.0.1
-	 * @access	public
-	 *
-	 */
-	static public function material_metabox() {
-	    $url = Materialpool_Material::get_url();
- 		echo "<a target='_new' href='". $url ."' class='preview button' >". __( 'zum Material', Materialpool::$textdomain ) ."</a><br><br>";
-	}
+    /**
+     *
+     * @since 0.0.1
+     * @access  public
+     *
+     */
+    static public function material_metabox() {
+        $url = Materialpool_Material::get_url();
+        echo "<a target='_new' href='". $url ."' class='preview button' >". __( 'zum Material', Materialpool::$textdomain ) ."</a><br><br>";
+    }
 
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function material_list_post_join( $join ) {
@@ -601,7 +601,7 @@ class Materialpool_Material {
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function material_list_post_where( $where ) {
@@ -619,14 +619,14 @@ class Materialpool_Material {
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function material_list_post_distinct(  $distinct ) {
         global $pagenow;
 
         if ( is_admin() && $pagenow=='edit.php' && $_GET['post_type']=='material' && isset( $_GET['s'] ) && $_GET['s'] != '') {
-	        $distinct = " DISTINCT ";
+            $distinct = " DISTINCT ";
         }
         return $distinct;
     }
@@ -635,7 +635,7 @@ class Materialpool_Material {
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function check_404_old_material() {
@@ -674,232 +674,232 @@ class Materialpool_Material {
 
                 // Mapping alte Tagpage URLS auf Themenseiten-Schlagworte
                 $data = array();
-	            $data[ '/tagpage/8B0CFB06-07F5-4412-A277-037EAF7DEC72' ] = 'Bioethik';
-	            $data[ '/tagpage/0AE84313-D98D-4238-97DF-05BF78E65F52' ] = 'Weltreligionen';
-	            $data[ '/tagpage/489AF876-9CF0-45E8-AE33-06B94F1F432C' ] = 'Ökumene';
-	            $data[ '/tagpage/AAA3FB6E-ABC7-4202-90CB-07BAA5C911F1' ] = 'Christologie';
-	            $data[ '/tagpage/4E4BDBF8-C244-4942-999D-0831ED7F6AD3' ] = 'Glück';
-	            $data[ '/tagpage/A620D6E0-1CE0-472E-87BF-08832B7EE780' ] = 'Differenzierung';
-	            $data[ '/tagpage/6F49BB78-35EC-4487-9DEB-0AD429AB1695' ] = 'Religionsunterricht';
-	            $data[ '/tagpage/27456C9B-36AE-46AD-B670-0AF4467AF697' ] = 'Kinderarbeit';
-	            $data[ '/tagpage/81582B7D-20AD-4745-B224-0BB0369FEEA5' ] = 'Gemeinschaftsschule';
-	            $data[ '/tagpage/CABDD079-2EC7-41BF-9519-0C6038CC090A' ] = 'Toleranz';
-	            $data[ '/tagpage/E3A02B48-176F-4078-AC52-0D98A68D9C4C' ] = 'Gewalt';
-	            $data[ '/tagpage/EC556AFD-70F4-4D36-A6CD-0F560DDC38F2' ] = 'Gott';
-	            $data[ '/tagpage/CF37F2C2-333F-402D-A12D-12EC80646150' ] = 'Frieden';
-	            $data[ '/tagpage/F6704664-0043-458B-9123-133E56FECAD3' ] = 'Behinderung';
-	            $data[ '/tagpage/D2D70824-F884-44C1-BD42-141917D4F9CB' ] = 'Antisemitismus';
-	            $data[ '/tagpage/BD56D5A9-27D8-4A48-BEC8-1827B19A8C3F' ] = 'Konfessionen';
-	            $data[ '/tagpage/622E60CA-8920-4537-B964-1AC2A4AED861' ] = 'Menschenbild';
-	            $data[ '/tagpage/4C7EE0C6-FAF0-490B-A1C1-1B79F01A6D8D' ] = 'Kinder';
-	            $data[ '/tagpage/C9320D9A-173A-4F55-8FB4-1C8949FA1C74' ] = 'Calvin';
-	            $data[ '/tagpage/C36377B5-9821-4372-A893-1CF3FBC424BA' ] = 'Frieden';
-	            $data[ '/tagpage/9873C1F0-B0C4-41CE-BCC9-1DE4FC9CD231' ] = 'Israel';
-	            $data[ '/tagpage/F5F15837-E178-49F4-950F-1F931962FF1B' ] = 'Ostern';
-	            $data[ '/tagpage/2CD2B671-4DD0-403B-91E8-20C4DB6988F1' ] = 'Jona';
-	            $data[ '/tagpage/CC4F673B-B90D-40F5-8F9A-20DD9E5EB6FC' ] = 'Liebe';
-	            $data[ '/tagpage/F549345E-0192-4325-830E-228125351CCE' ] = 'Israel';
-	            $data[ '/tagpage/FC38344E-B39C-4E90-9592-22E52E6B21EB' ] = 'Abendmahl';
-	            $data[ '/tagpage/79EBA410-723E-4A11-B175-23DF0B919797' ] = 'Rassismus';
-	            $data[ '/tagpage/18AEE466-CB95-4545-99C1-24CC69A34ACB' ] = 'Kinderrechte';
-	            $data[ '/tagpage/E9DE6811-BC3B-4DC0-BD96-258797A729D5' ] = 'Gerechtigkeit';
-	            $data[ '/tagpage/CAC702E8-D75C-4DC0-AF6D-265804FAD246' ] = 'Spielfilm';
-	            $data[ '/tagpage/66E45CD5-BCAB-4978-B3A7-26E3FAE0C82E' ] = 'Globalisierung';
-	            $data[ '/tagpage/46721F12-96A0-49D2-A36C-2B389DAA3E7C' ] = 'Psalm 23';
-	            $data[ '/tagpage/99555EB7-36C3-4291-848D-2B5C217359E0' ] = 'Friedenspädagogik';
-	            $data[ '/tagpage/EE508173-819E-457A-9FC7-2BADAFDA4195' ] = 'Islam';
-	            $data[ '/tagpage/AEBE75EC-8CC7-4A93-AB50-2BB1D3C1A86A' ] = 'Gottesbild';
-	            $data[ '/tagpage/38B5E21C-1B48-42B3-9ED8-3057BB16D8B2' ] = 'Propheten';
-	            $data[ '/tagpage/B9444119-7A4A-4BE5-A788-31EC07A40397' ] = 'Philosophie';
-	            $data[ '/tagpage/E5EDF8B4-67CE-4BE0-BB4E-3309C45A949A' ] = 'Hinduismus';
-	            $data[ '/tagpage/C350E1D1-5389-4E85-BDAE-339A9B5BAE50' ] = 'Gebet';
-	            $data[ '/tagpage/9747D7D6-1A81-4EE2-B41D-3482D982C2F4' ] = 'Jakob';
-	            $data[ '/tagpage/DB6F6D9A-965E-448A-8CFD-36B1245C3506' ] = 'Jesus';
-	            $data[ '/tagpage/610699D8-18BC-4B7F-8BE4-39C62EDA4768' ] = 'Papst';
-	            $data[ '/tagpage/618D7B13-6EF5-456F-B8C1-3ADA6632D495' ] = 'Franziskus';
-	            $data[ '/tagpage/ABD6323E-0F44-4EE8-8628-3BC3AF12CBBB' ] = 'Hexenverfolgung';
-	            $data[ '/tagpage/987CE798-ECF1-4A03-B9BE-3C5FAB465832' ] = 'Vorurteil';
-	            $data[ '/tagpage/51B77216-D142-4188-B70A-3E70FA5B29B4' ] = 'Schöpfung';
-	            $data[ '/tagpage/2E27E2C7-2ADB-45E2-ABF9-3E8DD0CBBAEF' ] = 'Textarbeit';
-	            $data[ '/tagpage/596B4AF5-7728-45AB-992D-3ED27AFAD0D8' ] = 'Koran';
-	            $data[ '/tagpage/B6CD500C-A9F8-4AD2-B410-3F77EFE25678' ] = 'Gott';
-	            $data[ '/tagpage/4CEF261E-8ECC-4269-8B36-4239F4F0F7A7' ] = 'Todesstrafe';
-	            $data[ '/tagpage/CEF5B5D7-EAA2-4AAD-8BFB-4535199858EF' ] = 'Fastnacht';
-	            $data[ '/tagpage/CCA79F65-E4D9-49BB-97F2-45E023E0627A' ] = 'Klimawandel';
-	            $data[ '/tagpage/B425B93A-8DF4-4E71-8A60-45E662794A42' ] = 'Religionskritik';
-	            $data[ '/tagpage/E06FF036-B23D-4265-AC03-48130DFE07E7' ] = 'Elisabeth von Thüringen';
-	            $data[ '/tagpage/4F73E492-A3EA-4548-818F-4B0B3611A993' ] = 'Jesus Christus (der Erlöser)';
-	            $data[ '/tagpage/4CBFEA31-A109-431B-9193-4BBA2CAAC1A9' ] = 'Bibel';
-	            $data[ '/tagpage/542A1037-C819-4073-BB26-4CC872174BE3' ] = 'Aberglaube';
-	            $data[ '/tagpage/293C59EC-704D-438E-8BBE-4D2C6AB49F06' ] = 'Noah';
-	            $data[ '/tagpage/7097B410-8D34-477D-9493-5029E9646879' ] = 'Zehn Gebote';
-	            $data[ '/tagpage/08BFD499-7AA1-4448-8500-5434F8429E77' ] = 'Sterbehilfe';
-	            $data[ '/tagpage/5AD44681-9FF8-4B26-800D-549833A8BAFF' ] = 'Cyber-Mobbing';
-	            $data[ '/tagpage/32CABB14-84FE-40E2-9700-54E28FCAB53C' ] = 'Umwelt Jesu';
-	            $data[ '/tagpage/50EF72CE-35A0-414C-932F-550D16EC46E0' ] = 'Karwoche';
-	            $data[ '/tagpage/E08560A2-DD9D-40BC-81F1-55D6562D5412' ] = 'Kreuzestheologie';
-	            $data[ '/tagpage/B560441F-6162-4CCD-B252-58B64388C4C9' ] = 'Symbol';
-	            $data[ '/tagpage/8DE8F241-FEA7-4463-B596-5CF2DD16DBCE' ] = 'Filmdidaktik';
-	            $data[ '/tagpage/D7339F7E-9DAF-4687-B6D7-5E1A7882FCF4' ] = 'Theodizee';
-	            $data[ '/tagpage/52A35EAF-7584-405E-AEAA-641B5AEFA0F0' ] = 'Filmanalyse';
-	            $data[ '/tagpage/3A54C5C9-F390-40DB-9F14-64770501B921' ] = 'Judentum';
-	            $data[ '/tagpage/8645D67D-F7B0-4A02-A3DE-648B246279EC' ] = 'Judentum';
-	            $data[ '/tagpage/D14B071B-1A5D-4668-AE84-64EC831E5672' ] = 'Film';
-	            $data[ '/tagpage/7B46CE91-3327-43BD-823F-67B7F45A9230' ] = 'Menschenrechte';
-	            $data[ '/tagpage/EACF2368-03FC-464E-A477-69FC34BE3FCB' ] = 'Paulus';
-	            $data[ '/tagpage/F251B29B-73A3-4BAF-A176-6B4586926CB4' ] = 'Taufe';
-	            $data[ '/tagpage/B834AF14-C55C-4630-BBFC-6B7DC7466246' ] = 'Diakonie';
-	            $data[ '/tagpage/CE3E3475-E9AF-4CE4-8043-6EED38920F86' ] = 'Auferstehung';
-	            $data[ '/tagpage/0A77E477-9B0F-47F0-8DD4-706592AFA0E4' ] = 'Kreuz';
-	            $data[ '/tagpage/B42EDDAE-DFF7-4879-8225-70AE8FA8A15B' ] = 'Bibel';
-	            $data[ '/tagpage/7F284F22-0B0B-4998-B218-70D37EE2145D' ] = 'Kooperatives Lernen';
-	            $data[ '/tagpage/3D492BBC-8186-4A13-ADF2-70F77A023FC7' ] = 'Rut';
-	            $data[ '/tagpage/772297D0-1069-41CE-9266-74C639C8ED9F' ] = 'Maria';
-	            $data[ '/tagpage/F67F389B-A0DB-4420-99B1-757D5BC87933' ] = 'Jakob';
-	            $data[ '/tagpage/FED4D4B3-ADE6-4332-9B24-769F92B6A108' ] = 'Amos';
-	            $data[ '/tagpage/545EE999-E9BA-4E6A-B4BF-78960FD0464B' ] = 'Kirchenraum';
-	            $data[ '/tagpage/03E0FDD1-2136-4F0B-8600-790A3D32589D' ] = 'Katholische Kirche';
-	            $data[ '/tagpage/1458BAE4-1707-4B25-AE33-798B06589BD3' ] = 'Behinderung';
-	            $data[ '/tagpage/9DA8EFC7-E24A-486B-9B1C-79F6A4687E02' ] = 'Islam';
-	            $data[ '/tagpage/02F8292C-A8AD-4BF5-91B8-7D515BBE0519' ] = 'Rosch ha-Schana';
-	            $data[ '/tagpage/342ADCE4-DED2-406C-B989-7F303CE8F4B3' ] = 'Friedenspädagogik';
-	            $data[ '/tagpage/BF9FF171-FB2F-4031-A39B-854ABF7BDDEB' ] = 'Jesus';
-	            $data[ '/tagpage/C8E5ECA2-071C-4A39-B88A-86239B21D171' ] = 'Kompetenzorientierung';
-	            $data[ '/tagpage/F45657F2-D21E-4936-9FB0-8AB2B1CD1673' ] = 'Dilemma';
-	            $data[ '/tagpage/24159F82-0176-44B3-85FB-8AB8C2F13F9F' ] = 'Gebet';
-	            $data[ '/tagpage/148BC103-64AB-4495-BA20-8AF95B957959' ] = 'Vaterunser';
-	            $data[ '/tagpage/5FD7C202-43C3-45A7-BE17-94017AB8109E' ] = 'Schöpfung';
-	            $data[ '/tagpage/CD8EBA22-08C4-4AE0-A705-94B2E70A7D6B' ] = 'Tod';
-	            $data[ '/tagpage/EB59BF9B-C2F1-48FD-AED2-9566E474F841' ] = 'Weltreligionen';
-	            $data[ '/tagpage/27CC9963-0593-458C-917F-980F4F50579D' ] = 'Inklusion';
-	            $data[ '/tagpage/F12B83F6-7F64-40BB-9429-99410CA2B0EA' ] = 'Noah';
-	            $data[ '/tagpage/D9F09B00-3159-43B5-9D72-9A5499087C43' ] = 'Karfreitag';
-	            $data[ '/tagpage/F84ED260-E8CC-4C26-8A7D-9CF7CCB7C3DC' ] = 'Gott';
-	            $data[ '/tagpage/B2697817-889D-4952-B17B-9D53E9E40B7F' ] = 'Religionspädagogik';
-	            $data[ '/tagpage/992BF121-5931-403B-9092-9EC11A06AEE8' ] = 'Nahostkonflikt';
-	            $data[ '/tagpage/AD932B62-68DB-4A8A-AA24-9F178B9A14E1' ] = 'Evangelische Kirche';
-	            $data[ '/tagpage/90F61EB7-30A0-4F80-8F76-9F4BD6A961E4' ] = 'Mohammed';
-	            $data[ '/tagpage/5D92CBB5-57BD-4895-8FDF-9F729C3D3AD6' ] = 'Krieg';
-	            $data[ '/tagpage/14411804-E1E1-483E-B9BE-A161D8554546' ] = 'Gewissen';
-	            $data[ '/tagpage/656A3455-EAE2-4C87-ABE5-A2FF4F58334B' ] = 'Cyber-Mobbing';
-	            $data[ '/tagpage/4AF2A5EC-F4FC-4290-8ED7-A5426A6F7EEA' ] = 'Familie';
-	            $data[ '/tagpage/AC2CDC34-2343-42BD-9D9A-A5B11F454DC3' ] = 'Atheismus';
-	            $data[ '/tagpage/8EC6B604-30E9-402E-A13F-A68A7150B34D' ] = 'Martin Luther King';
-	            $data[ '/tagpage/F6C3CE33-FAE2-47BE-8B06-A78E2A227931' ] = 'Film';
-	            $data[ '/tagpage/732B8563-DE63-47F8-821F-A9366D19082F' ] = 'Ostern';
-	            $data[ '/tagpage/784A79F6-E0D4-4406-B68D-AAB91D2ECB0D' ] = 'Schuld';
-	            $data[ '/tagpage/25913558-2317-4B70-93A9-AB14940CEC4C' ] = 'Bewahrung der Schöpfung';
-	            $data[ '/tagpage/78024F2E-3EB6-470A-B192-AC18E1B95192' ] = 'Rahel';
-	            $data[ '/tagpage/6E3C8F78-C5B0-4FA7-A066-AE771EC13BF3' ] = 'Sekte';
-	            $data[ '/tagpage/76DAA391-2755-4A57-8F03-AE78B445176E' ] = 'Kino';
-	            $data[ '/tagpage/46EE1958-D63F-486C-8A85-B06786F4092E' ] = 'Franziskus';
-	            $data[ '/tagpage/1ECBBB49-CF7C-4CA1-B6DF-B1AE668BB3E6' ] = 'Ökologie';
-	            $data[ '/tagpage/A5EB0C92-F146-4DBE-94B6-B46E9B41D807' ] = 'Paradies';
-	            $data[ '/tagpage/393DF8A5-A021-4279-8009-B5C838616505' ] = 'Psalmen';
-	            $data[ '/tagpage/862822FD-70C3-43F6-A629-B6C3DA627FCD' ] = 'Pessach';
-	            $data[ '/tagpage/9E5BB8F7-74F2-4232-8DE7-B6FA1BAFFFFB' ] = 'Klima-Kollekte';
-	            $data[ '/tagpage/81E48E81-6F38-4C88-8BEA-BA22A0AD8BF5' ] = 'Konfessionelle Kooperation';
-	            $data[ '/tagpage/556DE2F5-19AF-41B3-A3FD-BA84EAA09B39' ] = 'Ehe';
-	            $data[ '/tagpage/A1C14BA1-5B68-49CF-8277-BB2C9BA3BD1E' ] = 'Homosexualität';
-	            $data[ '/tagpage/70DBFDF1-B740-43ED-ADE5-BB42270B2945' ] = 'Geocaching';
-	            $data[ '/tagpage/FD08025F-5E5C-4BBE-8B9C-BC28BDEC9792' ] = 'Freiarbeit';
-	            $data[ '/tagpage/1038AF5D-CEB9-48CC-836F-BC94B59CD536' ] = 'Interreligiöses Lernen';
-	            $data[ '/tagpage/3E1025F7-D513-40B3-B7DD-BD04E5765E00' ] = 'Euthanasie';
-	            $data[ '/tagpage/344E2DB4-3E27-4F21-9C6B-BD7E4E430ACD' ] = 'Klimawandel';
-	            $data[ '/tagpage/2E15D5DC-2FE4-4D10-A4E5-BFCEBAE6F245' ] = 'Jom Kippur';
-	            $data[ '/tagpage/4E4F56F0-AF1C-42A2-B72F-C0EF47B55776' ] = 'Nächstenliebe';
-	            $data[ '/tagpage/DA40A555-3735-42B3-A7BD-C21130254748' ] = 'Nahtoderfahrung';
-	            $data[ '/tagpage/F6424083-6EED-4E95-ADEF-C3221B190D78' ] = 'Sexualität';
-	            $data[ '/tagpage/1AAA3E1F-6771-4E42-9B74-C3697BA054A3' ] = 'Freundschaft';
-	            $data[ '/tagpage/1A51BF59-0BEB-41A1-A5AE-C3CB5FD042D3' ] = 'Qumran';
-	            $data[ '/tagpage/32BF6BAA-7E7C-4F42-BD58-C3F3F9C8E380' ] = 'Gottesbeweis';
-	            $data[ '/tagpage/3BB056F1-2233-4F89-A378-C63907D9A6A8' ] = 'Bibelübersetzung';
-	            $data[ '/tagpage/993D2C8F-ABE9-4BEF-B0F3-C6F94CC2F4B2' ] = 'Familie';
-	            $data[ '/tagpage/B0E116A0-B2DD-4D42-9D44-C86643C1CC4C' ] = 'Terrorismus';
-	            $data[ '/tagpage/1B948ECC-7EAF-4625-9F0F-C8907B2BA23D' ] = 'Nationalsozialismus';
-	            $data[ '/tagpage/C096DAA2-5E98-44AE-926A-C915121FF135' ] = 'Bildbetrachtung';
-	            $data[ '/tagpage/BC017040-D052-48F4-BE82-CADBDD05756F' ] = 'Trickfilm';
-	            $data[ '/tagpage/01372639-2D10-4F7B-BB16-CAE8CE38AC26' ] = 'Gewalt';
-	            $data[ '/tagpage/372A0741-0520-4BC3-949E-CB7BF4AF4840' ] = 'Diakonie';
-	            $data[ '/tagpage/006B13B8-72E9-4985-87CD-CDD8EE2FC2C4' ] = 'Psalmen';
-	            $data[ '/tagpage/66F70273-DA88-48AF-9E16-CEE416B38911' ] = 'Bibel';
-	            $data[ '/tagpage/910523B7-2135-4A2C-815C-D4FB56C72473' ] = 'Albert Schweitzer';
-	            $data[ '/tagpage/3D047296-4F9D-405F-9CBB-D8850A6E59B4' ] = 'Religionsunterricht';
-	            $data[ '/tagpage/51E032C7-4147-404D-A8DF-DD29BE35FBF9' ] = 'Kreationismus';
-	            $data[ '/tagpage/7774A609-D6F8-496B-92D3-DD2FA66387F3' ] = 'Kompetenzorientierung';
-	            $data[ '/tagpage/3128027E-3DE8-47D3-84C6-DE8BC1F25A54' ] = 'Kindertheologie';
-	            $data[ '/tagpage/824E687F-1EA5-425D-95EC-DF3A67BD4FD4' ] = 'Ritual';
-	            $data[ '/tagpage/1D582B47-51B2-484B-84B2-E0D31921726B' ] = 'Kirchenraum';
-	            $data[ '/tagpage/1860E67D-26F7-4C67-8A77-E2CBC3B84976' ] = 'Auferstehung';
-	            $data[ '/tagpage/34B9A391-D9CB-4E9B-BD32-E50EB8FA3857' ] = 'Tod';
-	            $data[ '/tagpage/D6D16636-559C-4CAA-92D2-E8F189B1E8D8' ] = 'Freundschaft';
-	            $data[ '/tagpage/0407C082-40F7-43ED-A486-E974A4ADF659' ] = 'Soziale Gerechtigkeit';
-	            $data[ '/tagpage/BAEDC50F-94D6-4411-835A-E9896DC40544' ] = 'Frieden';
-	            $data[ '/tagpage/A9181B19-8E19-4258-BED8-EA51DD0724E1' ] = 'Unterrichtsvorbereitung';
-	            $data[ '/tagpage/DBBBA537-6DEF-4B57-834B-EB5158B0DBA4' ] = 'Jan Hus';
-	            $data[ '/tagpage/92E785DD-A7B7-4A21-8D6B-EBFB4843E234' ] = 'Ramadan';
-	            $data[ '/tagpage/BCA7987F-46E1-4FFC-AB94-EC21698D19A6' ] = 'Friedhof';
-	            $data[ '/tagpage/F97073B0-2719-48A3-BD68-EC8082CBA198' ] = 'Vatikan';
-	            $data[ '/tagpage/0A947B55-E67F-4F91-B882-ECD27A9F403E' ] = 'Tod';
-	            $data[ '/tagpage/083BC733-89AC-48B8-83AD-EDE2D3BCDA47' ] = 'Aufgaben';
-	            $data[ '/tagpage/98DD90DB-773A-4DBA-9F66-F0BF2086B868' ] = 'Bewahrung der Schöpfung';
-	            $data[ '/tagpage/D025D4B9-80B0-4F4F-B0AE-F1845CB5F821' ] = 'Internet';
-	            $data[ '/tagpage/3B618CAA-2226-4263-A791-F3F23A5A358A' ] = 'David';
-	            $data[ '/tagpage/2F0B5658-32AF-4AD1-B879-F3FB39CB39C8' ] = 'Armut';
-	            $data[ '/tagpage/11D76B55-FA50-4813-AB46-F53B1DD6F726' ] = 'Taizé';
-	            $data[ '/tagpage/103AC2A3-DFB7-4CA7-B4F8-F951CA0856C4' ] = 'Abendmahl';
-	            $data[ '/tagpage/8713455D-C19A-4490-92B6-F9C5FF92247D' ] = 'Apostelgeschichte';
-	            $data[ '/tagpage/1F6948BA-8581-403D-BE79-FB9045CC0074' ] = 'Interreligiöses Lernen';
-	            $data[ '/tagpage/1479D2FD-1717-49E7-8CFF-FC20CF87B7B1' ] = 'Organspende';
-	            $data[ '/tagpage/08528568-F6B0-4F2F-8739-FF947427D129' ] = 'Sucht';
+                $data[ '/tagpage/8B0CFB06-07F5-4412-A277-037EAF7DEC72' ] = 'Bioethik';
+                $data[ '/tagpage/0AE84313-D98D-4238-97DF-05BF78E65F52' ] = 'Weltreligionen';
+                $data[ '/tagpage/489AF876-9CF0-45E8-AE33-06B94F1F432C' ] = 'Ökumene';
+                $data[ '/tagpage/AAA3FB6E-ABC7-4202-90CB-07BAA5C911F1' ] = 'Christologie';
+                $data[ '/tagpage/4E4BDBF8-C244-4942-999D-0831ED7F6AD3' ] = 'Glück';
+                $data[ '/tagpage/A620D6E0-1CE0-472E-87BF-08832B7EE780' ] = 'Differenzierung';
+                $data[ '/tagpage/6F49BB78-35EC-4487-9DEB-0AD429AB1695' ] = 'Religionsunterricht';
+                $data[ '/tagpage/27456C9B-36AE-46AD-B670-0AF4467AF697' ] = 'Kinderarbeit';
+                $data[ '/tagpage/81582B7D-20AD-4745-B224-0BB0369FEEA5' ] = 'Gemeinschaftsschule';
+                $data[ '/tagpage/CABDD079-2EC7-41BF-9519-0C6038CC090A' ] = 'Toleranz';
+                $data[ '/tagpage/E3A02B48-176F-4078-AC52-0D98A68D9C4C' ] = 'Gewalt';
+                $data[ '/tagpage/EC556AFD-70F4-4D36-A6CD-0F560DDC38F2' ] = 'Gott';
+                $data[ '/tagpage/CF37F2C2-333F-402D-A12D-12EC80646150' ] = 'Frieden';
+                $data[ '/tagpage/F6704664-0043-458B-9123-133E56FECAD3' ] = 'Behinderung';
+                $data[ '/tagpage/D2D70824-F884-44C1-BD42-141917D4F9CB' ] = 'Antisemitismus';
+                $data[ '/tagpage/BD56D5A9-27D8-4A48-BEC8-1827B19A8C3F' ] = 'Konfessionen';
+                $data[ '/tagpage/622E60CA-8920-4537-B964-1AC2A4AED861' ] = 'Menschenbild';
+                $data[ '/tagpage/4C7EE0C6-FAF0-490B-A1C1-1B79F01A6D8D' ] = 'Kinder';
+                $data[ '/tagpage/C9320D9A-173A-4F55-8FB4-1C8949FA1C74' ] = 'Calvin';
+                $data[ '/tagpage/C36377B5-9821-4372-A893-1CF3FBC424BA' ] = 'Frieden';
+                $data[ '/tagpage/9873C1F0-B0C4-41CE-BCC9-1DE4FC9CD231' ] = 'Israel';
+                $data[ '/tagpage/F5F15837-E178-49F4-950F-1F931962FF1B' ] = 'Ostern';
+                $data[ '/tagpage/2CD2B671-4DD0-403B-91E8-20C4DB6988F1' ] = 'Jona';
+                $data[ '/tagpage/CC4F673B-B90D-40F5-8F9A-20DD9E5EB6FC' ] = 'Liebe';
+                $data[ '/tagpage/F549345E-0192-4325-830E-228125351CCE' ] = 'Israel';
+                $data[ '/tagpage/FC38344E-B39C-4E90-9592-22E52E6B21EB' ] = 'Abendmahl';
+                $data[ '/tagpage/79EBA410-723E-4A11-B175-23DF0B919797' ] = 'Rassismus';
+                $data[ '/tagpage/18AEE466-CB95-4545-99C1-24CC69A34ACB' ] = 'Kinderrechte';
+                $data[ '/tagpage/E9DE6811-BC3B-4DC0-BD96-258797A729D5' ] = 'Gerechtigkeit';
+                $data[ '/tagpage/CAC702E8-D75C-4DC0-AF6D-265804FAD246' ] = 'Spielfilm';
+                $data[ '/tagpage/66E45CD5-BCAB-4978-B3A7-26E3FAE0C82E' ] = 'Globalisierung';
+                $data[ '/tagpage/46721F12-96A0-49D2-A36C-2B389DAA3E7C' ] = 'Psalm 23';
+                $data[ '/tagpage/99555EB7-36C3-4291-848D-2B5C217359E0' ] = 'Friedenspädagogik';
+                $data[ '/tagpage/EE508173-819E-457A-9FC7-2BADAFDA4195' ] = 'Islam';
+                $data[ '/tagpage/AEBE75EC-8CC7-4A93-AB50-2BB1D3C1A86A' ] = 'Gottesbild';
+                $data[ '/tagpage/38B5E21C-1B48-42B3-9ED8-3057BB16D8B2' ] = 'Propheten';
+                $data[ '/tagpage/B9444119-7A4A-4BE5-A788-31EC07A40397' ] = 'Philosophie';
+                $data[ '/tagpage/E5EDF8B4-67CE-4BE0-BB4E-3309C45A949A' ] = 'Hinduismus';
+                $data[ '/tagpage/C350E1D1-5389-4E85-BDAE-339A9B5BAE50' ] = 'Gebet';
+                $data[ '/tagpage/9747D7D6-1A81-4EE2-B41D-3482D982C2F4' ] = 'Jakob';
+                $data[ '/tagpage/DB6F6D9A-965E-448A-8CFD-36B1245C3506' ] = 'Jesus';
+                $data[ '/tagpage/610699D8-18BC-4B7F-8BE4-39C62EDA4768' ] = 'Papst';
+                $data[ '/tagpage/618D7B13-6EF5-456F-B8C1-3ADA6632D495' ] = 'Franziskus';
+                $data[ '/tagpage/ABD6323E-0F44-4EE8-8628-3BC3AF12CBBB' ] = 'Hexenverfolgung';
+                $data[ '/tagpage/987CE798-ECF1-4A03-B9BE-3C5FAB465832' ] = 'Vorurteil';
+                $data[ '/tagpage/51B77216-D142-4188-B70A-3E70FA5B29B4' ] = 'Schöpfung';
+                $data[ '/tagpage/2E27E2C7-2ADB-45E2-ABF9-3E8DD0CBBAEF' ] = 'Textarbeit';
+                $data[ '/tagpage/596B4AF5-7728-45AB-992D-3ED27AFAD0D8' ] = 'Koran';
+                $data[ '/tagpage/B6CD500C-A9F8-4AD2-B410-3F77EFE25678' ] = 'Gott';
+                $data[ '/tagpage/4CEF261E-8ECC-4269-8B36-4239F4F0F7A7' ] = 'Todesstrafe';
+                $data[ '/tagpage/CEF5B5D7-EAA2-4AAD-8BFB-4535199858EF' ] = 'Fastnacht';
+                $data[ '/tagpage/CCA79F65-E4D9-49BB-97F2-45E023E0627A' ] = 'Klimawandel';
+                $data[ '/tagpage/B425B93A-8DF4-4E71-8A60-45E662794A42' ] = 'Religionskritik';
+                $data[ '/tagpage/E06FF036-B23D-4265-AC03-48130DFE07E7' ] = 'Elisabeth von Thüringen';
+                $data[ '/tagpage/4F73E492-A3EA-4548-818F-4B0B3611A993' ] = 'Jesus Christus (der Erlöser)';
+                $data[ '/tagpage/4CBFEA31-A109-431B-9193-4BBA2CAAC1A9' ] = 'Bibel';
+                $data[ '/tagpage/542A1037-C819-4073-BB26-4CC872174BE3' ] = 'Aberglaube';
+                $data[ '/tagpage/293C59EC-704D-438E-8BBE-4D2C6AB49F06' ] = 'Noah';
+                $data[ '/tagpage/7097B410-8D34-477D-9493-5029E9646879' ] = 'Zehn Gebote';
+                $data[ '/tagpage/08BFD499-7AA1-4448-8500-5434F8429E77' ] = 'Sterbehilfe';
+                $data[ '/tagpage/5AD44681-9FF8-4B26-800D-549833A8BAFF' ] = 'Cyber-Mobbing';
+                $data[ '/tagpage/32CABB14-84FE-40E2-9700-54E28FCAB53C' ] = 'Umwelt Jesu';
+                $data[ '/tagpage/50EF72CE-35A0-414C-932F-550D16EC46E0' ] = 'Karwoche';
+                $data[ '/tagpage/E08560A2-DD9D-40BC-81F1-55D6562D5412' ] = 'Kreuzestheologie';
+                $data[ '/tagpage/B560441F-6162-4CCD-B252-58B64388C4C9' ] = 'Symbol';
+                $data[ '/tagpage/8DE8F241-FEA7-4463-B596-5CF2DD16DBCE' ] = 'Filmdidaktik';
+                $data[ '/tagpage/D7339F7E-9DAF-4687-B6D7-5E1A7882FCF4' ] = 'Theodizee';
+                $data[ '/tagpage/52A35EAF-7584-405E-AEAA-641B5AEFA0F0' ] = 'Filmanalyse';
+                $data[ '/tagpage/3A54C5C9-F390-40DB-9F14-64770501B921' ] = 'Judentum';
+                $data[ '/tagpage/8645D67D-F7B0-4A02-A3DE-648B246279EC' ] = 'Judentum';
+                $data[ '/tagpage/D14B071B-1A5D-4668-AE84-64EC831E5672' ] = 'Film';
+                $data[ '/tagpage/7B46CE91-3327-43BD-823F-67B7F45A9230' ] = 'Menschenrechte';
+                $data[ '/tagpage/EACF2368-03FC-464E-A477-69FC34BE3FCB' ] = 'Paulus';
+                $data[ '/tagpage/F251B29B-73A3-4BAF-A176-6B4586926CB4' ] = 'Taufe';
+                $data[ '/tagpage/B834AF14-C55C-4630-BBFC-6B7DC7466246' ] = 'Diakonie';
+                $data[ '/tagpage/CE3E3475-E9AF-4CE4-8043-6EED38920F86' ] = 'Auferstehung';
+                $data[ '/tagpage/0A77E477-9B0F-47F0-8DD4-706592AFA0E4' ] = 'Kreuz';
+                $data[ '/tagpage/B42EDDAE-DFF7-4879-8225-70AE8FA8A15B' ] = 'Bibel';
+                $data[ '/tagpage/7F284F22-0B0B-4998-B218-70D37EE2145D' ] = 'Kooperatives Lernen';
+                $data[ '/tagpage/3D492BBC-8186-4A13-ADF2-70F77A023FC7' ] = 'Rut';
+                $data[ '/tagpage/772297D0-1069-41CE-9266-74C639C8ED9F' ] = 'Maria';
+                $data[ '/tagpage/F67F389B-A0DB-4420-99B1-757D5BC87933' ] = 'Jakob';
+                $data[ '/tagpage/FED4D4B3-ADE6-4332-9B24-769F92B6A108' ] = 'Amos';
+                $data[ '/tagpage/545EE999-E9BA-4E6A-B4BF-78960FD0464B' ] = 'Kirchenraum';
+                $data[ '/tagpage/03E0FDD1-2136-4F0B-8600-790A3D32589D' ] = 'Katholische Kirche';
+                $data[ '/tagpage/1458BAE4-1707-4B25-AE33-798B06589BD3' ] = 'Behinderung';
+                $data[ '/tagpage/9DA8EFC7-E24A-486B-9B1C-79F6A4687E02' ] = 'Islam';
+                $data[ '/tagpage/02F8292C-A8AD-4BF5-91B8-7D515BBE0519' ] = 'Rosch ha-Schana';
+                $data[ '/tagpage/342ADCE4-DED2-406C-B989-7F303CE8F4B3' ] = 'Friedenspädagogik';
+                $data[ '/tagpage/BF9FF171-FB2F-4031-A39B-854ABF7BDDEB' ] = 'Jesus';
+                $data[ '/tagpage/C8E5ECA2-071C-4A39-B88A-86239B21D171' ] = 'Kompetenzorientierung';
+                $data[ '/tagpage/F45657F2-D21E-4936-9FB0-8AB2B1CD1673' ] = 'Dilemma';
+                $data[ '/tagpage/24159F82-0176-44B3-85FB-8AB8C2F13F9F' ] = 'Gebet';
+                $data[ '/tagpage/148BC103-64AB-4495-BA20-8AF95B957959' ] = 'Vaterunser';
+                $data[ '/tagpage/5FD7C202-43C3-45A7-BE17-94017AB8109E' ] = 'Schöpfung';
+                $data[ '/tagpage/CD8EBA22-08C4-4AE0-A705-94B2E70A7D6B' ] = 'Tod';
+                $data[ '/tagpage/EB59BF9B-C2F1-48FD-AED2-9566E474F841' ] = 'Weltreligionen';
+                $data[ '/tagpage/27CC9963-0593-458C-917F-980F4F50579D' ] = 'Inklusion';
+                $data[ '/tagpage/F12B83F6-7F64-40BB-9429-99410CA2B0EA' ] = 'Noah';
+                $data[ '/tagpage/D9F09B00-3159-43B5-9D72-9A5499087C43' ] = 'Karfreitag';
+                $data[ '/tagpage/F84ED260-E8CC-4C26-8A7D-9CF7CCB7C3DC' ] = 'Gott';
+                $data[ '/tagpage/B2697817-889D-4952-B17B-9D53E9E40B7F' ] = 'Religionspädagogik';
+                $data[ '/tagpage/992BF121-5931-403B-9092-9EC11A06AEE8' ] = 'Nahostkonflikt';
+                $data[ '/tagpage/AD932B62-68DB-4A8A-AA24-9F178B9A14E1' ] = 'Evangelische Kirche';
+                $data[ '/tagpage/90F61EB7-30A0-4F80-8F76-9F4BD6A961E4' ] = 'Mohammed';
+                $data[ '/tagpage/5D92CBB5-57BD-4895-8FDF-9F729C3D3AD6' ] = 'Krieg';
+                $data[ '/tagpage/14411804-E1E1-483E-B9BE-A161D8554546' ] = 'Gewissen';
+                $data[ '/tagpage/656A3455-EAE2-4C87-ABE5-A2FF4F58334B' ] = 'Cyber-Mobbing';
+                $data[ '/tagpage/4AF2A5EC-F4FC-4290-8ED7-A5426A6F7EEA' ] = 'Familie';
+                $data[ '/tagpage/AC2CDC34-2343-42BD-9D9A-A5B11F454DC3' ] = 'Atheismus';
+                $data[ '/tagpage/8EC6B604-30E9-402E-A13F-A68A7150B34D' ] = 'Martin Luther King';
+                $data[ '/tagpage/F6C3CE33-FAE2-47BE-8B06-A78E2A227931' ] = 'Film';
+                $data[ '/tagpage/732B8563-DE63-47F8-821F-A9366D19082F' ] = 'Ostern';
+                $data[ '/tagpage/784A79F6-E0D4-4406-B68D-AAB91D2ECB0D' ] = 'Schuld';
+                $data[ '/tagpage/25913558-2317-4B70-93A9-AB14940CEC4C' ] = 'Bewahrung der Schöpfung';
+                $data[ '/tagpage/78024F2E-3EB6-470A-B192-AC18E1B95192' ] = 'Rahel';
+                $data[ '/tagpage/6E3C8F78-C5B0-4FA7-A066-AE771EC13BF3' ] = 'Sekte';
+                $data[ '/tagpage/76DAA391-2755-4A57-8F03-AE78B445176E' ] = 'Kino';
+                $data[ '/tagpage/46EE1958-D63F-486C-8A85-B06786F4092E' ] = 'Franziskus';
+                $data[ '/tagpage/1ECBBB49-CF7C-4CA1-B6DF-B1AE668BB3E6' ] = 'Ökologie';
+                $data[ '/tagpage/A5EB0C92-F146-4DBE-94B6-B46E9B41D807' ] = 'Paradies';
+                $data[ '/tagpage/393DF8A5-A021-4279-8009-B5C838616505' ] = 'Psalmen';
+                $data[ '/tagpage/862822FD-70C3-43F6-A629-B6C3DA627FCD' ] = 'Pessach';
+                $data[ '/tagpage/9E5BB8F7-74F2-4232-8DE7-B6FA1BAFFFFB' ] = 'Klima-Kollekte';
+                $data[ '/tagpage/81E48E81-6F38-4C88-8BEA-BA22A0AD8BF5' ] = 'Konfessionelle Kooperation';
+                $data[ '/tagpage/556DE2F5-19AF-41B3-A3FD-BA84EAA09B39' ] = 'Ehe';
+                $data[ '/tagpage/A1C14BA1-5B68-49CF-8277-BB2C9BA3BD1E' ] = 'Homosexualität';
+                $data[ '/tagpage/70DBFDF1-B740-43ED-ADE5-BB42270B2945' ] = 'Geocaching';
+                $data[ '/tagpage/FD08025F-5E5C-4BBE-8B9C-BC28BDEC9792' ] = 'Freiarbeit';
+                $data[ '/tagpage/1038AF5D-CEB9-48CC-836F-BC94B59CD536' ] = 'Interreligiöses Lernen';
+                $data[ '/tagpage/3E1025F7-D513-40B3-B7DD-BD04E5765E00' ] = 'Euthanasie';
+                $data[ '/tagpage/344E2DB4-3E27-4F21-9C6B-BD7E4E430ACD' ] = 'Klimawandel';
+                $data[ '/tagpage/2E15D5DC-2FE4-4D10-A4E5-BFCEBAE6F245' ] = 'Jom Kippur';
+                $data[ '/tagpage/4E4F56F0-AF1C-42A2-B72F-C0EF47B55776' ] = 'Nächstenliebe';
+                $data[ '/tagpage/DA40A555-3735-42B3-A7BD-C21130254748' ] = 'Nahtoderfahrung';
+                $data[ '/tagpage/F6424083-6EED-4E95-ADEF-C3221B190D78' ] = 'Sexualität';
+                $data[ '/tagpage/1AAA3E1F-6771-4E42-9B74-C3697BA054A3' ] = 'Freundschaft';
+                $data[ '/tagpage/1A51BF59-0BEB-41A1-A5AE-C3CB5FD042D3' ] = 'Qumran';
+                $data[ '/tagpage/32BF6BAA-7E7C-4F42-BD58-C3F3F9C8E380' ] = 'Gottesbeweis';
+                $data[ '/tagpage/3BB056F1-2233-4F89-A378-C63907D9A6A8' ] = 'Bibelübersetzung';
+                $data[ '/tagpage/993D2C8F-ABE9-4BEF-B0F3-C6F94CC2F4B2' ] = 'Familie';
+                $data[ '/tagpage/B0E116A0-B2DD-4D42-9D44-C86643C1CC4C' ] = 'Terrorismus';
+                $data[ '/tagpage/1B948ECC-7EAF-4625-9F0F-C8907B2BA23D' ] = 'Nationalsozialismus';
+                $data[ '/tagpage/C096DAA2-5E98-44AE-926A-C915121FF135' ] = 'Bildbetrachtung';
+                $data[ '/tagpage/BC017040-D052-48F4-BE82-CADBDD05756F' ] = 'Trickfilm';
+                $data[ '/tagpage/01372639-2D10-4F7B-BB16-CAE8CE38AC26' ] = 'Gewalt';
+                $data[ '/tagpage/372A0741-0520-4BC3-949E-CB7BF4AF4840' ] = 'Diakonie';
+                $data[ '/tagpage/006B13B8-72E9-4985-87CD-CDD8EE2FC2C4' ] = 'Psalmen';
+                $data[ '/tagpage/66F70273-DA88-48AF-9E16-CEE416B38911' ] = 'Bibel';
+                $data[ '/tagpage/910523B7-2135-4A2C-815C-D4FB56C72473' ] = 'Albert Schweitzer';
+                $data[ '/tagpage/3D047296-4F9D-405F-9CBB-D8850A6E59B4' ] = 'Religionsunterricht';
+                $data[ '/tagpage/51E032C7-4147-404D-A8DF-DD29BE35FBF9' ] = 'Kreationismus';
+                $data[ '/tagpage/7774A609-D6F8-496B-92D3-DD2FA66387F3' ] = 'Kompetenzorientierung';
+                $data[ '/tagpage/3128027E-3DE8-47D3-84C6-DE8BC1F25A54' ] = 'Kindertheologie';
+                $data[ '/tagpage/824E687F-1EA5-425D-95EC-DF3A67BD4FD4' ] = 'Ritual';
+                $data[ '/tagpage/1D582B47-51B2-484B-84B2-E0D31921726B' ] = 'Kirchenraum';
+                $data[ '/tagpage/1860E67D-26F7-4C67-8A77-E2CBC3B84976' ] = 'Auferstehung';
+                $data[ '/tagpage/34B9A391-D9CB-4E9B-BD32-E50EB8FA3857' ] = 'Tod';
+                $data[ '/tagpage/D6D16636-559C-4CAA-92D2-E8F189B1E8D8' ] = 'Freundschaft';
+                $data[ '/tagpage/0407C082-40F7-43ED-A486-E974A4ADF659' ] = 'Soziale Gerechtigkeit';
+                $data[ '/tagpage/BAEDC50F-94D6-4411-835A-E9896DC40544' ] = 'Frieden';
+                $data[ '/tagpage/A9181B19-8E19-4258-BED8-EA51DD0724E1' ] = 'Unterrichtsvorbereitung';
+                $data[ '/tagpage/DBBBA537-6DEF-4B57-834B-EB5158B0DBA4' ] = 'Jan Hus';
+                $data[ '/tagpage/92E785DD-A7B7-4A21-8D6B-EBFB4843E234' ] = 'Ramadan';
+                $data[ '/tagpage/BCA7987F-46E1-4FFC-AB94-EC21698D19A6' ] = 'Friedhof';
+                $data[ '/tagpage/F97073B0-2719-48A3-BD68-EC8082CBA198' ] = 'Vatikan';
+                $data[ '/tagpage/0A947B55-E67F-4F91-B882-ECD27A9F403E' ] = 'Tod';
+                $data[ '/tagpage/083BC733-89AC-48B8-83AD-EDE2D3BCDA47' ] = 'Aufgaben';
+                $data[ '/tagpage/98DD90DB-773A-4DBA-9F66-F0BF2086B868' ] = 'Bewahrung der Schöpfung';
+                $data[ '/tagpage/D025D4B9-80B0-4F4F-B0AE-F1845CB5F821' ] = 'Internet';
+                $data[ '/tagpage/3B618CAA-2226-4263-A791-F3F23A5A358A' ] = 'David';
+                $data[ '/tagpage/2F0B5658-32AF-4AD1-B879-F3FB39CB39C8' ] = 'Armut';
+                $data[ '/tagpage/11D76B55-FA50-4813-AB46-F53B1DD6F726' ] = 'Taizé';
+                $data[ '/tagpage/103AC2A3-DFB7-4CA7-B4F8-F951CA0856C4' ] = 'Abendmahl';
+                $data[ '/tagpage/8713455D-C19A-4490-92B6-F9C5FF92247D' ] = 'Apostelgeschichte';
+                $data[ '/tagpage/1F6948BA-8581-403D-BE79-FB9045CC0074' ] = 'Interreligiöses Lernen';
+                $data[ '/tagpage/1479D2FD-1717-49E7-8CFF-FC20CF87B7B1' ] = 'Organspende';
+                $data[ '/tagpage/08528568-F6B0-4F2F-8739-FF947427D129' ] = 'Sucht';
 
                 if ( key_exists( $uri, $data ) ) {
                     $keyword = $data[ $uri ];
-	                $args = array(
-		                'post_type' => 'themenseite',
-		                'tax_query' => array(
-			                array(
-				                'taxonomy' => 'schlagwort',
-				                'field'    => 'name',
-				                'terms'    => $keyword,
-			                ),
-		                ),
-	                );
-	                $query = new WP_Query( $args );
-	                if ( is_array( $query->posts ) ) {
-		                if ( wp_redirect( get_permalink( $query->posts[ 0 ]->ID ) ) ) {
-			                exit;
-		                }
+                    $args = array(
+                        'post_type' => 'themenseite',
+                        'tax_query' => array(
+                            array(
+                                'taxonomy' => 'schlagwort',
+                                'field'    => 'name',
+                                'terms'    => $keyword,
+                            ),
+                        ),
+                    );
+                    $query = new WP_Query( $args );
+                    if ( is_array( $query->posts ) ) {
+                        if ( wp_redirect( get_permalink( $query->posts[ 0 ]->ID ) ) ) {
+                            exit;
+                        }
                     }
                 }
 
 
             }
-	        if ( strpos( $uri, '/check_autor/') !== false ) {
+            if ( strpos( $uri, '/check_autor/') !== false ) {
                 $hash = substr( $uri, 13 );
 
-		        $result = $wpdb->get_var( $wpdb->prepare( "SELECT $wpdb->postmeta.post_id   FROM $wpdb->postmeta WHERE $wpdb->postmeta.meta_value = %s " , $hash ) );
+                $result = $wpdb->get_var( $wpdb->prepare( "SELECT $wpdb->postmeta.post_id   FROM $wpdb->postmeta WHERE $wpdb->postmeta.meta_value = %s " , $hash ) );
                 if ( ! is_wp_error( $result) && $result !== false ) {
-		            add_metadata( 'post', $result, 'autor_email_read', time() );
-		            wp_redirect( get_permalink( $result) );
-		            exit;
+                    add_metadata( 'post', $result, 'autor_email_read', time() );
+                    wp_redirect( get_permalink( $result) );
+                    exit;
                 }
-	        }
-	        if ( strpos( $uri, '/check_organisation/') !== false ) {
-		        $hash = substr( $uri, 20 );
-		        $result = $wpdb->get_var( $wpdb->prepare( "SELECT $wpdb->postmeta.post_id   FROM $wpdb->postmeta WHERE $wpdb->postmeta.meta_value = %s " , $hash ) );
-		        if ( ! is_wp_error( $result) && $result !== false ) {
-			        add_metadata( 'post', $result, 'organisation_email_read', time() );
-			        wp_redirect( get_permalink( $result) );
-		        }
-	        }
+            }
+            if ( strpos( $uri, '/check_organisation/') !== false ) {
+                $hash = substr( $uri, 20 );
+                $result = $wpdb->get_var( $wpdb->prepare( "SELECT $wpdb->postmeta.post_id   FROM $wpdb->postmeta WHERE $wpdb->postmeta.meta_value = %s " , $hash ) );
+                if ( ! is_wp_error( $result) && $result !== false ) {
+                    add_metadata( 'post', $result, 'organisation_email_read', time() );
+                    wp_redirect( get_permalink( $result) );
+                }
+            }
         }
     }
 
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function remove_from_bulk_actions( $actions ) {
@@ -911,7 +911,7 @@ class Materialpool_Material {
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function row_actions( $actions, $post ) {
@@ -924,14 +924,14 @@ class Materialpool_Material {
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function vorschlag_shortcode( $args ) {
         $user = "";
         $email = "";
         if ( is_user_logged_in() ) {
-	        $current_user = wp_get_current_user();
+            $current_user = wp_get_current_user();
             $user = $current_user->display_name;
             if ($user == '') $user = $current_user->user_login;
             $email = $current_user->user_email;
@@ -968,7 +968,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function title() {
@@ -978,7 +978,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function get_title() {
@@ -990,7 +990,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function shortdescription() {
@@ -1000,7 +1000,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function get_shortdescription() {
@@ -1012,7 +1012,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function description() {
@@ -1022,7 +1022,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      * @filters materialpool_material_description
      *
      */
@@ -1037,22 +1037,22 @@ END;
 
     }
 
-	/**
-	 *
-	 * @since 0.0.1
-	 * @access	public
-	 *
-	 */
+    /**
+     *
+     * @since 0.0.1
+     * @access  public
+     *
+     */
     static public function material_von_name() {
-	    global $post;
+        global $post;
 
-	    return get_metadata( 'post', $post->ID, 'material_von_name', true );
+        return get_metadata( 'post', $post->ID, 'material_von_name', true );
     }
 
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function description_footer() {
@@ -1061,7 +1061,7 @@ END;
         $user = get_user_by( 'ID', $post->post_author );
         $ts = strtotime( $post->post_date );
         if ( Materialpool_Material::material_von_name() != '' ) {
-	        echo "Material vorgeschlagen von " . Materialpool_Material::material_von_name() . "<br>";
+            echo "Material vorgeschlagen von " . Materialpool_Material::material_von_name() . "<br>";
         }
         echo "Im Materialpool eingetragen: " . date( 'd.m.Y', $ts) ." von " . $user->display_name;
     }
@@ -1069,7 +1069,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function releasedate() {
@@ -1079,7 +1079,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function get_releasedate() {
@@ -1091,7 +1091,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function depublicationdate() {
@@ -1101,7 +1101,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function get_depublicationdate() {
@@ -1113,7 +1113,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function reviewdate() {
@@ -1123,7 +1123,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function get_reviewdate() {
@@ -1135,7 +1135,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function createdate() {
@@ -1145,7 +1145,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function get_createdate() {
@@ -1157,7 +1157,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function url() {
@@ -1168,7 +1168,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function url_shorten() {
@@ -1181,7 +1181,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      * @filters materialpool-template-material-url
      */
     static public function url_html() {
@@ -1192,7 +1192,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function get_url() {
@@ -1204,7 +1204,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function picture() {
@@ -1214,7 +1214,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      * @filters materialpool-template-material-picture
      *
      */
@@ -1223,15 +1223,15 @@ END;
         if ( $id == null ) $id = $post->ID;
         $pic  = Materialpool_Material::get_picture( $id );
         $data = '';
-	    if ( is_array( $pic ) ) {
-		    $url = wp_get_attachment_url( $pic[ 'ID' ] );
-		    $data =  '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'materialpool-template-material-picture' ) .'"/>';
-	    }
-	    if ( $data == '' ) {
-	        $url = Materialpool_Material::get_picture_url( $id );
-	        if ( $url != '')  {
-		        $data =  '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'materialpool-template-material-picture' ) .'"/>';
-	        }
+        if ( is_array( $pic ) ) {
+            $url = wp_get_attachment_url( $pic[ 'ID' ] );
+            $data =  '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'materialpool-template-material-picture' ) .'"/>';
+        }
+        if ( $data == '' ) {
+            $url = Materialpool_Material::get_picture_url( $id );
+            if ( $url != '')  {
+                $data =  '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'materialpool-template-material-picture' ) .'"/>';
+            }
         }
         if ( $data == '' ) {
             $url = Materialpool_Material::get_screenshot( $id );
@@ -1240,7 +1240,7 @@ END;
             }
         }
 
-	    echo $data;
+        echo $data;
 
     }
 
@@ -1249,7 +1249,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function get_picture_source( $id = null ) {
@@ -1261,7 +1261,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function get_picture( $id = null ) {
@@ -1271,24 +1271,24 @@ END;
         return get_metadata( 'post', $id, 'material_cover', true );
     }
 
-	/**
-	 *
-	 * @since 0.0.1
-	 * @access	public
-	 *
-	 */
-	static public function get_picture_url( $id = null ) {
-		global $post;
+    /**
+     *
+     * @since 0.0.1
+     * @access  public
+     *
+     */
+    static public function get_picture_url( $id = null ) {
+        global $post;
         if ( $id == null ) $id = $post->ID;
 
-		return get_metadata( 'post', $id, 'material_cover_url', true );
-	}
+        return get_metadata( 'post', $id, 'material_cover_url', true );
+    }
 
 
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function get_screenshot( $id = null ) {
@@ -1303,14 +1303,14 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
-	static public function cover_facet_html( $id = null) {
+    static public function cover_facet_html( $id = null) {
         global $post;
         if ( $id == null ) $id = $post->ID;
 
-	    $url = '';
+        $url = '';
         $data = '';
         // Prio 1: hochgeladenes Bild
         $pic  = Materialpool_Material::get_picture( $id );
@@ -1334,41 +1334,41 @@ END;
     }
 
 
-	/**
-	 *
-	 * @since 0.0.1
-	 * @access	public
-	 *
-	 */
-	static public function get_cover( $id = null) {
-		global $post;
-		if ( $id == null ) $id = $post->ID;
-
-		$url = '';
-		// Prio 1: hochgeladenes Bild
-		$pic  = Materialpool_Material::get_picture( $id );
-		if ( is_array( $pic ) ) {
-			$url = wp_get_attachment_url( $pic[ 'ID' ] );
-		}
-		// Prio 2, Cover URL
-		if ( $url == '' ) {
-			$url  = Materialpool_Material::get_picture_url( $id );
-		}
-		// Prio 3, Screenshot URL
-		if ( $url == '' ) {
-			$url  = Materialpool_Material::get_screenshot( $id );
-		}
-
-		return trim($url);
-	}
-
-
-
-
-	/**
+    /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
+     *
+     */
+    static public function get_cover( $id = null) {
+        global $post;
+        if ( $id == null ) $id = $post->ID;
+
+        $url = '';
+        // Prio 1: hochgeladenes Bild
+        $pic  = Materialpool_Material::get_picture( $id );
+        if ( is_array( $pic ) ) {
+            $url = wp_get_attachment_url( $pic[ 'ID' ] );
+        }
+        // Prio 2, Cover URL
+        if ( $url == '' ) {
+            $url  = Materialpool_Material::get_picture_url( $id );
+        }
+        // Prio 3, Screenshot URL
+        if ( $url == '' ) {
+            $url  = Materialpool_Material::get_screenshot( $id );
+        }
+
+        return trim($url);
+    }
+
+
+
+
+    /**
+     *
+     * @since 0.0.1
+     * @access  public
      *
      */
     static public function cover_facet_html_noallign( $id = null) {
@@ -1402,14 +1402,14 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function werk() {
         $werkID =  Materialpool_Material::get_werk_id();
-	    if ( false === $werkID ) {
-	    	return;
-	    }
+        if ( false === $werkID ) {
+            return;
+        }
         $werk = get_post( $werkID );
         echo $werk->post_title;
     }
@@ -1433,18 +1433,18 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function get_werk_id() {
         global $post;
 
-	    $werk = get_metadata( 'post', $post->ID, 'material_werk', true );
+        $werk = get_metadata( 'post', $post->ID, 'material_werk', true );
         if ( is_int( (int) $werk ) ) {
-		    return ( $werk );
-		} else {
-			return false;
-		}
+            return ( $werk );
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -1502,27 +1502,27 @@ END;
         }
     }
 
-	/**
-	 *
-	 * @since 0.0.1
-	 * @access public
-	 *
-	 * @todo
-	 */
-	static public function volumes_ids() {
-		global $wpdb;
-		global $post;
+    /**
+     *
+     * @since 0.0.1
+     * @access public
+     *
+     * @todo
+     */
+    static public function volumes_ids() {
+        global $wpdb;
+        global $post;
 
-		if ( self::is_werk() ) {
-		    $ar = array();
-			$result = $wpdb->get_results( $wpdb->prepare( "SELECT $wpdb->posts.*  FROM $wpdb->posts, $wpdb->postmeta WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id AND  $wpdb->postmeta.meta_key = %s AND $wpdb->postmeta.meta_value = %s  and $wpdb->posts.post_status = 'publish'  order by post_title asc" , 'material_werk', $post->ID ) );
-			foreach ( $result as $material ) {
-				$ar[] = $material->ID;
-			}
-			return $ar;
-		}
-		return false;
-	}
+        if ( self::is_werk() ) {
+            $ar = array();
+            $result = $wpdb->get_results( $wpdb->prepare( "SELECT $wpdb->posts.*  FROM $wpdb->posts, $wpdb->postmeta WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id AND  $wpdb->postmeta.meta_key = %s AND $wpdb->postmeta.meta_value = %s  and $wpdb->posts.post_status = 'publish'  order by post_title asc" , 'material_werk', $post->ID ) );
+            foreach ( $result as $material ) {
+                $ar[] = $material->ID;
+            }
+            return $ar;
+        }
+        return false;
+    }
     /**
      *
      * @since 0.0.1
@@ -1550,62 +1550,62 @@ END;
  * @access public
  *
  */
-	static public function sibling_volumes ( $selfinclude = false ) {
-		global $wpdb;
-		global $post;
+    static public function sibling_volumes ( $selfinclude = false ) {
+        global $wpdb;
+        global $post;
 
-		if ( self::is_part_of_werk() ) {
-			$werk = self::get_werk_id();
-			$result = $wpdb->get_results( $wpdb->prepare( "SELECT $wpdb->posts.*  FROM $wpdb->posts, $wpdb->postmeta WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id AND  $wpdb->postmeta.meta_key = %s AND $wpdb->postmeta.meta_value = %s and $wpdb->posts.post_status = 'publish'   order by post_title asc" , 'material_werk', $werk ) );
-			foreach ( $result as $material ) {
-				if ( ! $selfinclude ) {
-					if ( $material->ID == $post->ID ) {
-						break;
-					}
-				}
-				echo $material->post_title . '<br>';
-			}
-		}
-	}
+        if ( self::is_part_of_werk() ) {
+            $werk = self::get_werk_id();
+            $result = $wpdb->get_results( $wpdb->prepare( "SELECT $wpdb->posts.*  FROM $wpdb->posts, $wpdb->postmeta WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id AND  $wpdb->postmeta.meta_key = %s AND $wpdb->postmeta.meta_value = %s and $wpdb->posts.post_status = 'publish'   order by post_title asc" , 'material_werk', $werk ) );
+            foreach ( $result as $material ) {
+                if ( ! $selfinclude ) {
+                    if ( $material->ID == $post->ID ) {
+                        break;
+                    }
+                }
+                echo $material->post_title . '<br>';
+            }
+        }
+    }
 
-	/**
-	 *
-	 * @since 0.0.1
-	 * @access public
-	 * @filters materialpool-template-material-sibling
-	 *
-	 */
-	static public function sibling_volumes_html ( $selfinclude = false ) {
-		global $wpdb;
-		global $post;
+    /**
+     *
+     * @since 0.0.1
+     * @access public
+     * @filters materialpool-template-material-sibling
+     *
+     */
+    static public function sibling_volumes_html ( $selfinclude = false ) {
+        global $wpdb;
+        global $post;
 
-		if ( self::is_part_of_werk() ) {
-			$werk = self::get_werk_id();
-			$result = $wpdb->get_results( $wpdb->prepare( "SELECT $wpdb->posts.*  FROM $wpdb->posts, $wpdb->postmeta WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id AND  $wpdb->postmeta.meta_key = %s AND $wpdb->postmeta.meta_value = %s  and $wpdb->posts.post_status = 'publish'  order by post_title asc" , 'material_werk', $werk ) );
-			foreach ( $result as $material ) {
-				if ( ! $selfinclude ) {
-					if ( $material->ID == $post->ID ) {
-						break;
-					}
-				}
-				$url = get_permalink( $material->ID );
-				echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-sibling', 'materialpool-template-material-sibling' ) .'">' . $material->post_title . '</a><br>';
-			}
-		}
-	}
+        if ( self::is_part_of_werk() ) {
+            $werk = self::get_werk_id();
+            $result = $wpdb->get_results( $wpdb->prepare( "SELECT $wpdb->posts.*  FROM $wpdb->posts, $wpdb->postmeta WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id AND  $wpdb->postmeta.meta_key = %s AND $wpdb->postmeta.meta_value = %s  and $wpdb->posts.post_status = 'publish'  order by post_title asc" , 'material_werk', $werk ) );
+            foreach ( $result as $material ) {
+                if ( ! $selfinclude ) {
+                    if ( $material->ID == $post->ID ) {
+                        break;
+                    }
+                }
+                $url = get_permalink( $material->ID );
+                echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-sibling', 'materialpool-template-material-sibling' ) .'">' . $material->post_title . '</a><br>';
+            }
+        }
+    }
 
-	/**
-	 *
-	 * @since 0.0.1
-	 * @access public
-	 *
-	 */
-	static public function verweise () {
-		$verweise = Materialpool_Material::get_verweise();
-		foreach ( $verweise as $verweis ) {
-			echo $verweis[ 'post_title' ] . '<br>';
-		}
-	}
+    /**
+     *
+     * @since 0.0.1
+     * @access public
+     *
+     */
+    static public function verweise () {
+        $verweise = Materialpool_Material::get_verweise();
+        foreach ( $verweise as $verweis ) {
+            echo $verweis[ 'post_title' ] . '<br>';
+        }
+    }
 
     /**
      *
@@ -1622,20 +1622,20 @@ END;
         return $back;
     }
 
-	/**
-	 *
-	 * @since 0.0.1
-	 * @access public
- 	 * @filters materialpool-template-material-verweise
-	 */
-	static public function verweise_html () {
-		$verweise = Materialpool_Material::get_verweise();
-		foreach ( $verweise as $verweis ) {
-			$url = get_permalink( $verweis[ 'ID' ] );
-			echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-verweise' ) .'">' . $verweis[ 'post_title' ] . '</a><br>';
+    /**
+     *
+     * @since 0.0.1
+     * @access public
+     * @filters materialpool-template-material-verweise
+     */
+    static public function verweise_html () {
+        $verweise = Materialpool_Material::get_verweise();
+        foreach ( $verweise as $verweis ) {
+            $url = get_permalink( $verweis[ 'ID' ] );
+            echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-verweise' ) .'">' . $verweis[ 'post_title' ] . '</a><br>';
 
-		}
-	}
+        }
+    }
 
 
     /**
@@ -1653,21 +1653,21 @@ END;
         return $back;
     }
     /**
-	 *
-	 * @since 0.0.1
-	 * @access	public
-	 *
-	 */
-	static public function get_verweise() {
-		global $post;
+     *
+     * @since 0.0.1
+     * @access  public
+     *
+     */
+    static public function get_verweise() {
+        global $post;
 
-		return get_metadata( 'post', $post->ID, 'material_verweise', false );
-	}
+        return get_metadata( 'post', $post->ID, 'material_verweise', false );
+    }
 
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function availability() {
@@ -1677,107 +1677,107 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function get_availability() {
         global $post;
-	    $id = get_field( 'material_verfuegbarkeit', $post->ID, ARRAY_A );
-	    $vid = get_term( $id, 'verfuegbarkeit' ,  ARRAY_A );
-	    if ( is_array( $vid ) ) {
+        $id = get_field( 'material_verfuegbarkeit', $post->ID, ARRAY_A );
+        $vid = get_term( $id, 'verfuegbarkeit' ,  ARRAY_A );
+        if ( is_array( $vid ) ) {
             return $vid[ 'name'];
         }
     }
 
-	/**
-	 *
-	 * @since 0.0.1
-	 * @access	public
-	 *
-	 */
-	static public function inklusion() {
-		echo Materialpool_Material::get_inklusion();
-	}
+    /**
+     *
+     * @since 0.0.1
+     * @access  public
+     *
+     */
+    static public function inklusion() {
+        echo Materialpool_Material::get_inklusion();
+    }
 
-	/**
-	 *
-	 * @since 0.0.1
-	 * @access	public
-	 *
-	 */
-	static public function get_inklusion() {
-		global $post;
+    /**
+     *
+     * @since 0.0.1
+     * @access  public
+     *
+     */
+    static public function get_inklusion() {
+        global $post;
 
-		$id = get_field( 'material_inklusion', $post->ID, ARRAY_A );
-		$vid = get_term( $id, 'inklusion' ,  ARRAY_A );
-		if ( is_array( $vid ) ) {
-			return $vid[ 'name'];
-		}
-	}
-
-
-	/**
-	 *
-	 * @since 0.0.1
-	 * @access	public
-	 *
-	 */
-	static public function lizenz() {
-		echo Materialpool_Material::get_lizenz();
-	}
-
-	/**
-	 *
-	 * @since 0.0.1
-	 * @access	public
-	 *
-	 */
-	static public function get_lizenz() {
-		global $post;
-
-		$id = get_field( 'material_lizenz', $post->ID, ARRAY_A );
-		$vid = get_term( $id, 'lizenz' ,  ARRAY_A );
-		if ( is_array( $vid ) ) {
-			return $vid[ 'name'];
-		}
- 	}
-	/**
-	 *
-	 * @since 0.0.1
-	 * @access	public
-	 *
-	 */
-	static public function get_werkzeuge() {
-		global $post;
-
-		$id = get_field( 'material_werkzeug', $post->ID, ARRAY_A );
-		$vid = get_term( $id[0], 'werkzeug' ,  ARRAY_A );
-		if ( is_array( $vid ) ) {
-			return $vid[ 'name'];
-		}
-
-	}
-
-	/**
-	 *
-	 * @since 0.0.1
-	 * @access	public
-	 *
-	 */
-	static public function werkzeuge_html() {
-		global $post;
-
-		$id = get_field( 'material_werkzeug', $post->ID, ARRAY_A );
-		$vid = get_term( $id[0], 'werkzeug' ,  ARRAY_A );
-		if ( is_array( $vid ) ) {
-			echo "<a href='/" . $vid['taxonomy'] . "/" . $vid['slug'] . "'>" . $vid['name'] . "</a>";
-		}
-
-	}
+        $id = get_field( 'material_inklusion', $post->ID, ARRAY_A );
+        $vid = get_term( $id, 'inklusion' ,  ARRAY_A );
+        if ( is_array( $vid ) ) {
+            return $vid[ 'name'];
+        }
+    }
 
 
+    /**
+     *
+     * @since 0.0.1
+     * @access  public
+     *
+     */
+    static public function lizenz() {
+        echo Materialpool_Material::get_lizenz();
+    }
 
-	/**
+    /**
+     *
+     * @since 0.0.1
+     * @access  public
+     *
+     */
+    static public function get_lizenz() {
+        global $post;
+
+        $id = get_field( 'material_lizenz', $post->ID, ARRAY_A );
+        $vid = get_term( $id, 'lizenz' ,  ARRAY_A );
+        if ( is_array( $vid ) ) {
+            return $vid[ 'name'];
+        }
+    }
+    /**
+     *
+     * @since 0.0.1
+     * @access  public
+     *
+     */
+    static public function get_werkzeuge() {
+        global $post;
+
+        $id = get_field( 'material_werkzeug', $post->ID, ARRAY_A );
+        $vid = get_term( $id[0], 'werkzeug' ,  ARRAY_A );
+        if ( is_array( $vid ) ) {
+            return $vid[ 'name'];
+        }
+
+    }
+
+    /**
+     *
+     * @since 0.0.1
+     * @access  public
+     *
+     */
+    static public function werkzeuge_html() {
+        global $post;
+
+        $id = get_field( 'material_werkzeug', $post->ID, ARRAY_A );
+        $vid = get_term( $id[0], 'werkzeug' ,  ARRAY_A );
+        if ( is_array( $vid ) ) {
+            echo "<a href='/" . $vid['taxonomy'] . "/" . $vid['slug'] . "'>" . $vid['name'] . "</a>";
+        }
+
+    }
+
+
+
+    /**
      *
      * @since 0.0.1
      * @access public
@@ -1786,7 +1786,7 @@ END;
     static public function organisation () {
         $verweise = Materialpool_Material::get_organisation();
         foreach ( $verweise as $verweisID ) {
-	        $verweis = get_post( $verweisID, ARRAY_A );
+            $verweis = get_post( $verweisID, ARRAY_A );
             echo $verweis[ 'post_title' ] . '<br>';
         }
     }
@@ -1802,7 +1802,7 @@ END;
         global $post;
         $verweise = Materialpool_Material::get_organisation();
         foreach ( $verweise as $verweisID ) {
-	        $verweis = get_post( $verweisID, ARRAY_A );
+            $verweis = get_post( $verweisID, ARRAY_A );
             $url = get_permalink( $verweis[ 'ID' ] );
             echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-verweise' ) .'">' . $verweis[ 'post_title' ] . '</a><br>';
 
@@ -1870,7 +1870,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function get_organisation() {
@@ -1889,7 +1889,7 @@ END;
         $organisationen = Materialpool_Material::get_organisation();
         $data = '';
         foreach ( $organisationen[0] as $organisationID ) {
-	        $organisation = get_post( $organisationID, ARRAY_A );
+            $organisation = get_post( $organisationID, ARRAY_A );
             if ( $organisation != '' )
                 if ( $data != '') {
                     $data .= ', ';
@@ -1995,7 +1995,7 @@ END;
         global $post;
         $verweise = Materialpool_Material::get_autor();
         foreach ( $verweise[0] as $verweisID ) {
-	        $verweis = get_post( $verweisID, ARRAY_A );
+            $verweis = get_post( $verweisID, ARRAY_A );
             $url = get_permalink( $verweis[ 'ID' ] );
             $logo = get_metadata( 'post', $verweis[ 'ID' ], 'autor_bild_url', true );
             $vorname = get_post_meta($verweis[ 'ID' ], 'autor_vorname', true );
@@ -2051,15 +2051,15 @@ END;
         global $post;
 
         $data = '';
-	    $term_list = wp_get_post_terms( $post->ID, 'bildungsstufe' );
-	    if  ( is_array( $term_list)) {
-		    foreach ( $term_list as $tax ) {
-		        if ( $tax->parent != 0 ) {
-			        $link = "/facettierte-suche/?fwp_bildungsstufe=". $tax->slug;
-			        $data .= '<span class="facet-tag"><a href="' . $link . '">' . $tax->name .'</a></span>';
-		        }
-		    }
-	    }
+        $term_list = wp_get_post_terms( $post->ID, 'bildungsstufe' );
+        if  ( is_array( $term_list)) {
+            foreach ( $term_list as $tax ) {
+                if ( $tax->parent != 0 ) {
+                    $link = "/facettierte-suche/?fwp_bildungsstufe=". $tax->slug;
+                    $data .= '<span class="facet-tag"><a href="' . $link . '">' . $tax->name .'</a></span>';
+                }
+            }
+        }
 
         return $data;
     }
@@ -2074,16 +2074,16 @@ END;
         global $post;
 
         $data = array();
-	    $term_list = wp_get_post_terms( $post->ID, 'bildungsstufe' );
-	    if  ( is_array( $term_list)) {
-		    foreach ( $term_list as $tax ) {
-		        if ( $tax->parent != 0 ) {
-			        $data[] =  $tax->name;
-		        }
-		    }
-	    }
+        $term_list = wp_get_post_terms( $post->ID, 'bildungsstufe' );
+        if  ( is_array( $term_list)) {
+            foreach ( $term_list as $tax ) {
+                if ( $tax->parent != 0 ) {
+                    $data[] =  $tax->name;
+                }
+            }
+        }
         if ( is_array( $data ) ) {
-	        return implode( ', ', $data );
+            return implode( ', ', $data );
         } else {
             return $data;
         }
@@ -2108,8 +2108,8 @@ END;
         $term_list = wp_get_post_terms( $post->ID, 'inklusion' );
         if  ( is_array( $term_list)) {
             foreach ( $term_list as $tax ) {
-	            $link = "/facettierte-suche/?fwp_inklusion=". $tax->slug;
-	            $data .= '<span class="facet-tag"><a href="' . $link . '">' . $tax->name .'</a></span>';
+                $link = "/facettierte-suche/?fwp_inklusion=". $tax->slug;
+                $data .= '<span class="facet-tag"><a href="' . $link . '">' . $tax->name .'</a></span>';
             }
         }
         return $data;
@@ -2120,7 +2120,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function get_autor() {
@@ -2129,21 +2129,21 @@ END;
         return get_metadata( 'post', $post->ID, 'material_autoren', false );
     }
 
-	/**
-	 * @since 0.0.1
-	 * @access public
-	 * @return mixed
-	 */
+    /**
+     * @since 0.0.1
+     * @access public
+     * @return mixed
+     */
     static public function is_special() {
-    	global $post;
+        global $post;
 
-    	$back = false;
-	    $special =  get_metadata( 'post', $post->ID, 'material_special', true );
+        $back = false;
+        $special =  get_metadata( 'post', $post->ID, 'material_special', true );
 
-		if ( $special == '1' ) {
-			$back = true;
-		}
-		return $back;
+        if ( $special == '1' ) {
+            $back = true;
+        }
+        return $back;
     }
 
     /**
@@ -2193,27 +2193,27 @@ END;
         return $back;
     }
 
-	/**
-	 * @since 0.0.1
-	 * @access public
-	 * @return mixed
-	 */
-	static public function is_playable() {
-		global $post;
+    /**
+     * @since 0.0.1
+     * @access public
+     * @return mixed
+     */
+    static public function is_playable() {
+        global $post;
 
-		$back = false;
-		$url =  get_metadata( 'post', $post->ID, 'material_url', true );
-		$ignore = get_metadata( 'post', $post->ID, 'material_no_viewer', true );
+        $back = false;
+        $url =  get_metadata( 'post', $post->ID, 'material_url', true );
+        $ignore = get_metadata( 'post', $post->ID, 'material_no_viewer', true );
 
-		$re = '/^(http(s)??\:\/\/)?(www\.)?((youtube\.com\/watch\?v=)|(youtu.be\/))([a-zA-Z0-9\-_])+$/';
-		preg_match_all($re, $url, $matches, PREG_SET_ORDER, 0);
+        $re = '/^(http(s)??\:\/\/)?(www\.)?((youtube\.com\/watch\?v=)|(youtu.be\/))([a-zA-Z0-9\-_])+$/';
+        preg_match_all($re, $url, $matches, PREG_SET_ORDER, 0);
 
-		if ( count ( $matches ) > 0  && $ignore != 1 )  {
-			$back = true;
-		}
+        if ( count ( $matches ) > 0  && $ignore != 1 )  {
+            $back = true;
+        }
 
-		return $back;
-	}
+        return $back;
+    }
 
 
     /**
@@ -2279,13 +2279,13 @@ END;
         global $post;
 
         $data = '';
-	    $term_list = wp_get_post_terms( $post->ID, 'schlagwort' );
-	    if  ( is_array( $term_list)) {
-		    foreach ( $term_list as $tax ) {
-			    if ( $data != '') $data .= ', ';
-			    $data .= $tax->name;
-		    }
-	    }
+        $term_list = wp_get_post_terms( $post->ID, 'schlagwort' );
+        if  ( is_array( $term_list)) {
+            foreach ( $term_list as $tax ) {
+                if ( $data != '') $data .= ', ';
+                $data .= $tax->name;
+            }
+        }
         return $data;
     }
 
@@ -2294,18 +2294,18 @@ END;
      * @access public
      * @return string
      */
-	
-	static public function get_medientypen() {
+    
+    static public function get_medientypen() {
         global $post;
 
-		$data = '';
-		$term_list = wp_get_post_terms( $post->ID, 'medientyp' );
-		if  ( is_array( $term_list)) {
-			foreach ( $term_list as $tax ) {
-				if ( $data != '') $data .= ', ';
-				$data .= $tax->name;
-			}
-		}
+        $data = '';
+        $term_list = wp_get_post_terms( $post->ID, 'medientyp' );
+        if  ( is_array( $term_list)) {
+            foreach ( $term_list as $tax ) {
+                if ( $data != '') $data .= ', ';
+                $data .= $tax->name;
+            }
+        }
         return $data;
     }
 
@@ -2314,41 +2314,41 @@ END;
      * @access public
      * prints feed item categpries
      */
-	static public function the_rss_categories() {
+    static public function the_rss_categories() {
         global $post;
-		
-		$categories = explode(',',self::get_bildungsstufen());
-				
-		
-		foreach($categories as $category): if(!empty( $category )):?>
-		<category><![CDATA[<?php echo $category;?>]]></category>
-		<?php endif; endforeach;
-		
-	}
+        
+        $categories = explode(',',self::get_bildungsstufen());
+                
+        
+        foreach($categories as $category): if(!empty( $category )):?>
+        <category><![CDATA[<?php echo $category;?>]]></category>
+        <?php endif; endforeach;
+        
+    }
 
     /**
      * @since 0.0.1
      * @access public
      * prints tags inside item content
      */
-	static public function the_rss_tags() {
+    static public function the_rss_tags() {
         global $post;
-		
-		$medientypen = explode(',',self::get_medientypen());
-		$schlagworte = explode(',',self::get_schlagworte());
         
-		$tags = array_merge($schlagworte,$medientypen);
-		
-		echo '<p style="display:none">';
-		
-		foreach($tags as $tag): if(!empty( $tag )): ?>
-		<a rel="tag"><?php echo $tag;?></a>
-		<?php endif; endforeach;
-		
-		echo '<p>';
-	}
-	
-	
+        $medientypen = explode(',',self::get_medientypen());
+        $schlagworte = explode(',',self::get_schlagworte());
+        
+        $tags = array_merge($schlagworte,$medientypen);
+        
+        echo '<p style="display:none">';
+        
+        foreach($tags as $tag): if(!empty( $tag )): ?>
+        <a rel="tag"><?php echo $tag;?></a>
+        <?php endif; endforeach;
+        
+        echo '<p>';
+    }
+    
+    
     /**
      * @since 0.0.1
      * @access public
@@ -2357,15 +2357,15 @@ END;
     static public function get_schlagworte_html( $url = '' ) {
         global $post;
 
-	    $data = '';
-	    $term_list = wp_get_post_terms( $post->ID, 'schlagwort' );
-	    if  ( is_array( $term_list)) {
-		    foreach ( $term_list as $tax ) {
-			    $link = "/facettierte-suche/?fwp_schlagworte=". $tax->slug;
-			    if ( $data != '' ) $data .= ', ';
-			    $data .= '<a href="' . $link . '">' . $tax->name .'</a>';
-		    }
-	    }
+        $data = '';
+        $term_list = wp_get_post_terms( $post->ID, 'schlagwort' );
+        if  ( is_array( $term_list)) {
+            foreach ( $term_list as $tax ) {
+                $link = "/facettierte-suche/?fwp_schlagworte=". $tax->slug;
+                if ( $data != '' ) $data .= ', ';
+                $data .= '<a href="' . $link . '">' . $tax->name .'</a>';
+            }
+        }
 
         return $data;
     }
@@ -2374,7 +2374,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function jahr_html() {
@@ -2390,7 +2390,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function get_jahr() {
@@ -2403,7 +2403,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function get_mediatyps_root() {
@@ -2428,7 +2428,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function rating_facet_html() {
@@ -2442,7 +2442,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function cta_link() {
@@ -2459,7 +2459,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function cta_url2clipboard() {
@@ -2472,52 +2472,52 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      * @param $id
      * @return string
      */
     static public function get_themengruppentitel( $id ) {
         global $wpdb;
-        $query_str 		= $wpdb->prepare('SELECT *  FROM `' . $wpdb->prefix . 'pods_themenseitengruppen`	 	  
-										 WHERE id = %s ', $id );
-        $items_arr 		= $wpdb->get_results( $query_str , ARRAY_A );
+        $query_str      = $wpdb->prepare('SELECT *  FROM `' . $wpdb->prefix . 'pods_themenseitengruppen`          
+                                         WHERE id = %s ', $id );
+        $items_arr      = $wpdb->get_results( $query_str , ARRAY_A );
         return $items_arr[ 0 ][ 'gruppe' ];
     }
 
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      * @param $id
      * @return string
      */
     static public function get_themengruppenbeschreibung( $id ) {
         global $wpdb;
-        $query_str 		= $wpdb->prepare('SELECT *  FROM `' . $wpdb->prefix . 'pods_themenseitengruppen`	 	  
-										 WHERE id = %s ', $id );
-        $items_arr 		= $wpdb->get_results( $query_str , ARRAY_A );
+        $query_str      = $wpdb->prepare('SELECT *  FROM `' . $wpdb->prefix . 'pods_themenseitengruppen`          
+                                         WHERE id = %s ', $id );
+        $items_arr      = $wpdb->get_results( $query_str , ARRAY_A );
         return $items_arr[ 0 ][ 'titel_der_gruppe' ];
     }
 
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      * @param $id
      * @return array
      */
     static public function get_themengruppe( $id ) {
         global $wpdb;
-        $query_str 		= $wpdb->prepare('SELECT *  FROM `' . $wpdb->prefix . 'pods_themenseitengruppen`	 	  
-										 WHERE id = %s ', $id );
-        $items_arr 		= $wpdb->get_results( $query_str , ARRAY_A );
+        $query_str      = $wpdb->prepare('SELECT *  FROM `' . $wpdb->prefix . 'pods_themenseitengruppen`          
+                                         WHERE id = %s ', $id );
+        $items_arr      = $wpdb->get_results( $query_str , ARRAY_A );
         return $items_arr[ 0 ];
     }
 
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      * @param $id
      * @return string
      */
@@ -2529,7 +2529,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      * @param $id
      * @return string
      */
@@ -2550,12 +2550,12 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      * @return string
      *
      */
     static public function cb_themenseite() {
-	    if (defined('REST_REQUEST') && REST_REQUEST) {  
+        if (defined('REST_REQUEST') && REST_REQUEST) {  
             $thema = (int) $_POST[ 'mp_thema'];
             $gruppe = (int) $_POST[ 'mp_gruppe'];
 
@@ -2584,7 +2584,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      * @return string
      *
      */
@@ -2657,7 +2657,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      * @return string
      *
      */
@@ -2671,7 +2671,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      * @return string
      *
      */
@@ -2686,7 +2686,7 @@ END;
     /**
      *
      * @since 0.0.1
-     * @access	public
+     * @access  public
      *
      */
     static public function depublizierung() {
@@ -2705,12 +2705,12 @@ END;
 
     }
 
-	/**
-	 *
-	 * @since 0.0.1
-	 * @access	public
-	 *
-	 */
+    /**
+     *
+     * @since 0.0.1
+     * @access  public
+     *
+     */
     static public function set_createdate( $postID = null ) {
         global $post;
 
@@ -2723,19 +2723,19 @@ END;
         }
     }
 
-	/**
-	 *
-	 * @since 0.0.1
-	 * @access	public
-	 * @return  int
-	 */
+    /**
+     *
+     * @since 0.0.1
+     * @access  public
+     * @return  int
+     */
     static public function submit_count() {
-	    global $wpdb;
+        global $wpdb;
 
-	    $query_str 		= $wpdb->prepare('SELECT count(id) as anzahl   FROM `' . $wpdb->posts . '`  
-										 WHERE post_status = %s ', "vorschlag" );
-	    $items_arr 		= $wpdb->get_results( $query_str , ARRAY_A );
-	    return $items_arr[ 0 ][ 'anzahl' ];
+        $query_str      = $wpdb->prepare('SELECT count(id) as anzahl   FROM `' . $wpdb->posts . '`  
+                                         WHERE post_status = %s ', "vorschlag" );
+        $items_arr      = $wpdb->get_results( $query_str , ARRAY_A );
+        return $items_arr[ 0 ][ 'anzahl' ];
 
     }
 
@@ -2747,425 +2747,425 @@ END;
             return;
         }
         $autorn = Materialpool_Material::get_autor();
-	    foreach ( $autorn as $autor ) {
+        foreach ( $autorn as $autor ) {
             $autor = strip_tags( $autor );
         }
 
-	    $description = Materialpool_Material::get_description();
-	    if ( $description != '' ) {
-		    $description = strip_tags( $description );
-	    }
+        $description = Materialpool_Material::get_description();
+        if ( $description != '' ) {
+            $description = strip_tags( $description );
+        }
         ?>
         <meta name="keywords" content="<?php echo  strip_tags( Materialpool_Material::get_schlagworte() ) ; ?>">
         <meta name="description" content="<?php echo  $description ; ?>">
         <meta name="author" content="<?php echo  $autor ; ?>">
         <meta property="og:title" content="<?php Materialpool_Material::title(); ?>" />
-	    <meta property="og:type" content="article" />
-	    <meta property="og:image" content="<?php echo Materialpool_Material::get_cover(); ?>" />
-	    <meta property="og:url" content="<?php echo get_permalink(); ?>" />
-	    <meta property="og:description" content="<?php echo  $description ; ?>" />
-	    <meta property="og:site_name" content="rpi-virtuell Materialpool" />
+        <meta property="og:type" content="article" />
+        <meta property="og:image" content="<?php echo Materialpool_Material::get_cover(); ?>" />
+        <meta property="og:url" content="<?php echo get_permalink(); ?>" />
+        <meta property="og:description" content="<?php echo  $description ; ?>" />
+        <meta property="og:site_name" content="rpi-virtuell Materialpool" />
 
         <?php
     }
 
     static public function admin_posts_filter( $query ) {
-	    global $pagenow, $wpdb;
-	    if ( is_admin() && $pagenow=='edit.php' && isset($_GET['ORGA_FILTER_FIELD_NAME']) && $_GET['ORGA_FILTER_FIELD_NAME'] != '') {
-		    $query->query_vars['meta_key'] = 'material_organisation';
-		    $query->query_vars['meta_value'] = $_GET['ORGA_FILTER_FIELD_NAME'];
-	    }
-	    if ( is_admin() && $pagenow=='edit.php' && isset($_GET['AUTOR_FILTER_FIELD_NAME']) && $_GET['AUTOR_FILTER_FIELD_NAME'] != '') {
-		    $query->query_vars['meta_key'] = 'material_autoren';
-		    $query->query_vars['meta_value'] = $_GET['AUTOR_FILTER_FIELD_NAME'];
-	    }
+        global $pagenow, $wpdb;
+        if ( is_admin() && $pagenow=='edit.php' && isset($_GET['ORGA_FILTER_FIELD_NAME']) && $_GET['ORGA_FILTER_FIELD_NAME'] != '') {
+            $query->query_vars['meta_key'] = 'material_organisation';
+            $query->query_vars['meta_value'] = $_GET['ORGA_FILTER_FIELD_NAME'];
+        }
+        if ( is_admin() && $pagenow=='edit.php' && isset($_GET['AUTOR_FILTER_FIELD_NAME']) && $_GET['AUTOR_FILTER_FIELD_NAME'] != '') {
+            $query->query_vars['meta_key'] = 'material_autoren';
+            $query->query_vars['meta_value'] = $_GET['AUTOR_FILTER_FIELD_NAME'];
+        }
 
-	    if ( is_admin() && $pagenow=='edit.php' && isset( $_REQUEST[ 'mode'] ) &&  $_REQUEST[ 'mode'] == 'incomplete' )  {
-		    $result = $wpdb->get_results("
+        if ( is_admin() && $pagenow=='edit.php' && isset( $_REQUEST[ 'mode'] ) &&  $_REQUEST[ 'mode'] == 'incomplete' )  {
+            $result = $wpdb->get_results("
         SELECT distinct( $wpdb->posts.ID ) , $wpdb->posts.post_title, DATE_FORMAT ( post_date, '%d.%m.%y' ) AS datum  FROM 
-	$wpdb->posts, $wpdb->postmeta 
+    $wpdb->posts, $wpdb->postmeta 
 WHERE 
-	$wpdb->posts.ID = $wpdb->postmeta.post_id AND  
-	$wpdb->posts.post_type = 'material' AND
-	( $wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'draft' )  AND
+    $wpdb->posts.ID = $wpdb->postmeta.post_id AND  
+    $wpdb->posts.post_type = 'material' AND
+    ( $wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'draft' )  AND
 (
-	( 
-	(
-	   not exists( select * from wp_postmeta where meta_key='material_schlagworte' and post_id = wp_posts.ID )
-	 OR  
-		( 
-			wp_postmeta.meta_key = 'material_schlagworte' AND 
-			wp_postmeta.meta_value = ''  
-		)
-		) 
-	)
+    ( 
+    (
+       not exists( select * from wp_postmeta where meta_key='material_schlagworte' and post_id = wp_posts.ID )
+     OR  
+        ( 
+            wp_postmeta.meta_key = 'material_schlagworte' AND 
+            wp_postmeta.meta_value = ''  
+        )
+        ) 
+    )
 OR
-	( 
-		$wpdb->postmeta.meta_key = 'material_url' AND 
- 			$wpdb->postmeta.meta_value = ''  
-	)
+    ( 
+        $wpdb->postmeta.meta_key = 'material_url' AND 
+            $wpdb->postmeta.meta_value = ''  
+    )
 OR
-	( 
-		$wpdb->postmeta.meta_key = 'material_beschreibung' AND 
- 			$wpdb->postmeta.meta_value = ''  
-	)
+    ( 
+        $wpdb->postmeta.meta_key = 'material_beschreibung' AND 
+            $wpdb->postmeta.meta_value = ''  
+    )
 OR
-	( 
-		$wpdb->postmeta.meta_key = 'material_kurzbeschreibung' AND 
- 			$wpdb->postmeta.meta_value = ''  
-	)
-OR	
-	( 
-	   not exists( select * from $wpdb->postmeta where meta_key='_pods_material_medientyp' and post_id = $wpdb->posts.ID )
-	 OR  
-		( 
-			$wpdb->postmeta.meta_key = '_pods_material_medientyp' AND 
-			$wpdb->postmeta.meta_value = ''  
-		)
-	)
-	OR	
-	( 
-	   not exists( select * from $wpdb->postmeta where meta_key='material_bildungsstufe' and post_id = $wpdb->posts.ID )
-	 OR  
-		( 
-			$wpdb->postmeta.meta_key = 'material_bildungsstufe' AND 
-			$wpdb->postmeta.meta_value = ''  
-		)
-	)
-)	
+    ( 
+        $wpdb->postmeta.meta_key = 'material_kurzbeschreibung' AND 
+            $wpdb->postmeta.meta_value = ''  
+    )
+OR  
+    ( 
+       not exists( select * from $wpdb->postmeta where meta_key='_pods_material_medientyp' and post_id = $wpdb->posts.ID )
+     OR  
+        ( 
+            $wpdb->postmeta.meta_key = '_pods_material_medientyp' AND 
+            $wpdb->postmeta.meta_value = ''  
+        )
+    )
+    OR  
+    ( 
+       not exists( select * from $wpdb->postmeta where meta_key='material_bildungsstufe' and post_id = $wpdb->posts.ID )
+     OR  
+        ( 
+            $wpdb->postmeta.meta_key = 'material_bildungsstufe' AND 
+            $wpdb->postmeta.meta_value = ''  
+        )
+    )
+)   
 order by wp_posts.post_date  asc ") ;
 
-		    $idlist = array();
-		    foreach ( $result as $obj ) {
-			    $idlist[] = $obj->ID ;
-		    }
-		    $query->query_vars['post__in'] = $idlist;
-	    }
+            $idlist = array();
+            foreach ( $result as $obj ) {
+                $idlist[] = $obj->ID ;
+            }
+            $query->query_vars['post__in'] = $idlist;
+        }
         if ( is_admin() && $pagenow=='edit.php' && isset( $_REQUEST[ 'mode'] ) &&  $_REQUEST[ 'mode'] == 'supply' )  {
-			    $result = $wpdb->get_results("
+                $result = $wpdb->get_results("
         SELECT distinct( $wpdb->posts.ID ) , $wpdb->posts.post_title, DATE_FORMAT ( post_date, '%d.%m.%y' ) AS datum  FROM 
-	$wpdb->posts, $wpdb->postmeta 
+    $wpdb->posts, $wpdb->postmeta 
 WHERE 
-	$wpdb->posts.ID = $wpdb->postmeta.post_id AND  
-	$wpdb->posts.post_type = 'material' AND
-	( $wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'draft' )  AND
+    $wpdb->posts.ID = $wpdb->postmeta.post_id AND  
+    $wpdb->posts.post_type = 'material' AND
+    ( $wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'draft' )  AND
 (
-	(
-	   not exists( select * from wp_postmeta where meta_key='material_vorauswahl' and post_id = wp_posts.ID )
-	 OR  
-		( 
-			wp_postmeta.meta_key = 'material_vorauswahl' AND 
-			wp_postmeta.meta_value != 2206  
-		) 
-	)
-)	
+    (
+       not exists( select * from wp_postmeta where meta_key='material_vorauswahl' and post_id = wp_posts.ID )
+     OR  
+        ( 
+            wp_postmeta.meta_key = 'material_vorauswahl' AND 
+            wp_postmeta.meta_value != 2206  
+        ) 
+    )
+)   
 order by wp_posts.post_date  asc ") ;
 
 
-		    $idlist = array();
-		    foreach ( $result as $obj ) {
-			    $idlist[] = $obj->ID ;
-		    }
-		    $query->query_vars['post__in'] = $idlist;
-	    }
+            $idlist = array();
+            foreach ( $result as $obj ) {
+                $idlist[] = $obj->ID ;
+            }
+            $query->query_vars['post__in'] = $idlist;
+        }
 
 
-	    return $query;
+        return $query;
     }
 
-	/**
-	 *
-	 * @since 0.0.1
-	 * @access	public
-	 *
-	 */
+    /**
+     *
+     * @since 0.0.1
+     * @access  public
+     *
+     */
     static public function cleanup_themenseiten(  $material_id, $post, $update ) {
-	    global $wpdb;
-	    $post_type = get_post_type($material_id);
-	    if ( "material" != $post_type ) {
-	        return;
+        global $wpdb;
+        $post_type = get_post_type($material_id);
+        if ( "material" != $post_type ) {
+            return;
         }
         if ( $material_id == 0 ) {
-	        return;
+            return;
         }
         if ( $post->post_status == 'trash' && $update == true ) {
-	        // Dazugehörige Themenseiten ermittln um nach dem entfernen des Materials aus den Themengruppen den Cache der Themenseite zu verwerfen.
+            // Dazugehörige Themenseiten ermittln um nach dem entfernen des Materials aus den Themengruppen den Cache der Themenseite zu verwerfen.
             $themen = Materialpool_Material::get_themenseiten_for_material( $material_id );
 
-	        $tablename = $wpdb->prefix . "pods_themenseitengruppen";
-	        $query     = "select  id   from $tablename  where  auswahl like '%,{$material_id},%' or auswahl like  '%,{$material_id}' ;";
-	        $result = $wpdb->get_results( $query );
-	        if ( is_array( $result ) && sizeof( $result ) > 0 ) {
-		        foreach ( $result as $item ) {
-			        $id      = $item->id;
-			        $query2  = "select  auswahl   from $tablename  where id = {$id};";
-			        $result2 = $wpdb->get_var( $query2 );
-			        $arr2    = explode( ',', $result2 );
-			        if (($key = array_search($material_id, $arr2)) !== false) {
-				        unset($arr2[$key]);
-			        }
-			        $string = implode( ',', $arr2 );
-			        $query3 = "update $tablename  set auswahl = '$string'  where id = {$id};";
-			        $wpdb->get_results( $query3 );
-		        }
-	        }
-	        // Seitencache der dazugehörigen Themenseiten verwerfen
-	        if ( is_array( $themen ) &&  sizeof( $themen ) > 0 ) {
-		        foreach ( $themen as $item ) {
-		            if (  function_exists( 'rocket_clean_post' ) ) {
-		                rocket_clean_post( $item->id );
+            $tablename = $wpdb->prefix . "pods_themenseitengruppen";
+            $query     = "select  id   from $tablename  where  auswahl like '%,{$material_id},%' or auswahl like  '%,{$material_id}' ;";
+            $result = $wpdb->get_results( $query );
+            if ( is_array( $result ) && sizeof( $result ) > 0 ) {
+                foreach ( $result as $item ) {
+                    $id      = $item->id;
+                    $query2  = "select  auswahl   from $tablename  where id = {$id};";
+                    $result2 = $wpdb->get_var( $query2 );
+                    $arr2    = explode( ',', $result2 );
+                    if (($key = array_search($material_id, $arr2)) !== false) {
+                        unset($arr2[$key]);
                     }
-		        }
-	        }
+                    $string = implode( ',', $arr2 );
+                    $query3 = "update $tablename  set auswahl = '$string'  where id = {$id};";
+                    $wpdb->get_results( $query3 );
+                }
+            }
+            // Seitencache der dazugehörigen Themenseiten verwerfen
+            if ( is_array( $themen ) &&  sizeof( $themen ) > 0 ) {
+                foreach ( $themen as $item ) {
+                    if (  function_exists( 'rocket_clean_post' ) ) {
+                        rocket_clean_post( $item->id );
+                    }
+                }
+            }
         }
     }
 
-	/**
-	 *
-	 * @since 0.0.1
-	 * @access	public
-	 *
-	 */
+    /**
+     *
+     * @since 0.0.1
+     * @access  public
+     *
+     */
     static public function get_themenseiten_for_material( $material_id = 0 ) {
-	    global $post;
-	    global $wpdb;
+        global $post;
+        global $wpdb;
 
-	    $material_id = ($material_id>0)?$material_id:$post->ID;
-	    $tablename = $wpdb->prefix . "pods_themenseitengruppen";
+        $material_id = ($material_id>0)?$material_id:$post->ID;
+        $tablename = $wpdb->prefix . "pods_themenseitengruppen";
         $query = "select id, post_title  from $wpdb->posts where id in ( select  pandarf_parent_post_id   from $tablename  where ( auswahl like '%,{$material_id},%' or auswahl like  '%,{$material_id}'  ) ) and post_status = 'publish'   and post_type= 'themenseite' order by post_title;";
 
-	    $count = $wpdb->get_results($query);
-	    return $count;
+        $count = $wpdb->get_results($query);
+        return $count;
     }
 
-	/**
-	 *
-	 * @since 0.0.1
-	 * @access	public
-	 *
-	 */
+    /**
+     *
+     * @since 0.0.1
+     * @access  public
+     *
+     */
     static public function get_themenseiten_for_material_html( $material_id  = 0) {
         $result = Materialpool_Material::get_themenseiten_for_material( $material_id);
         if ( is_array( $result ) &&  sizeof( $result ) > 0 ) {
             echo "Dieses Material ist Teil folgender Themenseiten:<br>";
-	        foreach ( $result as $item ) {
-	            $url = get_permalink( $item->id );
-	            echo "<a href='" . $url  ."'>".  $item->post_title . "</a><br>";
+            foreach ( $result as $item ) {
+                $url = get_permalink( $item->id );
+                echo "<a href='" . $url  ."'>".  $item->post_title . "</a><br>";
 
             }
             echo "<br>";
         }
     }
 
-	/**
-	 *
-	 * @since 0.0.1
-	 * @access	public
-	 *
-	 */
+    /**
+     *
+     * @since 0.0.1
+     * @access  public
+     *
+     */
     static public function back_to_search() {
         if ( $_GET[ 'sq' ] ) {
             $sq = $_GET[ 'sq' ];
             ?>
-	        <a class='cta-button' href="<?php echo urldecode( $sq ); ?>">Zurück zur Materialsuche</a><br>
+            <a class='cta-button' href="<?php echo urldecode( $sq ); ?>">Zurück zur Materialsuche</a><br>
             <?php
         }
     }
 
-	/**
-	 *
-	 * @since 0.0.1
-	 * @access	public
-	 *
-	 */
+    /**
+     *
+     * @since 0.0.1
+     * @access  public
+     *
+     */
     static public function  rss_query_vars( $query_vars ) {
-	    $query_vars[] = 'rss_organisation';
-	    $query_vars[] = 'rss_per_page';
-	    return $query_vars;
+        $query_vars[] = 'rss_organisation';
+        $query_vars[] = 'rss_per_page';
+        return $query_vars;
     }
 
-	/**
-	 *
-	 * @since 0.0.1
-	 * @access	public
-	 *
-	 */
-	static public function rss_pre_get_posts( $query ) {
-		if( $query->is_feed && $query->is_main_query() && $query->query[ 'post_type' ] == 'material' ) {
-			if( isset( $query->query_vars[ 'rss_organisation' ] ) && ! empty( $query->query_vars[ 'rss_organisation' ] ) ) {
-				if ( $post = get_page_by_path( $query->query_vars[ 'rss_organisation' ] , OBJECT, 'organisation' ) ) {
-					$id = $post->ID;
-				} else {
-					$id = $query->query_vars['rss_organisation'];
-				}
-				$query->set( 'meta_key', 'material_organisation' );
-				$query->set( 'meta_value', $id );
-			}
-			if( isset( $query->query_vars[ 'rss_per_page' ] ) && ! empty( $query->query_vars[ 'rss_per_page' ] ) ) {
-				$query->set( 'posts_per_rss', (int) $query->query_vars[ 'rss_per_page' ] );
-			}
+    /**
+     *
+     * @since 0.0.1
+     * @access  public
+     *
+     */
+    static public function rss_pre_get_posts( $query ) {
+        if( $query->is_feed && $query->is_main_query() && $query->query[ 'post_type' ] == 'material' ) {
+            if( isset( $query->query_vars[ 'rss_organisation' ] ) && ! empty( $query->query_vars[ 'rss_organisation' ] ) ) {
+                if ( $post = get_page_by_path( $query->query_vars[ 'rss_organisation' ] , OBJECT, 'organisation' ) ) {
+                    $id = $post->ID;
+                } else {
+                    $id = $query->query_vars['rss_organisation'];
+                }
+                $query->set( 'meta_key', 'material_organisation' );
+                $query->set( 'meta_value', $id );
+            }
+            if( isset( $query->query_vars[ 'rss_per_page' ] ) && ! empty( $query->query_vars[ 'rss_per_page' ] ) ) {
+                $query->set( 'posts_per_rss', (int) $query->query_vars[ 'rss_per_page' ] );
+            }
 
-		}
-		//return $query;
-	}
+        }
+        //return $query;
+    }
 
-	/**
-	 *
-	 * @since 0.0.1
-	 * @access	public
-	 *
-	 */
+    /**
+     *
+     * @since 0.0.1
+     * @access  public
+     *
+     */
     static public function default_hide_meta_box( $hidden, $screen ) {
-	    if ( ('post' == $screen->base) && ('material' == $screen->id) ){
-		    $hidden[] = 'pods-meta-zusaetzliche-metadaten';
-		    $hidden[] = 'trackbacksdiv';
-		    $hidden[] = 'commentstatusdiv';
-		    $hidden[] = 'commentsdiv';
-		    $hidden[] = 'authordiv';
-	    }
-	    return $hidden;
+        if ( ('post' == $screen->base) && ('material' == $screen->id) ){
+            $hidden[] = 'pods-meta-zusaetzliche-metadaten';
+            $hidden[] = 'trackbacksdiv';
+            $hidden[] = 'commentstatusdiv';
+            $hidden[] = 'commentsdiv';
+            $hidden[] = 'authordiv';
+        }
+        return $hidden;
     }
 
-	/**
-	 *
-	 * @since 0.0.1
-	 * @access	public
-	 *
-	 */
-	public static function options_page() {
-		add_submenu_page(
-			'materialpool',
-			_x('Material (Unvollständig)', Materialpool::$textdomain, 'Page Title' ),
-			_x('Material (Unvollständig)', Materialpool::$textdomain, 'Menu Title' ),
-			'manage_options',
-			__FILE__ . '1',
-			array( 'Materialpool_Material', 'list_unvollstaendig' )
-		);
+    /**
+     *
+     * @since 0.0.1
+     * @access  public
+     *
+     */
+    public static function options_page() {
+        add_submenu_page(
+            'materialpool',
+            _x('Material (Unvollständig)', Materialpool::$textdomain, 'Page Title' ),
+            _x('Material (Unvollständig)', Materialpool::$textdomain, 'Menu Title' ),
+            'manage_options',
+            __FILE__ . '1',
+            array( 'Materialpool_Material', 'list_unvollstaendig' )
+        );
 
-		add_submenu_page(
-			'materialpool',
-			_x('Material (Zugeliefert)', Materialpool::$textdomain, 'Page Title' ),
-			_x('Material (Zugeliefert)', Materialpool::$textdomain, 'Menu Title' ),
-			'manage_options',
-			__FILE__ . '2',
-			array( 'Materialpool_Material', 'list_zugeliefert' )
-		);
+        add_submenu_page(
+            'materialpool',
+            _x('Material (Zugeliefert)', Materialpool::$textdomain, 'Page Title' ),
+            _x('Material (Zugeliefert)', Materialpool::$textdomain, 'Menu Title' ),
+            'manage_options',
+            __FILE__ . '2',
+            array( 'Materialpool_Material', 'list_zugeliefert' )
+        );
 
-	}
+    }
 
-	/**
-	 *
-	 * @since 0.0.1
-	 * @access	public
-	 *
-	 */
-	public static function list_unvollstaendig() {
-		global $wpdb;
-		$count = 0;
-		$result = $wpdb->get_results("
+    /**
+     *
+     * @since 0.0.1
+     * @access  public
+     *
+     */
+    public static function list_unvollstaendig() {
+        global $wpdb;
+        $count = 0;
+        $result = $wpdb->get_results("
         SELECT distinct( $wpdb->posts.ID ) , $wpdb->posts.post_title, DATE_FORMAT ( post_date, '%d.%m.%y' ) AS datum  FROM 
-	$wpdb->posts, $wpdb->postmeta 
+    $wpdb->posts, $wpdb->postmeta 
 WHERE 
-	$wpdb->posts.ID = $wpdb->postmeta.post_id AND  
-	$wpdb->posts.post_type = 'material' AND
-	( $wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'draft' )  AND
+    $wpdb->posts.ID = $wpdb->postmeta.post_id AND  
+    $wpdb->posts.post_type = 'material' AND
+    ( $wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'draft' )  AND
 (
-	( 
-	(
-	   not exists( select * from wp_postmeta where meta_key='material_schlagworte' and post_id = wp_posts.ID )
-	 OR  
-		( 
-			wp_postmeta.meta_key = 'material_schlagworte' AND 
-			wp_postmeta.meta_value = ''  
-		)
-		) 
-	)
+    ( 
+    (
+       not exists( select * from wp_postmeta where meta_key='material_schlagworte' and post_id = wp_posts.ID )
+     OR  
+        ( 
+            wp_postmeta.meta_key = 'material_schlagworte' AND 
+            wp_postmeta.meta_value = ''  
+        )
+        ) 
+    )
 OR
-	( 
-		$wpdb->postmeta.meta_key = 'material_url' AND 
- 			$wpdb->postmeta.meta_value = ''  
-	)
+    ( 
+        $wpdb->postmeta.meta_key = 'material_url' AND 
+            $wpdb->postmeta.meta_value = ''  
+    )
 OR
-	( 
-		$wpdb->postmeta.meta_key = 'material_beschreibung' AND 
- 			$wpdb->postmeta.meta_value = ''  
-	)
+    ( 
+        $wpdb->postmeta.meta_key = 'material_beschreibung' AND 
+            $wpdb->postmeta.meta_value = ''  
+    )
 OR
-	( 
-		$wpdb->postmeta.meta_key = 'material_kurzbeschreibung' AND 
- 			$wpdb->postmeta.meta_value = ''  
-	)
-OR	
-	( 
-	   not exists( select * from $wpdb->postmeta where meta_key='_pods_material_medientyp' and post_id = $wpdb->posts.ID )
-	 OR  
-		( 
-			$wpdb->postmeta.meta_key = '_pods_material_medientyp' AND 
-			$wpdb->postmeta.meta_value = ''  
-		)
-	)
-	OR	
-	( 
-	   not exists( select * from $wpdb->postmeta where meta_key='material_bildungsstufe' and post_id = $wpdb->posts.ID )
-	 OR  
-		( 
-			$wpdb->postmeta.meta_key = 'material_bildungsstufe' AND 
-			$wpdb->postmeta.meta_value = ''  
-		)
-	)
-)	
+    ( 
+        $wpdb->postmeta.meta_key = 'material_kurzbeschreibung' AND 
+            $wpdb->postmeta.meta_value = ''  
+    )
+OR  
+    ( 
+       not exists( select * from $wpdb->postmeta where meta_key='_pods_material_medientyp' and post_id = $wpdb->posts.ID )
+     OR  
+        ( 
+            $wpdb->postmeta.meta_key = '_pods_material_medientyp' AND 
+            $wpdb->postmeta.meta_value = ''  
+        )
+    )
+    OR  
+    ( 
+       not exists( select * from $wpdb->postmeta where meta_key='material_bildungsstufe' and post_id = $wpdb->posts.ID )
+     OR  
+        ( 
+            $wpdb->postmeta.meta_key = 'material_bildungsstufe' AND 
+            $wpdb->postmeta.meta_value = ''  
+        )
+    )
+)   
 order by wp_posts.post_date  asc ") ;
-		foreach ( $result as $obj ) {
-			if ($count == 0 ) {
-				echo "<table><tr><th style='width: 80%;'>Material</th><th style='width: 20%;' >Datum</th></tr>";
-			}
-			echo "<tr><td><a href='". get_edit_post_link( $obj->ID) ."'>" . $obj->post_title . "</a></td><td>" . $obj->datum ."</td></tr>";
-			$count++;
-		}
-		if ( $count > 0) {
-			echo "</table>";
-		}
-	}
+        foreach ( $result as $obj ) {
+            if ($count == 0 ) {
+                echo "<table><tr><th style='width: 80%;'>Material</th><th style='width: 20%;' >Datum</th></tr>";
+            }
+            echo "<tr><td><a href='". get_edit_post_link( $obj->ID) ."'>" . $obj->post_title . "</a></td><td>" . $obj->datum ."</td></tr>";
+            $count++;
+        }
+        if ( $count > 0) {
+            echo "</table>";
+        }
+    }
 
-	/**
-	 *
-	 * @since 0.0.1
-	 * @access	public
-	 *
-	 */
-	public static function list_zugeliefert() {
-		global $wpdb;
-		$count = 0;
-		$result = $wpdb->get_results("
+    /**
+     *
+     * @since 0.0.1
+     * @access  public
+     *
+     */
+    public static function list_zugeliefert() {
+        global $wpdb;
+        $count = 0;
+        $result = $wpdb->get_results("
         SELECT distinct( $wpdb->posts.ID ) , $wpdb->posts.post_title, DATE_FORMAT ( post_date, '%d.%m.%y' ) AS datum  FROM 
-	$wpdb->posts, $wpdb->postmeta 
+    $wpdb->posts, $wpdb->postmeta 
 WHERE 
-	$wpdb->posts.ID = $wpdb->postmeta.post_id AND
-	$wpdb->posts.post_type = 'material' AND
-	( $wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'draft' )  AND
-	(
-	(
-	not exists( select * from wp_postmeta where meta_key='material_vorauswahl' and post_id = wp_posts.ID )
-	 OR  
-		(
-			wp_postmeta.meta_key = 'material_vorauswahl' AND
-			wp_postmeta.meta_value != 2206
-		) 
-	)
-)	
+    $wpdb->posts.ID = $wpdb->postmeta.post_id AND
+    $wpdb->posts.post_type = 'material' AND
+    ( $wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'draft' )  AND
+    (
+    (
+    not exists( select * from wp_postmeta where meta_key='material_vorauswahl' and post_id = wp_posts.ID )
+     OR  
+        (
+            wp_postmeta.meta_key = 'material_vorauswahl' AND
+            wp_postmeta.meta_value != 2206
+        ) 
+    )
+)   
 order by wp_posts.post_date  asc  ") ;
 
-		foreach ( $result as $obj ) {
-			if ($count == 0 ) {
-				echo "<table><tr><th style='width: 80%;'>Material</th><th style='width: 20%;' >Datum</th></tr>";
-			}
-			echo "<tr><td><a href='". get_edit_post_link( $obj->ID) ."'>" . $obj->post_title . "</a></td><td>" . $obj->datum ."</td></tr>";
-			$count++;
-		}
-		if ( $count > 0) {
-			echo "</table>";
-		}
-	}
+        foreach ( $result as $obj ) {
+            if ($count == 0 ) {
+                echo "<table><tr><th style='width: 80%;'>Material</th><th style='width: 20%;' >Datum</th></tr>";
+            }
+            echo "<tr><td><a href='". get_edit_post_link( $obj->ID) ."'>" . $obj->post_title . "</a></td><td>" . $obj->datum ."</td></tr>";
+            $count++;
+        }
+        if ( $count > 0) {
+            echo "</table>";
+        }
+    }
 
 }
 
