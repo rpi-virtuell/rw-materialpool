@@ -91,9 +91,9 @@ class Materialpool_Material {
      */
     static public function cpt_list_head( $columns ) {
         $columns[ 'material_views' ] = _x( 'Views', 'Material list field',  Materialpool::$textdomain );
-        //$columns[ 'material-bildungsstufe' ] = _x( 'Bildungsstufe', 'Material list field',  Materialpool::$textdomain );
+        $columns[ 'material-bildungsstufe' ] = _x( 'Bildungsstufe', 'Material list field',  Materialpool::$textdomain );
         $columns[ 'material-schlagworte' ] = _x( 'Schlagworte', 'Material list field',  Materialpool::$textdomain );
-        //$columns[ 'material-medientyp' ] = _x( 'Medientyp', 'Material list field',  Materialpool::$textdomain );
+        $columns[ 'material-medientyp' ] = _x( 'Medientyp', 'Material list field',  Materialpool::$textdomain );
         $columns[ 'material-organisation' ] = _x( 'Organisation', 'Material list field',  Materialpool::$textdomain );
         $columns[ 'material-autor' ] = _x( 'Autoren', 'Material list field',  Materialpool::$textdomain );
         $columns[ 'material-online' ] = _x( 'Online', 'Material list field',  Materialpool::$textdomain );
@@ -311,11 +311,8 @@ class Materialpool_Material {
 		if ( "material" != $post_type ) return;
         if ( "trash" == $post_status ) return;
 
-        if ( isset( $_POST[ 'pods_meta_material_titel' ] ) ) {
-	        $title = $_POST[ 'pods_meta_material_titel' ];
-        } else {
-            $title =  get_metadata('post', $post_id, 'material_titel', true );
-        }
+        $title =  get_metadata('post', $post_id, 'material_titel', true );
+
         $post_name = wp_unique_post_slug( sanitize_title( $title ), $post_id, 'publish', $post_type, $post_parent );
         $post_content = '';
         $url = '';
@@ -370,170 +367,9 @@ class Materialpool_Material {
 
         $_POST[ 'post_title'] = $title;
 
-        // Altersstufen des Materials in term_rel speichern
-        wp_delete_object_term_relationships( $post_id, 'altersstufe' );
-        $cats = $_POST[ 'pods_meta_material_altersstufe' ];
-        if ( is_array( $cats ) ) {
-            foreach ( $cats as $key => $val ) {
-                $cat_ids[] = (int) $val;
-            }
-        }
-        if ( is_int( $cats ) ) {
-            $cat_ids[] = $cats;
-        }
-        wp_set_object_terms( $post_id, $cat_ids, 'altersstufe', true );
-
-        // Bildungsstufen des Materials in term_rel speichern
-        wp_delete_object_term_relationships( $post_id, 'bildungsstufe' );
-        $cats = $_POST[ 'pods_meta_material_bildungsstufe' ];
-        if ( is_array( $cats ) ) {
-            foreach ( $cats as $key => $val ) {
-                $cat_ids[] = (int) $val;
-            }
-        }
-        if ( is_int( $cats ) ) {
-            $cat_ids[] = $cats;
-        }
-        wp_set_object_terms( $post_id, $cat_ids, 'bildungsstufe', true );
 
 
-        // Inklusion des Materials in term_rel speichern
-        wp_delete_object_term_relationships( $post_id, 'inklusion' );
-        $cats = $_POST[ 'pods_meta_material_inklusion' ];
-        if ( is_array( $cats ) ) {
-            foreach ( $cats as $key => $val ) {
-                $cat_ids[] = (int) $val;
-            }
-        }
-        if ( $cats!== null  ) {
-            $cat_ids[] = (int) $cats;
-        }
-        wp_set_object_terms( $post_id, $cat_ids, 'inklusion', true );
-
-
-        // Lizenz des Materials in term_rel speichern
-        wp_delete_object_term_relationships( $post_id, 'lizenz' );
-        $cats = $_POST[ 'pods_meta_material_lizenz' ];
-        if ( is_array( $cats ) ) {
-            foreach ( $cats as $key => $val ) {
-                $cat_ids[] = (int) $val;
-            }
-        }
-        if ( $cats!== null  ) {
-            $cat_ids[] = (int) $cats;
-        }
-        wp_set_object_terms( $post_id, $cat_ids, 'lizenz', true );
-
-        // Medientyp des Materials in term_rel speichern
-        wp_delete_object_term_relationships( $post_id, 'medientyp' );
-        $cats = $_POST[ 'pods_meta_material_medientyp' ];
-        if ( is_array( $cats ) ) {
-            foreach ( $cats as $key => $val ) {
-                $cat_ids[] = (int) $val;
-            }
-        }
-        if ( $cats!== null  ) {
-            $cat_ids[] = (int) $cats;
-        }
-        wp_set_object_terms( $post_id, $cat_ids, 'medientyp', true );
-
-        // Schlagwort des Materials in term_rel speichern
-        wp_delete_object_term_relationships( $post_id, 'schlagwort' );
-        $cats = explode( ',', $_POST[ 'pods_meta_material_schlagworte' ] ) ;
-        if ( is_array( $cats ) ) {
-            foreach ( $cats as $key => $val ) {
-                $cat_ids[] = (int) $val;
-            }
-        }
-        if ( $cats!== null  ) {
-            $cat_ids[] = (int) $cats;
-        }
-        wp_set_object_terms( $post_id, $cat_ids, 'schlagwort', true );
-
-        // Sprachen des Materials in term_rel speichern
-        wp_delete_object_term_relationships( $post_id, 'sprache' );
-        $cats = $_POST[ 'pods_meta_material_sprache' ];
-        if ( is_array( $cats ) ) {
-            foreach ( $cats as $key => $val ) {
-                $cat_ids[] = (int) $val;
-            }
-        }
-        if ( $cats!== null  ) {
-            $cat_ids[] = (int) $cats;
-        }
-        wp_set_object_terms( $post_id, $cat_ids, 'sprache', true );
-
-        // Verfügbarkeit des Materials in term_rel speichern
-        wp_delete_object_term_relationships( $post_id, 'verfuegbarkeit' );
-        $cats = $_POST[ 'pods_meta_material_verfuegbarkeit' ];
-        if ( is_array( $cats ) ) {
-            foreach ( $cats as $key => $val ) {
-                $cat_ids[] = (int) $val;
-            }
-        }
-        if ( $cats!== null  ) {
-            $cat_ids[] = (int) $cats;
-        }
-        wp_set_object_terms( $post_id, $cat_ids, 'verfuegbarkeit', true );
-
-
-		// Werkzeug des Materials in term_rel speichern
-		wp_delete_object_term_relationships( $post_id, 'werkzeug' );
-		$cats = $_POST[ 'pods_meta_material_werkzeug' ];
-		if ( is_array( $cats ) ) {
-			foreach ( $cats as $key => $val ) {
-				$cat_ids[] = (int) $val;
-			}
-		}
-		if ( $cats!== null  ) {
-			$cat_ids[] = (int) $cats;
-		}
-		wp_set_object_terms( $post_id, $cat_ids, 'werkzeug', true );
-
-
-		// Vorauswahl des Materials in term_rel speichern
-		wp_delete_object_term_relationships( $post_id, 'vorauswahl' );
-		$cats = $_POST[ 'pods_meta_material_vorauswahl' ];
-		if ( is_array( $cats ) ) {
-			foreach ( $cats as $key => $val ) {
-				$cat_ids[] = (int) $val;
-			}
-		}
-		if ( $cats!== null  ) {
-			$cat_ids[] = (int) $cats;
-		}
-		wp_set_object_terms( $post_id, $cat_ids, 'vorauswahl', true );
-
-
-        // Zugänglichkeit des Materials in term_rel speichern
-        wp_delete_object_term_relationships( $post_id, 'zugaenglichkeit' );
-        $cats = $_POST[ 'pods_meta_material_zugaenglichkeit' ];
-        if ( is_array( $cats ) ) {
-            foreach ( $cats as $key => $val ) {
-                $cat_ids[] = (int) $val;
-            }
-        }
-        if ( $cats!== null  ) {
-            $cat_ids[] = (int) $cats;
-        }
-        wp_set_object_terms( $post_id, $cat_ids, 'zugaenglichkeit', true );
-
-		// Kompetenzen des Materials in term_rel speichern
-		wp_delete_object_term_relationships( $post_id, 'kompetenz' );
-		$cats = $_POST[ 'pods_meta_material_kompetenz' ];
-		if ( is_array( $cats ) ) {
-			foreach ( $cats as $key => $val ) {
-				$cat_ids[] = (int) $val;
-			}
-		}
-		if ( is_int( $cats ) ) {
-			$cat_ids[] = $cats;
-		}
-		wp_set_object_terms( $post_id, $cat_ids, 'kompetenz', true );
-
-
-
-		// Autoren für FacetWP spiechern
+        // Autoren für FacetWP spiechern
         delete_post_meta( $post_id, 'material_autor_facet' );
         $autoren = explode( ',', $_POST[ 'pods_meta_material_autoren' ] ) ;
         $autoren_ids = array();
@@ -635,18 +471,18 @@ class Materialpool_Material {
      *
      */
     static public function remove_post_custom_fields() {
-        remove_meta_box( 'tagsdiv-altersstufe' , 'material' , 'normal' );
-        remove_meta_box( 'bildungsstufediv' , 'material' , 'normal' );
-        remove_meta_box( 'tagsdiv-inklusion' , 'material' , 'normal' );
-        remove_meta_box( 'tagsdiv-konfession' , 'material' , 'normal' );
-        remove_meta_box( 'tagsdiv-lizenz' , 'material' , 'normal' );
-        remove_meta_box( 'medientypdiv' , 'material' , 'normal' );
-        remove_meta_box( 'tagsdiv-schlagwort' , 'material' , 'normal' );
-        remove_meta_box( 'tagsdiv-sprache' , 'material' , 'normal' );
-        remove_meta_box( 'tagsdiv-verfuegbarkeit' , 'material' , 'normal' );
-        remove_meta_box( 'tagsdiv-zugaenglichkeit' , 'material' , 'normal' );
-	    remove_meta_box( 'vorauswahldiv' , 'material' , 'normal' );
-	    remove_meta_box( 'tagsdiv-werkzeug' , 'material' , 'normal' );
+        //remove_meta_box( 'tagsdiv-altersstufe' , 'material' , 'normal' );
+        //remove_meta_box( 'bildungsstufediv' , 'material' , 'normal' );
+        //remove_meta_box( 'tagsdiv-inklusion' , 'material' , 'normal' );
+        //remove_meta_box( 'tagsdiv-konfession' , 'material' , 'normal' );
+        //remove_meta_box( 'tagsdiv-lizenz' , 'material' , 'normal' );
+        //remove_meta_box( 'medientypdiv' , 'material' , 'normal' );
+        //remove_meta_box( 'tagsdiv-schlagwort' , 'material' , 'normal' );
+        //remove_meta_box( 'tagsdiv-sprache' , 'material' , 'normal' );
+        //remove_meta_box( 'tagsdiv-verfuegbarkeit' , 'material' , 'normal' );
+        //remove_meta_box( 'tagsdiv-zugaenglichkeit' , 'material' , 'normal' );
+	    //remove_meta_box( 'vorauswahldiv' , 'material' , 'normal' );
+	    //remove_meta_box( 'tagsdiv-werkzeug' , 'material' , 'normal' );
     }
 
 
@@ -1604,8 +1440,8 @@ END;
         global $post;
 
 	    $werk = get_metadata( 'post', $post->ID, 'material_werk', true );
-		if ( is_array( $werk ) ) {
-		    return ( $werk["ID"] );
+        if ( is_int( (int) $werk ) ) {
+		    return ( $werk );
 		} else {
 			return false;
 		}
@@ -1639,7 +1475,7 @@ END;
     static public function is_part_of_werk() {
         global $post;
         global $wpdb;
-        $result = $wpdb->get_row( $wpdb->prepare("SELECT count(post_id) as count FROM $wpdb->postmeta WHERE meta_key = %s and post_id = %s", 'material_werk', $post->ID ) );
+        $result = $wpdb->get_row( $wpdb->prepare("SELECT count(post_id) as count FROM $wpdb->postmeta WHERE meta_key = %s and meta_value != '' and post_id = %s", 'material_werk', $post->ID ) );
         if ( is_object( $result)  && $result->count == 0 ) {
             return false;
         } else {
@@ -1765,12 +1601,9 @@ END;
 	 *
 	 */
 	static public function verweise () {
-	    global $post;
 		$verweise = Materialpool_Material::get_verweise();
 		foreach ( $verweise as $verweis ) {
-			if ( (int) $verweis[ 'ID' ] != $post->ID ) {
-				echo $verweis['post_title'] . '<br>';
-			}
+			echo $verweis[ 'post_title' ] . '<br>';
 		}
 	}
 
@@ -1796,13 +1629,11 @@ END;
  	 * @filters materialpool-template-material-verweise
 	 */
 	static public function verweise_html () {
-		global $post;
 		$verweise = Materialpool_Material::get_verweise();
 		foreach ( $verweise as $verweis ) {
-			if ( (int) $verweis[ 'ID' ] != $post->ID ) {
-				$url = get_permalink( $verweis['ID'] );
-				echo '<a href="' . $url . '" class="' . apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-verweise' ) . '">' . $verweis['post_title'] . '</a><br>';
-			}
+			$url = get_permalink( $verweis[ 'ID' ] );
+			echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-verweise' ) .'">' . $verweis[ 'post_title' ] . '</a><br>';
+
 		}
 	}
 
@@ -1814,13 +1645,10 @@ END;
      * @filters materialpool-template-material-verweise
      */
     static public function get_verweise_ids () {
-        global $post;
         $back = array();
         $verweise = Materialpool_Material::get_verweise();
         foreach ( $verweise as $verweis ) {
-            if ( (int) $verweis[ 'ID' ] != $post->ID ) {
-	            $back[] = (int) $verweis[ 'ID' ];
-            }
+            $back[] = (int) $verweis[ 'ID' ];
         }
         return $back;
     }
@@ -1854,9 +1682,9 @@ END;
      */
     static public function get_availability() {
         global $post;
-
-        $vid = get_metadata( 'post', $post->ID, 'material_verfuegbarkeit', true );
-        if ( is_array( $vid ) ) {
+	    $id = get_field( 'material_verfuegbarkeit', $post->ID, ARRAY_A );
+	    $vid = get_term( $id, 'verfuegbarkeit' ,  ARRAY_A );
+	    if ( is_array( $vid ) ) {
             return $vid[ 'name'];
         }
     }
@@ -1880,7 +1708,8 @@ END;
 	static public function get_inklusion() {
 		global $post;
 
-		$vid = get_metadata( 'post', $post->ID, 'material_inklusion', true );
+		$id = get_field( 'material_inklusion', $post->ID, ARRAY_A );
+		$vid = get_term( $id, 'inklusion' ,  ARRAY_A );
 		if ( is_array( $vid ) ) {
 			return $vid[ 'name'];
 		}
@@ -1906,11 +1735,12 @@ END;
 	static public function get_lizenz() {
 		global $post;
 
-		$vid = get_metadata( 'post', $post->ID, 'material_lizenz', true );
+		$id = get_field( 'material_lizenz', $post->ID, ARRAY_A );
+		$vid = get_term( $id, 'lizenz' ,  ARRAY_A );
 		if ( is_array( $vid ) ) {
 			return $vid[ 'name'];
 		}
-	}
+ 	}
 	/**
 	 *
 	 * @since 0.0.1
@@ -1920,10 +1750,12 @@ END;
 	static public function get_werkzeuge() {
 		global $post;
 
-		$vid = get_metadata( 'post', $post->ID, 'material_werkzeug', true );
+		$id = get_field( 'material_werkzeug', $post->ID, ARRAY_A );
+		$vid = get_term( $id[0], 'werkzeug' ,  ARRAY_A );
 		if ( is_array( $vid ) ) {
 			return $vid[ 'name'];
 		}
+
 	}
 
 	/**
@@ -1935,7 +1767,8 @@ END;
 	static public function werkzeuge_html() {
 		global $post;
 
-		$vid = get_metadata( 'post', $post->ID, 'material_werkzeug', true );
+		$id = get_field( 'material_werkzeug', $post->ID, ARRAY_A );
+		$vid = get_term( $id[0], 'werkzeug' ,  ARRAY_A );
 		if ( is_array( $vid ) ) {
 			echo "<a href='/" . $vid['taxonomy'] . "/" . $vid['slug'] . "'>" . $vid['name'] . "</a>";
 		}
@@ -1952,7 +1785,8 @@ END;
      */
     static public function organisation () {
         $verweise = Materialpool_Material::get_organisation();
-        foreach ( $verweise as $verweis ) {
+        foreach ( $verweise as $verweisID ) {
+	        $verweis = get_post( $verweisID, ARRAY_A );
             echo $verweis[ 'post_title' ] . '<br>';
         }
     }
@@ -1967,7 +1801,8 @@ END;
     static public function organisation_html () {
         global $post;
         $verweise = Materialpool_Material::get_organisation();
-        foreach ( $verweise as $verweis ) {
+        foreach ( $verweise as $verweisID ) {
+	        $verweis = get_post( $verweisID, ARRAY_A );
             $url = get_permalink( $verweis[ 'ID' ] );
             echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-verweise' ) .'">' . $verweis[ 'post_title' ] . '</a><br>';
 
@@ -1988,7 +1823,8 @@ END;
     static public function organisation_html_cover () {
         global $post;
         $verweise = Materialpool_Material::get_organisation();
-        foreach ( $verweise as $verweis ) {
+        foreach ( $verweise[0] as $verweisID ) {
+            $verweis = get_post( $verweisID, ARRAY_A );
             $url = get_permalink( $verweis[ 'ID' ] );
             $logo = get_metadata( 'post', $verweis[ 'ID' ], 'organisation_logo_url', true );
             echo "<div class='materialpool-template-material-organisation'>";
@@ -2052,7 +1888,8 @@ END;
     static public function organisation_facet_html () {
         $organisationen = Materialpool_Material::get_organisation();
         $data = '';
-        foreach ( $organisationen as $organisation ) {
+        foreach ( $organisationen[0] as $organisationID ) {
+	        $organisation = get_post( $organisationID, ARRAY_A );
             if ( $organisation != '' )
                 if ( $data != '') {
                     $data .= ', ';
@@ -2157,7 +1994,8 @@ END;
     static public function autor_html_picture () {
         global $post;
         $verweise = Materialpool_Material::get_autor();
-        foreach ( $verweise as $verweis ) {
+        foreach ( $verweise[0] as $verweisID ) {
+	        $verweis = get_post( $verweisID, ARRAY_A );
             $url = get_permalink( $verweis[ 'ID' ] );
             $logo = get_metadata( 'post', $verweis[ 'ID' ], 'autor_bild_url', true );
             $vorname = get_post_meta($verweis[ 'ID' ], 'autor_vorname', true );
@@ -2212,47 +2050,17 @@ END;
     static public function bildungsstufe_facet_html () {
         global $post;
 
-        if (defined('REST_REQUEST') && REST_REQUEST) {
-            $url = esc_url_raw( $_POST[ 'mp_url'] );
-        } else {
-            $url =  parse_url( $_SERVER[ 'REQUEST_URI' ], PHP_URL_PATH );
-        }
         $data = '';
-        $bildungsstufe = get_metadata( 'post', $post->ID, 'material_bildungsstufe' );
-        if ( ! Materialpool_Material::is_old() ) {
-            if ( sizeof( $bildungsstufe ) == 1 ) {
-                if ( $bildungsstufe[ 0 ] !== false ) {
-                    if ( $bildungsstufe[ 0 ][ 'parent'] != 0 ) {
-	                    $link = "/facettierte-suche/?fwp_bildungsstufe=". $bildungsstufe[0][ 'slug' ];
-                        $data .= '<span class="facet-tag"><a href="' . $link . '">' . $bildungsstufe[0][ 'name' ] .'</a></span>';
-                    }
-                }
-            } else {
-                foreach ( $bildungsstufe as $bildung ) {
-                    if ( $bildung[ 'parent'] != 0 ) {
-	                    $link = "/facettierte-suche/?fwp_bildungsstufe=". $bildung[ 'slug' ];
-                        $data .= '<span class="facet-tag"><a href="' . $link . '">' . $bildung[ 'name' ] .'</a></span>';
-                    }
-                }
-            }
-        } else {
-            if ( sizeof( $bildungsstufe ) == 1 ) {
-                $term = get_term( $bildungsstufe, "bildungsstufe" );
-                if ( $term->parent != 0 ) {
-	                $link = "/facettierte-suche/?fwp_bildungsstufe=". $term->slug;
-                    $data .= '<span class="facet-tag"><a href="' . $link . '">' . $term->name .'</a></span>';
-                }
+	    $term_list = wp_get_post_terms( $post->ID, 'bildungsstufe' );
+	    if  ( is_array( $term_list)) {
+		    foreach ( $term_list as $tax ) {
+		        if ( $tax->parent != 0 ) {
+			        $link = "/facettierte-suche/?fwp_bildungsstufe=". $tax->slug;
+			        $data .= '<span class="facet-tag"><a href="' . $link . '">' . $tax->name .'</a></span>';
+		        }
+		    }
+	    }
 
-            } else {
-                foreach ( $bildungsstufe as $bildung ) {
-                    $term = get_term( $bildung, "bildungsstufe" );
-                    if ( $term->parent != 0 ) {
-	                    $link = "/facettierte-suche/?fwp_bildungsstufe=". $term->slug;
-	                    $data .= '<span class="facet-tag"><a href="' . $link . '">' . $term->name .'</a></span>';
-                    }
-                }
-            }
-        }
         return $data;
     }
 
@@ -2265,14 +2073,15 @@ END;
     static public function get_bildungsstufen () {
         global $post;
 
-        $url =  parse_url( $_SERVER[ 'REQUEST_URI' ], PHP_URL_PATH );
         $data = array();
-        $bildungsstufe = get_metadata( 'post', $post->ID, 'material_bildungsstufe' );
-        foreach ( $bildungsstufe as $bildung ) {
-            if ( $bildung[ 'parent'] != 0 ) {
-                $data[] =  $bildung[ 'name' ] ;
-            }
-        }
+	    $term_list = wp_get_post_terms( $post->ID, 'bildungsstufe' );
+	    if  ( is_array( $term_list)) {
+		    foreach ( $term_list as $tax ) {
+		        if ( $tax->parent != 0 ) {
+			        $data[] =  $tax->name;
+		        }
+		    }
+	    }
         if ( is_array( $data ) ) {
 	        return implode( ', ', $data );
         } else {
@@ -2294,20 +2103,13 @@ END;
      */
     static public function inklusion_facet_html () {
         global $post;
-        $url =  parse_url( $_SERVER[ 'REQUEST_URI' ], PHP_URL_PATH );
+
         $data = '';
-        $bildungsstufe = get_metadata( 'post', $post->ID, 'material_inklusion' );
-        if ( sizeof( $bildungsstufe ) == 1 ) {
-            if ( $bildungsstufe[ 0 ] !== false ) {
-	            $link = "/facettierte-suche/?fwp_bildungsstufe=". $bildungsstufe[0][ 'slug' ];
-	            $data .= '<span class="facet-tag"><a href="' . $link . '">' . $bildungsstufe[0][ 'name' ] .'</a></span>';
-            } else {
-                $data = "";
-            }
-        } else {
-            foreach ( $bildungsstufe as $bildung ) {
-	            $link = "/facettierte-suche/?fwp_bildungsstufe=". $bildung[ 'slug' ];
-	            $data .= '<span class="facet-tag"><a href="' . $link . '">' . $bildung[ 'name' ] .'</a></span>';
+        $term_list = wp_get_post_terms( $post->ID, 'inklusion' );
+        if  ( is_array( $term_list)) {
+            foreach ( $term_list as $tax ) {
+	            $link = "/facettierte-suche/?fwp_inklusion=". $tax->slug;
+	            $data .= '<span class="facet-tag"><a href="' . $link . '">' . $tax->name .'</a></span>';
             }
         }
         return $data;
@@ -2477,20 +2279,13 @@ END;
         global $post;
 
         $data = '';
-        $schlagworte = get_metadata( 'post', $post->ID, 'material_schlagworte' );
-        if ( sizeof( $schlagworte ) == 1 ) {
-            if ( $schlagworte[ 0 ] !== false ) {
-                if ( $data != '') $data .= ', ';
-                $data .= $schlagworte[ 0 ][ 'name' ];
-            } else {
-                $data = "";
-            }
-        } else {
-            foreach ( $schlagworte as $schlagwort ) {
-                if ( $data != '') $data .= ', ';
-                $data .= $schlagwort[ 'name' ];
-            }
-        }
+	    $term_list = wp_get_post_terms( $post->ID, 'schlagwort' );
+	    if  ( is_array( $term_list)) {
+		    foreach ( $term_list as $tax ) {
+			    if ( $data != '') $data .= ', ';
+			    $data .= $tax->name;
+		    }
+	    }
         return $data;
     }
 
@@ -2503,21 +2298,14 @@ END;
 	static public function get_medientypen() {
         global $post;
 
-        $data = '';
-        $medientypen = get_metadata( 'post', $post->ID, 'material_medientyp' );
-        if ( sizeof( $medientypen ) == 1 ) {
-            if ( $medientypen[ 0 ] !== false ) {
-                if ( $data != '') $data .= ', ';
-                $data .= $medientypen[ 0 ][ 'name' ];
-            } else {
-                $data = "";
-            }
-        } else {
-            foreach ( $medientypen as $medientyp ) {
-                if ( $data != '') $data .= ', ';
-                $data .= $medientyp[ 'name' ];
-            }
-        }
+		$data = '';
+		$term_list = wp_get_post_terms( $post->ID, 'medientyp' );
+		if  ( is_array( $term_list)) {
+			foreach ( $term_list as $tax ) {
+				if ( $data != '') $data .= ', ';
+				$data .= $tax->name;
+			}
+		}
         return $data;
     }
 
@@ -2568,30 +2356,17 @@ END;
      */
     static public function get_schlagworte_html( $url = '' ) {
         global $post;
-        if ( $url == '' ) {
-            if (defined('REST_REQUEST') && REST_REQUEST) {
-                $url = esc_url_raw( $_POST[ 'mp_url'] );
-            } else {
-                $url =  parse_url( $_SERVER[ 'REQUEST_URI' ], PHP_URL_PATH );
-            }
-        }
-        $data = '';
-        $schlagworte = get_metadata( 'post', $post->ID, 'material_schlagworte' );
-        if ( sizeof( $schlagworte ) == 1 ) {
-            if ( $schlagworte[ 0 ] !== false ) {
-                $link = "/facettierte-suche/?fwp_schlagworte=". $schlagworte[0][ 'slug' ];
-                if ( $data != '') $data .= ', ';
-                $data .= '<a href="' . $link . '">' . $schlagworte[0][ 'name' ] .'</a>';
-            } else {
-                $data = "";
-            }
-        } else {
-            foreach ( $schlagworte as $schlagwort ) {
-	            $link = "/facettierte-suche/?fwp_schlagworte=". $schlagwort[ 'slug' ];
-                if ( $data != '') $data .= ', ';
-                $data .= '<a href="' . $link . '">' . $schlagwort[ 'name' ] .'</a>';
-            }
-        }
+
+	    $data = '';
+	    $term_list = wp_get_post_terms( $post->ID, 'schlagwort' );
+	    if  ( is_array( $term_list)) {
+		    foreach ( $term_list as $tax ) {
+			    $link = "/facettierte-suche/?fwp_schlagworte=". $tax->slug;
+			    if ( $data != '' ) $data .= ', ';
+			    $data .= '<a href="' . $link . '">' . $tax->name .'</a>';
+		    }
+	    }
+
         return $data;
     }
 
@@ -2605,7 +2380,7 @@ END;
     static public function jahr_html() {
         $jahr = Materialpool_Material::get_jahr();
         $data = '';
-        if ( $jahr != '' ) {
+        if ( $jahr != '' && $jahr != 0 && $jahr != '0'  ) {
             $data = '<span class="facet-tag">' . $jahr . '</span>';
         }
         return $data;

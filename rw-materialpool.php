@@ -292,9 +292,9 @@ class Materialpool {
         add_filter( 'manage_material_posts_columns', array( 'Materialpool_Ratings', 'page_column'), 9999 );
         add_action( 'user_register', array( 'Materialpool', 'user_defaults' ), 10, 1 );
 
-        pods_register_field_type( 'screenshot', self::$plugin_base_dir . 'classes/Materialpool_Pods_Screenshot.php' );
-        pods_register_field_type( 'facette', self::$plugin_base_dir . 'classes/Materialpool_Pods_Facette.php' );
-		pods_register_field_type( 'synonymlist', self::$plugin_base_dir . 'classes/Materialpool_Pods_Synonymlist.php' );
+        //pods_register_field_type( 'screenshot', self::$plugin_base_dir . 'classes/Materialpool_Pods_Screenshot.php' );
+        //pods_register_field_type( 'facette', self::$plugin_base_dir . 'classes/Materialpool_Pods_Facette.php' );
+		//pods_register_field_type( 'synonymlist', self::$plugin_base_dir . 'classes/Materialpool_Pods_Synonymlist.php' );
 
         add_action( 'wp_ajax_mp_get_html',  array( 'Materialpool', 'my_action_callback_mp_get_html' ) );
 		add_action( 'wp_ajax_mp_get_screenshot',  array( 'Materialpool', 'my_action_callback_mp_get_screenshot' ) );
@@ -367,6 +367,10 @@ class Materialpool {
 		add_action( 'admin_menu', array( 'Materialpool_Contribute', 'options_page' ) );
 		add_action( 'admin_menu', array( 'Materialpool_Contribute', 'settings_init' ) );
 		add_action( 'init',             array( 'Materialpool_Contribute_Clients', 'init'), 0 );
+
+        if ( defined ( 'WP_CLI' ) && WP_CLI ) {
+            require_once( __DIR__ . '/classes/Materialpool_wp-cli_commands.php' );
+        }
 
 		do_action( 'materialpool_init' );
 	}
