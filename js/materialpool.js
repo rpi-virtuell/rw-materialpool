@@ -755,7 +755,7 @@ function check_material() {
             elements = jQuery(".pods-form-ui-field-name-pods-meta-material-medientyp:checked");
             var text = "";
             elements.each(function () {
-                var element = $(this).get(0);
+                var element = jQuery(this).get(0);
                 if (element.value == 17) text = "<div class='materialpool-notice-error'>Keine Kompetenz gewählt.</div>";
                 if (element.value == 30) text = "<div class='materialpool-notice-error'>Keine Kompetenz gewählt.</div>";
                 if (element.value == 55) text = "<div class='materialpool-notice-error'>Keine Kompetenz gewählt.</div>";
