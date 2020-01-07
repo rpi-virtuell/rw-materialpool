@@ -714,7 +714,6 @@ class Materialpool_Organisation {
     static public function autor_html_picture () {
         $verweise = Materialpool_Organisation::get_autor();
         foreach ( $verweise[0] as $verweis ) {
-        	var_dump( $verweis );
             $url = get_permalink( $verweis );
             $post = get_post( $verweis );
             $logo = get_metadata( 'post', $verweis, 'autor_bild_url', true );

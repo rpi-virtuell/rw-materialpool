@@ -115,7 +115,6 @@ class Materialpool_Themenseite {
 			);
 		}
 
-var_dump( $items_arr);exit;
         return $items_arr;
     }
 
