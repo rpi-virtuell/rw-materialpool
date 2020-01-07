@@ -267,18 +267,12 @@ class Materialpool_Autor {
 		}
 
 		if ( $column_name == 'autor_organisation' ) {
-			$autors = get_metadata( 'post', $post_id, 'autor_organisation' );
-			if ( sizeof( $autors ) == 1 ) {
-				if ( $autors[0] !== false ) {
-					$post = get_post( $autors[0]['ID'] );
-					$data .= '<a href="' . get_edit_post_link( $autors[0]['ID'] ) . '">' . $post->post_title . '</a><br>';
-				} else {
-					$data = "";
-				}
-			} else {
-				foreach ( $autors as $autor ) {
-					$post = get_post( $autor['ID'] );
-					$data .= '<a href="' . get_edit_post_link( $autor['ID'] ) . '">' . $post->post_title . '</a><br>';
+			$organisationen = get_metadata( 'post', $post_id, 'material_organisation' );
+			if ( is_array( $organisationen[0] )) {
+				foreach ( $organisationen[0] as $organisation ) {
+					$post = get_post( $organisation );
+					$data .= '<a href="/wp-admin/edit.php?post_type=material&all_posts=1&ORGA_FILTER_FIELD_NAME=' .  $post->ID . '">' . $post->post_title .'</a><br>';
+
 				}
 			}
 		}
@@ -293,16 +287,8 @@ class Materialpool_Autor {
             $data = "<div><input data-id=\"". $post_id ."\" class=\"einverstaendnis_autor\" type='checkbox' $check ></div>";
 		}
 		if ( $column_name == 'autor_material' ) {
-			$autors = get_metadata( 'post', $post_id, 'autor_material' );
-			if ( sizeof( $autors ) == 1 ) {
-				if ( $autors[0] !== false ) {
-					$data = "1";
-				} else {
-					$data = "0";
-				}
-			} else {
-				$data = sizeof( $autors );
-			}
+			$autors = get_metadata( 'post', $post_id, 'material_autoren' );
+			$data = sizeof( $autors[0] );
 		}
 		if ( $column_name == 'autor_owner' ) {
 			$post = get_post( $post_id );
@@ -749,7 +735,7 @@ class Materialpool_Autor {
 	static public function get_organisationen() {
 		global $post;
 
-		return get_metadata( 'post', $post->ID, 'autor_organisation', false );
+		return get_metadata( 'post', $post->ID, 'material_organisation', false );
 	}
 
 	/**
@@ -760,9 +746,10 @@ class Materialpool_Autor {
 	 */
 	static public function organisationen_html() {
 		$organistionen = Materialpool_Autor::get_organisationen();
-		foreach ( $organistionen as $organisation ) {
-			$url = get_permalink( $organisation[ 'ID' ] );
-			echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-volumes', 'materialpool-template-material-volumes' ) .'">' . $organisation[ 'post_title' ] . '</a><br>';
+		foreach ( $organistionen[0] as $organisation ) {
+			$url = get_permalink( $organisation );
+			$post = get_post( $organisation );
+			echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-volumes', 'materialpool-template-material-volumes' ) .'">' . $post->post_title . '</a><br>';
 
 		}
 	}
@@ -776,14 +763,15 @@ class Materialpool_Autor {
      */
     static public function organisation_html_cover () {
         $organistionen = Materialpool_Autor::get_organisationen();
-        foreach ( $organistionen as $organisation ) {
-            $url = get_permalink( $organisation[ 'ID' ] );
-            $logo = get_metadata( 'post', $organisation[ 'ID' ], 'organisation_logo_url', true );
+        foreach ( $organistionen[0] as $organisation ) {
+            $url = get_permalink( $organisation );
+            $post = get_post( $organisation );
+            $logo = get_metadata( 'post', $organisation, 'organisation_logo_url', true );
             echo "<div class='materialpool-template-autor-organisation'>";
             if ( $logo != '') {
                 echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-organisation-logo' ) .'" style="background-image: url(\''. $logo .'\')"><img src="' . $logo . '"></a>';
             }
-            echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-organisation' ) .'">' . $organisation[ 'post_title' ] . '</a><br>';
+            echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-organisation' ) .'">' . $post->post_title . '</a><br>';
             echo "</div>";
         }
     }
@@ -811,8 +799,9 @@ class Materialpool_Autor {
 	static public function materialien_html() {
 		$materialien = Materialpool_Autor::get_materialien();
 		foreach ( $materialien as $material ) {
-			$url = get_permalink( $material[ 'ID' ] );
-			echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-volumes', 'materialpool-template-material-volumes' ) .'">' . $material[ 'post_title' ] . '</a><br>';
+			$url = get_permalink( $material );
+			$post = get_post( $material );
+			echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-volumes', 'materialpool-template-material-volumes' ) .'">' . $post->post_title . '</a><br>';
 
 		}
 	}
@@ -870,16 +859,9 @@ class Materialpool_Autor {
     static public function get_count_posts_per_autor ($autor_id = 0) {
 	    global $post;
 	    $autor_id = ($autor_id>0)?$autor_id:$post->ID;
-	    $autors = get_metadata( 'post', $autor_id, 'autor_material' );
-	    if ( sizeof( $autors ) == 1 ) {
-		    if ( $autors[0] !== false ) {
-			    $data = "1";
-		    } else {
-			    $data = "0";
-		    }
-	    } else {
-		    $data = sizeof( $autors );
-	    }
+	    $autors = get_metadata( 'post', $autor_id, 'material_autoren' );
+	    $data = sizeof( $autors[0] );
+
 
         return $data;
 

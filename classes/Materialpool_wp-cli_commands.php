@@ -141,7 +141,7 @@ class Materialpool_WP_CLI_Command extends WP_CLI_Command {
 		foreach ( $result as $obj ) {
 			$counter++;
 			WP_CLI::line('Material ID ' . $obj->ID );
-			WP_CLI::line('- convert bildungsstufen ');
+			WP_CLI::line('- convert Kompetenzen ');
 			$kompetenz = get_post_meta( $obj->ID, 'material_kompetenz', false );
 			$res = $wpdb->get_results("DELETE FROM " . $prefix . "postmeta where post_id =  " . $obj->ID . " and meta_key = 'material_kompetenz'  ");
 			add_post_meta( $obj->ID, 'material_kompetenz' , $kompetenz );
@@ -149,11 +149,62 @@ class Materialpool_WP_CLI_Command extends WP_CLI_Command {
 		}
 		WP_CLI::line( $counter . ' Materialien konvertiert' );
 	}
+
+
+	static public function convert_material3( $args ) {
+		global $wpdb;
+		WP_CLI::line( 'Ermittle Materialien ...' );
+		$prefix = $wpdb->base_prefix;
+		$result = $wpdb->get_results("SELECT  ID    FROM " . $wpdb->posts . " WHERE post_type = 'material'  ");
+		$counter = 0;
+		foreach ( $result as $obj ) {
+			$counter++;
+			WP_CLI::line('Material ID ' . $obj->ID );
+			WP_CLI::line('- convert autor facet ');
+			$autoren = get_post_meta( $obj->ID, 'material_autoren', false );
+			if ( is_array( $autoren[0] )) {
+				foreach ( $autoren[0] as $autor ) {
+					add_post_meta( $obj->ID, 'material_autoren_facet_view', $autor );
+				}
+			}
+			WP_CLI::line('- convert organisation facet ');
+			$organisationen = get_post_meta( $obj->ID, 'material_organisation', false );
+			if ( is_array( $organisationen[0] )) {
+				foreach ( $organisationen[0] as $organisation ) {
+					add_post_meta( $obj->ID, 'material_organisation_facet_view', $organisation );
+				}
+			}
+
+		}
+		WP_CLI::line( $counter . ' Materialien konvertiert' );
+	}
+
+
+	static public function convert_material4( $args ) {
+		global $wpdb;
+		WP_CLI::line( 'Ermittle Materialien ...' );
+		$prefix = $wpdb->base_prefix;
+		$result = $wpdb->get_results("SELECT  ID    FROM " . $wpdb->posts . " WHERE post_type = 'material'  ");
+		$counter = 0;
+		foreach ( $result as $obj ) {
+			$counter++;
+			WP_CLI::line('Material ID ' . $obj->ID );
+			WP_CLI::line('- convert schlagworte ');
+			$kompetenz = get_post_meta( $obj->ID, 'material_schlagworte', false );
+			$res = $wpdb->get_results("DELETE FROM " . $prefix . "postmeta where post_id =  " . $obj->ID . " and meta_key = 'material_schlagworte'  ");
+			add_post_meta( $obj->ID, 'material_schlagworte' , $kompetenz );
+			add_post_meta( $obj->ID, '_material_schlagworte', 'field_5dbc888798a2f' );
+
+		}
+		WP_CLI::line( $counter . ' Materialien konvertiert' );
+	}
+
 }
 
 WP_CLI::add_command( 'materialpool convert themenseiten', array( 'Materialpool_WP_CLI_Command','convert_themenseiten' ) );
 WP_CLI::add_command( 'materialpool convert material', array( 'Materialpool_WP_CLI_Command','convert_material' ) );
 WP_CLI::add_command( 'materialpool convert material2', array( 'Materialpool_WP_CLI_Command','convert_material2' ) );
-
+WP_CLI::add_command( 'materialpool convert material3', array( 'Materialpool_WP_CLI_Command','convert_material3' ) );
+WP_CLI::add_command( 'materialpool convert material4', array( 'Materialpool_WP_CLI_Command','convert_material4' ) );
 WP_CLI::add_command( 'materialpool convert autor', array( 'Materialpool_WP_CLI_Command','convert_autor' ) );
 WP_CLI::add_command( 'materialpool convert organisation', array( 'Materialpool_WP_CLI_Command','convert_organisation' ) );

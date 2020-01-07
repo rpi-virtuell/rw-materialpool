@@ -104,9 +104,18 @@ class Materialpool_Themenseite {
         global $post;
         if ( $id == null ) $id = $post->ID;
         global $wpdb;
-        $query_str 		= $wpdb->prepare('SELECT *  FROM `' . $wpdb->prefix . 'pods_themenseitengruppen`	 	  
-										 WHERE pandarf_parent_post_id = %s order by CAST(`pandarf_order` AS SIGNED) ', $id );
-        $items_arr 		= $wpdb->get_results( $query_str , ARRAY_A );
+
+		$items_arr = array();
+		$anzahl = get_field( 'themengruppen');
+		for ( $i = 0;  $i < $anzahl ;$i++ ) {
+			$items_arr[ $i ] = array(
+				'gruppe' => get_field( 'themengruppen_' . $i . '_gruppe_von_materialien'),
+				'gruppenbeschreibung' => get_field( 'themengruppen_' . $i . '_infos' ),
+				'auswahl' => get_field('themengruppen_' . $i . '_material_in_dieser_gruppe' )
+			);
+		}
+
+var_dump( $items_arr);exit;
         return $items_arr;
     }
 
@@ -165,15 +174,10 @@ class Materialpool_Themenseite {
 
 		if ( $column_name == 'themenseite-schlagworte' ) {
 			$schlagworte = get_metadata( 'post', $post_id, 'thema_schlagworte' );
-			if ( sizeof( $schlagworte ) == 1 ) {
-				if ( $schlagworte[ 0 ] !== false ) {
-					$data .= $schlagworte[ 0 ][ 'name' ] .'<br>';
-				} else {
-					$data = "";
-				}
-			} else {
-				foreach ( $schlagworte as $schlagwort ) {
-					$data .= $schlagwort[ 'name' ] .'<br>';
+			if ( is_array( $schlagworte[0] )) {
+				foreach ( $schlagworte[0] as $schlagwort ) {
+					$term = get_term( $schlagwort, "schlagwort" );
+					$data .=  $term->name. '<br>';
 				}
 			}
 		}
