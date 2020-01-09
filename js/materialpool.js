@@ -141,7 +141,17 @@ function set_spezial_altersstufe( id ) {
     })
 }
 
-   var html;
+
+/**
+ *
+ * Screeshotbuttons
+ *
+ */
+
+jQuery(document).ready(function(){
+    jQuery("#generate-screenshot").click( function() {
+        var url = jQuery("#pods-form-ui-pods-meta-material-url").val();
+        var html;
         var data = {
             'action': 'mp_get_screenshot',
             'site': url
