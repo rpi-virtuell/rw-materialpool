@@ -106,7 +106,8 @@ class Materialpool_Themenseite {
         global $wpdb;
 
 		$items_arr = array();
-		$anzahl = get_field( 'themengruppen');
+		$anzahl = count( get_field( 'themengruppen') );
+
 		for ( $i = 0;  $i < $anzahl ;$i++ ) {
 			$items_arr[ $i ] = array(
 				'gruppe' => get_field( 'themengruppen_' . $i . '_gruppe_von_materialien'),

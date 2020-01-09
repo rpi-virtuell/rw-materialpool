@@ -365,9 +365,10 @@ class Materialpool_Autor {
 			return;
 		}
 		$anmerkung = '';
-		$firstname = $_POST['pods_meta_autor_vorname'];
-		$lastname  = $_POST['pods_meta_autor_nachname'];
-		$anmerkung = $_POST['pods_meta_autor_uniq'];
+		$acf = $_POST['acf'];
+		$firstname = $acf['field_5db182e2f2d16'];
+		$lastname  = $acf['field_5db182f2f2d17'];
+		$anmerkung = $acf['field_5db182fbf2d18'];
 		if ( $anmerkung != '' ) {
 			$anmerkung = ' - ' . $anmerkung;
 		}
@@ -392,15 +393,14 @@ class Materialpool_Autor {
 		// Posts suchen die mit diesem Autoren verbunden sind und dort den Autorennamen neu speichern
 		$materialien = $wpdb->get_col( $wpdb->prepare( "SELECT post_id   FROM  $wpdb->postmeta WHERE meta_key = %s and meta_value = %s", 'material_autoren', $post_id ) );
 
+
 		foreach ( $materialien as $material_id ) {
 			delete_post_meta( $material_id, 'material_autor_facet' );
 			$autoren = get_metadata( 'post', $material_id, 'material_autoren', false );
 			if ( is_array( $autoren ) ) {
-				foreach ( $autoren as $key => $val ) {
-					$autoren_ids[] = (int) $val['ID'];
+				foreach ( $autoren[0] as $val ) {
+					$autoren_ids[] = (int) $val;
 				}
-			} else {
-				$autoren_ids[] = (int) $autoren;
 			}
 			foreach ( $autoren_ids as $autoren_id ) {
 				$autoren_meta = get_post( $autoren_id );

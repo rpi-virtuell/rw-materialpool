@@ -279,7 +279,7 @@ class Materialpool_Material {
      */
     static public function generate_title( $post_id ) {
         global $wpdb;
-
+	    $acf = $_POST['acf'];
         $post_type = get_post_type($post_id);
         $post_status = get_post_status ($post_id);
         $post_parent = wp_get_post_parent_id( $post_id );
@@ -293,7 +293,7 @@ class Materialpool_Material {
         $post_content = '';
         $url = '';
         // Prio 1: hochgeladenes Bild
-        $pic  = $_POST[ 'pods_meta_material_cover' ];
+        $pic  = $acf['field_5dc13b1362bd1'];
         if ( is_array( $pic ) ) {
             foreach ( $pic as $picArray ) {
                 $id = (int) $picArray[ 'id' ];
@@ -305,19 +305,16 @@ class Materialpool_Material {
         }
         // Prio 2, Cover URL
         if ( $url == '' ) {
-            $url  = $_POST[ 'pods_meta_material_cover_url' ];
+            $url  = $acf['field_5dc13b57f2a74'];
         }
-        // Prio 3, Screenshot URL
-        if ( $url == '' ) {
-            $url  = trim( $_POST[ 'pods_meta_material_screenshot' ] );
-        }
+
         if ( $url != '' ) {
             $post_content ='<img class="size-medium  alignleft" src="'. trim( $url ) .'" alt="" sizes="(max-width: 300px) 100vw, 300px">';
         }
 
-        $post_content .= '<strong>' . wp_unslash( apply_filters( 'content_save_pre', $_POST[ 'pods_meta_material_kurzbeschreibung' ] ) ) . '</strong>';
+        $post_content .= '<strong>' . wp_unslash( apply_filters( 'content_save_pre', $acf['field_5dbc82995b741'] ) ) . '</strong>';
         $post_content .= "\n\n<p>";
-        $text = wp_unslash( $_POST[ 'pods_meta_material_beschreibung' ] );
+        $text = wp_unslash( $acf['field_5dbc82ca3e84f']);
         $text = strip_shortcodes( $text );
         $text = apply_filters( 'the_content', $text );
         $text = str_replace(']]>', ']]&gt;', $text);
@@ -347,62 +344,48 @@ class Materialpool_Material {
 
         // Autoren für FacetWP spiechern
         delete_post_meta( $post_id, 'material_autor_facet' );
-        $autoren = explode( ',', $_POST[ 'pods_meta_material_autoren' ] ) ;
-        $autoren_ids = array();
-        if ( is_array( $autoren ) ) {
-            foreach ( $autoren as $key => $val ) {
-                if ( $val != '' ) {
-                    $autoren_ids[] = (int)$val;
-                }
-            }
-        } else {
-            $autorid = (int) $autoren;
-            if ( 0 !=  $autorid ) {
-                $autoren_ids[] = $autorid;
-            }
-        }
-        foreach ( $autoren_ids as $autoren_id ) {
-            $vorname = get_post_meta($autoren_id, 'autor_vorname', true );
-            $nachname = get_post_meta($autoren_id, 'autor_nachname', true );
-            add_post_meta( $post_id, 'material_autor_facet', $vorname . ' ' . $nachname );
-        }
+	    delete_post_meta( $post_id, 'material_autor_facet_view' );
+	    $autoren = get_post_meta( $post_id, 'material_autoren', false );
+	    if ( is_array( $autoren[0] )) {
+		    foreach ( $autoren[0] as $autor ) {
+			    add_post_meta( $post_id, 'material_autoren_facet_view', $autor );
+			    $vorname = get_post_meta($autor, 'autor_vorname', true );
+			    $nachname = get_post_meta($autor, 'autor_nachname', true );
+			    add_post_meta( $post_id, 'material_autor_facet', $vorname . ' ' . $nachname );
+
+		    }
+	    }
+
+
+
 
         // Organisationen für FacetWP speichern
         delete_post_meta( $post_id, 'material_organisation_facet' );
+	    delete_post_meta( $post_id, 'material_organisation_facet_view' );
         delete_post_meta( $post_id, 'material_alpika_facet' );
-        $organisationen = explode( ',', $_POST[ 'pods_meta_material_organisation' ] ) ;
-        $organisationen_ids = array();
-        if ( is_array( $organisationen ) ) {
-            foreach ( $organisationen as $key => $val ) {
-                if ( $val != '' ) {
-                    $organisationen_ids[] = (int) $val;
-                }
-            }
-        } else {
-            $orgaid = (int) $organisationen;
-            if ( 0 != $orgaid ) {
-                $organisationen_ids[] = $orgaid;
-            }
-        }
-        foreach ( $organisationen_ids as $organisationen_id ) {
-            /*organisation title*/
-            $organisationen_meta = get_post( $organisationen_id );
-            add_post_meta( $post_id, 'material_organisation_facet', $organisationen_meta->post_title );
+	    $organisationen = get_post_meta( $post_id, 'material_organisation', false );
+	    if ( is_array( $organisationen[0] )) {
+		    foreach ( $organisationen[0] as $organisation ) {
+			    add_post_meta( $post_id, 'material_organisation_facet_view', $organisation );
+			    $organisationen_meta = get_post( $organisationen );
+			    add_post_meta( $post_id, 'material_organisation_facet', $organisationen_meta->post_title );
 
-            /*organisation_alpika*/
-            if(get_post_meta($organisationen_meta->ID,'organisation_alpika', true)){
-                add_post_meta( $post_id, 'material_alpika_facet', 1 );
-            }
+			    /*organisation_alpika*/
+			    if(get_post_meta($organisationen_meta->ID,'organisation_alpika', true)){
+				    add_post_meta( $post_id, 'material_alpika_facet', 1 );
+			    }
 
-            /*organisation_konfession zu material konfessionen hinzugügen*/
-            $konfession = get_post_meta( $organisationen_meta->ID,'organisation_konfession', true);
-            if($konfession && isset($konfession['name'])){
-                wp_set_post_tags( $post_id, $konfession['name'], true);
-            }
+			    /*organisation_konfession zu material konfessionen hinzugügen*/
+			    $konfession = get_post_meta( $organisationen_meta->ID,'organisation_konfession', true);
+			    if($konfession && isset($konfession['name'])){
+				    wp_set_post_tags( $post_id, $konfession['name'], true);
+			    }
 
-        }
+		    }
+	    }
+
         // Wenn Special, dann MaterialURL auf das Material selbst zeigen lassen.
-        if (  $_POST[ 'pods_meta_material_special' ] == 1  ) {
+        if (  $acf['field_5dbc823aa108e'] == 1  ) {
             clean_post_cache( $post_id );
             $p = get_post( $post_id );
             $url = get_permalink( $p );
@@ -2000,15 +1983,14 @@ END;
      */
     static public function autor_facet_html () {
         $verweise = Materialpool_Material::get_autor();
-        $url =  parse_url( $_SERVER[ 'REQUEST_URI' ], PHP_URL_PATH );
         $data = '';
-        foreach ( $verweise as $verweis ) {
+        foreach ( $verweise[0] as $verweis ) {
             if ( $verweis != '' )
                 if ( $data != '') {
                     $data .= ', ';
                 }
-            $vorname = get_post_meta($verweis[ 'ID' ], 'autor_vorname', true );
-            $nachname = get_post_meta($verweis[ 'ID' ], 'autor_nachname', true );
+            $vorname = get_post_meta($verweis, 'autor_vorname', true );
+            $nachname = get_post_meta($verweis, 'autor_nachname', true );
             $data .=  $vorname .' '. $nachname;
         }
         $data = "<span class='search-autor'>" . $data . "</span>";
