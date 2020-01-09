@@ -2180,3 +2180,9 @@ function register_mymaterial_rest_routes() {
 	$controller->register_routes();
 }
 
+add_filter('acf/load_field/key=field_5dbc8eedaf43e', 'set_tax_default', 20, 1);
+function set_tax_default( $field  ) {
+
+	//$field['default_value'] = 51;
+	return $field;
+}
