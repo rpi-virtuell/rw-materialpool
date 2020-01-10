@@ -2179,3 +2179,14 @@ function register_mymaterial_rest_routes() {
 	$controller = new Materialpool_REST_MyMaterial();
 	$controller->register_routes();
 }
+
+
+
+add_filter('acf/load_value/key=field_5dbc8eedaf43e', 'set_verfuegbarkeit_default', 20, 3);
+function set_verfuegbarkeit_default( $value, $post_id, $field ) {
+	if ($value === null && get_post_status($post_id) == 'auto-draft' && get_post_status($post_id) != 'publish') {
+		$value = 51;
+	}
+	return $value;
+}
+

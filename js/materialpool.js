@@ -18,10 +18,6 @@
 jQuery(document).ready(function(){
     var url = document.URL;
     if ( url.indexOf( 'post-new.php?post_type=material') !== -1 ) {
-        // set verfuegbarkeit
-        //////// TODO
-        jQuery("input[name='acf[field_5dbc8f1d069d4]']").val("51");
-
         // set sprache
         jQuery("input[name='acf[field_5dbc8c18f8d06][]']").each( function() {
             if ( jQuery(this).val() == 4 ) {
@@ -90,56 +86,6 @@ function set_altersstufe( id ) {
 }
 
 
-
-
-
-jQuery(document).ready(function(){
-    jQuery(".pods-form-ui-field-name-pods-meta-spezial-bildungsstufe").click( function() {
-        switch ( jQuery(this).val() ) {
-            case "7":    // Elementarbereich
-                set_spezial_altersstufe( 37 ); // 1-5
-                break;
-            case "8":    // Erwachsenenbildung
-                set_spezial_altersstufe( 41 ); //
-                break;
-            case "9":    // Kinder und Jugendarbeit
-                set_spezial_altersstufe( 42 ); // 5-10
-                set_spezial_altersstufe( 38 ); // 10-13
-                set_spezial_altersstufe( 39 ); // 13-15
-                set_spezial_altersstufe( 40 ); // 15-19
-                break;
-            case "10":    // Kindergottesdienst
-                set_spezial_altersstufe( 37 ); // 1-5
-                set_spezial_altersstufe( 42 ); // 5-10
-                break;
-            case "11":    // Konfirmandenarbeit
-                set_spezial_altersstufe( 39 ); // 13-15
-                break;
-            case "13":    // Berufsshule
-                set_spezial_altersstufe( 40 ); // 15-19
-                break;
-            case "14":    // Grundschule
-                set_spezial_altersstufe( 42 ); // 5-10
-                break;
-            case "15":    // Oberstufe
-                set_spezial_altersstufe( 40 ); // 15-19
-                break;
-            case "16":    // Sekundarstufe
-                set_spezial_altersstufe( 38 ); // 10-13
-                set_spezial_altersstufe( 39 ); // 13-15
-                break;
-        }
-    })
-});
-
-
-function set_spezial_altersstufe( id ) {
-    jQuery(".pods-form-ui-field-name-pods-meta-spezial-altersstufe").each( function() {
-        if ( jQuery(this).val() == id ) {
-            jQuery(this).attr('checked', true);
-        }
-    })
-}
 
 
 /**
@@ -303,9 +249,9 @@ jQuery(document).ready(function(){
      */
 
     jQuery(document).ready(function(){
-        jQuery("#pods-form-ui-pods-meta-material-url").focusout( function() {
+        jQuery('input[name="acf[field_5dbc6c2e9e6d5]"]').focusout( function() {
 
-            var url = jQuery("#pods-form-ui-pods-meta-material-url").val();
+            var url = jQuery('input[name="acf[field_5dbc6c2e9e6d5]"]').val();
             var postid = jQuery("#post_ID").val();
             if ( url == '' ) return;
             var ret;
@@ -323,8 +269,8 @@ jQuery(document).ready(function(){
                     obj = jQuery.parseJSON( ret );
                     if ( obj.status == 'exists' ) {
 
-                        jQuery("#pods-form-ui-pods-meta-material-url").val('');
-                        jQuery("#pods-form-ui-pods-meta-material-url").focus();
+                        jQuery('input[name="acf[field_5dbc6c2e9e6d5]"]').val('');
+                        jQuery('input[name="acf[field_5dbc6c2e9e6d5]"]').focus();
 
                         jQuery("body").append("<div id='" + obj.status + "' title='Hinweis'>" +
                             "<p align='center'>Diese URL wurde schon erfasst unter diesem <a  target='_blank' href='" + obj.material_url + "'>Material</a>.</p>" +
@@ -372,21 +318,21 @@ jQuery(document).ready(function(){
                 html = response;
                 if ( html != ''  ) {
                     $obj = jQuery.parseJSON( html );
-                    if ( jQuery("#pods-form-ui-pods-meta-material-titel").val() == '') {
-                        jQuery("#pods-form-ui-pods-meta-material-titel").val( $obj.title );
+                    if ( jQuery('input[name="acf[field_5dbc825df7494]"]').val() == '') {
+                        jQuery('input[name="acf[field_5dbc825df7494]"]').val( $obj.title );
                     }
                     if ( (typeof tinyMCE != "undefined") && tinyMCE.activeEditor && !tinyMCE.activeEditor.isHidden() ) {
                         text = $obj.description + "<br><br>" + tinyMCE.activeEditor.getContent();
                         tinyMCE.activeEditor.setContent( text );
                     } else {
-                        text = $obj.description + "\n\n" + jQuery("#pods-form-ui-pods-meta-material-beschreibung").val();
-                        jQuery("#pods-form-ui-pods-meta-material-beschreibung").val( text );
+                        text = $obj.description + "\n\n" + jQuery('input[name="acf[field_5dbc82ca3e84f]"]').val();
+                        jQuery('input[name="acf[field_5dbc82ca3e84f]"]').val( text );
                     }
-                    if ( jQuery("#pods-form-ui-pods-meta-material-schlagworte-interim").val() == '') {
-                        jQuery("#pods-form-ui-pods-meta-material-schlagworte-interim").val( $obj.keywords );
+                    if ( jQuery('input[name="acf[field_5dbc898b69985]"]').val() == '') {
+                        jQuery('input[name="acf[field_5dbc898b69985]"]').val( $obj.keywords );
                     }
-                    if ( jQuery("#pods-form-ui-pods-meta-material-cover-url").val() == '') {
-                        jQuery("#pods-form-ui-pods-meta-material-cover-url").val( $obj.image );
+                    if ( jQuery('input[name="acf[field_5dc13b57f2a74]"]').val() == '') {
+                        jQuery('input[name="acf[field_5dc13b57f2a74]"]').val( $obj.image );
                     }
 
                 }
