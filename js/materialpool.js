@@ -542,8 +542,8 @@ jQuery(document).ready(function(){
  */
 
 jQuery(document).ready(function(){
-    jQuery("#pods-form-ui-pods-meta-organisation-titel").focusout( function() {
-        var title = jQuery("#pods-form-ui-pods-meta-organisation-titel").val();
+    jQuery('input[name="acf[field_5dcd8482bb0ec]"]').focusout( function() {
+        var title = jQuery('input[name="acf[field_5dcd8482bb0ec]"]').val();
         if ( title == '' ) return;
         var ret;
         var data = {
@@ -662,24 +662,28 @@ function check_material() {
     jQuery("#mppubinfo").empty();
     var text;
     // URL prüfen
-    if ( jQuery("#pods-form-ui-pods-meta-material-url").val() == '' ) {
+    if ( jQuery('input[name="acf[field_5dbc6c2e9e6d5]"]').val() == '' ) {
         jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Material URL nicht angegeben.</div>");
     }
     // Kurzbeschreibung prüfen
-    if ( jQuery("#pods-form-ui-pods-meta-material-kurzbeschreibung").val() == '' ) {
+    if ( jQuery('input[name="acf[field_5dbc82995b741]"]').val() == '' ) {
         jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Kurzbeschreibung nicht angegeben.</div>");
     }
     // Beschreibung prüfen
     if ( (typeof tinyMCE != "undefined") && tinyMCE.activeEditor && !tinyMCE.activeEditor.isHidden() ) {
         text = tinyMCE.activeEditor.getContent();
     } else {
-        text = jQuery("#pods-form-ui-pods-meta-material-beschreibung").val();
+        text = jQuery('input[name="acf[field_5dbc82ca3e84f]"]').val();
     }
     if ( text == '' ) {
         jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Beschreibung nicht angegeben.</div>");
     }
+
+
+    // TODO
     // Schlagworte prüfen
-    if ( jQuery("#pods-form-ui-pods-meta-material-schlagworte").val() == ''  ) {
+//alert(jQuery('input[name="acf[field_5dbc888798a2f][]"]').children('option').length);
+    if ( jQuery('input[name="acf[field_5dbc888798a2f][]"]').val() == ''  ) {
         jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Keine Schlagworte vergeben.</div>");
     }
     // Bildungsstufen prüfen
