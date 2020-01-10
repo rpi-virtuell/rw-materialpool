@@ -453,30 +453,25 @@ jQuery(document).ready(function(){
 
 jQuery(document).ready(function(){
     // Hide URL afer loading
-    if ( jQuery( '#pods-form-ui-pods-meta-material-special1' ).is( ":checked" ) ) {
-        jQuery(".pods-form-ui-row-name-material-url").hide();
+    if ( jQuery( 'input[name="acf[field_5dbc823aa108e]"]' ).is( ":checked" ) ) {
+        jQuery(".acf-field-5dbc6c2e9e6d5").hide();
     }
 
     // Hide URL
-    jQuery('#pods-form-ui-pods-meta-material-special1').click(function(){
-        jQuery("#gruppe1").attr("checked","checked");
-        jQuery(".pods-form-ui-row-name-material-url").hide();
-
-        // Check Medientyp "special"
-        jQuery("#pods-form-ui-pods-meta-material-medientyp22").attr('checked', true);
+    jQuery('input[name="acf[field_5dbc823aa108e]"]').click(function(){
+        if ( jQuery( 'input[name="acf[field_5dbc823aa108e]"]' ).is( ":checked" ) ) {
+            jQuery(".acf-field-5dbc6c2e9e6d5").hide();
+        } else {
+            jQuery(".acf-field-5dbc6c2e9e6d5").show();
+        }
     });
 
-    // Show URL
-    jQuery('#pods-form-ui-pods-meta-material-special2').click(function(){
-        jQuery("#gruppe1").attr("checked","checked");
-        jQuery(".pods-form-ui-row-name-material-url").show();
-    });
 
     // Set URL on Specials, after title is focus lost
-    jQuery("#pods-form-ui-pods-meta-material-titel").focusout( function() {
-        if ( jQuery( '#pods-form-ui-pods-meta-material-special1' ).is( ":checked" ) ) {
-            if ( jQuery("#pods-form-ui-pods-meta-material-url").val() == '') {
-                jQuery("#pods-form-ui-pods-meta-material-url").val( 'http://localhost/random'  +  Math.floor((Math.random() * 10000000) + 1)  );
+    jQuery('input[name="acf[field_5dbc825df7494]"]').focusout( function() {
+        if ( jQuery( 'input[name="acf[field_5dbc823aa108e]"]' ).is( ":checked" ) ) {
+            if ( jQuery('input[name="acf[field_5dbc6c2e9e6d5]"]').val() == '') {
+                jQuery('input[name="acf[field_5dbc6c2e9e6d5]"]').val( 'http://localhost/random'  +  Math.floor((Math.random() * 10000000) + 1)  );
             }
         }
     })
@@ -489,8 +484,8 @@ jQuery(document).ready(function(){
  */
 
 jQuery(document).ready(function(){
-    jQuery("#pods-form-ui-pods-meta-material-titel").focusout( function() {
-        var title = jQuery("#pods-form-ui-pods-meta-material-titel").val();
+    jQuery('input[name="acf[field_5dbc825df7494]"]').focusout( function() {
+        var title = jQuery('input[name="acf[field_5dbc825df7494]"]').val();
         var postid = jQuery("#post_ID").val();
         if ( title == '' ) return;
         var ret;
