@@ -363,9 +363,9 @@ jQuery(document).ready(function(){
     var url = unescape(getUrlParameter('url'));
     var text = unescape(getUrlParameter('text'));
     if ( url != 'undefined' ) {
-        jQuery("#pods-form-ui-pods-meta-material-url").click();
-        jQuery("#pods-form-ui-pods-meta-material-url").val( url );
-        jQuery("#pods-form-ui-pods-meta-material-beschreibung").val( unescape(text ));
+        jQuery('input[name="acf[field_5dbc6c2e9e6d5]"]').click();
+        jQuery('input[name="acf[field_5dbc6c2e9e6d5]"]').val( url );
+        jQuery('input[name="acf[field_5dbc82ca3e84f]"]').val( unescape(text ));
 
         if ( url == '' ) return;
         var ret;
@@ -382,8 +382,8 @@ jQuery(document).ready(function(){
                 obj = jQuery.parseJSON( ret );
                 if ( obj.status == 'exists' ) {
 
-                    jQuery("#pods-form-ui-pods-meta-material-url").val('');
-                    jQuery("#pods-form-ui-pods-meta-material-url").focus();
+                    jQuery('input[name="acf[field_5dbc6c2e9e6d5]"]').val('');
+                    jQuery('input[name="acf[field_5dbc6c2e9e6d5]"]').focus();
 
                     jQuery("body").append("<div id='" + obj.status + "' title='Hinweis'>" +
                         "<p align='center'>Diese URL wurde schon erfasst unter diesem <a  target='_blank' href='" + obj.material_url + "'>Material</a>.</p>" +
@@ -417,8 +417,6 @@ jQuery(document).ready(function(){
             }
         });
 
-
-
         var html;
         var data = {
             'action': 'mp_get_description',
@@ -430,17 +428,17 @@ jQuery(document).ready(function(){
             html = response;
             if ( html != ''  ) {
                 obj = jQuery.parseJSON( html );
-                if ( jQuery("#pods-form-ui-pods-meta-material-titel").val() == '') {
-                    jQuery("#pods-form-ui-pods-meta-material-titel").val( obj.title );
+                if ( jQuery('input[name="acf[field_5dbc825df7494]"]').val() == '') {
+                    jQuery('input[name="acf[field_5dbc825df7494]"]').val( obj.title );
                 }
-                if ( jQuery("#pods-form-ui-pods-meta-material-kurzbeschreibung").val() == '') {
-                    jQuery("#pods-form-ui-pods-meta-material-kurzbeschreibung").val( obj.description );
+                if ( jQuery('input[name="acf[field_5dbc82995b741]"]').val() == '') {
+                    jQuery('input[name="acf[field_5dbc82995b741]"]').val( obj.description );
                 }
-                if ( jQuery("#pods-form-ui-pods-meta-material-schlagworte-interim").val() == '') {
-                    jQuery("#pods-form-ui-pods-meta-material-schlagworte-interim").val( obj.keywords );
+                if ( jQuery('input[name="acf[field_5dbc898b69985]"]').val() == '') {
+                    jQuery('input[name="acf[field_5dbc898b69985]"]').val( obj.keywords );
                 }
-                if ( jQuery("#pods-form-ui-pods-meta-material-cover-url").val() == '') {
-                    jQuery("#pods-form-ui-pods-meta-material-cover-url").val( obj.image );
+                if ( jQuery('input[name="acf[field_5dc13b57f2a74]"]').val() == '') {
+                    jQuery('input[name="acf[field_5dc13b57f2a74]"]').val( obj.image );
                 }
             }
         });
