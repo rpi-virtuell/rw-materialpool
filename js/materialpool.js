@@ -661,54 +661,55 @@ jQuery(document).ready(function(){
 function check_material() {
     jQuery("#mppubinfo").empty();
     var text;
-    // URL prüfen
-    if ( jQuery('input[name="acf[field_5dbc6c2e9e6d5]"]').val() == '' ) {
-        jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Material URL nicht angegeben.</div>");
-    }
-    // Kurzbeschreibung prüfen
-    if ( jQuery('input[name="acf[field_5dbc82995b741]"]').val() == '' ) {
-        jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Kurzbeschreibung nicht angegeben.</div>");
-    }
-    // Beschreibung prüfen
-    if ( (typeof tinyMCE != "undefined") && tinyMCE.activeEditor && !tinyMCE.activeEditor.isHidden() ) {
-        text = tinyMCE.activeEditor.getContent();
-    } else {
-        text = jQuery('input[name="acf[field_5dbc82ca3e84f]"]').val();
-    }
-    if ( text == '' ) {
-        jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Beschreibung nicht angegeben.</div>");
+
+    var field = acf.getField('field_5dbc82995b741');
+    if( !field.val() ) {
+        field.showError('Kurzbeschreibung nicht angegeben.');
     }
 
+    var field2 = acf.getField('field_5dbc6c2e9e6d5');
+    if( !field2.val() ) {
+        field2.showError('Material URL nicht angegeben.');
+    }
 
-    // TODO
-    // Schlagworte prüfen
-//alert(jQuery('input[name="acf[field_5dbc888798a2f][]"]').children('option').length);
-    if ( jQuery('input[name="acf[field_5dbc888798a2f][]"]').val() == ''  ) {
-        jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Keine Schlagworte vergeben.</div>");
+    var field3 = acf.getField('field_5dbc82ca3e84f');
+    if( !field3.val() ) {
+        field3.showError('Beschreibung nicht angegeben.');
     }
-    // Bildungsstufen prüfen
-    if ( jQuery(".pods-form-ui-field-name-pods-meta-material-bildungsstufe:checked").length == 0 ) {
-        jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Keine Bildungsstufe gewählt.</div>");
-    }
-    // Medientyp prüfen
-    if ( jQuery(".pods-form-ui-field-name-pods-meta-material-medientyp:checked").length == 0 ) {
-        jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Kein Medientyp gewählt.</div>");
-    }
-    if ( jQuery(".pods-form-ui-field-name-pods-meta-material-kompetenz:checked").length == 0 ) {
-        if (jQuery(".pods-form-ui-field-name-pods-meta-material-medientyp:checked").length > 0) {
-            elements = jQuery(".pods-form-ui-field-name-pods-meta-material-medientyp:checked");
-            var text = "";
-            elements.each(function () {
-                var element = jQuery(this).get(0);
-                if (element.value == 17) text = "<div class='materialpool-notice-error'>Keine Kompetenz gewählt.</div>";
-                if (element.value == 30) text = "<div class='materialpool-notice-error'>Keine Kompetenz gewählt.</div>";
-                if (element.value == 55) text = "<div class='materialpool-notice-error'>Keine Kompetenz gewählt.</div>";
 
-            })
-            jQuery("#mppubinfo").append(text);
+    var field4 = acf.getField('field_5dbc8a128988b');
+    if( !field4.val() ) {
+        field4.showError('Keine Bildungsstufe ausgewählt.');
+    }
+
+    var field5 = acf.getField('field_5dbc8bed9f213');
+    if( !field5.val() ) {
+        field5.showError('Kein Medientyp ausgewählt.');
+    }
+
+    var field6 = acf.getField('field_5dbc888798a2f');
+    if( !field6.val() ) {
+        field6.showError('Keine Schlagworte ausgewählt.');
+    }
+
+    var field7 = acf.getField('field_5dce78682efe3');
+    if( !field7.val() ) {
+        var str = field5.val().toString();
+        if ( str != false) {
+            var myarray = str.split(',');
+            var out = 0;
+            for(var i = 0; i < myarray.length; i++) {
+                if ( myarray[i] == 17 ) out = 1;
+                if ( myarray[i] == 30 ) out = 1;
+                if ( myarray[i] == 55 ) out = 1;
+            }
+            if ( out == 1 ) {
+                field7.showError('Keine Kompetenzen ausgewählt.');
+            }
         }
     }
 }
+
 /**
  * Hnweise bei Material auf Pseudo Pflichtfelder
  */
