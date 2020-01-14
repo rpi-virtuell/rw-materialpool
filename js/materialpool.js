@@ -646,15 +646,18 @@ jQuery(document).ready(function(){
  * Set jahr after change from veroeffentlichungsdatum
  */
 jQuery(document).ready(function(){
-    jQuery("#pods-form-ui-pods-meta-material-veroeffentlichungsdatum").on("change",function() {
-        var date = jQuery("#pods-form-ui-pods-meta-material-veroeffentlichungsdatum").val();
-        var split = date.split(".");
-        var year = parseInt(split[2] || 0, 10);
+    var  datefield= acf.getField('field_5dbc91e3d3a3c');
+    datefield.on('change', function(){
+        var date = datefield.val().toString()
+        var year = date.substring(0, 4);
 
         if ( ! isNaN( year)) {
-            jQuery("#pods-form-ui-pods-meta-material-jahr").val(year );
+            var jahr = acf.getField('field_5dbc925636320');
+            jahr.val( year ) ;
         }
-    })
+
+    });
+
 });
 
 
