@@ -646,68 +646,72 @@ jQuery(document).ready(function(){
  * Set jahr after change from veroeffentlichungsdatum
  */
 jQuery(document).ready(function(){
-    var  datefield= acf.getField('field_5dbc91e3d3a3c');
-    datefield.on('change', function(){
-        var date = datefield.val().toString()
-        var year = date.substring(0, 4);
+    if (typeof(acf) !== 'undefined') {
+        var datefield = acf.getField('field_5dbc91e3d3a3c');
+        datefield.on('change', function () {
+            var date = datefield.val().toString()
+            var year = date.substring(0, 4);
 
-        if ( ! isNaN( year)) {
-            var jahr = acf.getField('field_5dbc925636320');
-            jahr.val( year ) ;
-        }
+            if (!isNaN(year)) {
+                var jahr = acf.getField('field_5dbc925636320');
+                jahr.val(year);
+            }
 
-    });
+        });
+    }
 
 });
 
 
 function check_material() {
-    jQuery("#mppubinfo").empty();
-    var text;
+    if (typeof(acf) !== 'undefined') {
+        jQuery("#mppubinfo").empty();
+        var text;
 
-    var field = acf.getField('field_5dbc82995b741');
-    if( !field.val() ) {
-        field.showError('Kurzbeschreibung nicht angegeben.');
-    }
+        var field = acf.getField('field_5dbc82995b741');
+        if (!field.val()) {
+            field.showError('Kurzbeschreibung nicht angegeben.');
+        }
 
-    var field2 = acf.getField('field_5dbc6c2e9e6d5');
-    if( !field2.val() ) {
-        field2.showError('Material URL nicht angegeben.');
-    }
+        var field2 = acf.getField('field_5dbc6c2e9e6d5');
+        if (!field2.val()) {
+            field2.showError('Material URL nicht angegeben.');
+        }
 
-    var field3 = acf.getField('field_5dbc82ca3e84f');
-    if( !field3.val() ) {
-        field3.showError('Beschreibung nicht angegeben.');
-    }
+        var field3 = acf.getField('field_5dbc82ca3e84f');
+        if (!field3.val()) {
+            field3.showError('Beschreibung nicht angegeben.');
+        }
 
-    var field4 = acf.getField('field_5dbc8a128988b');
-    if( !field4.val() ) {
-        field4.showError('Keine Bildungsstufe ausgewählt.');
-    }
+        var field4 = acf.getField('field_5dbc8a128988b');
+        if (!field4.val()) {
+            field4.showError('Keine Bildungsstufe ausgewählt.');
+        }
 
-    var field5 = acf.getField('field_5dbc8bed9f213');
-    if( !field5.val() ) {
-        field5.showError('Kein Medientyp ausgewählt.');
-    }
+        var field5 = acf.getField('field_5dbc8bed9f213');
+        if (!field5.val()) {
+            field5.showError('Kein Medientyp ausgewählt.');
+        }
 
-    var field6 = acf.getField('field_5dbc888798a2f');
-    if( !field6.val() ) {
-        field6.showError('Keine Schlagworte ausgewählt.');
-    }
+        var field6 = acf.getField('field_5dbc888798a2f');
+        if (!field6.val()) {
+            field6.showError('Keine Schlagworte ausgewählt.');
+        }
 
-    var field7 = acf.getField('field_5dce78682efe3');
-    if( !field7.val() ) {
-        var str = field5.val().toString();
-        if ( str != false) {
-            var myarray = str.split(',');
-            var out = 0;
-            for(var i = 0; i < myarray.length; i++) {
-                if ( myarray[i] == 17 ) out = 1;
-                if ( myarray[i] == 30 ) out = 1;
-                if ( myarray[i] == 55 ) out = 1;
-            }
-            if ( out == 1 ) {
-                field7.showError('Keine Kompetenzen ausgewählt.');
+        var field7 = acf.getField('field_5dce78682efe3');
+        if (!field7.val()) {
+            var str = field5.val().toString();
+            if (str != false) {
+                var myarray = str.split(',');
+                var out = 0;
+                for (var i = 0; i < myarray.length; i++) {
+                    if (myarray[i] == 17) out = 1;
+                    if (myarray[i] == 30) out = 1;
+                    if (myarray[i] == 55) out = 1;
+                }
+                if (out == 1) {
+                    field7.showError('Keine Kompetenzen ausgewählt.');
+                }
             }
         }
     }
