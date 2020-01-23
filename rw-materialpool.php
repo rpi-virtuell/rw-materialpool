@@ -2190,3 +2190,211 @@ function set_verfuegbarkeit_default( $value, $post_id, $field ) {
 	return $value;
 }
 
+
+remove_action('wp_ajax_acf/fields/taxonomy/add_term', array('acf_field_taxonomy', 'ajax_add_term')) ;
+
+add_action('wp_ajax_acf/fields/taxonomy/add_term', 'ajax_add_term', 1) ;
+function ajax_add_term() {
+	global $wpdb;
+	// vars
+	$args = wp_parse_args($_POST, array(
+		'nonce'				=> '',
+		'field_key'			=> '',
+		'term_name'			=> '',
+		'term_parent'		=> ''
+	));
+
+	// verify nonce
+	if( !acf_verify_ajax() ) {
+		die();
+	}
+
+	// load field
+	$field = acf_get_field( $args['field_key'] );
+	if( !$field ) {
+		die();
+	}
+
+	if ( $args['field_key'] != 'field_5dbc888798a2f' ) {
+	    return;
+    }
+	// vars
+	$taxonomy_obj = get_taxonomy($field['taxonomy']);
+	$taxonomy_label = $taxonomy_obj->labels->singular_name;
+
+	// validate cap
+	// note: this situation should never occur due to condition of the add new button
+	if( !current_user_can( $taxonomy_obj->cap->manage_terms) ) {
+		wp_send_json_error(array(
+			'error'	=> sprintf( __('User unable to add new %s', 'acf'), $taxonomy_label )
+		));
+	}
+
+	// save?
+	if( $args['term_name'] ) {
+		// exists
+		if( term_exists($args['term_name'], $field['taxonomy'], $args['term_parent']) ) {
+			wp_send_json_error(array(
+				'error'	=> "111" . sprintf( __('%s already exists', 'acf'), $taxonomy_label )
+			));
+		} else {
+
+            // Synonyme prüfen.
+            // 2. SynonymDB prüfen
+            $postids=$wpdb->get_col( $wpdb->prepare(
+                "
+                    SELECT      p.ID
+                    FROM        {$wpdb->posts} p
+                    WHERE       p.post_title = %s 
+                    ",
+                $args['term_name']
+            ) );
+
+            foreach ( $postids as $id ) {
+                $post = get_post( $id );
+                $normwort = get_post_meta( $id, "normwort", true);
+                // Prüfen ob Normwort als Schlagwort existiert.
+                $keyword = get_term_by( 'name', $normwort, 'schlagwort' );
+                if ( $keyword !== false ) {
+                    $output[ 'status' ] = 'replace-exist';
+                    $output[ 'name' ] = $normwort;
+                    $output[ 'id' ] = $keyword->term_id;
+                    $output[ 'orig' ] = $tag;
+                } else {
+                    // schlagwort anlegen
+                    $newterm = wp_insert_term( $normwort, 'schlagwort' );
+
+                    $output[ 'status' ] = 'replace-new';
+                    $output[ 'name' ] = $normwort;
+                    $output[ 'id' ] = $newterm[ 'term_id' ];
+                    $output[ 'orig' ] = $tag;
+                }
+            }
+
+
+
+
+            // load term
+            $term = get_term($output[ 'id' ]);
+
+            // prepend ancenstors count to term name
+            $prefix = '';
+            $ancestors = get_ancestors( $term->term_id, $term->taxonomy );
+            if( !empty($ancestors) ) {
+                $prefix = str_repeat('- ', count($ancestors));
+            }
+
+            // success
+            wp_send_json_success(array(
+                'message'		=> "33" . sprintf( __('%s 11 added', 'acf'), $taxonomy_label ),
+                'term_id'		=> $term->term_id,
+                'term_name'		=> $term->name,
+                'term_label'	=> $prefix . $term->name,
+                'term_parent'	=> $term->parent
+            ));
+		}
+	}
+
+	?><form method="post"><?php
+
+	acf_render_field_wrap(array(
+		'label'			=> __('Name', 'acf'),
+		'name'			=> 'term_name',
+		'type'			=> 'text'
+	));
+
+
+	if( is_taxonomy_hierarchical( $field['taxonomy'] ) ) {
+
+		$choices = array();
+		$response = $this->get_ajax_query($args);
+
+		if( $response ) {
+
+			foreach( $response['results'] as $v ) {
+
+				$choices[ $v['id'] ] = $v['text'];
+
+			}
+
+		}
+
+		acf_render_field_wrap(array(
+			'label'			=> __('Parent', 'acf'),
+			'name'			=> 'term_parent',
+			'type'			=> 'select',
+			'allow_null'	=> 1,
+			'ui'			=> 0,
+			'choices'		=> $choices
+		));
+
+	}
+
+
+	?><p class="acf-submit">
+    <button class="acf-submit-button button button-primary" type="submit"><?php _e("Add", 'acf'); ?></button>
+    </p>
+    </form><?php
+
+
+	// die
+	wp_die();
+
+}
+
+
+add_filter('acf/post2post/update_relationships/key=field_5dbc96653f1ea', '__return_false');  // Werk
+add_filter('acf/post2post/update_relationships/key=field_5dbc968c8d64a', '__return_false');  // Band
+add_action('acf/save_post', 'acf_save_werk' );
+function acf_save_werk( $post_id ) {
+	$values = $_POST['acf'];
+
+	if( isset($_POST['acf']['field_5dbc96653f1ea']) ) {  // Werk
+		$value = $_POST['acf']['field_5dbc96653f1ea'];
+		// Dem aktuellen Material das Werk als Parent zuordnen
+		wp_update_post(
+			array(
+				'ID' => $post_id,
+				'post_parent' => $value
+			)
+		);
+		// Dem Werk nun dieses Material als (weiteren) Band zuordnen
+		$band = get_field( "material_band", $value );
+        if ( $band === null || $band === '' ) {
+	        update_field('material_band', $post_id, $value);
+        } else {
+            $band = (array) $band;
+            $band[] = $post_id;
+	        update_field('material_band', $band, $value);
+        }
+
+	}
+
+	if( isset($_POST['acf']['field_5dbc968c8d64a']) ) {  // Band
+		$value = $_POST['acf']['field_5dbc96653f1ea'];
+		$band = get_field( "material_band", $post_id );
+
+        if ( is_array( $band )) {
+            foreach ($band as $key ) {
+	            wp_update_post(
+		            array(
+			            'ID' => $key,
+			            'post_parent' => $post_id
+		            )
+	            );
+	            update_field('material_werk', $key, $post_id);
+            }
+        } else {
+	        wp_update_post(
+		        array(
+			        'ID' => $band,
+			        'post_parent' => $post_id
+		        )
+	        );
+	        update_field('material_werk', $band, $post_id);
+
+        }
+
+	}
+
+}

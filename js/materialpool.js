@@ -125,221 +125,106 @@ jQuery(document).ready(function(){
 
 });
 
+
+
+
 /**
  *
- * MaterialEdit Schlagworte
+ * get title&description
+ *
  */
 
 jQuery(document).ready(function(){
-    jQuery('#pods-form-ui-pods-meta-material-schlagworte').on('change', function(){
-        var keystring = jQuery('#pods-form-ui-pods-meta-material-schlagworte').val();
-        var keys = keystring.split(',');
-        var html;
-        var jo;
-        keys.forEach( function( s, i, o ) {
-            if ( isNaN( s ) ) {
+    jQuery('input[name="acf[field_5dbc6c2e9e6d5]"]').focusout( function() {
 
-                // Ein neues Schlagwort. Prüfen gegen SynonymDB
-                var data = {
-                    'action': 'mp_synonym_check_tag',
-                    'tag': s
-                };
-                jQuery.post(ajaxurl, data, function(response ) {
-                    html = response;
-                    if ( html != ''  ) {
-                        jo = JSON.parse( html );
-                        switch  ( jo.status ) {
-                            case 'replace-new':
-                                    keys.forEach( function( s2, i2, o2 ) {
-                                        if ( s2 ==  jo.orig) {
-                                            keys[ i2 ] = jo.id;
+        var url = jQuery('input[name="acf[field_5dbc6c2e9e6d5]"]').val();
+        var postid = jQuery("#post_ID").val();
+        if ( url == '' ) return;
+        var ret;
 
-                                        }
-                                    })
-                                    jQuery('#pods-form-ui-pods-meta-material-schlagworte').val( keys.toString()  );
-                                    jQuery('#s2id_pods-form-ui-pods-meta-material-schlagworte > ul > li').each( function () {
-                                        old = jQuery(this).find('div').html();
-                                        if ( old == jo.orig ) {
-                                            jQuery(this).find('div').html( jo.name );
-                                        }
-                                    })
-                                break;
-                            case 'replace-exist':
-                                    keys.forEach( function( s2, i2, o2 ) {
-                                        if ( s2 ==  jo.orig) {
-                                            keys[ i2 ] = jo.id;
+        // url exists?
+        var data = {
+            'action': 'mp_check_url',
+            'site': url,
+            'post-id': postid
+        };
+        jQuery.post(ajaxurl, data, function(response) {
 
-                                        }
-                                    })
-                                    jQuery('#pods-form-ui-pods-meta-material-schlagworte').val( keys.toString()  );
-                                    jQuery('#s2id_pods-form-ui-pods-meta-material-schlagworte > ul > li').each( function () {
-                                        old = jQuery(this).find('div').html();
-                                        if ( old == jo.orig ) {
-                                            jQuery(this).find('div').html( jo.name );
-                                        }
-                                    })
+            ret = response;
+            if ( ret != ''  ) {
+                obj = jQuery.parseJSON( ret );
+                if ( obj.status == 'exists' ) {
 
-                                break;
-                            case 'error' :
-                                jQuery('#s2id_pods-form-ui-pods-meta-material-schlagworte > ul > li').each( function () {
-                                    old = jQuery(this).find('div').html();
-                                    if ( old == jo.orig ) {
-                                        jQuery(this).css({"border-color" : jo.tagcolor});
-                                        jQuery("body").append("<div id='" + jo.orig + "' title='Hinweis'>" +
-                                            "<p align='center'>Das Normwort konnte nicht ermittlet werden.</p>" +
-                                            "<p align='center'>Bitte recherchiere <a  target='_blank' href='" + jo.url + "'>selbst</a>, ob das Schlagwort korrekt ist.</p>" +
-                                            "</div>");
+                    jQuery('input[name="acf[field_5dbc6c2e9e6d5]"]').val('');
+                    jQuery('input[name="acf[field_5dbc6c2e9e6d5]"]').focus();
 
-                                        jQuery( "#" + jo.orig ).dialog({
-                                            dialogClass: "no-close",
-                                            buttons: [
-                                                {
-                                                    text: "OK",
-                                                    click: function() {
-                                                        jQuery( this ).dialog( "close" );
-                                                    }
-                                                }
-                                            ],
-                                            width: 450,
-                                            height: 280,
-                                            show: {
-                                                effect: "blind",
-                                                duration: 1000
-                                            },
-                                            hide: {
-                                                effect: "blind",
-                                                duration: 800
-                                            }
-                                        });
-                                    }
-                                })
-                                break;
-                        }
+                    jQuery("body").append("<div id='" + obj.status + "' title='Hinweis'>" +
+                        "<p align='center'>Diese URL wurde schon erfasst unter diesem <a  target='_blank' href='" + obj.material_url + "'>Material</a>.</p>" +
+                        "</div>");
 
-                        // Synonyme aktualisieren in der Ansicht darunter
-                        var synonyme = jQuery('#pods-form-ui-pods-meta-material-schlagworte').val();
-                        var data = {
-                            'action': 'mp_synonym_list',
-                            'list': synonyme
-                        };
-                        jQuery.post(ajaxurl, data, function(response ) {
-                            html = response;
-
-                            jQuery('#pods_synonymlist').replaceWith( html );
-
-                        });
-
-                    }
-                })
-            }
-        })
-
-
-
-    });
-
-
-
-
-
-    /**
-     *
-     * get title&description
-     *
-     */
-
-    jQuery(document).ready(function(){
-        jQuery('input[name="acf[field_5dbc6c2e9e6d5]"]').focusout( function() {
-
-            var url = jQuery('input[name="acf[field_5dbc6c2e9e6d5]"]').val();
-            var postid = jQuery("#post_ID").val();
-            if ( url == '' ) return;
-            var ret;
-
-            // url exists?
-            var data = {
-                'action': 'mp_check_url',
-                'site': url,
-                'post-id': postid
-            };
-            jQuery.post(ajaxurl, data, function(response) {
-
-                ret = response;
-                if ( ret != ''  ) {
-                    obj = jQuery.parseJSON( ret );
-                    if ( obj.status == 'exists' ) {
-
-                        jQuery('input[name="acf[field_5dbc6c2e9e6d5]"]').val('');
-                        jQuery('input[name="acf[field_5dbc6c2e9e6d5]"]').focus();
-
-                        jQuery("body").append("<div id='" + obj.status + "' title='Hinweis'>" +
-                            "<p align='center'>Diese URL wurde schon erfasst unter diesem <a  target='_blank' href='" + obj.material_url + "'>Material</a>.</p>" +
-                            "</div>");
-
-                        jQuery( "#" + obj.status ).dialog({
-                            dialogClass: "no-close",
-                            buttons: [
-                                {
-                                    text: "OK",
-                                    click: function() {
-                                        jQuery( this ).dialog( "close" );
-                                    }
+                    jQuery( "#" + obj.status ).dialog({
+                        dialogClass: "no-close",
+                        buttons: [
+                            {
+                                text: "OK",
+                                click: function() {
+                                    jQuery( this ).dialog( "close" );
                                 }
-                            ],
-                            width: 450,
-                            height: 280,
-                            show: {
-                                effect: "blind",
-                                duration: 1000
-                            },
-                            hide: {
-                                effect: "blind",
-                                duration: 800
                             }
-                        });
+                        ],
+                        width: 450,
+                        height: 280,
+                        show: {
+                            effect: "blind",
+                            duration: 1000
+                        },
+                        hide: {
+                            effect: "blind",
+                            duration: 800
+                        }
+                    });
 
-                        return;
-                    }
-
+                    return;
                 }
-            });
+
+            }
+        });
 
 
 
-            var html;
-            var data = {
-                'action': 'mp_get_description',
-                'site': url,
-                'post-id': postid
-            };
+        var html;
+        var data = {
+            'action': 'mp_get_description',
+            'site': url,
+            'post-id': postid
+        };
 
-            jQuery.post(ajaxurl, data, function(response) {
-                var text;
-                html = response;
-                if ( html != ''  ) {
-                    $obj = jQuery.parseJSON( html );
-                    if ( jQuery('input[name="acf[field_5dbc825df7494]"]').val() == '') {
-                        jQuery('input[name="acf[field_5dbc825df7494]"]').val( $obj.title );
-                    }
-                    if ( (typeof tinyMCE != "undefined") && tinyMCE.activeEditor && !tinyMCE.activeEditor.isHidden() ) {
-                        text = $obj.description + "<br><br>" + tinyMCE.activeEditor.getContent();
-                        tinyMCE.activeEditor.setContent( text );
-                    } else {
-                        text = $obj.description + "\n\n" + jQuery('input[name="acf[field_5dbc82ca3e84f]"]').val();
-                        jQuery('input[name="acf[field_5dbc82ca3e84f]"]').val( text );
-                    }
-                    if ( jQuery('input[name="acf[field_5dbc898b69985]"]').val() == '') {
-                        jQuery('input[name="acf[field_5dbc898b69985]"]').val( $obj.keywords );
-                    }
-                    if ( jQuery('input[name="acf[field_5dc13b57f2a74]"]').val() == '') {
-                        jQuery('input[name="acf[field_5dc13b57f2a74]"]').val( $obj.image );
-                    }
-
+        jQuery.post(ajaxurl, data, function(response) {
+            var text;
+            html = response;
+            if ( html != ''  ) {
+                $obj = jQuery.parseJSON( html );
+                if ( jQuery('input[name="acf[field_5dbc825df7494]"]').val() == '') {
+                    jQuery('input[name="acf[field_5dbc825df7494]"]').val( $obj.title );
                 }
-            });
-        })
+                if ( (typeof tinyMCE != "undefined") && tinyMCE.activeEditor && !tinyMCE.activeEditor.isHidden() ) {
+                    text = $obj.description + "<br><br>" + tinyMCE.activeEditor.getContent();
+                    tinyMCE.activeEditor.setContent( text );
+                } else {
+                    text = $obj.description + "\n\n" + jQuery('input[name="acf[field_5dbc82ca3e84f]"]').val();
+                    jQuery('input[name="acf[field_5dbc82ca3e84f]"]').val( text );
+                }
+                if ( jQuery('input[name="acf[field_5dbc898b69985]"]').val() == '') {
+                    jQuery('input[name="acf[field_5dbc898b69985]"]').val( $obj.keywords );
+                }
+                if ( jQuery('input[name="acf[field_5dc13b57f2a74]"]').val() == '') {
+                    jQuery('input[name="acf[field_5dc13b57f2a74]"]').val( $obj.image );
+                }
 
-    });
+            }
+        });
+    })
+
 });
 
 
@@ -831,6 +716,7 @@ jQuery(document).ready(function(){
             location.reload();
         });
     });
+
 
 });
 

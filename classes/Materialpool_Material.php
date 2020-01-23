@@ -344,7 +344,7 @@ class Materialpool_Material {
 
         // Autoren für FacetWP spiechern
         delete_post_meta( $post_id, 'material_autor_facet' );
-	    delete_post_meta( $post_id, 'material_autor_facet_view' );
+	    delete_post_meta( $post_id, 'material_autoren_facet_view' );
 	    $autoren = get_post_meta( $post_id, 'material_autoren', false );
 	    if ( is_array( $autoren[0] )) {
 		    foreach ( $autoren[0] as $autor ) {
