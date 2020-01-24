@@ -2367,7 +2367,6 @@ function acf_save_werk( $post_id ) {
             $band[] = $post_id;
 	        update_field('material_band', $band, $value);
         }
-
 	}
 
 	if( isset($_POST['acf']['field_5dbc968c8d64a']) ) {  // Band
@@ -2392,9 +2391,6 @@ function acf_save_werk( $post_id ) {
 		        )
 	        );
 	        update_field('material_werk', $band, $post_id);
-
         }
-
 	}
-
 }

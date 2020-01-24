@@ -199,6 +199,20 @@ class Materialpool_WP_CLI_Command extends WP_CLI_Command {
 		WP_CLI::line( $counter . ' Materialien konvertiert' );
 	}
 
+	static public function convert_startseite( $args ) {
+		global $wpdb;
+		WP_CLI::line( 'Startseite ...' );
+		$prefix = $wpdb->base_prefix;
+		$result = $wpdb->get_results("SELECT  ID    FROM " . $wpdb->posts . " WHERE post_type = 'page'  ");
+		$counter = 0;
+		foreach ( $result as $obj ) {
+			$aktuell = get_post_meta( $obj->ID, 'startseite_aktuell', false );
+			$res = $wpdb->get_results("DELETE FROM " . $prefix . "postmeta where post_id =  " . $obj->ID . " and meta_key = 'startseite_aktuell'  ");
+			add_post_meta( $obj->ID, 'startseite_aktuell' , $aktuell );
+			add_post_meta( $obj->ID, '_startseite_aktuell', 'field_5e2ab46872c55' );
+		}
+		WP_CLI::line( ' Startseite konvertiert' );
+	}
 }
 
 WP_CLI::add_command( 'materialpool convert themenseiten', array( 'Materialpool_WP_CLI_Command','convert_themenseiten' ) );
@@ -208,3 +222,4 @@ WP_CLI::add_command( 'materialpool convert material3', array( 'Materialpool_WP_C
 WP_CLI::add_command( 'materialpool convert material4', array( 'Materialpool_WP_CLI_Command','convert_material4' ) );
 WP_CLI::add_command( 'materialpool convert autor', array( 'Materialpool_WP_CLI_Command','convert_autor' ) );
 WP_CLI::add_command( 'materialpool convert organisation', array( 'Materialpool_WP_CLI_Command','convert_organisation' ) );
+WP_CLI::add_command( 'materialpool convert startseite', array( 'Materialpool_WP_CLI_Command','convert_startseite' ) );
