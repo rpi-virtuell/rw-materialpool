@@ -184,7 +184,7 @@ class Materialpool_WP_CLI_Command extends WP_CLI_Command {
 		global $wpdb;
 		WP_CLI::line( 'Ermittle Materialien ...' );
 		$prefix = $wpdb->base_prefix;
-		$result = $wpdb->get_results("SELECT  ID    FROM " . $wpdb->posts . " WHERE post_type = 'material'  ");
+		$result = $wpdb->get_results("SELECT  ID    FROM " . $wpdb->posts . " WHERE post_type = 'material' ");
 		$counter = 0;
 		foreach ( $result as $obj ) {
 			$counter++;
@@ -195,6 +195,42 @@ class Materialpool_WP_CLI_Command extends WP_CLI_Command {
 			add_post_meta( $obj->ID, 'material_schlagworte' , $kompetenz );
 			add_post_meta( $obj->ID, '_material_schlagworte', 'field_5dbc888798a2f' );
 
+		}
+		WP_CLI::line( $counter . ' Materialien konvertiert' );
+	}
+
+	static public function convert_material5( $args ) {
+		global $wpdb;
+		WP_CLI::line( 'Ermittle Materialien ...' );
+		$prefix = $wpdb->base_prefix;
+		$result = $wpdb->get_results("SELECT  ID    FROM " . $wpdb->posts . " WHERE post_type = 'material'  and post_status = 'publish' ");
+		$counter = 0;
+		foreach ( $result as $obj ) {
+			$counter++;
+			$werk = get_post_meta( $obj->ID, 'material_werk', false );
+			if (!empty ($werk )) {
+				WP_CLI::line('Werk ' . $obj->ID );
+
+			    $wpdb->update( $wpdb->posts, array( 'post_parent' => $werk ), array( 'ID' => $obj->ID) );
+
+			}
+			unset ( $werk );
+			$band = get_post_meta( $obj->ID, 'material_band', false );
+			var_dump( $band );
+			if ( is_array( $band )) {
+				foreach ($band as $key ) {
+					WP_CLI::line('Band ' . $obj->ID );
+					$wpdb->update( $wpdb->posts, array( 'post_parent' => $key ), array( 'ID' => $obj->ID) );
+					update_field('material_werk', $key, $obj->ID);
+				}
+			} else {
+				if ( $band != '' ) {
+					WP_CLI::line('Band ' . $obj->ID );
+					$wpdb->update( $wpdb->posts, array( 'post_parent' => $key ), array( 'ID' => $obj->ID) );
+					update_field( 'material_werk', $band, $obj->ID );
+				}
+			}
+			unset ( $band);
 		}
 		WP_CLI::line( $counter . ' Materialien konvertiert' );
 	}
@@ -220,6 +256,7 @@ WP_CLI::add_command( 'materialpool convert material', array( 'Materialpool_WP_CL
 WP_CLI::add_command( 'materialpool convert material2', array( 'Materialpool_WP_CLI_Command','convert_material2' ) );
 WP_CLI::add_command( 'materialpool convert material3', array( 'Materialpool_WP_CLI_Command','convert_material3' ) );
 WP_CLI::add_command( 'materialpool convert material4', array( 'Materialpool_WP_CLI_Command','convert_material4' ) );
+WP_CLI::add_command( 'materialpool convert material5', array( 'Materialpool_WP_CLI_Command','convert_material5' ) );
 WP_CLI::add_command( 'materialpool convert autor', array( 'Materialpool_WP_CLI_Command','convert_autor' ) );
 WP_CLI::add_command( 'materialpool convert organisation', array( 'Materialpool_WP_CLI_Command','convert_organisation' ) );
 WP_CLI::add_command( 'materialpool convert startseite', array( 'Materialpool_WP_CLI_Command','convert_startseite' ) );

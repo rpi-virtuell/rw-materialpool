@@ -2384,6 +2384,7 @@ function acf_save_werk( $post_id ) {
 	            update_field('material_werk', $key, $post_id);
             }
         } else {
+
 	        wp_update_post(
 		        array(
 			        'ID' => $band,
