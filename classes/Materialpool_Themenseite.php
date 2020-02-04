@@ -92,7 +92,12 @@ class Materialpool_Themenseite {
 	    }
 	    wp_set_object_terms( $post_id, $cat_ids, 'vorauswahl', true );
 
-
+	    // Für den Fall, das auf der Startseite Themenseiten aufgelistet werden, den Cache der Startseite ungültig machen.
+	    if (  function_exists( 'rocket_clean_post' ) ) {
+		    // Startseite ermittln und invalid machen.
+		    $frontpage_id = get_option( 'page_on_front' );
+		    rocket_clean_post( $frontpage_id );
+	    }
     }
     /**
      *
