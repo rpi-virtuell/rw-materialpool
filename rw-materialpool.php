@@ -2343,55 +2343,41 @@ function ajax_add_term() {
 }
 
 
+
+function acf_save_werk( $post_id ) {
+    global $wpdb;
+
+	$werk = get_field('material_werk', $post_id);
+    if ( $werk != '' ) {
+	    $wpdb->update($wpdb->posts, array('post_parent'=> $werk ), array('ID' => $post_id));
+	    // Dem Werk nun dieses Material als (weiteren) Band zuordnen
+	    $band = get_field( "material_band", $werk  );
+	    if ( $band === null || $band === '' ) {
+		    update_field('material_band', $post_id, $werk);
+	    } else {
+		    $band = (array) $band;
+		    $band[] = $post_id;
+		    update_field('material_band', $band, $werk);
+	    }
+    }
+
+	$band = get_field('material_band', $post_id);
+	if ( $band != '' ) {
+		if ( is_array( $band ) ) {
+			foreach ( $band as $key ) {
+				$wpdb->update($wpdb->posts, array('post_parent'=> $post_id ), array('ID' => $key));
+				$a = update_field( 'material_werk', $key, $post_id );
+			}
+		} else {
+			$wpdb->update($wpdb->posts, array('post_parent'=> $post_id ), array('ID' => $band));
+			$a = update_field( 'material_werk', $band, $post_id );
+		}
+	}
+
+    return;
+
+}
+
 add_filter('acf/post2post/update_relationships/key=field_5dbc96653f1ea', '__return_false');  // Werk
 add_filter('acf/post2post/update_relationships/key=field_5dbc968c8d64a', '__return_false');  // Band
 add_action('acf/save_post', 'acf_save_werk' );
-function acf_save_werk( $post_id ) {
-	$values = $_POST['acf'];
-
-	if( isset($_POST['acf']['field_5dbc96653f1ea']) ) {  // Werk
-		$value = $_POST['acf']['field_5dbc96653f1ea'];
-		// Dem aktuellen Material das Werk als Parent zuordnen
-		wp_update_post(
-			array(
-				'ID' => $post_id,
-				'post_parent' => $value
-			)
-		);
-		// Dem Werk nun dieses Material als (weiteren) Band zuordnen
-		$band = get_field( "material_band", $value );
-        if ( $band === null || $band === '' ) {
-	        update_field('material_band', $post_id, $value);
-        } else {
-            $band = (array) $band;
-            $band[] = $post_id;
-	        update_field('material_band', $band, $value);
-        }
-	}
-
-	if( isset($_POST['acf']['field_5dbc968c8d64a']) ) {  // Band
-		$value = $_POST['acf']['field_5dbc96653f1ea'];
-		$band = get_field( "material_band", $post_id );
-
-        if ( is_array( $band )) {
-            foreach ($band as $key ) {
-	            wp_update_post(
-		            array(
-			            'ID' => $key,
-			            'post_parent' => $post_id
-		            )
-	            );
-	            update_field('material_werk', $key, $post_id);
-            }
-        } else {
-
-	        wp_update_post(
-		        array(
-			        'ID' => $band,
-			        'post_parent' => $post_id
-		        )
-	        );
-	        update_field('material_werk', $band, $post_id);
-        }
-	}
-}

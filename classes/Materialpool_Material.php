@@ -23,7 +23,7 @@ class Materialpool_Material {
         if (is_tax() ) {
             return $template;
         }
-
+	    if ( !is_object( $post ) ) return;
         $template_path = $template;
         if ($post->post_type == "material" && !is_embed() ){
             if ( is_single() ) {
@@ -43,13 +43,13 @@ class Materialpool_Material {
             $autoren = get_metadata( 'post', $post->ID, 'material_autoren', false );
             foreach( $autoren  as $autor ) {
                 if ( is_array( $autor ) ) {
-                    Materialpool_Statistic::log_autor( $autor[ 'ID' ] );
+                    Materialpool_Statistic::log_autor( $autor  );
                 }
             }
             $orgas = get_metadata( 'post', $post->ID, 'material_organisation', false );
             foreach( $orgas  as $orga ) {
                 if ( is_array( $orga ) ) {
-                    Materialpool_Statistic::log_organisation( $orga[ 'ID' ] );
+                    Materialpool_Statistic::log_organisation( $orga  );
                 }
             }
             Materialpool_Statistic::log( $post->ID, $post->post_type );
@@ -2707,7 +2707,7 @@ END;
 
     static public function add_open_graph() {
         global $post;
-
+        if ( !is_object( $post ) ) return;
         if ( 'material' != $post->post_type ) {
             return;
         }

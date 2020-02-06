@@ -140,7 +140,7 @@ class Materialpool_Autor {
 	 */
 	static public function load_template( $template ) {
 		global $post;
-
+		if ( !is_object( $post ) ) return;
 		if ( $post->post_type == "autor" && ! is_embed() ) {
 			if ( is_single() ) {
 				if ( $theme_file = locate_template( array( 'materialpool/single-autor.php' ) ) ) {
