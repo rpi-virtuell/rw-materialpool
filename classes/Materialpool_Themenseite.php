@@ -18,7 +18,7 @@ class Materialpool_Themenseite {
      */
     static public function load_template($template) {
         global $post;
-	    if ( !is_object( $post ) ) return;
+	    if ( !is_object( $post ) ) return $template;
         if ($post->post_type == "themenseite" && !is_embed() ){
             if ( is_single() ) {
                 if ( $theme_file = locate_template( array ( 'materialpool/single-themenseite.php' ) ) ) {

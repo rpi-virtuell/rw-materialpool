@@ -23,7 +23,7 @@ class Materialpool_Material {
         if (is_tax() ) {
             return $template;
         }
-	    if ( !is_object( $post ) ) return;
+	    if ( !is_object( $post ) ) return $template;
         $template_path = $template;
         if ($post->post_type == "material" && !is_embed() ){
             if ( is_single() ) {
