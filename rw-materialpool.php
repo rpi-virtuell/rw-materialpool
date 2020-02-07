@@ -2286,7 +2286,7 @@ function ajax_add_term() {
 
             // success
             wp_send_json_success(array(
-                'message'		=> "33" . sprintf( __('%s 11 added', 'acf'), $taxonomy_label ),
+                'message'		=> sprintf( __('%s added', 'acf'), $taxonomy_label ),
                 'term_id'		=> $term->term_id,
                 'term_name'		=> $term->name,
                 'term_label'	=> $prefix . $term->name,
@@ -2381,3 +2381,62 @@ function acf_save_werk( $post_id ) {
 add_filter('acf/post2post/update_relationships/key=field_5dbc96653f1ea', '__return_false');  // Werk
 add_filter('acf/post2post/update_relationships/key=field_5dbc968c8d64a', '__return_false');  // Band
 add_action('acf/save_post', 'acf_save_werk' );
+
+
+function themenseiten_query( $args, $field, $post_id ) {
+    if ( isset( $args['s'] ) ) {
+	    $id = url_to_postid( $args['s'] );
+	    if ( $id != 0 ) {
+		    $args['page_id'] = $id;
+		    $args['s'] = '';
+        }
+    }
+	// return
+	return $args;
+}
+add_filter('acf/fields/relationship/query/key=field_5dcbda53857d4', 'themenseiten_query', 10, 3);
+
+function autoren_query( $args, $field, $post_id ) {
+	if ( isset( $args['s'] ) ) {
+		$id = url_to_postid( $args['s'] );
+		if ( $id != 0 ) {
+			$args['page_id'] = $id;
+			$args['s'] = '';
+		}
+	}
+	// return
+	return $args;
+}
+add_filter('acf/fields/relationship/query/key=field_5dbc83e609b8b', 'autoren_query', 10, 3);
+add_filter('acf/fields/relationship/query/key=field_5dcd86fc4f69b', 'autoren_query', 10, 3);
+
+function organisation_query( $args, $field, $post_id ) {
+	if ( isset( $args['s'] ) ) {
+		$id = url_to_postid( $args['s'] );
+		if ( $id != 0 ) {
+			$args['page_id'] = $id;
+			$args['s'] = '';
+		}
+	}
+	// return
+	return $args;
+}
+add_filter('acf/fields/relationship/query/key=field_5dbc87636419f', 'organisation_query', 10, 3);
+add_filter('acf/fields/relationship/query/key=field_5db183394c9c0', 'organisation_query', 10, 3);
+
+
+
+function material_query( $args, $field, $post_id ) {
+	if ( isset( $args['s'] ) ) {
+		$id = url_to_postid( $args['s'] );
+		if ( $id != 0 ) {
+			$args['page_id'] = $id;
+			$args['s'] = '';
+		}
+	}
+	// return
+	return $args;
+}
+add_filter('acf/fields/relationship/query/key=field_5db183a04c9c1', 'material_query', 10, 3);
+add_filter('acf/fields/relationship/query/key=field_5dcd87474f69c', 'material_query', 10, 3);
+
