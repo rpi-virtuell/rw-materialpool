@@ -2373,9 +2373,7 @@ function acf_save_werk( $post_id ) {
 			$a = update_field( 'material_werk', $band, $post_id );
 		}
 	}
-
     return;
-
 }
 
 add_filter('acf/post2post/update_relationships/key=field_5dbc96653f1ea', '__return_false');  // Werk
@@ -2385,10 +2383,46 @@ add_action('acf/save_post', 'acf_save_werk' );
 
 function themenseiten_query( $args, $field, $post_id ) {
     if ( isset( $args['s'] ) ) {
+        // Material URL?
 	    $id = url_to_postid( $args['s'] );
 	    if ( $id != 0 ) {
 		    $args['page_id'] = $id;
 		    $args['s'] = '';
+		    return $args;
+        }
+	    // Object ID
+        if ( is_numeric(  $args['s'] ) ) {
+            $p = get_post( (int) $args['s'] );
+            if (is_object( $p ) ) {
+	            $args['page_id'] = $p->ID;
+	            $args['s'] = '';
+	            return $args;
+            }
+        }
+        // Comma separated list with Object IDs
+	    if (strpos( $args['s'], ',') !== false) {
+		    $exploded = explode(',', $args['s']);
+		    // Check all values are numeric
+            $check = true;
+            foreach ( $exploded as $item ) {
+                if ( ! is_numeric( $item ) ) {
+                    $check = false;
+                }
+            }
+            if ( $check === false ) {
+                return $args;
+            }
+		    $args['post__in'] = $exploded;
+		    $args['s'] = '';
+		    return $args;
+	    }
+	    // check remote url
+        if ( preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $args['s'] ) ) {
+	        $args['meta_key'] = 'material_url';
+	        $args['meta_value'] = $args['s'];
+	        $args['meta_compare'] = '=';
+            $args['s'] = '';
+            return $args;
         }
     }
 	// return
@@ -2402,6 +2436,32 @@ function autoren_query( $args, $field, $post_id ) {
 		if ( $id != 0 ) {
 			$args['page_id'] = $id;
 			$args['s'] = '';
+		}
+		// Object ID
+		if ( is_numeric(  $args['s'] ) ) {
+			$p = get_post( (int) $args['s'] );
+			if (is_object( $p ) ) {
+				$args['page_id'] = $p->ID;
+				$args['s'] = '';
+				return $args;
+			}
+		}
+		// Comma separated list with Object IDs
+		if (strpos( $args['s'], ',') !== false) {
+			$exploded = explode(',', $args['s']);
+			// Check all values are numeric
+			$check = true;
+			foreach ( $exploded as $item ) {
+				if ( ! is_numeric( $item ) ) {
+					$check = false;
+				}
+			}
+			if ( $check === false ) {
+				return $args;
+			}
+			$args['post__in'] = $exploded;
+			$args['s'] = '';
+			return $args;
 		}
 	}
 	// return
@@ -2417,14 +2477,38 @@ function organisation_query( $args, $field, $post_id ) {
 			$args['page_id'] = $id;
 			$args['s'] = '';
 		}
+		// Object ID
+		if ( is_numeric(  $args['s'] ) ) {
+			$p = get_post( (int) $args['s'] );
+			if (is_object( $p ) ) {
+				$args['page_id'] = $p->ID;
+				$args['s'] = '';
+				return $args;
+			}
+		}
+		// Comma separated list with Object IDs
+		if (strpos( $args['s'], ',') !== false) {
+			$exploded = explode(',', $args['s']);
+			// Check all values are numeric
+			$check = true;
+			foreach ( $exploded as $item ) {
+				if ( ! is_numeric( $item ) ) {
+					$check = false;
+				}
+			}
+			if ( $check === false ) {
+				return $args;
+			}
+			$args['post__in'] = $exploded;
+			$args['s'] = '';
+			return $args;
+		}
 	}
 	// return
 	return $args;
 }
 add_filter('acf/fields/relationship/query/key=field_5dbc87636419f', 'organisation_query', 10, 3);
 add_filter('acf/fields/relationship/query/key=field_5db183394c9c0', 'organisation_query', 10, 3);
-
-
 
 function material_query( $args, $field, $post_id ) {
 	if ( isset( $args['s'] ) ) {
@@ -2433,6 +2517,41 @@ function material_query( $args, $field, $post_id ) {
 			$args['page_id'] = $id;
 			$args['s'] = '';
 		}
+		// Object ID
+		if ( is_numeric(  $args['s'] ) ) {
+			$p = get_post( (int) $args['s'] );
+			if (is_object( $p ) ) {
+				$args['page_id'] = $p->ID;
+				$args['s'] = '';
+				return $args;
+			}
+		}
+		// Comma separated list with Object IDs
+		if (strpos( $args['s'], ',') !== false) {
+			$exploded = explode(',', $args['s']);
+			// Check all values are numeric
+			$check = true;
+			foreach ( $exploded as $item ) {
+				if ( ! is_numeric( $item ) ) {
+					$check = false;
+				}
+			}
+			if ( $check === false ) {
+				return $args;
+			}
+			$args['post__in'] = $exploded;
+			$args['s'] = '';
+			return $args;
+		}
+		// check remote url
+		if ( preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $args['s'] ) ) {
+			$args['meta_key'] = 'material_url';
+			$args['meta_value'] = $args['s'];
+			$args['meta_compare'] = '=';
+			$args['s'] = '';
+			return $args;
+		}
+
 	}
 	// return
 	return $args;
