@@ -556,31 +556,43 @@ function check_material() {
         var field = acf.getField('field_5dbc82995b741');
         if (!field.val()) {
             field.showError('Kurzbeschreibung nicht angegeben.');
+            jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Kurzbeschreibung nicht angegeben.</div>");
+
         }
 
         var field2 = acf.getField('field_5dbc6c2e9e6d5');
         if (!field2.val()) {
             field2.showError('Material URL nicht angegeben.');
+            jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Material URL nicht angegeben.</div>");
+
         }
 
         var field3 = acf.getField('field_5dbc82ca3e84f');
         if (!field3.val()) {
             field3.showError('Beschreibung nicht angegeben.');
+            jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Beschreibung nicht angegeben.</div>");
+
         }
 
         var field4 = acf.getField('field_5dbc8a128988b');
         if (!field4.val()) {
             field4.showError('Keine Bildungsstufe ausgewählt.');
+            jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Keine Bildungsstufe gewählt.</div>");
+
         }
 
         var field5 = acf.getField('field_5dbc8bed9f213');
         if (!field5.val()) {
             field5.showError('Kein Medientyp ausgewählt.');
+            jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Kein Medientyp gewählt.</div>");
+
         }
 
         var field6 = acf.getField('field_5dbc888798a2f');
         if (!field6.val()) {
             field6.showError('Keine Schlagworte ausgewählt.');
+            jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Keine Schlagworte vergeben.</div>");
+
         }
 
         var field7 = acf.getField('field_5dce78682efe3');
@@ -596,6 +608,7 @@ function check_material() {
                 }
                 if (out == 1) {
                     field7.showError('Keine Kompetenzen ausgewählt.');
+                    jQuery("#mppubinfo").append("<div class='materialpool-notice-error'>Keine Kompetenz gewählt.</div>");
                 }
             }
         }

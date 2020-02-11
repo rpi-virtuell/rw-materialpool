@@ -2235,7 +2235,7 @@ function ajax_add_term() {
 		// exists
 		if( term_exists($args['term_name'], $field['taxonomy'], $args['term_parent']) ) {
 			wp_send_json_error(array(
-				'error'	=> "111" . sprintf( __('%s already exists', 'acf'), $taxonomy_label )
+				'error'	=>  sprintf( __('%s already exists', 'acf'), $taxonomy_label )
 			));
 		} else {
 
@@ -2250,48 +2250,86 @@ function ajax_add_term() {
                 $args['term_name']
             ) );
 
-            foreach ( $postids as $id ) {
-                $post = get_post( $id );
-                $normwort = get_post_meta( $id, "normwort", true);
-                // Prüfen ob Normwort als Schlagwort existiert.
-                $keyword = get_term_by( 'name', $normwort, 'schlagwort' );
-                if ( $keyword !== false ) {
-                    $output[ 'status' ] = 'replace-exist';
-                    $output[ 'name' ] = $normwort;
-                    $output[ 'id' ] = $keyword->term_id;
-                    $output[ 'orig' ] = $tag;
-                } else {
-                    // schlagwort anlegen
-                    $newterm = wp_insert_term( $normwort, 'schlagwort' );
+            if ( count( $postids) != 0 ) {
+	            foreach ( $postids as $id ) {
+		            $post     = get_post( $id );
+		            $normwort = get_post_meta( $id, "normwort", true );
+		            // Prüfen ob Normwort als Schlagwort existiert.
+		            $keyword = get_term_by( 'name', $normwort, 'schlagwort' );
+		            if ( $keyword !== false ) {
+			            $output['id'] = $keyword->term_id;
+		            }
+	            }
+	            // load term
+	            $term = get_term( $output['id'] );
 
-                    $output[ 'status' ] = 'replace-new';
-                    $output[ 'name' ] = $normwort;
-                    $output[ 'id' ] = $newterm[ 'term_id' ];
-                    $output[ 'orig' ] = $tag;
-                }
+	            $prefix    = '';
+	            $ancestors = get_ancestors( $term->term_id, $term->taxonomy );
+	            if ( ! empty( $ancestors ) ) {
+		            $prefix = str_repeat( '- ', count( $ancestors ) );
+	            }
+
+	            // success
+	            wp_send_json_success( array(
+		            'message'     => sprintf( __( '%s added', 'acf' ), $taxonomy_label ),
+		            'term_id'     => $term->term_id,
+		            'term_name'   => $term->name,
+		            'term_label'  => $prefix . $term->name,
+		            'term_parent' => $term->parent
+	            ) );
+            } else {
+                // Bibliothek prüfen und Normwort und Synonyme ermittln.
+	            $gnd = wp_remote_get( "https://xgnd.bsz-bw.de/Anfrage?suchfeld=pica.swr&suchwort=" . $args['term_name'] );
+	            $gndObj = json_decode( $gnd[ 'body'] );
+	            if ( is_array( $gndObj )) {
+		            $treffer = 0;
+		            foreach ( $gndObj as $obj ) {
+			            if ( $obj->Typ == 'Sachschlagwort' ) {
+				            $treffer = 1;
+				            $normwort = $obj->Ansetzung;
+				            foreach ( $obj->Synonyme  as $key => $value ) {
+					            // Prüfen ob Synonym noch nicht gespeichert ist
+					            $postids=$wpdb->get_col( $wpdb->prepare(
+						            "
+                                SELECT      p.ID
+                                FROM        $wpdb->posts p
+                                WHERE       p.post_title = %s 
+                                ",
+						            $value
+					            ) );
+					            if ( sizeof( $postids ) == 0 ) {
+						            // Synonym speichern
+						            $my_post = array(
+							            'post_title'    => wp_strip_all_tags( $value ),
+							            'post_status'   => 'publish',
+							            'post_type'     => 'synonym',
+						            );
+						            $back = wp_insert_post( $my_post );
+						            if ( is_int( $back ) ) {
+							            $dummy = add_post_meta( $back, "normwort", $normwort, true );
+						            }
+					            }
+				            }
+			            }
+			            // Normwort noch als Schlagwort speichern
+			            $newterm = wp_insert_term( $normwort, 'schlagwort' );
+
+			            $output[ 'id' ] = $newterm[ 'term_id' ];
+			            $term = get_term( $output[ 'id' ] );
+			            wp_send_json_success( array(
+				            'message'     => sprintf( __( '%s added', 'acf' ), $taxonomy_label ),
+				            'term_id'     => $term->term_id,
+				            'term_name'   => $term->name,
+				            'term_label'  => $term->name,
+				            'term_parent' => $term->parent
+			            ) );
+		            }
+	            } else {
+		            wp_send_json_error( array(
+			            'error'     => sprintf( __( 'Das Normwort konnte nicht ermittlet werden. Bitte recherchiere <a  target=\'_blank\' href=\'https://xgnd.bsz-bw.de/Anfrage\'>selbst</a>, ob das Schlagwort korrekt ist.', 'rw-materialpool' )),
+		            ) );
+	            }
             }
-
-
-
-
-            // load term
-            $term = get_term($output[ 'id' ]);
-
-            // prepend ancenstors count to term name
-            $prefix = '';
-            $ancestors = get_ancestors( $term->term_id, $term->taxonomy );
-            if( !empty($ancestors) ) {
-                $prefix = str_repeat('- ', count($ancestors));
-            }
-
-            // success
-            wp_send_json_success(array(
-                'message'		=> sprintf( __('%s added', 'acf'), $taxonomy_label ),
-                'term_id'		=> $term->term_id,
-                'term_name'		=> $term->name,
-                'term_label'	=> $prefix . $term->name,
-                'term_parent'	=> $term->parent
-            ));
 		}
 	}
 
