@@ -2541,6 +2541,19 @@ function organisation_query( $args, $field, $post_id ) {
 			$args['s'] = '';
 			return $args;
 		}
+		// Langname berücksichtigen
+		$args['meta_query'] = array(
+			'relation' => 'OR',
+			array(
+				'key' => 'organisation_titel_lang',
+				'value' =>  $args['s'],
+				'compare' => 'LIKE'),
+			array(
+				'key' => 'organisation_titel',
+				'value' =>  $args['s'],
+				'compare' => 'LIKE'),
+        );
+		$args['s'] = '';
 	}
 	// return
 	return $args;
