@@ -43,39 +43,52 @@ jQuery(document).ready(function(){
                 break;
             case "8":    // Erwachsenenbildung
                 set_altersstufe( 41 ); //
+                set_materialbildungsstufe( 6 );
                 break;
             case "9":    // Arbeit mit Jugendlichen
                 set_altersstufe( 39 ); // 13-15
                 set_altersstufe( 40 ); // 15-19
+                set_materialbildungsstufe( 6 );
                 break;
             case "108":    // Arbeit mit Kindern
                 set_altersstufe( 42 ); // 5-10
                 set_altersstufe( 38 ); // 10-13
+                set_materialbildungsstufe( 6 );
                 break;
             case "10":    // Kindergottesdienst
+                set_materialbildungsstufe( 6 );
                 set_altersstufe( 37 ); // 1-5
                 set_altersstufe( 42 ); // 5-10
+
                 break;
             case "11":    // Konfirmandenarbeit
                 set_altersstufe( 39 ); // 13-15
+                set_materialbildungsstufe( 6 );
                 break;
             case "13":    // Berufsshule
                 set_altersstufe( 40 ); // 15-19
+                set_materialbildungsstufe( 12 );
                 break;
             case "14":    // Grundschule
                 set_altersstufe( 42 ); // 5-10
+                set_materialbildungsstufe( 12 );
                 break;
             case "15":    // Oberstufe
+                set_materialbildungsstufe( 12 );
                 set_altersstufe( 40 ); // 15-19
                 break;
             case "16":    // Sekundarstufe
                 set_altersstufe( 38 ); // 10-13
                 set_altersstufe( 39 ); // 13-15
+                set_materialbildungsstufe( 12 );
+                break;
+            case "3273":    // AusBildung
+                set_materialbildungsstufe( 306 );
                 break;
         }
     })
-});
 
+});
 
 function set_altersstufe( id ) {
     jQuery("input[name='acf[field_5dbc8a9ea8d52][]']").each( function() {
@@ -85,8 +98,91 @@ function set_altersstufe( id ) {
     })
 }
 
+function set_materialbildungsstufe( id ) {
+    jQuery("input[name='acf[field_5dbc8a128988b][]']").each( function() {
+        if ( jQuery(this).val() == id ) {
+            jQuery(this).attr('checked', true);
+        }
+    })
+}
 
 
+
+jQuery(document).ready(function(){
+    jQuery("input[name='acf[field_5dbc8bed9f213][]']").click( function() {
+        switch ( jQuery(this).val() ) {
+            case "18":    // Gamification
+                set_materialmedientyp( 17 ); // 1-5
+                break;
+            case "20":    // Online Lesson
+                set_materialmedientyp( 17 ); // 1-5
+                break;
+            case "22":    // Lokale Einrichtung
+                set_materialmedientyp( 21 ); // 1-5
+                break;
+            case "23":    // Virtueller Lernort
+                set_materialmedientyp( 21 ); // 1-5
+                break;
+            case "69":    // Audio
+                set_materialmedientyp( 24 ); // 1-5
+                break;
+            case "25":    // Bild
+                set_materialmedientyp( 24 ); // 1-5
+                break;
+            case "3207":    // Gebet/Lied
+                set_materialmedientyp( 24 ); // 1-5
+                break;
+            case "27":    // Internetportal
+                set_materialmedientyp( 24 ); // 1-5
+                break;
+            case "589":    // Präsentation
+                set_materialmedientyp( 24 ); // 1-5
+                break;
+            case "28":    // Text/Ausatz
+                set_materialmedientyp( 24 ); // 1-5
+                break;
+            case "29":    // Video
+                set_materialmedientyp( 24 ); // 1-5
+                break;
+            case "26":    // Zeitschrift/Buch
+                set_materialmedientyp( 24 ); // 1-5
+                break;
+            case "34":    // Anforderungssituation
+                set_materialmedientyp( 30 ); // 1-5
+                break;
+            case "32":    // Arbeitsblatt
+                set_materialmedientyp( 30 ); // 1-5
+                break;
+            case "33":    // Aufgabenstellung
+                set_materialmedientyp( 30 ); // 1-5
+                break;
+            case "35":    // Erählung
+                set_materialmedientyp( 30 ); // 1-5
+                break;
+            case "133":    // Lernstation
+                set_materialmedientyp( 30 ); // 1-5
+                break;
+            case "53":    // Gottesdienstentwurf
+                set_materialmedientyp( 36 ); // 1-5
+                break;
+            case "54":    // Projektplanung
+                set_materialmedientyp( 36 ); // 1-5
+                break;
+            case "55":    // Unterrichtsentwurf
+                set_materialmedientyp( 36 ); // 1-5
+                break;
+        }
+    })
+
+});
+
+function set_materialmedientyp( id ) {
+    jQuery("input[name='acf[field_5dbc8bed9f213][]']").each( function() {
+        if ( jQuery(this).val() == id ) {
+            jQuery(this).attr('checked', true);
+        }
+    })
+}
 
 /**
  *
