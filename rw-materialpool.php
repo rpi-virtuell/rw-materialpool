@@ -2610,3 +2610,578 @@ function material_query( $args, $field, $post_id ) {
 add_filter('acf/fields/relationship/query/key=field_5db183a04c9c1', 'material_query', 10, 3);
 add_filter('acf/fields/relationship/query/key=field_5dcd87474f69c', 'material_query', 10, 3);
 
+
+
+
+
+function cptui_register_my_cpts() {
+
+	/**
+	 * Post Type: Materialien.
+	 */
+
+	$labels = array(
+		"name" => __( "Materialien", "custom-post-type-ui" ),
+		"singular_name" => __( "Material", "custom-post-type-ui" ),
+	);
+
+	$args = array(
+		"label" => __( "Materialien", "custom-post-type-ui" ),
+		"labels" => $labels,
+		"description" => "",
+		"public" => true,
+		"publicly_queryable" => true,
+		"show_ui" => true,
+		"delete_with_user" => false,
+		"show_in_rest" => true,
+		"rest_base" => "",
+		"rest_controller_class" => "WP_REST_Posts_Controller",
+		"has_archive" => false,
+		"show_in_menu" => "materialpool",
+		"show_in_nav_menus" => true,
+		"exclude_from_search" => false,
+		"capability_type" => "post",
+		"map_meta_cap" => true,
+		"hierarchical" => false,
+		"rewrite" => array( "slug" => "material", "with_front" => true ),
+		"query_var" => true,
+		"supports" => array( "comments", "revisions" ),
+		"taxonomies" => array( "schlagwort", "bildungsstufe", "altersstufe", "medientyp", "sprache", "vorauswahl", "inklusion", "verfuegbarkeit", "zugaenglichkeit", "lizenz", "werkzeug", "rubrik" ),
+	);
+
+	register_post_type( "material", $args );
+
+	/**
+	 * Post Type: Autoren.
+	 */
+
+	$labels = array(
+		"name" => __( "Autoren", "custom-post-type-ui" ),
+		"singular_name" => __( "Autor", "custom-post-type-ui" ),
+	);
+
+	$args = array(
+		"label" => __( "Autoren", "custom-post-type-ui" ),
+		"labels" => $labels,
+		"description" => "",
+		"public" => true,
+		"publicly_queryable" => true,
+		"show_ui" => true,
+		"delete_with_user" => false,
+		"show_in_rest" => true,
+		"rest_base" => "",
+		"rest_controller_class" => "WP_REST_Posts_Controller",
+		"has_archive" => true,
+		"show_in_menu" => "materialpool",
+		"show_in_nav_menus" => true,
+		"exclude_from_search" => false,
+		"capability_type" => "post",
+		"map_meta_cap" => true,
+		"hierarchical" => false,
+		"rewrite" => array( "slug" => "autor", "with_front" => true ),
+		"query_var" => true,
+	);
+
+	register_post_type( "autor", $args );
+
+	/**
+	 * Post Type: Organisationen.
+	 */
+
+	$labels = array(
+		"name" => __( "Organisationen", "custom-post-type-ui" ),
+		"singular_name" => __( "Organisation", "custom-post-type-ui" ),
+	);
+
+	$args = array(
+		"label" => __( "Organisationen", "custom-post-type-ui" ),
+		"labels" => $labels,
+		"description" => "",
+		"public" => true,
+		"publicly_queryable" => true,
+		"show_ui" => true,
+		"delete_with_user" => false,
+		"show_in_rest" => true,
+		"rest_base" => "",
+		"rest_controller_class" => "WP_REST_Posts_Controller",
+		"has_archive" => true,
+		"show_in_menu" => "materialpool",
+		"show_in_nav_menus" => true,
+		"exclude_from_search" => false,
+		"capability_type" => "post",
+		"map_meta_cap" => true,
+		"hierarchical" => false,
+		"rewrite" => array( "slug" => "organisation", "with_front" => true ),
+		"query_var" => true,
+	);
+
+	register_post_type( "organisation", $args );
+
+	/**
+	 * Post Type: Themenseiten.
+	 */
+
+	$labels = array(
+		"name" => __( "Themenseiten", "custom-post-type-ui" ),
+		"singular_name" => __( "Themenseite", "custom-post-type-ui" ),
+	);
+
+	$args = array(
+		"label" => __( "Themenseiten", "custom-post-type-ui" ),
+		"labels" => $labels,
+		"description" => "",
+		"public" => true,
+		"publicly_queryable" => true,
+		"show_ui" => true,
+		"delete_with_user" => false,
+		"show_in_rest" => true,
+		"rest_base" => "",
+		"rest_controller_class" => "WP_REST_Posts_Controller",
+		"has_archive" => true,
+		"show_in_menu" => "materialpool",
+		"show_in_nav_menus" => true,
+		"exclude_from_search" => false,
+		"capability_type" => "post",
+		"map_meta_cap" => true,
+		"hierarchical" => false,
+		"rewrite" => array( "slug" => "themenseite", "with_front" => true ),
+		"query_var" => true,
+		"supports" => array( "title", "editor" ),
+	);
+
+	register_post_type( "themenseite", $args );
+
+	/**
+	 * Post Type: Synonyme.
+	 */
+
+	$labels = array(
+		"name" => __( "Synonyme", "custom-post-type-ui" ),
+		"singular_name" => __( "Synonym", "custom-post-type-ui" ),
+	);
+
+	$args = array(
+		"label" => __( "Synonyme", "custom-post-type-ui" ),
+		"labels" => $labels,
+		"description" => "",
+		"public" => true,
+		"publicly_queryable" => true,
+		"show_ui" => true,
+		"delete_with_user" => false,
+		"show_in_rest" => true,
+		"rest_base" => "",
+		"rest_controller_class" => "WP_REST_Posts_Controller",
+		"has_archive" => false,
+		"show_in_menu" => "materialpool",
+		"show_in_nav_menus" => true,
+		"exclude_from_search" => false,
+		"capability_type" => "post",
+		"map_meta_cap" => true,
+		"hierarchical" => false,
+		"rewrite" => array( "slug" => "synonym", "with_front" => true ),
+		"query_var" => true,
+		"supports" => array( "title", "editor", "thumbnail" ),
+	);
+
+	register_post_type( "synonym", $args );
+}
+
+add_action( 'init', 'cptui_register_my_cpts' );
+
+
+function cptui_register_my_taxes() {
+
+	/**
+	 * Taxonomy: Schlagworte.
+	 */
+
+	$labels = array(
+		"name" => __( "Schlagworte", "custom-post-type-ui" ),
+		"singular_name" => __( "Schlagwort", "custom-post-type-ui" ),
+	);
+
+	$args = array(
+		"label" => __( "Schlagworte", "custom-post-type-ui" ),
+		"labels" => $labels,
+		"public" => true,
+		"publicly_queryable" => true,
+		"hierarchical" => false,
+		"show_ui" => true,
+		"show_in_menu" => true,
+		"show_in_nav_menus" => true,
+		"query_var" => true,
+		"rewrite" => array( 'slug' => 'schlagwort', 'with_front' => true, ),
+		"show_admin_column" => false,
+		"show_in_rest" => true,
+		"rest_base" => "schlagwort",
+		"rest_controller_class" => "WP_REST_Terms_Controller",
+		"show_in_quick_edit" => false,
+	);
+	register_taxonomy( "schlagwort", array( "material" ), $args );
+
+	/**
+	 * Taxonomy: Bildungsstufen.
+	 */
+
+	$labels = array(
+		"name" => __( "Bildungsstufen", "custom-post-type-ui" ),
+		"singular_name" => __( "Bildungsstufe", "custom-post-type-ui" ),
+	);
+
+	$args = array(
+		"label" => __( "Bildungsstufen", "custom-post-type-ui" ),
+		"labels" => $labels,
+		"public" => true,
+		"publicly_queryable" => true,
+		"hierarchical" => false,
+		"show_ui" => true,
+		"show_in_menu" => true,
+		"show_in_nav_menus" => true,
+		"query_var" => true,
+		"rewrite" => array( 'slug' => 'bildungsstufe', 'with_front' => true, ),
+		"show_admin_column" => false,
+		"show_in_rest" => true,
+		"rest_base" => "bildungsstufe",
+		"rest_controller_class" => "WP_REST_Terms_Controller",
+		"show_in_quick_edit" => false,
+	);
+	register_taxonomy( "bildungsstufe", array( "material" ), $args );
+
+	/**
+	 * Taxonomy: Altersstufen.
+	 */
+
+	$labels = array(
+		"name" => __( "Altersstufen", "custom-post-type-ui" ),
+		"singular_name" => __( "Altersstufe", "custom-post-type-ui" ),
+	);
+
+	$args = array(
+		"label" => __( "Altersstufen", "custom-post-type-ui" ),
+		"labels" => $labels,
+		"public" => true,
+		"publicly_queryable" => true,
+		"hierarchical" => false,
+		"show_ui" => true,
+		"show_in_menu" => true,
+		"show_in_nav_menus" => true,
+		"query_var" => true,
+		"rewrite" => array( 'slug' => 'altersstufe', 'with_front' => true, ),
+		"show_admin_column" => false,
+		"show_in_rest" => true,
+		"rest_base" => "altersstufe",
+		"rest_controller_class" => "WP_REST_Terms_Controller",
+		"show_in_quick_edit" => false,
+	);
+	register_taxonomy( "altersstufe", array( "material" ), $args );
+
+	/**
+	 * Taxonomy: Medientypen.
+	 */
+
+	$labels = array(
+		"name" => __( "Medientypen", "custom-post-type-ui" ),
+		"singular_name" => __( "Medientyp", "custom-post-type-ui" ),
+	);
+
+	$args = array(
+		"label" => __( "Medientypen", "custom-post-type-ui" ),
+		"labels" => $labels,
+		"public" => true,
+		"publicly_queryable" => true,
+		"hierarchical" => false,
+		"show_ui" => true,
+		"show_in_menu" => true,
+		"show_in_nav_menus" => true,
+		"query_var" => true,
+		"rewrite" => array( 'slug' => 'medientyp', 'with_front' => true, ),
+		"show_admin_column" => false,
+		"show_in_rest" => true,
+		"rest_base" => "medientyp",
+		"rest_controller_class" => "WP_REST_Terms_Controller",
+		"show_in_quick_edit" => false,
+	);
+	register_taxonomy( "medientyp", array( "material" ), $args );
+
+	/**
+	 * Taxonomy: Sprachen.
+	 */
+
+	$labels = array(
+		"name" => __( "Sprachen", "custom-post-type-ui" ),
+		"singular_name" => __( "Sprache", "custom-post-type-ui" ),
+	);
+
+	$args = array(
+		"label" => __( "Sprachen", "custom-post-type-ui" ),
+		"labels" => $labels,
+		"public" => true,
+		"publicly_queryable" => true,
+		"hierarchical" => false,
+		"show_ui" => true,
+		"show_in_menu" => true,
+		"show_in_nav_menus" => true,
+		"query_var" => true,
+		"rewrite" => array( 'slug' => 'sprache', 'with_front' => true, ),
+		"show_admin_column" => false,
+		"show_in_rest" => true,
+		"rest_base" => "sprache",
+		"rest_controller_class" => "WP_REST_Terms_Controller",
+		"show_in_quick_edit" => false,
+	);
+	register_taxonomy( "sprache", array( "material" ), $args );
+
+	/**
+	 * Taxonomy: Vorauswahlen.
+	 */
+
+	$labels = array(
+		"name" => __( "Vorauswahlen", "custom-post-type-ui" ),
+		"singular_name" => __( "Vorauswahl", "custom-post-type-ui" ),
+	);
+
+	$args = array(
+		"label" => __( "Vorauswahlen", "custom-post-type-ui" ),
+		"labels" => $labels,
+		"public" => true,
+		"publicly_queryable" => true,
+		"hierarchical" => false,
+		"show_ui" => true,
+		"show_in_menu" => true,
+		"show_in_nav_menus" => true,
+		"query_var" => true,
+		"rewrite" => array( 'slug' => 'vorauswahl', 'with_front' => true, ),
+		"show_admin_column" => false,
+		"show_in_rest" => true,
+		"rest_base" => "vorauswahl",
+		"rest_controller_class" => "WP_REST_Terms_Controller",
+		"show_in_quick_edit" => false,
+	);
+	register_taxonomy( "vorauswahl", array( "material" ), $args );
+
+	/**
+	 * Taxonomy: Inklusionen.
+	 */
+
+	$labels = array(
+		"name" => __( "Inklusionen", "custom-post-type-ui" ),
+		"singular_name" => __( "Inklusion", "custom-post-type-ui" ),
+	);
+
+	$args = array(
+		"label" => __( "Inklusionen", "custom-post-type-ui" ),
+		"labels" => $labels,
+		"public" => true,
+		"publicly_queryable" => true,
+		"hierarchical" => false,
+		"show_ui" => true,
+		"show_in_menu" => true,
+		"show_in_nav_menus" => true,
+		"query_var" => true,
+		"rewrite" => array( 'slug' => 'inklusion', 'with_front' => true, ),
+		"show_admin_column" => false,
+		"show_in_rest" => true,
+		"rest_base" => "inklusion",
+		"rest_controller_class" => "WP_REST_Terms_Controller",
+		"show_in_quick_edit" => false,
+	);
+	register_taxonomy( "inklusion", array( "material" ), $args );
+
+	/**
+	 * Taxonomy: Verfügbarkeiten.
+	 */
+
+	$labels = array(
+		"name" => __( "Verfügbarkeiten", "custom-post-type-ui" ),
+		"singular_name" => __( "Verfügbarkeit", "custom-post-type-ui" ),
+	);
+
+	$args = array(
+		"label" => __( "Verfügbarkeiten", "custom-post-type-ui" ),
+		"labels" => $labels,
+		"public" => true,
+		"publicly_queryable" => true,
+		"hierarchical" => false,
+		"show_ui" => true,
+		"show_in_menu" => true,
+		"show_in_nav_menus" => true,
+		"query_var" => true,
+		"rewrite" => array( 'slug' => 'verfuegbarkeit', 'with_front' => true, ),
+		"show_admin_column" => false,
+		"show_in_rest" => true,
+		"rest_base" => "verfuegbarkeit",
+		"rest_controller_class" => "WP_REST_Terms_Controller",
+		"show_in_quick_edit" => false,
+	);
+	register_taxonomy( "verfuegbarkeit", array( "material" ), $args );
+
+	/**
+	 * Taxonomy: Zugänglichkeiten.
+	 */
+
+	$labels = array(
+		"name" => __( "Zugänglichkeiten", "custom-post-type-ui" ),
+		"singular_name" => __( "Zugänglichkeit", "custom-post-type-ui" ),
+	);
+
+	$args = array(
+		"label" => __( "Zugänglichkeiten", "custom-post-type-ui" ),
+		"labels" => $labels,
+		"public" => true,
+		"publicly_queryable" => true,
+		"hierarchical" => false,
+		"show_ui" => true,
+		"show_in_menu" => true,
+		"show_in_nav_menus" => true,
+		"query_var" => true,
+		"rewrite" => array( 'slug' => 'zugaenglichkeit', 'with_front' => true, ),
+		"show_admin_column" => false,
+		"show_in_rest" => true,
+		"rest_base" => "zugaenglichkeit",
+		"rest_controller_class" => "WP_REST_Terms_Controller",
+		"show_in_quick_edit" => false,
+	);
+	register_taxonomy( "zugaenglichkeit", array( "material" ), $args );
+
+	/**
+	 * Taxonomy: Lizenzen.
+	 */
+
+	$labels = array(
+		"name" => __( "Lizenzen", "custom-post-type-ui" ),
+		"singular_name" => __( "Lizenz", "custom-post-type-ui" ),
+	);
+
+	$args = array(
+		"label" => __( "Lizenzen", "custom-post-type-ui" ),
+		"labels" => $labels,
+		"public" => true,
+		"publicly_queryable" => true,
+		"hierarchical" => false,
+		"show_ui" => true,
+		"show_in_menu" => true,
+		"show_in_nav_menus" => true,
+		"query_var" => true,
+		"rewrite" => array( 'slug' => 'lizenz', 'with_front' => true, ),
+		"show_admin_column" => false,
+		"show_in_rest" => true,
+		"rest_base" => "lizenz",
+		"rest_controller_class" => "WP_REST_Terms_Controller",
+		"show_in_quick_edit" => false,
+	);
+	register_taxonomy( "lizenz", array( "material" ), $args );
+
+	/**
+	 * Taxonomy: Werkzeuge.
+	 */
+
+	$labels = array(
+		"name" => __( "Werkzeuge", "custom-post-type-ui" ),
+		"singular_name" => __( "Werkzeug", "custom-post-type-ui" ),
+	);
+
+	$args = array(
+		"label" => __( "Werkzeuge", "custom-post-type-ui" ),
+		"labels" => $labels,
+		"public" => true,
+		"publicly_queryable" => true,
+		"hierarchical" => false,
+		"show_ui" => true,
+		"show_in_menu" => true,
+		"show_in_nav_menus" => true,
+		"query_var" => true,
+		"rewrite" => array( 'slug' => 'werkzeug', 'with_front' => true, ),
+		"show_admin_column" => false,
+		"show_in_rest" => true,
+		"rest_base" => "werkzeug",
+		"rest_controller_class" => "WP_REST_Terms_Controller",
+		"show_in_quick_edit" => false,
+	);
+	register_taxonomy( "werkzeug", array( "material" ), $args );
+
+	/**
+	 * Taxonomy: Rubriken.
+	 */
+
+	$labels = array(
+		"name" => __( "Rubriken", "custom-post-type-ui" ),
+		"singular_name" => __( "Rubrik", "custom-post-type-ui" ),
+	);
+
+	$args = array(
+		"label" => __( "Rubriken", "custom-post-type-ui" ),
+		"labels" => $labels,
+		"public" => true,
+		"publicly_queryable" => true,
+		"hierarchical" => false,
+		"show_ui" => true,
+		"show_in_menu" => true,
+		"show_in_nav_menus" => true,
+		"query_var" => true,
+		"rewrite" => array( 'slug' => 'rubrik', 'with_front' => true, ),
+		"show_admin_column" => false,
+		"show_in_rest" => true,
+		"rest_base" => "rubrik",
+		"rest_controller_class" => "WP_REST_Terms_Controller",
+		"show_in_quick_edit" => false,
+	);
+	register_taxonomy( "rubrik", array( "material" ), $args );
+
+	/**
+	 * Taxonomy: Konfessionen.
+	 */
+
+	$labels = array(
+		"name" => __( "Konfessionen", "custom-post-type-ui" ),
+		"singular_name" => __( "Konfession", "custom-post-type-ui" ),
+	);
+
+	$args = array(
+		"label" => __( "Konfessionen", "custom-post-type-ui" ),
+		"labels" => $labels,
+		"public" => true,
+		"publicly_queryable" => true,
+		"hierarchical" => false,
+		"show_ui" => true,
+		"show_in_menu" => true,
+		"show_in_nav_menus" => true,
+		"query_var" => true,
+		"rewrite" => array( 'slug' => 'konfession', 'with_front' => true, ),
+		"show_admin_column" => false,
+		"show_in_rest" => true,
+		"rest_base" => "konfession",
+		"rest_controller_class" => "WP_REST_Terms_Controller",
+		"show_in_quick_edit" => false,
+	);
+	register_taxonomy( "konfession", array( "organisation" ), $args );
+
+	/**
+	 * Taxonomy: Kompetenzen.
+	 */
+
+	$labels = array(
+		"name" => __( "Kompetenzen", "custom-post-type-ui" ),
+		"singular_name" => __( "Kompetenz", "custom-post-type-ui" ),
+	);
+
+	$args = array(
+		"label" => __( "Kompetenzen", "custom-post-type-ui" ),
+		"labels" => $labels,
+		"public" => true,
+		"publicly_queryable" => true,
+		"hierarchical" => false,
+		"show_ui" => true,
+		"show_in_menu" => true,
+		"show_in_nav_menus" => true,
+		"query_var" => true,
+		"rewrite" => array( 'slug' => 'kompetenz', 'with_front' => true, ),
+		"show_admin_column" => false,
+		"show_in_rest" => true,
+		"rest_base" => "kompetenz",
+		"rest_controller_class" => "WP_REST_Terms_Controller",
+		"show_in_quick_edit" => false,
+	);
+	register_taxonomy( "kompetenz", array( "material" ), $args );
+}
+add_action( 'init', 'cptui_register_my_taxes' );
+

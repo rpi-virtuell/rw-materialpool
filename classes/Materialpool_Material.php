@@ -3016,6 +3016,134 @@ order by wp_posts.post_date  asc ") ;
             array( 'Materialpool_Material', 'list_zugeliefert' )
         );
 
+
+	    $submenu_pages = array(
+		    array(
+			    'parent_slug' => 'materialpool',
+			    'page_title'  => '',
+			    'menu_title'  => 'Altersstufen',
+			    'capability'  => 'manage_options',
+			    'menu_slug'   => 'edit-tags.php?taxonomy=altersstufe',
+			    'function'    => null,// Doesn't need a callback function.
+		    ),
+		    array(
+			    'parent_slug' => 'materialpool',
+			    'page_title'  => '',
+			    'menu_title'  => 'Bildungsstufen',
+			    'capability'  => 'manage_options',
+			    'menu_slug'   => 'edit-tags.php?taxonomy=bildungsstufe',
+			    'function'    => null,// Doesn't need a callback function.
+		    ),
+		    array(
+			    'parent_slug' => 'materialpool',
+			    'page_title'  => '',
+			    'menu_title'  => 'Inklusionen',
+			    'capability'  => 'manage_options',
+			    'menu_slug'   => 'edit-tags.php?taxonomy=inklusion',
+			    'function'    => null,// Doesn't need a callback function.
+		    ),
+		    array(
+			    'parent_slug' => 'materialpool',
+			    'page_title'  => '',
+			    'menu_title'  => 'Kompetenzen',
+			    'capability'  => 'manage_options',
+			    'menu_slug'   => 'edit-tags.php?taxonomy=kompetenz',
+			    'function'    => null,// Doesn't need a callback function.
+		    ),
+		    array(
+			    'parent_slug' => 'materialpool',
+			    'page_title'  => '',
+			    'menu_title'  => 'Konfessionen',
+			    'capability'  => 'manage_options',
+			    'menu_slug'   => 'edit-tags.php?taxonomy=konfession',
+			    'function'    => null,// Doesn't need a callback function.
+		    ),
+		    array(
+			    'parent_slug' => 'materialpool',
+			    'page_title'  => '',
+			    'menu_title'  => 'Lizenzen',
+			    'capability'  => 'manage_options',
+			    'menu_slug'   => 'edit-tags.php?taxonomy=lizenz',
+			    'function'    => null,// Doesn't need a callback function.
+		    ),
+		    array(
+			    'parent_slug' => 'materialpool',
+			    'page_title'  => '',
+			    'menu_title'  => 'Medientypen',
+			    'capability'  => 'manage_options',
+			    'menu_slug'   => 'edit-tags.php?taxonomy=medientyp',
+			    'function'    => null,// Doesn't need a callback function.
+		    ),
+		    array(
+			    'parent_slug' => 'materialpool',
+			    'page_title'  => '',
+			    'menu_title'  => 'Rubriken',
+			    'capability'  => 'manage_options',
+			    'menu_slug'   => 'edit-tags.php?taxonomy=rubrik',
+			    'function'    => null,// Doesn't need a callback function.
+		    ),
+		    array(
+			    'parent_slug' => 'materialpool',
+			    'page_title'  => '',
+			    'menu_title'  => 'Schlagworte',
+			    'capability'  => 'manage_options',
+			    'menu_slug'   => 'edit-tags.php?taxonomy=schlagwort',
+			    'function'    => null,// Doesn't need a callback function.
+		    ),
+		    array(
+			    'parent_slug' => 'materialpool',
+			    'page_title'  => '',
+			    'menu_title'  => 'Sprachen',
+			    'capability'  => 'manage_options',
+			    'menu_slug'   => 'edit-tags.php?taxonomy=sprache',
+			    'function'    => null,// Doesn't need a callback function.
+		    ),
+		    array(
+			    'parent_slug' => 'materialpool',
+			    'page_title'  => '',
+			    'menu_title'  => 'Verfuegbarkeit',
+			    'capability'  => 'manage_options',
+			    'menu_slug'   => 'edit-tags.php?taxonomy=verfuegbarkeit',
+			    'function'    => null,// Doesn't need a callback function.
+		    ),
+		    array(
+			    'parent_slug' => 'materialpool',
+			    'page_title'  => '',
+			    'menu_title'  => 'Vorauswahlen',
+			    'capability'  => 'manage_options',
+			    'menu_slug'   => 'edit-tags.php?taxonomy=vorauswahl',
+			    'function'    => null,// Doesn't need a callback function.
+		    ),
+		    array(
+			    'parent_slug' => 'materialpool',
+			    'page_title'  => '',
+			    'menu_title'  => 'Werkzeuge',
+			    'capability'  => 'manage_options',
+			    'menu_slug'   => 'edit-tags.php?taxonomy=werkzeug',
+			    'function'    => null,// Doesn't need a callback function.
+		    ),
+		    array(
+			    'parent_slug' => 'materialpool',
+			    'page_title'  => '',
+			    'menu_title'  => 'Zugänglichkeiten',
+			    'capability'  => 'manage_options',
+			    'menu_slug'   => 'edit-tags.php?taxonomy=zugaenglichkeit',
+			    'function'    => null,// Doesn't need a callback function.
+		    ),
+	    );
+
+	    foreach ( $submenu_pages as $submenu ) {
+
+		    add_submenu_page(
+			    $submenu['parent_slug'],
+			    $submenu['page_title'],
+			    $submenu['menu_title'],
+			    $submenu['capability'],
+			    $submenu['menu_slug'],
+			    $submenu['function']
+		    );
+
+	    }
     }
 
     /**

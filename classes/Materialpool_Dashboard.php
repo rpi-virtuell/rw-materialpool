@@ -47,6 +47,8 @@ class Materialpool_Dashboard {
 			$args[ 'icon' ],
 			$args[ 'menu_position' ]
 		);
+
+
 	}
 
 
