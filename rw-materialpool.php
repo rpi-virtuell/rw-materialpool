@@ -2636,7 +2636,7 @@ function cptui_register_my_cpts() {
 		"show_in_rest" => true,
 		"rest_base" => "",
 		"rest_controller_class" => "WP_REST_Posts_Controller",
-		"has_archive" => false,
+		"has_archive" => true,
 		"show_in_menu" => "materialpool",
 		"show_in_nav_menus" => true,
 		"exclude_from_search" => false,
@@ -2646,7 +2646,7 @@ function cptui_register_my_cpts() {
 		"rewrite" => array( "slug" => "material", "with_front" => true ),
 		"query_var" => true,
 		"supports" => array( "comments", "revisions" ),
-		//"taxonomies" => array( "schlagwort", "bildungsstufe", "altersstufe", "medientyp", "sprache", "vorauswahl", "inklusion", "verfuegbarkeit", "zugaenglichkeit", "lizenz", "werkzeug", "rubrik" ),
+		"taxonomies" => array( "schlagwort", "bildungsstufe", "altersstufe", "medientyp", "sprache", "vorauswahl", "inklusion", "verfuegbarkeit", "zugaenglichkeit", "lizenz", "werkzeug", "rubrik" ),
 	);
 
 	register_post_type( "material", $args );
@@ -2680,6 +2680,8 @@ function cptui_register_my_cpts() {
 		"hierarchical" => false,
 		"rewrite" => array( "slug" => "autor", "with_front" => true ),
 		"query_var" => true,
+		"supports" => false,
+
 	);
 
 	register_post_type( "autor", $args );
@@ -2713,6 +2715,7 @@ function cptui_register_my_cpts() {
 		"hierarchical" => false,
 		"rewrite" => array( "slug" => "organisation", "with_front" => true ),
 		"query_var" => true,
+		"supports" => false,
 	);
 
 	register_post_type( "organisation", $args );
