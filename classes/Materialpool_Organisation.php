@@ -397,6 +397,10 @@ class Materialpool_Organisation {
             if ( is_object( FWP() ) ) {
                 FWP()->indexer->save_post( $material_id );
             }
+	        if ( class_exists( 'FWP_Cache') ) {
+		        FWP_Cache()->cleanup();
+	        }
+
             unset ($organisationen_ids );
         }
 

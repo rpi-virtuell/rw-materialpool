@@ -426,7 +426,12 @@ class Materialpool_Material {
 		    $frontpage_id = get_option( 'page_on_front' );
 		    rocket_clean_post( $frontpage_id );
 	    }
-
+	    if ( class_exists( 'FWP_Cache') ) {
+		    FWP_Cache()->cleanup();
+        }
+	    if ( is_object( FWP() ) ) {
+		    FWP()->indexer->save_post( $post_id );
+	    }
         Materialpool_Material::set_createdate( $post_id );
     }
 
