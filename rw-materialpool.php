@@ -2279,7 +2279,7 @@ function ajax_add_term() {
 	            ) );
             } else {
                 // Bibliothek prüfen und Normwort und Synonyme ermittln.
-	            $gnd = wp_remote_get( "https://xgnd.bsz-bw.de/Anfrage?suchfeld=pica.swr&suchwort=" . $args['term_name'] );
+	            $gnd = wp_remote_get( "https://xgnd.bsz-bw.de/Anfrage?suchfeld=pica.swr&suchwort=" . $args['term_name'] . "&suchfilter=000000&suchoptionen=pica.tbs%3D%22s%22&callback" );
 	            $gndObj = json_decode( $gnd[ 'body'] );
 	            if ( is_array( $gndObj )) {
 		            $treffer = 0;
@@ -2329,6 +2329,11 @@ function ajax_add_term() {
 			            'error'     => sprintf( __( 'Das Normwort konnte nicht ermittlet werden. Bitte recherchiere <a  target=\'_blank\' href=\'https://xgnd.bsz-bw.de/Anfrage\'>selbst</a>, ob das Schlagwort korrekt ist.', 'rw-materialpool' )),
 		            ) );
 	            }
+	            if ( $treffer == 0 ) {
+		            wp_send_json_error( array(
+			            'error'     => sprintf( __( 'Das Normwort konnte nicht ermittlet werden. Bitte recherchiere <a  target=\'_blank\' href=\'https://xgnd.bsz-bw.de/Anfrage\'>selbst</a>, ob das Schlagwort korrekt ist.', 'rw-materialpool' )),
+		            ) );
+                }
             }
 		}
 	}
