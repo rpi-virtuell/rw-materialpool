@@ -117,13 +117,12 @@ class Materialpool_Themenseite {
         global $wpdb;
 
 		$items_arr = array();
-		$anzahl = count( get_field( 'themengruppen') );
-
+		$anzahl = count( get_field( 'themengruppen', $id ) );
 		for ( $i = 0;  $i < $anzahl ;$i++ ) {
 			$items_arr[ $i ] = array(
-				'gruppe' => get_field( 'themengruppen_' . $i . '_gruppe_von_materialien'),
-				'gruppenbeschreibung' => get_field( 'themengruppen_' . $i . '_infos' ),
-				'auswahl' => get_field('themengruppen_' . $i . '_material_in_dieser_gruppe' )
+				'gruppe' => get_field( 'themengruppen_' . $i . '_gruppe_von_materialien', $id ),
+				'gruppenbeschreibung' => get_field( 'themengruppen_' . $i . '_infos' , $id ),
+				'auswahl' => get_field('themengruppen_' . $i . '_material_in_dieser_gruppe' , $id )
 			);
 		}
 
