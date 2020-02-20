@@ -10,7 +10,7 @@
 		$post = get_page_by_path( str_replace( 'themenseite/', '', $_POST['data']['http_params']['uri'] ), OBJECT, 'themenseite' );
 		$id = $post->ID;
 	}
-  echo "2";
+
 	foreach ( Materialpool_Themenseite::get_gruppen($id ) as $gruppe ) {
 
 		$query = $wp_query->query_vars;

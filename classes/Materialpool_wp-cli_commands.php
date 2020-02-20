@@ -249,9 +249,28 @@ class Materialpool_WP_CLI_Command extends WP_CLI_Command {
 		}
 		WP_CLI::line( ' Startseite konvertiert' );
 	}
+
+	static public function convert_themenseiten2( $args ) {
+		global $wpdb;
+		WP_CLI::line('Ermittle Themenseiten mit Materialgruppen...' );
+		$result = $wpdb->get_results("SELECT  ID    FROM " . $wpdb->posts . " WHERE post_type = 'themenseite' ");
+		foreach ( $result as $obj ) {
+			WP_CLI::line('Themenseite ' . $obj->ID );
+			$counter =  get_post_meta( $obj->ID, 'themengruppen', false );
+			add_post_meta( $obj->ID, '_themengruppen', 'field_5dcbd9475d2ca' );
+
+			for ( $i = 0; $i < $counter[0] ; $i++ ) {
+				WP_CLI::line('  - gruppe ' . $i );
+				add_post_meta( $obj->ID, 'themengruppen_'.$i."_", '' );
+				add_post_meta( $obj->ID, '_themengruppen_'.$i."_", 'field_5e1464123c271' );
+			}
+		}
+	}
 }
 
+
 WP_CLI::add_command( 'materialpool convert themenseiten', array( 'Materialpool_WP_CLI_Command','convert_themenseiten' ) );
+WP_CLI::add_command( 'materialpool convert themenseiten2', array( 'Materialpool_WP_CLI_Command','convert_themenseiten2' ) );
 WP_CLI::add_command( 'materialpool convert material', array( 'Materialpool_WP_CLI_Command','convert_material' ) );
 WP_CLI::add_command( 'materialpool convert material2', array( 'Materialpool_WP_CLI_Command','convert_material2' ) );
 WP_CLI::add_command( 'materialpool convert material3', array( 'Materialpool_WP_CLI_Command','convert_material3' ) );
