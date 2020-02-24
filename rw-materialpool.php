@@ -2399,8 +2399,10 @@ function acf_save_werk( $post_id ) {
 		    update_field('material_band', $post_id, $werk);
 	    } else {
 		    $band = (array) $band;
-		    $band[] = $post_id;
-		    update_field('material_band', $band, $werk);
+		    if ( !in_array( $post_id, $band ) ) {
+			    $band[] = $post_id;
+			    update_field('material_band', $band, $werk);
+            }
 	    }
     }
 
@@ -2408,14 +2410,16 @@ function acf_save_werk( $post_id ) {
 	if ( $band != '' ) {
 		if ( is_array( $band ) ) {
 			foreach ( $band as $key ) {
+			    var_dump( $key );
 				$wpdb->update($wpdb->posts, array('post_parent'=> $post_id ), array('ID' => $key));
-				$a = update_field( 'material_werk', $key, $post_id );
+				$a = update_field( 'material_werk', $post_id, $key );
 			}
 		} else {
 			$wpdb->update($wpdb->posts, array('post_parent'=> $post_id ), array('ID' => $band));
-			$a = update_field( 'material_werk', $band, $post_id );
+			$a = update_field( 'material_werk', $post_id, $band );
 		}
 	}
+
     return;
 }
 
