@@ -3310,6 +3310,48 @@ order by wp_posts.post_date  asc  ") ;
         }
     }
 
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access  public
+	 *
+	 */
+	public static function before_delete_post( $post_id ) {
+	    if ( Materialpool_Material::is_werk() ) {
+		    wp_redirect(admin_url('edit.php?post_status=trash&post_type=material&msg=' . urlencode( 'Dieses Material kann nicht gelöscht werden, da es ein Werk ist und auf Bände verweist. Um das Material zu löschen, bitte erst die Band-Verweise entfernen.')));
+		    exit();
+	    }
+	    return;
+	}
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access  public
+	 *
+	 */
+	public static function before_trashed_post( $post_id ) {
+		if ( Materialpool_Material::is_werk() ) {
+
+			wp_redirect(admin_url('edit.php?post_status=published&post_type=material&msg=' . urlencode( 'Dieses Material kann nicht gelöscht werden, da es ein Werk ist und auf Bände verweist. Um das Material zu löschen, bitte erst die Band-Verweise entfernen.')));
+			exit();
+		}
+		return;
+	}
+
+	/**
+	 *
+	 * @since 0.0.1
+	 * @access  public
+	 *
+	 */
+	public static function admin_notices() {
+		$class = 'notice notice-error';
+		if ( isset($_GET['msg'] ) ) {
+			$message =  urldecode( $_GET[ 'msg' ] );
+			printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
+		}
+
+	}
 }
 
 

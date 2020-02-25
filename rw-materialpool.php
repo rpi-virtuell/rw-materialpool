@@ -178,6 +178,9 @@ class Materialpool {
 		add_action( 'save_post', array( 'Materialpool_Material','cleanup_themenseiten' ), 10, 3 );
 		add_filter( 'default_hidden_meta_boxes', array( 'Materialpool_Material', 'default_hide_meta_box' ) ,10,2);
 		add_action( 'admin_menu', array( 'Materialpool_Material', 'options_page' ) );
+		add_action( 'before_delete_post', array( 'Materialpool_Material', 'before_delete_post' ) );
+		add_action( 'wp_trash_post', array( 'Materialpool_Material', 'before_trashed_post' ) );
+		add_action( 'admin_notices', array( 'Materialpool_Material', 'admin_notices' ) );
 		//        remove_filter( 'pre_oembed_result',      'wp_filter_pre_oembed_result',    10 );
 		//        add_filter( 'pre_oembed_result',      array( 'Materialpool', 'wp_filter_pre_oembed_result' ),    10, 3 );
 
