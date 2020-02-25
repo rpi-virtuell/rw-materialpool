@@ -2666,10 +2666,55 @@ END;
         if ( is_array( $result ) ) {
             foreach ( $result as $obj ) {
                 wp_trash_post(  $obj->ID );
+	            // ggf Abhängige Themenseiten aus dem RocketCache entfernen
+	            $themen = Materialpool_Material::get_themenseiten_for_material( $obj->ID );
+	            if ( is_array( $themen ) &&  sizeof( $themen ) > 0 ) {
+		            foreach ( $themen as $item ) {
+			            if (  function_exists( 'rocket_clean_post' ) ) {
+				            rocket_clean_post( $item->id );
+			            }
+		            }
+	            }
+
+	            // Für den Fall, das auf der Startseite Materialien aufgelistet werden, den Cache der Startseite ungültig machen.
+	            if (  function_exists( 'rocket_clean_post' ) ) {
+		            // Startseite ermittln und invalid machen.
+		            $frontpage_id = get_option( 'page_on_front' );
+		            rocket_clean_post( $frontpage_id );
+	            }
+	            if ( class_exists( 'FWP_Cache') ) {
+		            FWP_Cache()->cleanup();
+	            }
+	            if ( is_object( FWP() ) ) {
+		            FWP()->indexer->save_post( $obj->ID );
+	            }
+
             }
         } else {
             if ( ! is_wp_error( $result ) ) {
                 wp_trash_post(  $result );
+	            // ggf Abhängige Themenseiten aus dem RocketCache entfernen
+	            $themen = Materialpool_Material::get_themenseiten_for_material( $result );
+	            if ( is_array( $themen ) &&  sizeof( $themen ) > 0 ) {
+		            foreach ( $themen as $item ) {
+			            if (  function_exists( 'rocket_clean_post' ) ) {
+				            rocket_clean_post( $item->id );
+			            }
+		            }
+	            }
+
+	            // Für den Fall, das auf der Startseite Materialien aufgelistet werden, den Cache der Startseite ungültig machen.
+	            if (  function_exists( 'rocket_clean_post' ) ) {
+		            // Startseite ermittln und invalid machen.
+		            $frontpage_id = get_option( 'page_on_front' );
+		            rocket_clean_post( $frontpage_id );
+	            }
+	            if ( class_exists( 'FWP_Cache') ) {
+		            FWP_Cache()->cleanup();
+	            }
+	            if ( is_object( FWP() ) ) {
+		            FWP()->indexer->save_post( $obj->ID );
+	            }
             }
         }
 
