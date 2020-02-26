@@ -1428,7 +1428,7 @@ END;
     static public function is_werk() {
         global $post;
         global $wpdb;
-        $result = $wpdb->get_row( $wpdb->prepare("SELECT count(post_id) as count FROM $wpdb->postmeta WHERE meta_key = %s and meta_value = %s ", 'material_werk', $post->ID ) );
+        $result = $wpdb->get_row( $wpdb->prepare("SELECT count(pm.post_id) as count FROM $wpdb->postmeta pm, $wpdb->posts p WHERE pm.meta_key = %s and pm.meta_value = %s and pm.post_id = p.ID and p.post_status = %s", 'material_werk', $post->ID , 'publish') );
         if ( is_object( $result)  && $result->count == 0 ) {
             return false;
         } else {
@@ -1618,8 +1618,8 @@ END;
     static public function get_verweise_ids () {
         $back = array();
         $verweise = Materialpool_Material::get_verweise();
-        foreach ( $verweise as $verweis ) {
-            $back[] = (int) $verweis[ 'ID' ];
+        foreach ( $verweise[0] as $verweis ) {
+            $back[] = (int) $verweis;
         }
         return $back;
     }
