@@ -351,8 +351,9 @@ class Materialpool_Organisation {
 
         if ( "organisation" != $post_type ) return;
 
-		$title = $_POST[ 'pods_meta_organisation_titel' ];
 
+		$acf = $_POST['acf'];
+		$title = $acf['field_5dcd8482bb0ec'];
         $wpdb->update(
             $wpdb->posts,
             array(
