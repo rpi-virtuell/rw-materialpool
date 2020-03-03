@@ -27,35 +27,6 @@ img.materialpool-admin-organisation-pic {
     float: left;
 }
 
-#s2id_pods-form-ui-pods-meta-material-autoren {
-    min-width: 380px !important;
-    width: 300px !important;
-}
-
-#s2id_pods-form-ui-pods-meta-material-organisation {
-    min-width: 380px !important;
-    width: 300px !important;
-}
-
-#s2id_pods-form-ui-pods-meta-material-schlagworte {
-    min-width: 380px !important;
-    width: 300px !important;
-}
-
-#s2id_pods-form-ui-pods-meta-material-werk {
-    min-width: 380px !important;
-    width: 300px !important;
-}
-
-#s2id_pods-form-ui-pods-meta-material-band {
-    min-width: 380px !important;
-    width: 300px !important;
-}
-
-#s2id_pods-form-ui-pods-meta-material-verweise {
-    min-width: 380px !important;
-    width: 300px !important;
-}
 
 #select2-results {
     min-width: 380px !important;
@@ -64,12 +35,6 @@ img.materialpool-admin-organisation-pic {
 .no-close .ui-dialog-titlebar-close {
     display: none;
 }
-
-#pods-form-ui-pods-meta-material-kurzbeschreibung {
-    min-height: 50px;
-    font-family: inherit;
-}
-
 
 input.uncheck_themenseite.themenseite-cb-backend {
     width: auto !important;
@@ -87,6 +52,7 @@ input.uncheck_themenseite.themenseite-cb-backend {
     color: #dc3232;
 }
 
-.pods-pick-values {
-    max-height: 1000px !important;
+
+.acf-taxonomy-field .categorychecklist-holder {
+    max-height: 100%!important;
 }
