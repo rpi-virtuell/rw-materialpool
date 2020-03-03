@@ -56,3 +56,45 @@ input.uncheck_themenseite.themenseite-cb-backend {
 .acf-taxonomy-field .categorychecklist-holder {
     max-height: 100%!important;
 }
+
+#tagsdiv-schlagwort {
+    display: none;
+}
+#tagsdiv-bildungsstufe {
+    display: none;
+}
+#tagsdiv-altersstufe {
+    display: none;
+}
+#tagsdiv-medientyp {
+    display: none;
+}
+#tagsdiv-sprache {
+    display: none;
+}
+#tagsdiv-vorauswahl {
+    display: none;
+}
+#tagsdiv-inklusion {
+     display: none;
+}
+#tagsdiv-verfuegbarkeit {
+      display: none;
+}
+#tagsdiv-zugaenglichkeit {
+    display: none;
+}
+#tagsdiv-lizenz {
+    display: none;
+}
+#tagsdiv-werkzeug {
+    display: none;
+}
+#tagsdiv-rubrik {
+    display: none;
+}
+#tagsdiv-kompetenz {
+    display: none;
+}
+
+
