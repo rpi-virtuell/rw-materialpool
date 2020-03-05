@@ -621,12 +621,12 @@ class Materialpool_Dashboard {
     static public function depublizierungen() {
         global $wpdb;
         $count = 0;
-        $result = $wpdb->get_results( $wpdb->prepare( "SELECT * , DATE_FORMAT ( meta_value, '%%d.%%m.%%y' ) AS datum   FROM $wpdb->posts, $wpdb->postmeta WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id AND  $wpdb->postmeta.meta_key = %s AND $wpdb->postmeta.meta_value != '0000-00-00' AND $wpdb->posts.post_status = 'publish' order by $wpdb->postmeta.meta_value  asc  limit 0, 20" , 'material_depublizierungsdatum' )  );
+        $result = $wpdb->get_results( $wpdb->prepare( "SELECT * , DATE_FORMAT ( meta_value, '%%d.%%m.%%y' ) AS datum   FROM $wpdb->posts, $wpdb->postmeta WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id AND  $wpdb->postmeta.meta_key = %s AND $wpdb->postmeta.meta_value != '0000-00-00' AND $wpdb->postmeta.meta_value != ''AND $wpdb->posts.post_status = 'publish' order by $wpdb->postmeta.meta_value  asc  limit 0, 20" , 'material_depublizierungsdatum' )  );
         foreach ( $result as $obj ) {
             if ($count == 0 ) {
                 echo "<table><tr><th style='width: 80%;'>Material</th><th style='width: 20%;' >Datum</th></tr>";
             }
-            echo "<tr><td><a href='". get_permalink( $obj->ID) ."'>" . $obj->post_title . "</a></td><td>" . $obj->datum ."</td></tr>";
+            echo "<tr><td><a href='". get_edit_post_link( $obj->ID) ."'>" . $obj->post_title . "</a></td><td>" . $obj->datum ."</td></tr>";
             $count++;
         }
         if ( $count > 0) {
@@ -640,12 +640,12 @@ class Materialpool_Dashboard {
     static public function wiedervorlage() {
         global $wpdb;
         $count = 0;
-        $result = $wpdb->get_results( $wpdb->prepare( "SELECT * , DATE_FORMAT ( meta_value, '%%d.%%m.%%y' ) AS datum   FROM $wpdb->posts, $wpdb->postmeta WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id AND  $wpdb->postmeta.meta_key = %s AND $wpdb->postmeta.meta_value != '0000-00-00' AND $wpdb->posts.post_status = 'publish' order by $wpdb->postmeta.meta_value  asc  limit 0, 20" , 'material_wiedervorlagedatum' )  );
+        $result = $wpdb->get_results( $wpdb->prepare( "SELECT * , DATE_FORMAT ( meta_value, '%%d.%%m.%%y' ) AS datum   FROM $wpdb->posts, $wpdb->postmeta WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id AND  $wpdb->postmeta.meta_key = %s AND $wpdb->postmeta.meta_value != '0000-00-00' AND $wpdb->postmeta.meta_value != '' AND $wpdb->posts.post_status = 'publish' order by $wpdb->postmeta.meta_value  asc  limit 0, 20" , 'material_wiedervorlagedatum' )  );
         foreach ( $result as $obj ) {
             if ($count == 0 ) {
                 echo "<table><tr><th style='width: 80%;'>Material</th><th style='width: 20%;' >Datum</th></tr>";
             }
-            echo "<tr><td><a href='". get_permalink( $obj->ID) ."'>" . $obj->post_title . "</a></td><td>" . $obj->datum ."</td></tr>";
+            echo "<tr><td><a href='". get_edit_post_link( $obj->ID) ."'>" . $obj->post_title . "</a></td><td>" . $obj->datum ."</td></tr>";
             $count++;
         }
         if ( $count > 0) {
