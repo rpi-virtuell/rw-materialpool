@@ -25,6 +25,13 @@ jQuery(document).ready(function(){
                 jQuery(this).attr('checked', true);
             }
         })
+        jQuery("input[name='acf[field_5dbc8c50855bb][]']").each( function() {
+            if ( jQuery(this).val() == 2206 ) {
+                // checkbox Handverlesen
+                jQuery(this).attr('checked', true);
+            }
+        })
+
     }
 });
 
