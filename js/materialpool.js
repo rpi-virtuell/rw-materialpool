@@ -136,6 +136,9 @@ jQuery(document).ready(function(){
             case "25":    // Bild
                 set_materialmedientyp( 24 ); // 1-5
                 break;
+            case "4165":    // Filme im Verleih
+                set_materialmedientyp( 24 ); // 1-5
+                break;
             case "3207":    // Gebet/Lied
                 set_materialmedientyp( 24 ); // 1-5
                 break;
