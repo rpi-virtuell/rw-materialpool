@@ -31,6 +31,13 @@ jQuery(document).ready(function(){
                 jQuery(this).attr('checked', true);
             }
         })
+        // Verfügbarkeit
+        jQuery("input[name='acf[field_5dbc8eedaf43e]']").each( function() {
+            if ( jQuery(this).val() == 182 ) {
+                // checkbox Handverlesen
+                jQuery(this).attr('checked', true);
+            }
+        })
 
     }
 });
