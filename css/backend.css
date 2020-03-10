@@ -96,5 +96,11 @@ input.uncheck_themenseite.themenseite-cb-backend {
 #tagsdiv-kompetenz {
     display: none;
 }
+#bildungsstufediv {
+    display: none;
+}
 
+#medientypdiv {
+    display: none;
+}
 
