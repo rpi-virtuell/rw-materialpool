@@ -35,7 +35,6 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		pods_no_conflict_on(  );
 		$args = array(
 			'post_type'      => 'material',
 			'posts_per_page' => $request['per_page'],
@@ -125,7 +124,7 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 		$max_pages = $query->max_num_pages;
 		$total = $query->found_posts;
 
-
+ 
 		$data = array();
 
 		if ( $materials ) {

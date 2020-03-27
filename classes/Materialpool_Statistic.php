@@ -44,7 +44,7 @@ class Materialpool_Statistic
             (  `object`, `day`, `hour`, `month`, `year`, `dayofweek`  )
             VALUES ( %d,%s,%s,%s,%s, %d  )
             ",
-            $autor,
+            $autor[0],
             date( "d", $timestamp ),
             date( "H", $timestamp ),
             date( "m", $timestamp ),
@@ -66,7 +66,7 @@ class Materialpool_Statistic
             (  `object`, `day`, `hour`, `month`, `year`, `dayofweek`  )
             VALUES ( %d,%s,%s,%s,%s, %d  )
             ",
-            $organisation,
+            $organisation[0],
             date( "d", $timestamp ),
             date( "H", $timestamp ),
             date( "m", $timestamp ),
