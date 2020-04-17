@@ -1618,7 +1618,7 @@ END;
     static public function get_verweise_ids () {
         $back = array();
         $verweise = Materialpool_Material::get_verweise();
-        foreach ( $verweise as $verweis ) {
+        foreach ( $verweise[0] as $verweis ) {
             $back[] = (int) $verweis;
         }
         return $back;
