@@ -3240,10 +3240,10 @@ OR
     )
 OR  
     ( 
-       not exists( select * from $wpdb->postmeta where meta_key='_pods_material_medientyp' and post_id = $wpdb->posts.ID )
+       not exists( select * from $wpdb->postmeta where meta_key='material_medientyp' and post_id = $wpdb->posts.ID )
      OR  
         ( 
-            $wpdb->postmeta.meta_key = '_pods_material_medientyp' AND 
+            $wpdb->postmeta.meta_key = 'material_medientyp' AND 
             $wpdb->postmeta.meta_value = ''  
         )
     )
