@@ -1350,8 +1350,8 @@ END;
         $data = '';
         // Prio 1: hochgeladenes Bild
         $pic  = Materialpool_Material::get_picture( $id );
-        if ( is_array( $pic ) ) {
-            $url = wp_get_attachment_url( $pic[ 'ID' ] );
+        if ( $pic != '' ) {
+            $url = wp_get_attachment_url( $pic );
         }
         // Prio 2, Cover URL
         if ( $url == '' ) {
