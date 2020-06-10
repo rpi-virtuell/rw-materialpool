@@ -58,64 +58,155 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 				)
 			);
 		}
+		// Check Taxes
+		$check = 0;
+		if ( isset ( $request[ 'bildungsstufe' ] ) ) { $check++; }
+		if ( isset ( $request[ 'altersstufe' ] ) ) { $check++; }
+		if ( isset ( $request[ 'medientyp' ] ) ) { $check++; }
+		if ( isset ( $request[ 'inklusion' ] ) ) { $check++; }
+		if ( isset ( $request[ 'schlagwort' ] ) ) { $check++; }
+		if ( isset ( $request[ 'schlagworte' ] ) ) { $check++; }
+		if ( isset ( $request[ 'kompetenz' ] ) ) { $check++; }
 
-		if ( isset ( $request[ 'bildungsstufe' ] ) ) {
-			$args[ 'tax_query' ] = array(
-				array(
-					'taxonomy' => 'bildungsstufe',
-					'field' => 'slug',
-					'terms' => $request[ 'bildungsstufe' ] ,
-				)
-			);
-		}
+		if ( $check >= 1 ) {
+			$q = array();
+			if ( isset ( $request['bildungsstufe'] ) ) {
+				$q[] = array(
+					array(
+						'taxonomy' => 'bildungsstufe',
+						'field'    => 'slug',
+						'terms'    => $request['bildungsstufe'],
+					)
+				);
+			}
 
-		if ( isset ( $request[ 'altersstufe' ] ) ) {
-			$args[ 'tax_query' ] = array(
-				array(
-					'taxonomy' => 'altersstufe',
-					'field' => 'slug',
-					'terms' => $request[ 'altersstufe' ] ,
-				)
-			);
-		}
+			if ( isset ( $request['altersstufe'] ) ) {
+				$q[] = array(
+					array(
+						'taxonomy' => 'altersstufe',
+						'field'    => 'slug',
+						'terms'    => $request['altersstufe'],
+					)
+				);
+			}
 
-		if ( isset ( $request[ 'medientyp' ] ) ) {
-			$args[ 'tax_query' ] = array(
-				array(
-					'taxonomy' => 'medientyp',
-					'field' => 'slug',
-					'terms' => $request[ 'medientyp' ] ,
-				)
-			);
-		}
-		if ( isset ( $request[ 'inklusion' ] ) ) {
-			$args[ 'tax_query' ] = array(
-				array(
-					'taxonomy' => 'inklusion',
-					'field' => 'slug',
-					'terms' => $request[ 'inklusion' ] ,
-				)
-			);
-		}
+			if ( isset ( $request['medientyp'] ) ) {
+				$q[] = array(
+					array(
+						'taxonomy' => 'medientyp',
+						'field'    => 'slug',
+						'terms'    => $request['medientyp'],
+					)
+				);
+			}
+			if ( isset ( $request['inklusion'] ) ) {
+				$q[] = array(
+					array(
+						'taxonomy' => 'inklusion',
+						'field'    => 'slug',
+						'terms'    => $request['inklusion'],
+					)
+				);
+			}
 
-		if ( isset ( $request[ 'schlagwort' ] ) ) {
-			$args[ 'tax_query' ] = array(
-				array(
-					'taxonomy' => 'schlagwort',
-					'field' => 'slug',
-					'terms' => $request[ 'schlagwort' ] ,
-				)
+			if ( isset ( $request['schlagwort'] ) ) {
+				$q[] = array(
+					array(
+						'taxonomy' => 'schlagwort',
+						'field'    => 'slug',
+						'terms'    => $request['schlagwort'],
+					)
+				);
+			}
+			if ( isset ( $request['schlagworte'] ) ) {
+				$q[] = array(
+					array(
+						'taxonomy' => 'schlagwort',
+						'field'    => 'slug',
+						'terms'    => $request['schlagworte'],
+					)
+				);
+			}
+			if ( isset ( $request['kompetenz'] ) ) {
+				$q[] = array(
+					array(
+						'taxonomy' => 'kompetenz',
+						'field'    => 'slug',
+						'terms'    => $request['kompetenz'],
+					)
+				);
+			}
+			$args['tax_query'] = array(
+				'relation' => 'AND',
+				$q
 			);
-		}
+		} else {
+			if ( isset ( $request['bildungsstufe'] ) ) {
+				$args['tax_query'] = array(
+					array(
+						'taxonomy' => 'bildungsstufe',
+						'field'    => 'slug',
+						'terms'    => $request['bildungsstufe'],
+					)
+				);
+			}
 
-		if ( isset ( $request[ 'kompetenz' ] ) ) {
-			$args[ 'tax_query' ] = array(
-				array(
-					'taxonomy' => 'kompetenz',
-					'field' => 'slug',
-					'terms' => $request[ 'kompetenz' ] ,
-				)
-			);
+			if ( isset ( $request['altersstufe'] ) ) {
+				$args['tax_query'] = array(
+					array(
+						'taxonomy' => 'altersstufe',
+						'field'    => 'slug',
+						'terms'    => $request['altersstufe'],
+					)
+				);
+			}
+
+			if ( isset ( $request['medientyp'] ) ) {
+				$args['tax_query'] = array(
+					array(
+						'taxonomy' => 'medientyp',
+						'field'    => 'slug',
+						'terms'    => $request['medientyp'],
+					)
+				);
+			}
+			if ( isset ( $request['inklusion'] ) ) {
+				$args['tax_query'] = array(
+					array(
+						'taxonomy' => 'inklusion',
+						'field'    => 'slug',
+						'terms'    => $request['inklusion'],
+					)
+				);
+			}
+
+			if ( isset ( $request['schlagwort'] ) ) {
+				$args['tax_query'] = array(
+					array(
+						'taxonomy' => 'schlagwort',
+						'field'    => 'slug',
+						'terms'    => $request['schlagwort'],
+					)
+				);
+			}
+			if ( isset ( $request['schlagworte'] ) ) {
+				$args['tax_query'] = array(
+					array(
+						'taxonomy' => 'schlagwort',
+						'field'    => 'slug',
+						'terms'    => $request['schlagworte'],
+					)
+				);
+			}
+			if ( isset ( $request['kompetenz'] ) ) {
+				$args['tax_query'] = array(
+					array(
+						'taxonomy' => 'kompetenz',
+						'field'    => 'slug',
+						'terms'    => $request['kompetenz'],
+					)
+				);
+			}
 		}
 
 		$materials = get_posts( $args );
