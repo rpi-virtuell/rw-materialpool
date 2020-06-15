@@ -75,7 +75,7 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 					array(
 						'taxonomy' => 'bildungsstufe',
 						'field'    => 'slug',
-						'terms'    => $request['bildungsstufe'],
+						'terms'    => explode( ',', $request[ 'bildungsstufe' ] ),
 					)
 				);
 			}
@@ -85,7 +85,7 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 					array(
 						'taxonomy' => 'altersstufe',
 						'field'    => 'slug',
-						'terms'    => $request['altersstufe'],
+						'terms'    => explode( ',',$request['altersstufe'] ),
 					)
 				);
 			}
@@ -95,7 +95,7 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 					array(
 						'taxonomy' => 'medientyp',
 						'field'    => 'slug',
-						'terms'    => $request['medientyp'],
+						'terms'    => explode( ',',$request['medientyp'] ),
 					)
 				);
 			}
@@ -104,7 +104,7 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 					array(
 						'taxonomy' => 'inklusion',
 						'field'    => 'slug',
-						'terms'    => $request['inklusion'],
+						'terms'    => explode( ',', $request['inklusion'] ),
 					)
 				);
 			}
@@ -114,7 +114,7 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 					array(
 						'taxonomy' => 'schlagwort',
 						'field'    => 'slug',
-						'terms'    => $request['schlagwort'],
+						'terms'    => explode( ',', $request['schlagwort'] ),
 					)
 				);
 			}
@@ -123,7 +123,7 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 					array(
 						'taxonomy' => 'schlagwort',
 						'field'    => 'slug',
-						'terms'    => $request['schlagworte'],
+						'terms'    => explode( ',', $request['schlagworte'] ),
 					)
 				);
 			}
@@ -132,7 +132,7 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 					array(
 						'taxonomy' => 'kompetenz',
 						'field'    => 'slug',
-						'terms'    => $request['kompetenz'],
+						'terms'    => explode( ',', $request['kompetenz'] ),
 					)
 				);
 			}
@@ -428,7 +428,7 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 			'per_page' => array(
 				'description'       => 'Maximum number of items to be returned in result set.',
 				'type'              => 'integer',
-				'default'           => 15,
+				'default'           => 100,
 				'sanitize_callback' => 'absint',
 			),
 
