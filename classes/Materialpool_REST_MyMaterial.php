@@ -40,186 +40,83 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 			'posts_per_page' => $request['per_page'],
 			'paged'           => $request[ 'page' ],
 		);
-
-		if ( isset ( $request[ 'einrichtung' ] ) ) {
-			$args[ 'meta_query' ] = array(
-				array(
-					'key' => 'material_organisation_facet',
-					'value' => self::get_einrichtung_title_by_slug( $request[ 'einrichtung' ] ),
-				)
-			);
+		if ( isset( $request[ 'suche' ] ) ) {
+			$args[ 's' ] = $request[ 'suche' ];
 		}
 
-		if ( isset ( $request[ 'autor' ] ) ) {
-			$args[ 'meta_query' ] = array(
-				array(
-					'key' => 'material_autor_facet',
-					'value' => self::get_autor_title_by_slug( $request[ 'autor' ] ),
-				)
-			);
+		// ID Liste anhand Facetten holen.
+		$facets = array();
+		if ( isset ($request[ 'bildungsstufe' ]) and $request[ 'bildungsstufe' ] != '' ) {
+			$facets[ 'bildungsstufe']= explode( ',', $request[ 'bildungsstufe' ] );
 		}
-		// Check Taxes
-		$check = 0;
-		if ( isset ( $request[ 'bildungsstufe' ] ) ) { $check++; }
-		if ( isset ( $request[ 'altersstufe' ] ) ) { $check++; }
-		if ( isset ( $request[ 'medientyp' ] ) ) { $check++; }
-		if ( isset ( $request[ 'inklusion' ] ) ) { $check++; }
-		if ( isset ( $request[ 'schlagwort' ] ) ) { $check++; }
-		if ( isset ( $request[ 'schlagworte' ] ) ) { $check++; }
-		if ( isset ( $request[ 'kompetenz' ] ) ) { $check++; }
+		if ( isset ($request[ 'altersstufe' ]) and $request[ 'altersstufe' ] != '' ) {
+			$facets[ 'altersstufe']= explode( ',', $request[ 'altersstufe' ] );
+		}
+		if ( isset ($request[ 'medientyp' ]) and $request[ 'medientyp' ] != '' ) {
+			$facets[ 'medientyp']= explode( ',', $request[ 'medientyp' ] );
+		}
+		if ( isset ($request[ 'inklusion' ]) and $request[ 'inklusion' ] != '' ) {
+			$facets[ 'inklusion']= explode( ',', $request[ 'inklusion' ] );
+		}
+		if ( isset ($request[ 'schlagwort' ]) and $request[ 'schlagwort' ] != '' ) {
+			$facets[ 'schlagwort']= explode( ',', $request[ 'schlagwort' ] );
+		}
+		if ( isset ($request[ 'schlagworte' ]) and $request[ 'schlagworte' ] != '' ) {
+			$facets[ 'schlagworte']= explode( ',', $request[ 'schlagworte' ] );
+		}
+		if ( isset ($request[ 'kompetenz' ]) and $request[ 'kompetenz' ] != '' ) {
+			$facets[ 'kompetenz']= explode( ',', $request[ 'kompetenz' ] );
+		}
+		if ( isset ($request[ 'einrichtung' ]) and $request[ 'einrichtung' ] != '' ) {
+			$facets[ 'einrichtung']= explode( ',', $request[ 'einrichtung' ] );
+		}
+		if ( isset ($request[ 'autor' ]) and $request[ 'autor' ] != '' ) {
+			$facets[ 'autor']= explode( ',', $request[ 'autor' ] );
+		}
+		if ( isset ($request[ 'lizenz' ]) and $request[ 'lizenz' ] != '' ) {
+			$facets[ 'lizenz']= explode( ',', $request[ 'lizenz' ] );
+		}
+		if ( isset ($request[ 'sprache' ]) and $request[ 'sprache' ] != '' ) {
+			$facets[ 'sprache']= explode( ',', $request[ 'sprache' ] );
+		}
 
-		if ( $check >= 1 ) {
-			$q = array();
-			if ( isset ( $request['bildungsstufe'] ) ) {
-				$q[] = array(
-					array(
-						'taxonomy' => 'bildungsstufe',
-						'field'    => 'slug',
-						'terms'    => explode( ',', $request[ 'bildungsstufe' ] ),
-					)
-				);
-			}
+		$data = array(
+			'facets' => $facets,
+			'query_args' => array(
+				'post_type' => 'material',
+				'post_status' => 'publish',
+				'posts_per_page' => -1,
+				'paged' => -1,
+			),
+			'settings' => [
+				'first_load' => true
+			]
+		);
 
-			if ( isset ( $request['altersstufe'] ) ) {
-				$q[] = array(
-					array(
-						'taxonomy' => 'altersstufe',
-						'field'    => 'slug',
-						'terms'    => explode( ',',$request['altersstufe'] ),
-					)
-				);
-			}
+		$url = 'https://material.rpi-virtuell.de/wp-json/facetwp/v1/fetch';
+		$response = wp_remote_post( $url, [
+			'body' => [ 'data' => json_encode( $data ) ]
+		]);
+		$ids = json_decode( $response[ 'body'] );
 
-			if ( isset ( $request['medientyp'] ) ) {
-				$q[] = array(
-					array(
-						'taxonomy' => 'medientyp',
-						'field'    => 'slug',
-						'terms'    => explode( ',',$request['medientyp'] ),
-					)
-				);
-			}
-			if ( isset ( $request['inklusion'] ) ) {
-				$q[] = array(
-					array(
-						'taxonomy' => 'inklusion',
-						'field'    => 'slug',
-						'terms'    => explode( ',', $request['inklusion'] ),
-					)
-				);
-			}
 
-			if ( isset ( $request['schlagwort'] ) ) {
-				$q[] = array(
-					array(
-						'taxonomy' => 'schlagwort',
-						'field'    => 'slug',
-						'terms'    => explode( ',', $request['schlagwort'] ),
-					)
-				);
-			}
-			if ( isset ( $request['schlagworte'] ) ) {
-				$q[] = array(
-					array(
-						'taxonomy' => 'schlagwort',
-						'field'    => 'slug',
-						'terms'    => explode( ',', $request['schlagworte'] ),
-					)
-				);
-			}
-			if ( isset ( $request['kompetenz'] ) ) {
-				$q[] = array(
-					array(
-						'taxonomy' => 'kompetenz',
-						'field'    => 'slug',
-						'terms'    => explode( ',', $request['kompetenz'] ),
-					)
-				);
-			}
-			$args['tax_query'] = array(
-				'relation' => 'AND',
-				$q
-			);
+		//$materials = get_posts( $args );
+		if ( ! empty( $args['s'] ) ) {
+			$materials = new SWP_Query( array( 's' => $args['s'], 'posts_per_page' => -1, 'post__in' => $ids->results,'engine'   => 'default') );
 		} else {
-			if ( isset ( $request['bildungsstufe'] ) ) {
-				$args['tax_query'] = array(
-					array(
-						'taxonomy' => 'bildungsstufe',
-						'field'    => 'slug',
-						'terms'    => $request['bildungsstufe'],
-					)
-				);
-			}
-
-			if ( isset ( $request['altersstufe'] ) ) {
-				$args['tax_query'] = array(
-					array(
-						'taxonomy' => 'altersstufe',
-						'field'    => 'slug',
-						'terms'    => $request['altersstufe'],
-					)
-				);
-			}
-
-			if ( isset ( $request['medientyp'] ) ) {
-				$args['tax_query'] = array(
-					array(
-						'taxonomy' => 'medientyp',
-						'field'    => 'slug',
-						'terms'    => $request['medientyp'],
-					)
-				);
-			}
-			if ( isset ( $request['inklusion'] ) ) {
-				$args['tax_query'] = array(
-					array(
-						'taxonomy' => 'inklusion',
-						'field'    => 'slug',
-						'terms'    => $request['inklusion'],
-					)
-				);
-			}
-
-			if ( isset ( $request['schlagwort'] ) ) {
-				$args['tax_query'] = array(
-					array(
-						'taxonomy' => 'schlagwort',
-						'field'    => 'slug',
-						'terms'    => $request['schlagwort'],
-					)
-				);
-			}
-			if ( isset ( $request['schlagworte'] ) ) {
-				$args['tax_query'] = array(
-					array(
-						'taxonomy' => 'schlagwort',
-						'field'    => 'slug',
-						'terms'    => $request['schlagworte'],
-					)
-				);
-			}
-			if ( isset ( $request['kompetenz'] ) ) {
-				$args['tax_query'] = array(
-					array(
-						'taxonomy' => 'kompetenz',
-						'field'    => 'slug',
-						'terms'    => $request['kompetenz'],
-					)
-				);
-			}
+			$materials = new WP_Query( array( 'post__in' => $ids->results, 'posts_per_page' => -1, 'post_type' => 'material') );
 		}
-
-		$materials = get_posts( $args );
 		// set max number of pages and total num of posts
-		$query = new WP_Query( $args );
-		$max_pages = $query->max_num_pages;
-		$total = $query->found_posts;
 
- 
+//		$query = new SWP_Query( array ( 's' => $request[ 'suche' ],  'post__in' => $ids->results, 'engine' => 'default' ) );
+
+//		view raw
+//		$max_pages = $query->max_num_pages;
+//		$total = $query->found_posts;
+
 		$data = array();
-
-		if ( $materials ) {
-			foreach ( $materials as $material ) :
+		if ( $materials->posts ) {
+			foreach ( $materials->posts as $material ) :
 				$itemdata = $this->prepare_item_for_response( $material, $request );
 				$data[] = $this->prepare_response_for_collection( $itemdata );
 			endforeach;
