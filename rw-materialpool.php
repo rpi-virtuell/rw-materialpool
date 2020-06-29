@@ -273,6 +273,7 @@ class Materialpool {
 		add_action( 'manage_themenseite_posts_columns', array( 'Materialpool_Themenseite', 'cpt_list_head') );
 		add_action( 'manage_themenseite_posts_custom_column', array( 'Materialpool_Themenseite', 'cpt_list_column'), 10,2 );
 		add_action( 'admin_menu' , array( 'Materialpool_Themenseite', 'remove_post_custom_fields' ) );
+		add_filter( 'post_row_actions', array( 'Materialpool_Themenseite', 'action_row'), 10, 2 );
 
 		// Add Filter & Actions for Kompetenz
 		add_filter( 'manage_edit-kompetenz_columns', array( 'Materialpool_Kompetenzen', 'taxonomy_column' ) );
@@ -324,6 +325,7 @@ class Materialpool {
         add_action( 'wp_ajax_mp_check_subscription',  array( 'Materialpool', 'my_action_callback_check_subscription' ) );
 		add_action( 'wp_ajax_mp_check_subscription2',  array( 'Materialpool', 'my_action_callback_check_subscription2' ) );
 		add_action( 'wp_ajax_mp_add_subscription',  array( 'Materialpool', 'my_action_callback_add_subscription' ) );
+		add_action( 'wp_ajax_mp_update_themenseite',  array( 'Materialpool', 'my_action_callback_update_themenseite' ) );
 		add_filter( 'rest_prepare_material', array( 'Materialpool_Statistic', 'log_api_request'), 10, 3 );
 		add_filter( 'cron_schedules', array( 'Materialpool', 'custom_cron_job_recurrence' ) );
 
@@ -684,6 +686,34 @@ class Materialpool {
 		wp_die();
 	}
 
+
+	/**
+	 *
+	 * @since   0.0.1
+	 * @access  public
+	 */
+	public static function my_action_callback_update_themenseite() {
+	    $material = $_POST['material'];
+	    $themenseite = $_POST['themenseite'];
+	    $themenseite_id = (int) $themenseite[0]['id'];
+
+        $gruppenanzahl = (int) get_field('themengruppen', $themenseite_id );
+        for ( $i = 0;  $i < $gruppenanzahl; $i++ ) {
+            $materialArray = array();
+            foreach ( $material as $key => $value  ) {
+                if ($value ['gruppenid'] == $i ) {
+                    $materialArray[] = $value ['materialid'];
+                }
+            }
+            update_field( 'themengruppen_'. $i .'_material_in_dieser_gruppe', $materialArray, $themenseite_id );
+            unset ($materialArray);
+            if ( $i == 10) break;
+        }
+        // Cache der Themenseite verwerfen
+		clean_post_cache( $themenseite_id );
+        echo "ok";
+		wp_die();
+	}
 
 	/**
 	 *
@@ -1757,8 +1787,9 @@ class Materialpool {
         wp_register_style( 'rw-materialpool', Materialpool::$plugin_url . 'css/backend.css' );
         wp_enqueue_style( 'rw-materialpool' );
         wp_enqueue_script( 'rw-materialpool-js', Materialpool::$plugin_url . 'js/materialpool.js' );
-        wp_enqueue_script('jquery-ui-dialog');
-        wp_enqueue_style("wp-jquery-ui-dialog");
+        wp_enqueue_script( 'dexie-js', Materialpool::$plugin_url . 'js/dexie.min.js' );
+	    wp_enqueue_script( 'rw-materialpool-dexie-js', Materialpool::$plugin_url . 'js/materialpool-edit.js' );
+
     }
 
 
@@ -1773,6 +1804,10 @@ class Materialpool {
         wp_enqueue_script( 'rw-materialpool-js', Materialpool::$plugin_url . 'js/materialpool-frontend.js' );
 	    wp_enqueue_script( 'rw-materialpool-js-jq-loading', Materialpool::$plugin_url . 'js/jquery.loading.min.js' );
 	    wp_enqueue_script( 'rw-materialpool-js-loading', Materialpool::$plugin_url . 'js/loading.min.js' );
+        if (is_user_logged_in() ) {
+	        wp_enqueue_script( 'dexie-js', Materialpool::$plugin_url . 'js/dexie.min.js' );
+	        wp_enqueue_script( 'rw-materialpool-dexie-js', Materialpool::$plugin_url . 'js/materialpool-edit.js' );
+        }
 	    wp_register_style( 'rw-materialpool-loading', Materialpool::$plugin_url . 'css/loading.min.css' );
 	    wp_enqueue_style( 'rw-materialpool-loading' );
     }

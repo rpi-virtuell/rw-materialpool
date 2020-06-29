@@ -205,4 +205,43 @@ class Materialpool_Themenseite {
 		remove_meta_box( 'vorauswahldiv' , 'themenseite' , 'normal' );
 	}
 
+	static public function action_row ( $actions, $post ) {
+		if ($post->post_type =="themenseite"){
+			// Themenseiten -> id, titel, url
+			// Themengruppen -> id,themenid, titel
+			// Materialien -> id, gruppenid, titel, url
+			$themenseiten = array(array(
+				'id' => $post->ID,
+				'titel' => $post->post_title,
+				'url' => get_permalink( $post->ID ),
+			));
+			$themengruppen = array();
+			$materialien = array();
+			$anzahl = count( get_field( 'themengruppen', $post->ID ) );
+			for ( $i = 0;  $i < $anzahl ;$i++ ) {
+				$themengruppen[] = array(
+					'id' => $i,
+					'themenid' => $post->ID,
+					'titel' => get_field( 'themengruppen_' . $i . '_gruppe_von_materialien', $post->ID ),
+				);
+				$material = get_field('themengruppen_' . $i . '_material_in_dieser_gruppe' , $id );
+				foreach ( $material as $item ) {
+					$m = get_post( $item);
+					$materialien[] = array(
+						'id' => $item,
+						'gruppenid' => $i,
+						'titel' => $m->post_title,
+						'url' => get_permalink( $item )
+					);
+				}
+			}
+			$data = array(
+				'themenseiten' => $themenseiten,
+				'themengruppen' => $themengruppen,
+				'materialien' => $materialien,
+			);
+			$actions['frontendedit'] = "<a id='themenedit" . $post->ID  . "' data-themenedit='".urlencode(json_encode( $data ))." ' href='javascript:FillThemenseitenDB(" . $post->ID  . ");'>Material im Frontend zuweisen</a>";
+		}
+		return $actions;
+	}
 }
