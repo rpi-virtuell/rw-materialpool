@@ -209,7 +209,7 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 		if ( is_array( $sw ) ) {
 			foreach ( $sw[0] as $ix => $switem ) {
 				$so = get_term_by( 'term_taxonomy_id', $switem );
-				$swArray[$i] = array(
+				$swArray[] = array(
 					'name' => $so->name,
 					'term_id' => $so->term_id,
 				);
