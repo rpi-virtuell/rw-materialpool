@@ -147,7 +147,7 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 		$asArray = array();
 		$as =  get_post_meta( $item->ID, 'material_altersstufe', false );
 		if ( is_array( $as ) ) {
-			foreach ( $as as $asitem ) {
+			foreach ( $as[0] as $asitem ) {
 				$to = get_term_by( 'term_taxonomy_id', $asitem );
 				$asArray[] = array(
 					'name' => $to->name,
@@ -167,7 +167,7 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 		$bsArray = array();
 		$bs =  get_post_meta( $item->ID, 'material_bildungsstufe', false );
 		if ( is_array( $bs ) ) {
-			foreach ( $bs as $bsitem ) {
+			foreach ( $bs[0] as $bsitem ) {
 				$to = get_term_by( 'term_taxonomy_id', $bsitem );
 				$bsArray[] = array(
 					'name' => $to->name,
@@ -187,7 +187,7 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 		$mtArray = array();
 		$mt =  get_post_meta( $item->ID, 'material_medientyp', false );
 		if ( is_array( $mt ) ) {
-			foreach ( $mt as $mtitem ) {
+			foreach ( $mt[0] as $mtitem ) {
 				$to = get_term_by( 'term_taxonomy_id', $mtitem );
 				$mtArray[] = array(
 					'name' => $to->name,
@@ -207,9 +207,9 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 		$swArray = array();
 		$sw =  get_post_meta( $item->ID, 'material_schlagworte', false );
 		if ( is_array( $sw ) ) {
-			foreach ( $sw as $switem ) {
+			foreach ( $sw[0] as $ix => $switem ) {
 				$so = get_term_by( 'term_taxonomy_id', $switem );
-				$swArray[] = array(
+				$swArray[$i] = array(
 					'name' => $so->name,
 					'term_id' => $so->term_id,
 				);
@@ -222,12 +222,11 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 				'term_id' => $so->term_id,
 			);
 		}
-
 		// Rubrik
 		$ruArray = array();
 		$ru =  get_post_meta( $item->ID, 'material_rubrik', false );
 		if ( is_array( $ru ) ) {
-			foreach ( $ru as $ruitem ) {
+			foreach ( $ru[0] as $ruitem ) {
 				$so = get_term_by( 'term_taxonomy_id', $ruitem );
 				$ruArray[] = array(
 					'name' => $so->name,
@@ -247,7 +246,7 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 		$kuArray = array();
 		$ku =  get_post_meta( $item->ID, 'material_kompetenz', false );
 		if ( is_array( $ku ) ) {
-			foreach ( $ku as $kuitem ) {
+			foreach ( $ku[0] as $kuitem ) {
 				$so = get_term_by( 'term_taxonomy_id', $kuitem );
 				$kuArray[] = array(
 					'name' => $so->name,
@@ -267,7 +266,7 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 		$auArray = array();
 		$au =  get_post_meta( $item->ID, 'material_autor_facet', false );
 		if ( is_array( $au ) ) {
-			foreach ( $au as $auitem ) {
+			foreach ( $au[0] as $auitem ) {
 				$auArray[] = array(
 					'name' => $auitem,
 				);
