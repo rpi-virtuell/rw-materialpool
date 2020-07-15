@@ -78,7 +78,7 @@ class Materialpool_Contribute {
 
 
 	static public function log($content){
-		if ( true  ) {
+		if ( false  ) {
 			file_put_contents( Materialpool::$plugin_base_dir.'/clients.log' , $content ."\n",FILE_APPEND );
 		}
 	}

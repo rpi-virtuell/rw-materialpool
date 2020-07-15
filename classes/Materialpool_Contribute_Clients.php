@@ -37,7 +37,7 @@ class Materialpool_Contribute_Clients
 		$str .= "|";
 		$str .= $_SERVER['REMOTE_ADDR'];
 		$str .= "\n";
-		file_put_contents( Materialpool::$plugin_dir.'/clients.log', $str,FILE_APPEND );
+		//file_put_contents( Materialpool::$plugin_dir.'/clients.log', $str,FILE_APPEND );
 		//die();
 	}
 
