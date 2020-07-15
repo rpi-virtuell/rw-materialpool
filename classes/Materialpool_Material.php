@@ -396,7 +396,7 @@ class Materialpool_Material {
         // Transients für Backendliste löschen
         delete_transient( 'mp-cpt-list-material-autor-'.$post_id );
         delete_transient( 'mp-cpt-list-material-medientyp-'.$post_id );
-        delete_transient( 'mp-cpt-list-material-medientyp-'.$post_id );
+        delete_transient( 'mp-cpt-list-material-medientyp2-'.$post_id );
         delete_transient( 'mp-cpt-list-material-schlagworte-'.$post_id );
         delete_transient( 'mp-cpt-list-material-organisation-'.$post_id );
 
