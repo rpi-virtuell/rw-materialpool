@@ -697,8 +697,8 @@ class Materialpool {
 	    $themenseite = $_POST['themenseite'];
 	    $themenseite_id = (int) $themenseite[0]['id'];
 
-        $gruppenanzahl = (int) get_field('themengruppen', $themenseite_id );
-        for ( $i = 0;  $i < $gruppenanzahl; $i++ ) {
+        $gruppenanzahl =  get_field('themengruppen', $themenseite_id );
+        for ( $i = 0;  $i < $gruppenanzahl[0]; $i++ ) {
             $materialArray = array();
             foreach ( $material as $key => $value  ) {
                 if ($value ['gruppenid'] == $i ) {
@@ -707,7 +707,7 @@ class Materialpool {
             }
             update_field( 'themengruppen_'. $i .'_material_in_dieser_gruppe', $materialArray, $themenseite_id );
             unset ($materialArray);
-            if ( $i == 10) break;
+            if ( $i == 15) break;
         }
         // Cache der Themenseite verwerfen
 		clean_post_cache( $themenseite_id );
