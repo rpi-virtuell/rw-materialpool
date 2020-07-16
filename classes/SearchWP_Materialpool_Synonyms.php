@@ -18,7 +18,7 @@ class SearchWP_Materialpool_Synonyms {
 
 
 
-    public static function find_synonyms( $processed_term, $engine, $term ) {
+    public static function find_synonyms( $processed_term, $engine ) {
         global $wpdb;
         global $SearchWP_Materialpool_Synonyms_Flag;
 
@@ -26,65 +26,69 @@ class SearchWP_Materialpool_Synonyms {
             return $processed_term;
         }
         $SearchWP_Materialpool_Synonyms_Flag = true;
-        // Fall 1
-        // Suchwort ist als Normwort gespeichert.
-        // Alle Synonyme holen
+	    $tempArray = array();
+        foreach ($processed_term as $pterms ) {
+	        // Fall 1
+	        // Suchwort ist als Normwort gespeichert.
+	        // Alle Synonyme holen
 
-        $meta_key		= 'normwort';
-        $meta_key_value	= $term;
+	        $tempArray[] = $pterms;
 
-        $postids=$wpdb->get_col( $wpdb->prepare(
-            "
-            SELECT      k.post_id
-            FROM        $wpdb->postmeta k
-            WHERE       k.meta_key = %s 
-                        AND k.meta_value = %s
-            ",
-            $meta_key,
-            $meta_key_value
-        ) );
+		    $meta_key		= 'normwort';
+	        $meta_key_value	= $pterms;
 
-        foreach ( $postids as $id ) {
-            $post = get_post( $id );
-            $processed_term[] = strtolower( $post->post_title );
+	        $postids=$wpdb->get_col( $wpdb->prepare(
+	            "
+	            SELECT      k.post_id
+	            FROM        $wpdb->postmeta k
+	            WHERE       k.meta_key = %s 
+	                        AND k.meta_value = %s
+	            ",
+	            $meta_key,
+	            $meta_key_value
+	        ) );
+
+	        foreach ( $postids as $id ) {
+	            $post = get_post( $id );
+		        $tempArray[] = strtolower( $post->post_title );
+	        }
+
+	        // Fall 2
+	        // Suchwort ist ein Synonym.
+	        // Normwort holen und alle weiteren Synonyme
+
+	        $postids=$wpdb->get_col( $wpdb->prepare(
+	            "
+	            SELECT      p.ID
+	            FROM        $wpdb->posts p
+	            WHERE       p.post_title = %s 
+	            ",
+		        $pterms
+	        ) );
+
+	        foreach ( $postids as $id ) {
+	            $normwort = get_post_meta( $id, "normwort", true);
+		        $tempArray[] = strtolower( $normwort );
+	        }
+	        $postids=$wpdb->get_col( $wpdb->prepare(
+	            "
+	            SELECT      k.post_id
+	            FROM        $wpdb->postmeta k
+	            WHERE       k.meta_key = %s 
+	                        AND k.meta_value = %s
+	            ",
+	            $meta_key,
+		        $pterms
+	        ) );
+	        foreach ( $postids as $id ) {
+	            $post = get_post( $id );
+		        $tempArray[] = strtolower( $post->post_title );
+	        }
         }
-
-        // Fall 2
-        // Suchwort ist ein Synonym.
-        // Normwort holen und alle weiteren Synonyme
-
-        $postids=$wpdb->get_col( $wpdb->prepare(
-            "
-            SELECT      p.ID
-            FROM        $wpdb->posts p
-            WHERE       p.post_title = %s 
-            ",
-            $term
-        ) );
-
-        foreach ( $postids as $id ) {
-            $normwort = get_post_meta( $id, "normwort", true);
-            $processed_term[] = strtolower( $normwort );
-        }
-        $postids=$wpdb->get_col( $wpdb->prepare(
-            "
-            SELECT      k.post_id
-            FROM        $wpdb->postmeta k
-            WHERE       k.meta_key = %s 
-                        AND k.meta_value = %s
-            ",
-            $meta_key,
-            $normwort
-        ) );
-        foreach ( $postids as $id ) {
-            $post = get_post( $id );
-            $processed_term[] = strtolower( $post->post_title );
-        }
-
         $SearchWP_Materialpool_Synonyms_Flag = false;
-        $processed_term = array_unique( $processed_term );
+	    $tempArray = array_unique( $tempArray );
 
-        return $processed_term;
+        return $tempArray;
     }
 
 

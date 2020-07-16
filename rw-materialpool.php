@@ -258,8 +258,8 @@ class Materialpool {
         add_action( 'manage_synonym_posts_custom_column', array( 'Materialpool_Synonyme', 'cpt_list_column'), 10,2 );
         add_action( 'manage_edit-synonym_sortable_columns', array( 'Materialpool_Synonyme', 'cpt_sort_column') );
         add_action( 'wp_ajax_mp_synonym_check_tag',  array( 'SearchWP_Materialpool_Synonyms', 'wp_ajax_mp_synonym_check_tag' ) );
-        add_filter( 'searchwp_extensions',          array( 'SearchWP_Materialpool_Synonyms', 'register' ), 10 );
-        add_filter( 'searchwp_term_in',             array( 'SearchWP_Materialpool_Synonyms', 'find_synonyms' ), 10, 3 );
+        add_filter( 'searchwp\extensions',          array( 'SearchWP_Materialpool_Synonyms', 'register' ), 10 );
+        add_filter( 'searchwp\query\tokens',             array( 'SearchWP_Materialpool_Synonyms', 'find_synonyms' ), 10, 2 );
         add_filter( 'bulk_actions-edit-synonym', array( 'Materialpool_Synonyme','remove_from_bulk_actions' ) );
 		add_filter( 'posts_join', array( 'Materialpool_Synonyme', 'material_list_post_join' ) );
 		add_filter( 'posts_where', array( 'Materialpool_Synonyme', 'material_list_post_where' ) );
@@ -341,7 +341,7 @@ class Materialpool {
             $facet_types['select2'] = new Materialpool_FacetWP_OldSearch();
             return $facet_types;
         });
-		add_filter( 'searchwp_posts_per_page', array( 'Materialpool', 'my_searchwp_posts_per_page' ), 99999, 4 );
+		add_filter( 'searchwp\query\per_page', array( 'Materialpool', 'my_searchwp_posts_per_page' ), 99999, 4 );
 
         // Register ImportPlugin End Action
         add_action( 'import_end', array( 'Materialpool_Import_Check', 'check' ) );
@@ -384,7 +384,7 @@ class Materialpool {
 		wp_enqueue_style('font-awesome', '//use.fontawesome.com/releases/v5.6.3/css/all.css');
 	}
 
-	public static function my_searchwp_posts_per_page( $posts_per_page, $engine, $terms, $page ) {
+	public static function my_searchwp_posts_per_page( $posts_per_page, $engine ) {
 		return 2000;
 	}
 
