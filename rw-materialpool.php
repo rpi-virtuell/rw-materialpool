@@ -1550,15 +1550,18 @@ class Materialpool {
 		    } else {
 			    $gravatar = $uri;
 		    }
-		    $pod = pods( 'autor' );
+
 		    $title = $vorname . ' ' . $name;
-		    $data = array(
-			    'autor_vorname' => $vorname,
-			    'autor_nachname' => $name,
-			    'autor_email' => $email,
-			    'autor_bild_url' => $gravatar,
-		    );
-		    $autor_id = $pod->add( $data );
+		    $postdata = array(
+	            'post_title' => $title,
+                'post_type' => 'autor',
+            );
+		    $autor_id = wp_insert_post( $postdata );
+		    add_post_meta( $autor_id, 'autor_vorname', $vorname );
+		    add_post_meta( $autor_id, 'autor_nachname', $name );
+		    add_post_meta( $autor_id, 'autor_email', $email );
+		    add_post_meta( $autor_id, 'autor_bild_url', $gravatar );
+
 		    $post_type = get_post_type($autor_id);
 		    $post_parent = wp_get_post_parent_id( $autor_id );
 		    $post_name = wp_unique_post_slug( sanitize_title( $title ), $autor_id, 'publish', $post_type, $post_parent );
@@ -1633,15 +1636,20 @@ class Materialpool {
 		} else {
 			$gravatar = $uri;
 		}
-		$pod = pods( 'autor' );
+
 		$title = $vorname . ' ' . $name;
-		$data = array(
-		    'autor_vorname' => $vorname,
-            'autor_nachname' => $name,
-            'autor_email' => $email,
-            'autor_bild_url' => $gravatar,
-        );
-		$autor_id = $pod->add( $data );
+		$postdata = array(
+			'post_title' => $title,
+			'post_type' => 'autor',
+		);
+		$autor_id = wp_insert_post( $postdata );
+		add_post_meta( $autor_id, 'autor_vorname', $vorname );
+		add_post_meta( $autor_id, 'autor_nachname', $name );
+		add_post_meta( $autor_id, 'autor_email', $email );
+		add_post_meta( $autor_id, 'autor_bild_url', $gravatar );
+
+
+
 		$post_type = get_post_type($autor_id);
 		$post_parent = wp_get_post_parent_id( $autor_id );
 		$post_name = wp_unique_post_slug( sanitize_title( $title ), $autor_id, 'publish', $post_type, $post_parent );

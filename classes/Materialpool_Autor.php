@@ -941,7 +941,7 @@ class Materialpool_Autor {
 	 */
 	static public function shortcode_register_autor() {
 		if ( ! is_user_logged_in() ) {
-		    return;
+		    return "Bitte anmelden.";
 		}
 
 		$userID = get_current_user_id();
