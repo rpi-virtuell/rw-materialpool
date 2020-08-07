@@ -1,7 +1,8 @@
 <?php while ( have_posts() ) : the_post(); ?>
+
 <?php
 
-if ( false === ( $transient = get_transient( '1facet_serach2_entry-'.$post->ID ) ) ) {
+if ( false === ( $transient = get_transient( 'facet_serach2_entry-'.$post->ID ) ) ) {
 ob_start();
 
 ?>
@@ -79,6 +80,7 @@ ob_start();
 		}
 		?>
 		<?php if (is_user_logged_in() ) { ?>
+
             <div style="float: right;">
 
                 <span id="themenseitenedit_<?php echo $post->ID; ?>" data-materialid="<?php echo $post->ID; ?>" data-materialtitel="<?php echo $post->post_title; ?>" data-materialurl="<?php echo get_permalink( $post->ID) ; ?>" class="themenseitenedit btn-neutral"><i class="fas fa-ellipsis-v"> </i></span>
@@ -94,7 +96,7 @@ ob_start();
     <script>
         jQuery(document).ready(function(){
 
-            if (typeof  jQuery.contextMenu != 'undefined' && Object.keys(themenseiten).length !== 0) {
+            if (typeof  jQuery.contextMenu != 'undefined' && typeof  themenseiten != 'undefined' && Object.keys(themenseiten).length !== 0) {
                 jQuery.contextMenu({
                     selector: '.themenseitenedit',
                     trigger: 'left',
