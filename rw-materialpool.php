@@ -336,11 +336,7 @@ class Materialpool {
         add_filter( 'request', array( 'Materialpool', 'exclude_entwurf' ) );
         add_action( 'init', array( 'Materialpool', 'custom_oembed_providers' ) , 10, 1 );
 
-        // Register New Facet for Searches in Old MP
-        add_filter( 'facetwp_facet_types', function( $facet_types ) {
-            $facet_types['select2'] = new Materialpool_FacetWP_OldSearch();
-            return $facet_types;
-        });
+
 		add_filter( 'searchwp\query\per_page', array( 'Materialpool', 'my_searchwp_posts_per_page' ), 99999, 4 );
 
         // Register ImportPlugin End Action
@@ -3243,3 +3239,19 @@ function cptui_register_my_taxes() {
 }
 add_action( 'init', 'cptui_register_my_taxes' );
 
+add_action( 'wp_footer', function() {
+	?>
+    <script>
+        (function(jQuery) {
+            jQuery(function() {
+                FWP.hooks.addFilter('facetwp/ajax_settings', function(settings) {
+                    settings.headers = {
+                        'X-WP-Nonce': FWP_JSON.nonce
+                    };
+                    return settings;
+                });
+            });
+        })(jQuery);
+    </script>
+	<?php
+}, 100 );
