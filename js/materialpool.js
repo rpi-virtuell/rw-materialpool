@@ -746,7 +746,7 @@ jQuery(document).ready(function(){
     }
 });
 
-jQuery(window).load(function() {
+jQuery(window).ready(function() {
     if ( jQuery(".post-type-material").length ) {
         check_material();
     }
