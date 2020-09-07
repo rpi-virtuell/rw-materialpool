@@ -456,9 +456,7 @@ class Materialpool_Dashboard {
      *
      */
     static public function searchwp_poular_search_1_widget() {
-        $stats = new SearchWP_Stats();
-
-        $back = $stats->get_popular_searches(array(
+         $back = \SearchWP\Statistics::get_popular_searches(array(
                 'days'      => 1,
                 'engine'    => 'default',
                 'limit'     => 50,
@@ -482,9 +480,9 @@ class Materialpool_Dashboard {
      *
      */
     static public function searchwp_poular_search_7_widget() {
-        $stats = new SearchWP_Stats();
 
-        $back = $stats->get_popular_searches(array(
+
+        $back = \SearchWP\Statistics::get_popular_searches(array(
                 'days'      => 7,
                 'engine'    => 'default',
                 'limit'     => 50,
@@ -508,9 +506,9 @@ class Materialpool_Dashboard {
      *
      */
     static public function searchwp_poular_search_30_widget() {
-        $stats = new SearchWP_Stats();
 
-        $back = $stats->get_popular_searches(array(
+
+        $back = \SearchWP\Statistics::get_popular_searches(array(
                 'days'      => 30,
                 'engine'    => 'default',
                 'limit'     => 50,
@@ -535,9 +533,9 @@ class Materialpool_Dashboard {
      *
      */
     static public function searchwp_failed_search_1_widget() {
-        $stats = new SearchWP_Stats();
 
-        $back = $stats->get_popular_searches(array(
+
+        $back = \SearchWP\Statistics::get_popular_searches(array(
                 'days'      => 1,
                 'engine'    => 'default',
                 'limit'     => 50,
@@ -563,9 +561,8 @@ class Materialpool_Dashboard {
      *
      */
     static public function searchwp_failed_search_7_widget() {
-        $stats = new SearchWP_Stats();
 
-        $back = $stats->get_popular_searches(array(
+        $back = \SearchWP\Statistics::get_popular_searches(array(
                 'days'      => 7,
                 'engine'    => 'default',
                 'limit'     => 50,
@@ -591,9 +588,9 @@ class Materialpool_Dashboard {
      *
      */
     static public function searchwp_failed_search_30_widget() {
-        $stats = new SearchWP_Stats();
+ 
 
-        $back = $stats->get_popular_searches(array(
+        $back = \SearchWP\Statistics::get_popular_searches(array(
                 'days'      => 30,
                 'engine'    => 'default',
                 'limit'     => 50,
