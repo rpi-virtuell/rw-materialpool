@@ -91,12 +91,7 @@ class Materialpool_Dashboard {
             'Organisationen Anzahl',         // Title.
             array( 'Materialpool_Dashboard', 'organisation_count') // Display function.
         );
-
-        wp_add_dashboard_widget(
-            'mp-search-stat',         // Widget slug.
-            'Suchanfragen',         // Title.
-            array( 'Materialpool_Dashboard', 'searchwp_widget') // Display function.
-        );
+        
         wp_add_dashboard_widget(
             'mp-search-stat-1',         // Widget slug.
             'Suchanfragen Heute',         // Title.
@@ -409,48 +404,7 @@ class Materialpool_Dashboard {
         <?php
     }
 
-    /**
-     *
-     */
-    static public function searchwp_widget() {
-        $stats = new SearchWP_Stats();
-        $searchesPerDay = $stats->get_search_counts_per_day( 20, "default" );
-        $anzahl = array();
-        $datum = array();
-        foreach ( $searchesPerDay as $key => $value ) {
-            $anzahl[] = $value;
-            $datum[] = '"'.$key.'"';
-        }
-        ?>
-        <canvas id="SearchChart" width="400" height="200"></canvas>
-        <script>
-            jQuery(document).ready(function(){
-                var ctx = document.getElementById("SearchChart");
-                var myChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: [ <?php echo implode( ',', $datum ); ?> ],
-                        datasets: [{
-                            label: '# Suchen',
-                            data: [<?php echo implode( ',', $anzahl ); ?>],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero:true
-                                }
-                            }]
-                        }
-                    }
-                });
-            });
-        </script>
 
-        <?php
-    }
 
     /**
      *
@@ -588,7 +542,7 @@ class Materialpool_Dashboard {
      *
      */
     static public function searchwp_failed_search_30_widget() {
- 
+
 
         $back = \SearchWP\Statistics::get_popular_searches(array(
                 'days'      => 30,
