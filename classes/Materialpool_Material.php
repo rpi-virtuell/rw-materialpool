@@ -2797,7 +2797,7 @@ END;
 
         if ( is_admin() && $pagenow=='edit.php' && isset( $_REQUEST[ 'mode'] ) &&  $_REQUEST[ 'mode'] == 'incomplete' )  {
             $result = $wpdb->get_results("
-        SELECT distinct( $wpdb->posts.ID ) , $wpdb->posts.post_title, DATE_FORMAT ( post_date, '%d.%m.%y' ) AS datum  FROM 
+        SELECT distinct( $wpdb->posts.ID ) , $wpdb->posts.post_title, DATE_FORMAT( post_date, '%d.%m.%y' ) AS datum  FROM 
     $wpdb->posts, $wpdb->postmeta 
 WHERE 
     $wpdb->posts.ID = $wpdb->postmeta.post_id AND  
@@ -2858,7 +2858,7 @@ order by wp_posts.post_date  asc ") ;
         }
         if ( is_admin() && $pagenow=='edit.php' && isset( $_REQUEST[ 'mode'] ) &&  $_REQUEST[ 'mode'] == 'supply' )  {
                 $result = $wpdb->get_results("
-        SELECT distinct( $wpdb->posts.ID ) , $wpdb->posts.post_title, DATE_FORMAT ( post_date, '%d.%m.%y' ) AS datum  FROM 
+        SELECT distinct( $wpdb->posts.ID ) , $wpdb->posts.post_title, DATE_FORMAT( post_date, '%d.%m.%y' ) AS datum  FROM 
     $wpdb->posts, $wpdb->postmeta 
 WHERE 
     $wpdb->posts.ID = $wpdb->postmeta.post_id AND  
@@ -3206,7 +3206,7 @@ order by wp_posts.post_date  asc ") ;
         global $wpdb;
         $count = 0;
         $result = $wpdb->get_results("
-        SELECT distinct( $wpdb->posts.ID ) , $wpdb->posts.post_title, DATE_FORMAT ( post_date, '%d.%m.%y' ) AS datum  FROM 
+        SELECT distinct( $wpdb->posts.ID ) , $wpdb->posts.post_title, DATE_FORMAT( post_date, '%d.%m.%y' ) AS datum  FROM 
     $wpdb->posts, $wpdb->postmeta 
 WHERE 
     $wpdb->posts.ID = $wpdb->postmeta.post_id AND  
@@ -3280,7 +3280,7 @@ order by wp_posts.post_date  asc ") ;
         global $wpdb;
         $count = 0;
         $result = $wpdb->get_results("
-        SELECT distinct( $wpdb->posts.ID ) , $wpdb->posts.post_title, DATE_FORMAT ( post_date, '%d.%m.%y' ) AS datum  FROM 
+        SELECT distinct( $wpdb->posts.ID ) , $wpdb->posts.post_title, DATE_FORMAT( post_date, '%d.%m.%y' ) AS datum  FROM 
     $wpdb->posts, $wpdb->postmeta 
 WHERE 
     $wpdb->posts.ID = $wpdb->postmeta.post_id AND
