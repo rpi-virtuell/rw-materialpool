@@ -91,7 +91,7 @@ class Materialpool_Dashboard {
             'Organisationen Anzahl',         // Title.
             array( 'Materialpool_Dashboard', 'organisation_count') // Display function.
         );
-        
+
         wp_add_dashboard_widget(
             'mp-search-stat-1',         // Widget slug.
             'Suchanfragen Heute',         // Title.

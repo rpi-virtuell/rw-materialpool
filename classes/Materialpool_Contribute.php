@@ -503,25 +503,26 @@ class Materialpool_Contribute {
                 $query = $wpdb->prepare( "SELECT user_id FROM {$wpdb->usermeta} WHERE meta_key = 'autor_status' and meta_value = 'ok' and user_id = %s",
                     $autor
                 );
+                self::log('Query2: ' .$query  );
 				$autor = $wpdb->get_var(  $query );
 				if ( $autor != null ) {
 					$query = $wpdb->prepare( "SELECT meta_value FROM {$wpdb->usermeta} WHERE meta_key = 'autor_link' and  user_id = %s",
 						$autor
 					);
+                    self::log('Query3: ' .$query  );
 					$autorid = $wpdb->get_var(  $query );
 
 					// URL Check
 					$url              = urldecode( $request->data->material_url );
 					$query = $wpdb->prepare( "SELECT count( meta_id ) as anzahl  FROM  $wpdb->postmeta pm, $wpdb->posts p  WHERE pm.meta_key = %s and pm.meta_value = %s and pm.post_id= p.ID and p.post_status = 'publish' ", 'material_url', $url );
-                self::log( $query);
+                    self::log('Query4: ' .$query  );
 					$anzahl = $wpdb->get_col( $query );
-					self::log( $anzahl );
+					self::log( "Anzahl: " . $anzahl[ 0 ] );
 					if ( is_array( $anzahl ) && $anzahl[ 0 ] == 0 ) {
 
                         if ($autorid != null ) $status=true;
 
                         if (  $status == true ) {
-	                        $pod              = pods( 'material' );
 	                        $url              = base64_decode( $request->data->material_url );
 	                        $title            = base64_decode( $request->data->material_title );
 	                        $shortdescription = base64_decode( $request->data->material_shortdescription );
@@ -541,41 +542,59 @@ class Materialpool_Contribute {
 		                        $material_cover_url = $material_screenshot_url;
                             }
 	                        self::log( "screen:" . $material_screenshot.':' );
-	                        $data = array(
-		                        'material_special'             => 0,
-		                        'material_titel'               => $title,
-		                        'material_kurzbeschreibung'    => $shortdescription,
-		                        'material_beschreibung'        => $description,
-		                        'material_schlagworte_interim' => $keywords,
-		                        'material_url'                 => $url,
-                                'material_cover_url'           => $material_cover_url ,
-                                'material_screenshot'          => $material_screenshot,
-                                'post_author'                  => $autor,
-	                        );
 
-	                        $material_id = $pod->add( $data );
-	                        $pod         = pods( 'material', $material_id );
-	                        $pod->add_to( 'material_autoren', $autorid );
+
+                            $material_id = wp_insert_post( array(
+                                'post_author'                  => $autor,
+                                'post_title'                    => $title,
+                                'post_type'                     => "material",
+                            ));
+
+
+                            update_field( 'material_special',0, $material_id );
+                            update_field('material_titel',$title, $material_id );
+                            update_field('material_kurzbeschreibung',$shortdescription, $material_id );
+                            update_field('material_beschreibung',$description, $material_id );
+                            update_field('material_schlagworte_interim',$keywords, $material_id );
+                            update_field('material_url',$url, $material_id );
+                            update_field('material_cover_url',$material_cover_url, $material_id );
+                            update_field('material_screenshot',$material_screenshot, $material_id );
+
+
 	                        $alter = unserialize( $altersstufe );
 	                        self::log('alter : ' .$alter  );
+                            $tempArr = array();
 	                        foreach ( $alter as $item ) {
 		                        self::log('item: ' .$item  );
 	                            $term = get_term_by( 'name', $item, 'altersstufe' );
-		                        $pod->add_to( 'material_altersstufe', $term->term_id);
+                                wp_set_post_categories( $material_id, $term->term_id );
+                                $tempArr[] = $term->term_id;
 	                        }
+                            update_field( 'material_altersstufe', $tempArr, $material_id );
+                            unset ( $tempArr );
 	                        $bildung = unserialize( $bildungsstufe );
+                            self::log('bildungsstufe : ' .$bildungsstufe  );
+                            $tempArr = array();
 	                        foreach ( $bildung as $item ) {
+                                self::log('bildungsstufe item: ' .$item  );
 		                        $term = get_term_by( 'name', $item, 'bildungsstufe' );
-		                        $pod->add_to( 'material_bildungsstufe', $term->term_id);
+                                self::log('bildungsstufe cat: ' .$term->term_id  );
+                                wp_set_post_categories( $material_id, $term->term_id );
+                                $tempArr[] = $term->term_id;
 	                        }
+	                        update_field( 'material_bildungsstufe', $tempArr, $material_id );
+	                        unset ( $tempArr );
 	                        $medien = unserialize( $medientyp );
+                            $tempArr = array();
 	                        foreach ( $medien as $item ) {
 		                        $term = get_term_by( 'name', $item, 'medientyp' );
-		                        $pod->add_to( 'material_medientyp', $term->term_id);
+                                wp_set_post_categories( $material_id, $term->term_id );
+                                $tempArr[] = $term->term_id;
 	                        }
-
+                            update_field( 'material_medientyp', $tempArr, $material_id );
+                            unset ( $tempArr );
                             // remove Pods Handverlesen default
-                            $pod->remove_from( 'material_vorauswahl', 2206 );
+                            //$pod->remove_from( 'material_vorauswahl', 2206 );
 
 	                        $post_type   = get_post_type( $material_id );
 	                        $post_parent = wp_get_post_parent_id( $material_id );
