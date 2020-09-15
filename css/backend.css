@@ -4,6 +4,32 @@
  *
  */
 
+.acf-relationship .selection {
+    min-height: 260px;
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.acf-relationship .selection .choices {
+    min-height: 260px;
+    max-height: 260px;
+    overflow-y: auto;
+}
+.acf-relationship .selection .values {
+    min-height: 260px;
+    max-height: 260px;
+    overflow-y: auto;
+}
+.acf-relationship .selection .choices .list{
+    min-height: 250px;
+    max-height: 250px;
+    overflow-y: auto;
+}
+.acf-relationship .selection .values .list{
+    min-height: 250px;
+    max-height: 250px;
+    overflow-y: auto;
+}
 body.post-type-material #post-preview {
     display: none;
 }
