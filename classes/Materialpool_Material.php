@@ -367,9 +367,8 @@ class Materialpool_Material {
 	    if ( is_array( $organisationen[0] )) {
 		    foreach ( $organisationen[0] as $organisation ) {
 			    add_post_meta( $post_id, 'material_organisation_facet_view', $organisation );
-			    $organisationen_meta = get_post( $organisationen );
+			    $organisationen_meta = get_post( $organisation );
 			    add_post_meta( $post_id, 'material_organisation_facet', $organisationen_meta->post_title );
-
 			    /*organisation_alpika*/
 			    if(get_post_meta($organisationen_meta->ID,'organisation_alpika', true)){
 				    add_post_meta( $post_id, 'material_alpika_facet', 1 );
