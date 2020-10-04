@@ -22,20 +22,20 @@ jQuery(document).ready(function(){
         jQuery("input[name='acf[field_5dbc8c18f8d06][]']").each( function() {
             if ( jQuery(this).val() == 4 ) {
                 // checkbox deutsch
-                jQuery(this).attr('checked', true);
+                jQuery(this).prop('checked', true);
             }
         })
         jQuery("input[name='acf[field_5dbc8c50855bb][]']").each( function() {
             if ( jQuery(this).val() == 2206 ) {
                 // checkbox Handverlesen
-                jQuery(this).attr('checked', true);
+                jQuery(this).prop('checked', true);
             }
         })
         // Verfügbarkeit
         jQuery("input[name='acf[field_5dbc8eedaf43e]']").each( function() {
             if ( jQuery(this).val() == 182 ) {
                 // checkbox Handverlesen
-                jQuery(this).attr('checked', true);
+                jQuery(this).prop('checked', true);
             }
         })
 
@@ -107,7 +107,7 @@ jQuery(document).ready(function(){
 function set_altersstufe( id ) {
     jQuery("input[name='acf[field_5dbc8a9ea8d52][]']").each( function() {
         if ( jQuery(this).val() == id ) {
-            jQuery(this).attr('checked', true);
+            jQuery(this).prop('checked', true);
         }
     })
 }
@@ -115,7 +115,7 @@ function set_altersstufe( id ) {
 function set_materialbildungsstufe( id ) {
     jQuery("input[name='acf[field_5dbc8a128988b][]']").each( function() {
         if ( jQuery(this).val() == id ) {
-            jQuery(this).attr('checked', true);
+            jQuery(this).prop('checked', true);
         }
     })
 }
@@ -196,7 +196,7 @@ jQuery(document).ready(function(){
 function set_materialmedientyp( id ) {
     jQuery("input[name='acf[field_5dbc8bed9f213][]']").each( function() {
         if ( jQuery(this).val() == id ) {
-            jQuery(this).attr('checked', true);
+            jQuery(this).prop('checked', true);
         }
     })
 }
