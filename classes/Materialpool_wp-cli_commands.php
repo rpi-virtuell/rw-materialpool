@@ -266,6 +266,10 @@ class Materialpool_WP_CLI_Command extends WP_CLI_Command {
 			}
 		}
 	}
+
+	static public function depublizierung() {
+	    Materialpool_Material::depublizierung();
+    }
 }
 
 
@@ -279,3 +283,4 @@ WP_CLI::add_command( 'materialpool convert material5', array( 'Materialpool_WP_C
 WP_CLI::add_command( 'materialpool convert autor', array( 'Materialpool_WP_CLI_Command','convert_autor' ) );
 WP_CLI::add_command( 'materialpool convert organisation', array( 'Materialpool_WP_CLI_Command','convert_organisation' ) );
 WP_CLI::add_command( 'materialpool convert startseite', array( 'Materialpool_WP_CLI_Command','convert_startseite' ) );
+WP_CLI::add_command( 'materialpool depublizierung', array( 'Materialpool_WP_CLI_Command','depublizierung' ) );
