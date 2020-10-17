@@ -1790,7 +1790,10 @@ class Materialpool {
     public static function register_admin_plugin_styles() {
         wp_register_style( 'rw-materialpool', Materialpool::$plugin_url . 'css/backend.css' );
         wp_enqueue_style( 'rw-materialpool' );
-        wp_enqueue_script( 'rw-materialpool-js', Materialpool::$plugin_url . 'js/materialpool.js' );
+        wp_enqueue_script( 'jquery' );
+        wp_enqueue_script( 'jquery-ui-core' );
+        wp_enqueue_script( 'jquery-ui-dialog' );
+        wp_enqueue_script( 'rw-materialpool-js', Materialpool::$plugin_url . 'js/materialpool.js'  );
         wp_enqueue_script( 'dexie-js', Materialpool::$plugin_url . 'js/dexie.min.js' );
 	    wp_enqueue_script( 'rw-materialpool-dexie-js', Materialpool::$plugin_url . 'js/materialpool-edit.js' );
 

@@ -271,11 +271,11 @@ jQuery(document).ready(function(){
                     jQuery('input[name="acf[field_5dbc6c2e9e6d5]"]').val('');
                     jQuery('input[name="acf[field_5dbc6c2e9e6d5]"]').focus();
 
-                    jQuery("body").append("<div id='" + obj.status + "' title='Hinweis'>" +
+                    jQuery("body").append("<div id='display' title='Hinweis'>" +
                         "<p align='center'>Diese URL wurde schon erfasst unter diesem <a  target='_blank' href='" + obj.material_url + "'>Material</a>.</p>" +
                         "</div>");
 
-                    jQuery( "#" + obj.status ).dialog({
+                    jQuery( "#display" ).dialog({
                         dialogClass: "no-close",
                         buttons: [
                             {
