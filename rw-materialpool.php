@@ -3258,3 +3258,10 @@ add_action( 'wp_footer', function() {
     </script>
 	<?php
 }, 100 );
+
+add_filter('acf/fields/relationship/query', 'my_acf_fields_relationship_query', 10, 3);
+function my_acf_fields_relationship_query( $args, $field, $post_id ) {
+    $args['orderby'] = 'date';
+    $args['order']   = 'DESC';
+    return $args;
+}
