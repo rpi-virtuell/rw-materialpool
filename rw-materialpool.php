@@ -3265,3 +3265,8 @@ function my_acf_fields_relationship_query( $args, $field, $post_id ) {
     $args['order']   = 'DESC';
     return $args;
 }
+
+add_action('admin_menu', 'remove_posts_menu');
+function remove_posts_menu() {
+    remove_menu_page('edit.php');
+}
