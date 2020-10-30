@@ -3290,10 +3290,16 @@ WHERE
     (
     not exists( select * from wp_postmeta where meta_key='material_vorauswahl' and post_id = wp_posts.ID )
      OR  
+        ((
+            wp_postmeta.meta_key = 'material_vorauswahl' AND
+            wp_postmeta.meta_value != 'a:1:{i:0;s:4:\"2206\";}'
+        )
+        AND 
         (
             wp_postmeta.meta_key = 'material_vorauswahl' AND
             wp_postmeta.meta_value != 2206
-        ) 
+        )
+        )
     )
 )   
 order by wp_posts.post_date  asc  ") ;
