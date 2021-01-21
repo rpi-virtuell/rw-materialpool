@@ -7,8 +7,8 @@
  *
  * @todo cpt auflistung anpassen
  */
- 
- 
+
+
 class Materialpool_Material {
 
     /**
@@ -913,21 +913,28 @@ class Materialpool_Material {
     <div class="materialpool-vorschlag-url">
         URL: <input type="text" id="vorschlag-url" >
     </div>
+    <div class="materialpool-vorschlag-title">
+        Titel des Materials<br>
+       <input type="text" id="vorschlag-title"  value="$title">
+    </div>
+    <div class="materialpool-vorschlag-beschreibung">
+        Kurzbeschreibung<br>
+        <textarea id="vorschlag-beschreibung" ></textarea>
+    </div>
+    <br>
+    <hr>
     <div class="materialpool-vorschlag-namne">
         Dein Name: <input type="text" id="vorschlag-name" value="$user">
     </div>    
     <div class="materialpool-vorschlag-email">
         Deine E-Mail: <input type="text" id="vorschlag-email"  value="$email">
-    </div>    
-    <div class="materialpool-vorschlag-text">
-        Beschreibung der Seite<br>
-        <textarea id="vorschlag-beschreibung" ></textarea>
     </div>
-    <br>
     <button class="materialpool-vorschlag-send">Vorschlagen</button>
+       
     <div class="materialpool-vorschlag-hinweis">
         
     </div>
+    
 </div>
 END;
 
@@ -2263,7 +2270,7 @@ END;
      * @access public
      * @return string
      */
-    
+
     static public function get_medientypen() {
         global $post;
 
@@ -2285,14 +2292,14 @@ END;
      */
     static public function the_rss_categories() {
         global $post;
-        
+
         $categories = explode(',',self::get_bildungsstufen());
-                
-        
+
+
         foreach($categories as $category): if(!empty( $category )):?>
         <category><![CDATA[<?php echo $category;?>]]></category>
         <?php endif; endforeach;
-        
+
     }
 
     /**
@@ -2302,22 +2309,22 @@ END;
      */
     static public function the_rss_tags() {
         global $post;
-        
+
         $medientypen = explode(',',self::get_medientypen());
         $schlagworte = explode(',',self::get_schlagworte());
-        
+
         $tags = array_merge($schlagworte,$medientypen);
-        
+
         echo '<p style="display:none">';
-        
+
         foreach($tags as $tag): if(!empty( $tag )): ?>
         <a rel="tag"><?php echo $tag;?></a>
         <?php endif; endforeach;
-        
+
         echo '<p>';
     }
-    
-    
+
+
     /**
      * @since 0.0.1
      * @access public
@@ -2524,7 +2531,7 @@ END;
      *
      */
     static public function cb_themenseite() {
-        if (defined('REST_REQUEST') && REST_REQUEST) {  
+        if (defined('REST_REQUEST') && REST_REQUEST) {
             $thema = (int) $_POST[ 'mp_thema'];
             $gruppe = (int) $_POST[ 'mp_gruppe'];
 
@@ -2600,7 +2607,7 @@ END;
                     foreach ( $terms as $term ) {
                     if ( $term->parent != 0 ) {
                     ?>
-                    case "<?php echo $term->term_id; ?>":  
+                    case "<?php echo $term->term_id; ?>":
                         set_medientyp( <?php echo $term->parent; ?> );
                         break;
                 <?php

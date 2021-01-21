@@ -813,7 +813,7 @@ class Materialpool {
 
             $args = array(
                 'user-agent' => 'Mozilla/5.0 (compatible; Materialpool; +' . home_url() . ')',
-                'timeout' => 30,
+                'timeout' => 10,
                 'sslverify' => false,
             );
             $response = wp_remote_get($url, $args);
@@ -869,8 +869,8 @@ class Materialpool {
                     $title = $titleNode->item(0)->textContent;
                 }
                 $data = array(
-                    'title' => $title,
-                    'description' => $description,
+                    'title' => trim($title),
+                    'description' => trim($description),
                     'keywords' => $keywords,
                     'image' => $image,
                 );
@@ -1180,14 +1180,15 @@ class Materialpool {
     public static function my_action_callback_mp_add_proposal() {
         global $wpdb;
         $url = esc_url_raw( $_POST['url'] );
-        $description = sanitize_textarea_field( $_POST['description'] );
+        $description_post = sanitize_textarea_field( $_POST['description'] );
+        $title_post = sanitize_textarea_field( $_POST['title'] );
         $user = sanitize_textarea_field( $_POST['user'] );
         $email = sanitize_email( $_POST['email'] );
-	    $description .= "\n\n";
+	    $description = '';
         $anzahl = $wpdb->get_col( $wpdb->prepare( "SELECT count( meta_id ) as anzahl  FROM  $wpdb->postmeta WHERE meta_key = %s and meta_value = %s", 'material_url', $url) );
         if ( is_array( $anzahl ) && $anzahl[ 0 ] == 0 ) {
             remove_action( 'save_post', array( 'Materialpool_Material', 'generate_title') );
-	        $title = '';
+	        //$title = '';
 	        $keywords = '';
 	        $image = '';
 
@@ -1198,7 +1199,7 @@ class Materialpool {
 	        );
 	        $response = wp_remote_get($url, $args);
 	        if (!is_wp_error($response)) {
-		        $body = utf8_decode($response['body']);
+		        $body = $response['body'];
 
 		        libxml_use_internal_errors(true);
 		        $doc = new DomDocument();
@@ -1231,7 +1232,7 @@ class Materialpool {
 		        foreach ($metas as $meta) {
 			        $name = $meta->getAttribute('name');
 			        $content = $meta->getAttribute('content');
-			        if ($name == 'description' && $description == '') {
+			        if ($name == 'description' && strlen($description) < strlen($content)) {
 				        $description .= $content;
 			        }
 			        if ($name == 'title' && $title == '') {
@@ -1246,11 +1247,19 @@ class Materialpool {
 			        $title = $titleNode->item(0)->textContent;
 		        }
 		        if ( $title == '' ) {
+			        $title = $title_post;
+		        }
+		        if ( $title == '' ) {
 		            $title = __( 'Der Titel der Webseite konnte nicht automatisch ermittelt werden', Materialpool::$textdomain );
                 }
+
+		        if($description_post && strlen($description_post) > strlen($description)){
+			        $description =$description_post;
+                }
+
 		        $data = array(
-			        'title' => $title,
-			        'description' => $description,
+			        'title' => Materialpool::char_replace (utf8_encode($title)),
+			        'description' => Materialpool::char_replace (utf8_encode($description)),
 			        'keywords' => $keywords,
 			        'image' => $image,
 		        );
@@ -1258,15 +1267,17 @@ class Materialpool {
 	            echo "wperror";
             }
 
-            $back = wp_insert_post(  array(
+	        //var_dump($data);die();
+
+	        $back = wp_insert_post(  array(
                 'post_status'   => 'vorschlag',
                 'post_type'     => 'material',
-                'post_title'    => Materialpool::char_replace ( $data[ 'title'] ) ,
+                'post_title'    => $data[ 'title']  ,
                 'post_author'   => 1,
                 'meta_input'    => array (
                     'material_url'  => $url,
-                    'material_titel' => Materialpool::char_replace ( $data[ 'title'] ),
-                    'material_beschreibung' => Materialpool::char_replace ( $data[ 'description'] ),
+                    'material_titel' => $data[ 'title'] ,
+                    'material_beschreibung' => $data[ 'description'] ,
 	                'material_von_name' => $user,
 	                'material_von_email' => $email
                 )
@@ -1285,7 +1296,7 @@ class Materialpool {
     }
 
     public static function char_replace( $string ) {
- 
+
 	    $string = strtr($string, array(
 		    '\u00A0'    => ' ',
 		    '\u0026'    => '&',

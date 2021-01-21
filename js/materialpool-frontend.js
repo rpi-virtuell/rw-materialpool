@@ -92,6 +92,7 @@ jQuery(document).ready(function(){
     jQuery(".materialpool-vorschlag-send").click( function() {
         jQuery('.materialpool-vorschlag-hinweis').html('');
         var url = jQuery("#vorschlag-url").val();
+        var title = jQuery("#vorschlag-title").val();
         var description = jQuery("#vorschlag-beschreibung").val();
         var user = jQuery("#vorschlag-name").val();
         var email = jQuery("#vorschlag-email").val();
@@ -101,6 +102,7 @@ jQuery(document).ready(function(){
         }
         var data = {
             'action': 'mp_add_proposal',
+            'title': title,
             'url': url,
             'user' : user,
             'email' : email,
@@ -110,6 +112,7 @@ jQuery(document).ready(function(){
             ret = response;
             jQuery('.materialpool-vorschlag-hinweis').append(ret);
             jQuery("#vorschlag-url").val('');
+            jQuery("#vorschlag-title").val('');
             jQuery("#vorschlag-beschreibung").val('');
         })
     })
@@ -174,7 +177,10 @@ jQuery(document).ready(function(){
         jQuery.showLoading({name: 'jump-pulse', allowHide: true });
         var url = jQuery("#vorschlag-url").val();
         var postid = jQuery("#post_ID").val();
-        if ( url == '' ) return;
+        if (! url.trim() || url.trim()  == '' ){
+            jQuery.hideLoading();
+            return;
+        }
         var ret;
 
         // url exists?
@@ -229,7 +235,8 @@ jQuery(document).ready(function(){
 
         var html;
         var data = {
-            'action': 'mp_get_description',
+            'action': '' +
+                'mp_get_description',
             'site': url,
             'post-id': postid
         };
@@ -237,10 +244,29 @@ jQuery(document).ready(function(){
         jQuery.post(ajaxurl, data, function(response) {
             var text;
             html = response;
-            if ( html != ''  ) {
+            if ( html.trim() != ''  ) {
                 var $obj = jQuery.parseJSON( html );
-                text = $obj.description + "\n\n" + jQuery("#vorschlag-beschreibung").val();
-                jQuery("#vorschlag-beschreibung").val( text );
+                //text = $obj.description + "\n\n" + jQuery("#vorschlag-beschreibung").val();
+                console.log($obj);
+                if($obj != null && ($obj.title || $obj.description)){
+
+                    let beschreibung , title;
+
+
+                    try{
+                        beschreibung =decodeURIComponent( escape( $obj.description ));
+                        title =decodeURIComponent( escape( $obj.title ) );
+
+                    }catch (e){
+                        beschreibung =$obj.description;
+                        title =     $obj.title;
+                    }
+
+
+                    jQuery("#vorschlag-beschreibung").val( beschreibung );
+                    jQuery("#vorschlag-title").val( title );
+                }
+
             }
             jQuery.hideLoading();
         });
