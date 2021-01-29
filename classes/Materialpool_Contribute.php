@@ -54,7 +54,7 @@ class Materialpool_Contribute {
 	static public function add_query_vars( $vars ) {
 		$vars[] = '__rwmpapi';
 		$vars[] = 'data';
-		self::log( "add_query_vars");
+		//self::log( "add_query_vars");
 		return $vars;
 	}
 
@@ -69,7 +69,7 @@ class Materialpool_Contribute {
 	 */
 	static public function parse_request(){
 		global $wp;
-		self::log("parse_request");
+		//self::log("parse_request");
 		if( isset( $wp->query_vars[ '__rwmpapi' ] ) ) {
 			Materialpool_Contribute::handle_request();
 			exit;
@@ -251,6 +251,7 @@ class Materialpool_Contribute {
  			$request =  json_decode( stripslashes( urldecode( $request[0] ) ) );
 		}
 
+		self::log(json_encode($request));
 		if( ! $request || !isset($request->cmd) || !isset($request->data) ) {
 			Materialpool_Contribute::send_response('Please send commands in json. ' . json_last_error_msg() );
 		} else {
@@ -279,7 +280,7 @@ class Materialpool_Contribute {
 				);
 				exit;
 			}
-
+            self::log('apply_filter: rw_materialpool_contribute_cmd_parser');
 			apply_filters( 'rw_materialpool_contribute_cmd_parser', $request );
 		}
 	}
@@ -328,7 +329,11 @@ class Materialpool_Contribute {
 	 * @return  mixed
 	 */
 	static public function cmd_say_hello( $request ) {
+
+		self::log('cmd:'. $request->cmd);
+
 		if ( 'say_hello' == $request->cmd ) {
+
 
 			if(get_site_option('rw_remote_auth_server_options_whitelist_active')){
 				$message = __('Connection established. Everything works fine. ', Materialpool::get_textdomain());
@@ -343,7 +348,6 @@ class Materialpool_Contribute {
 				'notice'=> $notice,
 				'answer' => $message
 			);
-			self::log('say_hello');
 
 
 			Materialpool_Contribute::send_response(
@@ -480,14 +484,38 @@ class Materialpool_Contribute {
 		}
 		return $request;
 	}
+
+	/**
+	 * @param $key
+	 * @param $value
+	 *
+	 * @return post_id | false
+	 */
+	static function get_post_id_by_meta($key, $value) {
+		global $wpdb;
+		$meta = $wpdb->get_results("SELECT * FROM `".$wpdb->postmeta."` WHERE meta_key='".$wpdb->escape($key)."' AND meta_value='".$wpdb->escape($value)."'");
+		if (is_array($meta) && !empty($meta) && isset($meta[0])) {
+			$meta = $meta[0];
+		}
+		if (is_object($meta)) {
+			return $meta->post_id;
+		}
+		else {
+			return false;
+		}
+	}
+
 	/**
 	 * @param   $request
 	 * @return  mixed
 	 */
 	static public function cmd_send_post( $request ) {
 
-	    global $wpdb;
 		if ( 'send_post' == $request->cmd ) {
+
+		    self::log('cmd->send_post');
+
+			global $wpdb;
 
 			$data = false;
 
@@ -497,135 +525,197 @@ class Materialpool_Contribute {
 			$query = $wpdb->prepare( "SELECT user_id FROM {$wpdb->usermeta} WHERE meta_key = 'autor_hash' and meta_value = %s",
 				$user
 			);
-			self::log('Query1: ' .$query  );
+			//self::log('Query1: ' .$query  );
 			$autor = $wpdb->get_var(  $query );
+
 			if ( $autor != null ) {
-                $query = $wpdb->prepare( "SELECT user_id FROM {$wpdb->usermeta} WHERE meta_key = 'autor_status' and meta_value = 'ok' and user_id = %s",
-                    $autor
-                );
-                self::log('Query2: ' .$query  );
-				$autor = $wpdb->get_var(  $query );
-				if ( $autor != null ) {
-					$query = $wpdb->prepare( "SELECT meta_value FROM {$wpdb->usermeta} WHERE meta_key = 'autor_link' and  user_id = %s",
-						$autor
-					);
-                    self::log('Query3: ' .$query  );
-					$autorid = $wpdb->get_var(  $query );
-
-					// URL Check
-					$url              = urldecode( $request->data->material_url );
-					$query = $wpdb->prepare( "SELECT count( meta_id ) as anzahl  FROM  $wpdb->postmeta pm, $wpdb->posts p  WHERE pm.meta_key = %s and pm.meta_value = %s and pm.post_id= p.ID and p.post_status = 'publish' ", 'material_url', $url );
-                    self::log('Query4: ' .$query  );
-					$anzahl = $wpdb->get_col( $query );
-					self::log( "Anzahl: " . $anzahl[ 0 ] );
-					if ( is_array( $anzahl ) && $anzahl[ 0 ] == 0 ) {
-
-                        if ($autorid != null ) $status=true;
-
-                        if (  $status == true ) {
-	                        $url              = base64_decode( $request->data->material_url );
-	                        $title            = base64_decode( $request->data->material_title );
-	                        $shortdescription = base64_decode( $request->data->material_shortdescription );
-	                        $description      = base64_decode( $request->data->material_description );
-	                        $keywords         = base64_decode( $request->data->material_interim_keywords );
-	                        $altersstufe      = base64_decode( $request->data->material_altersstufe );
-	                        $bildungsstufe    = base64_decode( $request->data->material_bildungsstufe );
-	                        $material_screenshot_url = base64_decode( $request->data->material_screenshot );
-	                        $medientyp        = base64_decode( $request->data->material_medientyp );
-
-	                        self::log( "screen:" . $material_screenshot_url.':' );
-	                        $material_cover_url = '';
-	                        $material_screenshot = '';
-	                        if ( $material_screenshot_url ==  '') {
-	                            $material_screenshot = "https://s.wordpress.com/mshots/v1/" . urlencode( $url ) . "?w=400&h=300";
-                            } else {
-		                        $material_cover_url = $material_screenshot_url;
-                            }
-	                        self::log( "screen:" . $material_screenshot.':' );
 
 
-                            $material_id = wp_insert_post( array(
+
+				$material_id      = $request->data->material_id ;
+				$url              = base64_decode( $request->data->material_url );
+				$title            = base64_decode( $request->data->material_title );
+				$shortdescription = base64_decode( $request->data->material_shortdescription );
+				$description      = base64_decode( $request->data->material_description );
+				$keywords         = base64_decode( $request->data->material_interim_keywords );
+				$altersstufe      = base64_decode( $request->data->material_altersstufe );
+				$bildungsstufe    = base64_decode( $request->data->material_bildungsstufe );
+				$material_screenshot_url = base64_decode( $request->data->material_screenshot );
+				$medientyp        = base64_decode( $request->data->material_medientyp );
+
+				self::log( "screen:" . $material_screenshot_url.':' );
+				$material_cover_url = '';
+				$material_screenshot = '';
+				if ( $material_screenshot_url ==  '') {
+					$material_screenshot = "https://s.wordpress.com/mshots/v1/" . urlencode( $url ) . "?w=400&h=300";
+				} else {
+					$material_cover_url = $material_screenshot_url;
+				}
+				self::log( "screen:" . $material_screenshot.':' );
+
+				// URL Check
+
+                $url         = urldecode( $url );
+
+				self::log('$material_$url: '. $url);
+
+                if(!$material_id){
+	                $material_id = self::get_post_id_by_meta('material_url', $url);
+                }
+
+				$description = json_decode($description,JSON_HEX_TAG );
+
+
+
+				self::log('$description: '. $description);
+				self::log('$material_id: '. $material_id);
+
+				$medien = json_decode( $medientyp );
+
+				self::log('medien: '.json_encode($medien));
+
+				$tempArr = array();
+				foreach ( $medien as $item ) {
+					$term = get_term_by( 'name', $item, 'medientyp' );
+					$tempArr[] = $term->term_id;
+				}
+				self::log('medientypes: '.json_encode($tempArr));
+				self::log('$material_id: '.$material_id);
+                self::log('medientyp: '.json_encode($medientyp));
+
+
+				if(!$material_id){
+
+                        $material_id = wp_insert_post( array(
                                 'post_author'                  => $autor,
                                 'post_title'                    => $title,
                                 'post_type'                     => "material",
-                            ));
+                        ));
 
+                        update_field( 'material_special',0, $material_id );
+                        update_field('material_url',$url, $material_id );
 
-                            update_field( 'material_special',0, $material_id );
-                            update_field('material_titel',$title, $material_id );
-                            update_field('material_kurzbeschreibung',$shortdescription, $material_id );
-                            update_field('material_beschreibung',$description, $material_id );
-                            update_field('material_schlagworte_interim',$keywords, $material_id );
-                            update_field('material_url',$url, $material_id );
-                            update_field('material_cover_url',$material_cover_url, $material_id );
-                            update_field('material_screenshot',$material_screenshot, $material_id );
+                        update_field('material_titel',$title, $material_id );
+                        update_field('material_kurzbeschreibung',$shortdescription, $material_id );
+                        update_field('material_beschreibung',$description, $material_id );
+                        update_field('material_cover_url',$material_cover_url, $material_id );
+                        update_field('material_schlagworte_interim',$keywords, $material_id );
+                        update_field('material_screenshot',$material_screenshot, $material_id );
+					    update_field('material_autoren',array($autorid), $material_id );
 
+                        $query = $wpdb->prepare( "SELECT user_id FROM {$wpdb->usermeta} WHERE meta_key = 'autor_status' and meta_value = 'ok' and user_id = %s",
+                            $autor
+                        );
+                        //self::log( 'Query2: ' . $query );
+                        $autor = $wpdb->get_var( $query );
+                        if ( $autor != null ) {
+                            $query = $wpdb->prepare( "SELECT meta_value FROM {$wpdb->usermeta} WHERE meta_key = 'autor_link' and  user_id = %s",
+                                $autor
+                            );
+                            self::log( 'Query3: ' . $query );
+                            $autorid = $wpdb->get_var( $query );
 
-	                        $alter = unserialize( $altersstufe );
-	                        self::log('alter : ' .$alter  );
-                            $tempArr = array();
-	                        foreach ( $alter as $item ) {
-		                        self::log('item: ' .$item  );
-	                            $term = get_term_by( 'name', $item, 'altersstufe' );
-                                wp_set_post_categories( $material_id, $term->term_id );
-                                $tempArr[] = $term->term_id;
-	                        }
-                            update_field( 'material_altersstufe', $tempArr, $material_id );
-                            unset ( $tempArr );
-	                        $bildung = unserialize( $bildungsstufe );
-                            self::log('bildungsstufe : ' .$bildungsstufe  );
-                            $tempArr = array();
-	                        foreach ( $bildung as $item ) {
-                                self::log('bildungsstufe item: ' .$item  );
-		                        $term = get_term_by( 'name', $item, 'bildungsstufe' );
-                                self::log('bildungsstufe cat: ' .$term->term_id  );
-                                wp_set_post_categories( $material_id, $term->term_id );
-                                $tempArr[] = $term->term_id;
-	                        }
-	                        update_field( 'material_bildungsstufe', $tempArr, $material_id );
-	                        unset ( $tempArr );
-	                        $medien = unserialize( $medientyp );
-                            $tempArr = array();
-	                        foreach ( $medien as $item ) {
-		                        $term = get_term_by( 'name', $item, 'medientyp' );
-                                wp_set_post_categories( $material_id, $term->term_id );
-                                $tempArr[] = $term->term_id;
-	                        }
-                            update_field( 'material_medientyp', $tempArr, $material_id );
-                            unset ( $tempArr );
-                            // remove Pods Handverlesen default
-                            //$pod->remove_from( 'material_vorauswahl', 2206 );
-
-	                        $post_type   = get_post_type( $material_id );
-	                        $post_parent = wp_get_post_parent_id( $material_id );
-	                        $post_name   = wp_unique_post_slug( sanitize_title( $title ), $material_id, 'publish', $post_type, $post_parent );
-
-	                        wp_publish_post( $material_id );
-
-                            // remove FacetCache
-	                        if ( class_exists( 'FacetWP_Cache' )) {
-		                        $facecache = new FacetWP_Cache();
-		                        $facecache->cleanup( 'all' );
-                            }
-                            wp_cache_flush(); // to get new permalink
-	                        $data = array(
-		                        'notice'=> true,
-		                        'answer' => array(
-		                                'status' => true,
-		                                'url' => get_permalink( $material_id),
-                                ),
-	                        );
-
-	                        Materialpool_Contribute::send_response(
-		                        $request->cmd ,
-		                        $data,
-		                        false
-	                        );
-	                        return $request;
                         }
-                    }
+					    update_field('material_autoren',array($autorid), $material_id );
+
+
+					    $alter = json_decode( $altersstufe );
+                        self::log('alter : ' .$alter  );
+                        $tempArr = array();
+                        foreach ( $alter as $item ) {
+                            self::log('item: ' .$item  );
+                            $term = get_term_by( 'name', $item, 'altersstufe' );
+	                        wp_set_post_terms( $material_id, $term->term_id ,'altersstufe');
+                            $tempArr[] = $term->term_id;
+                        }
+                        update_field( 'material_altersstufe', $tempArr, $material_id );
+                        unset ( $tempArr );
+                        $bildung = json_decode( $bildungsstufe );
+                        self::log('bildungsstufe : ' .$bildungsstufe  );
+                        $tempArr = array();
+                        foreach ( $bildung as $item ) {
+                            self::log('bildungsstufe item: ' .$item  );
+                            $term = get_term_by( 'name', $item, 'bildungsstufe' );
+                            self::log('bildungsstufe cat: ' .$term->term_id  );
+	                        wp_set_post_terms( $material_id, $term->term_id ,'bildungsstufe');
+                            $tempArr[] = $term->term_id;
+                        }
+                        update_field( 'material_bildungsstufe', $tempArr, $material_id );
+                        unset ( $tempArr );
+                        $medien = json_decode( $medientyp );
+                        $tempArr = array();
+                        foreach ( $medien as $item ) {
+                            $term = get_term_by( 'name', $item, 'medientyp' );
+	                        wp_set_post_terms( $material_id, $term->term_id,'medientyp' );
+                            $tempArr[] = $term->term_id;
+                        }
+                        update_field( 'material_medientyp', $tempArr, $material_id );
+                        unset ( $tempArr );
+                        // remove Pods Handverlesen default
+                        //$pod->remove_from( 'material_vorauswahl', 2206 );
+
+                        $post_type   = get_post_type( $material_id );
+                        $post_parent = wp_get_post_parent_id( $material_id );
+                        $post_name   = wp_unique_post_slug( sanitize_title( $title ), $material_id, 'publish', $post_type, $post_parent );
+
+                        wp_publish_post( $material_id );
+
+                        // remove FacetCache
+                        if ( class_exists( 'FacetWP_Cache' )) {
+                            $facecache = new FacetWP_Cache();
+                            $facecache->cleanup( 'all' );
+                        }
+                        wp_cache_flush(); // to get new permalink
+                        $data = array(
+                            'notice'=> true,
+                            'answer' => array(
+                                    'status' => true,
+                                    'url' => get_permalink( $material_id),
+                                    'id' =>  $material_id,
+                            ),
+                        );
+
+                        self:self::log(json_encode($data));
+
+                        Materialpool_Contribute::send_response(
+                            $request->cmd ,
+                            $data,
+                            false
+                        );
+                        return $request;
+
+                }else{
+
+                    update_field('material_titel',$title, $material_id );
+	                update_field('material_kurzbeschreibung',$shortdescription, $material_id );
+	                update_field('material_beschreibung',$description, $material_id );
+	                update_field('material_cover_url',$material_cover_url, $material_id );
+	                update_field('material_schlagworte_interim',$keywords, $material_id );
+	                update_field('material_screenshot',$material_screenshot, $material_id );
+
+	                if ( class_exists( 'FacetWP_Cache' )) {
+		                $facecache = new FacetWP_Cache();
+		                $facecache->cleanup( 'all' );
+	                }
+	                wp_cache_flush(); // to get new permalink
+	                $data = array(
+		                'notice'=> true,
+		                'answer' => array(
+			                'status' => true,
+			                'url' => get_permalink( $material_id),
+			                'id' =>  $material_id,
+		                ),
+	                );
+
+	                Materialpool_Contribute::send_response(
+		                $request->cmd ,
+		                $data,
+		                false
+	                );
+	                return $request;
                 }
 			}
+
 
 			$data = array(
 				'notice'=> $data,

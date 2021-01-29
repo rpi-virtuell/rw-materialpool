@@ -13,7 +13,7 @@
  * Plugin Name:       RW Materialpool
  * Plugin URI:        https://github.com/rpi-virtuell/rw-materialpool
  * Description:       RPI Virtuell Materialpool
- * Version:           0.0.1
+ * Version:           0.1.0
  * Author:            Frank Neumann-Staude
  * Author URI:        https://staude.net
  * License:           GNU General Public License v2
@@ -34,7 +34,7 @@ class Materialpool {
 	 * @since   0.0.1
 	 * @access  public
 	 */
-	static public $version = "0.0.1";
+	static public $version = "0.1.0";
 
 	/**
 	 * Singleton object holder
@@ -363,7 +363,7 @@ class Materialpool {
 		add_filter( 'rw_materialpool_contribute_cmd_parser', array( 'Materialpool_Contribute', 'cmd_say_hello' ) );
 		add_filter( 'rw_materialpool_contribute_cmd_parser', array( 'Materialpool_Contribute', 'cmd_list_authors' ) );
 		add_filter( 'rw_materialpool_contribute_cmd_parser', array( 'Materialpool_Contribute', 'cmd_list_bildungsstufen' ) );
-		add_filter( 'rw_materialpool_contribute_cmd_parser', array( 'Materialpool_Contribute', 'cmd_list_altersstufen' ) );
+        add_filter( 'rw_materialpool_contribute_cmd_parser', array( 'Materialpool_Contribute', 'cmd_list_altersstufen' ) );
 
 		add_action( 'admin_menu', array( 'Materialpool_Contribute', 'options_page' ) );
 		add_action( 'admin_menu', array( 'Materialpool_Contribute', 'settings_init' ) );

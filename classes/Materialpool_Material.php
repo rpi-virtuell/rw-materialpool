@@ -1435,10 +1435,11 @@ END;
         global $post;
         global $wpdb;
         $result = $wpdb->get_row( $wpdb->prepare("SELECT count(pm.post_id) as count FROM $wpdb->postmeta pm, $wpdb->posts p WHERE pm.meta_key = %s and pm.meta_value = %s and pm.post_id = p.ID and p.post_status = %s", 'material_werk', $post->ID , 'publish') );
-        if ( is_object( $result)  && $result->count == 0 ) {
-            return false;
-        } else {
+	    if ( is_object( $result)  && $result->count > 0 ) {
+
             return true;
+        } else {
+            return false;
         }
     }
 
@@ -1453,10 +1454,10 @@ END;
         global $post;
         global $wpdb;
         $result = $wpdb->get_row( $wpdb->prepare("SELECT count(post_id) as count FROM $wpdb->postmeta WHERE meta_key = %s and meta_value != '' and post_id = %s", 'material_werk', $post->ID ) );
-        if ( is_object( $result)  && $result->count == 0 ) {
-            return false;
-        } else {
+        if ( is_object( $result)  && $result->count > 0 ) {
             return true;
+        } else {
+            return false;
         }
     }
 
@@ -2793,6 +2794,8 @@ END;
 
     static public function admin_posts_filter( $query ) {
         global $pagenow, $wpdb;
+
+
         if ( is_admin() && $pagenow=='edit.php' && isset($_GET['ORGA_FILTER_FIELD_NAME']) && $_GET['ORGA_FILTER_FIELD_NAME'] != '') {
             $query->query_vars['meta_key'] = 'material_organisation';
             $query->query_vars['meta_value'] = $_GET['ORGA_FILTER_FIELD_NAME'];
@@ -2804,7 +2807,7 @@ END;
 
         if ( is_admin() && $pagenow=='edit.php' && isset( $_REQUEST[ 'mode'] ) &&  $_REQUEST[ 'mode'] == 'incomplete' )  {
             $result = $wpdb->get_results("
-        SELECT distinct( $wpdb->posts.ID ) , $wpdb->posts.post_title, DATE_FORMAT( post_date, '%d.%m.%y' ) AS datum  FROM 
+SELECT distinct( $wpdb->posts.ID ) , $wpdb->posts.post_title, DATE_FORMAT( post_date, '%d.%m.%y' ) AS datum  FROM 
     $wpdb->posts, $wpdb->postmeta 
 WHERE 
     $wpdb->posts.ID = $wpdb->postmeta.post_id AND  
@@ -3309,7 +3312,7 @@ WHERE
         )
     )
 )   
-order by wp_posts.post_date  asc  ") ;
+order by wp_posts.post_date  desc  ") ;
 
         foreach ( $result as $obj ) {
             if ($count == 0 ) {

@@ -76,112 +76,129 @@ class Materialpool_Dashboard {
         /**
          * Register Material Dashboard Widgets
          */
-        wp_add_dashboard_widget(
-            'mp-material-count',         // Widget slug.
-            'Materialien Anzahl',         // Title.
-            array( 'Materialpool_Dashboard', 'material_count') // Display function.
-        );
-        wp_add_dashboard_widget(
-            'mp-autor-count',         // Widget slug.
-            'AutorInnen Anzahl',         // Title.
-            array( 'Materialpool_Dashboard', 'autor_count') // Display function.
-        );
-        wp_add_dashboard_widget(
-            'mp-orga-count',         // Widget slug.
-            'Organisationen Anzahl',         // Title.
-            array( 'Materialpool_Dashboard', 'organisation_count') // Display function.
-        );
 
         wp_add_dashboard_widget(
-            'mp-search-stat-1',         // Widget slug.
-            'Suchanfragen Heute',         // Title.
-            array( 'Materialpool_Dashboard', 'searchwp_poular_search_1_widget') // Display function.
-        );
-        wp_add_dashboard_widget(
-            'mp-search-stat-7',         // Widget slug.
-            'Suchanfragen 7 Tage',         // Title.
-            array( 'Materialpool_Dashboard', 'searchwp_poular_search_7_widget') // Display function.
-        );
-        wp_add_dashboard_widget(
-            'mp-search-stat-30',         // Widget slug.
-            'Suchanfragen 30 Tage',         // Title.
-            array( 'Materialpool_Dashboard', 'searchwp_poular_search_30_widget') // Display function.
-        );
-        wp_add_dashboard_widget(
-            'mp-search-fail-stat-1',         // Widget slug.
-            'Fehlgeschlagene Suchanfragen Heute',         // Title.
-            array( 'Materialpool_Dashboard', 'searchwp_failed_search_1_widget') // Display function.
-        );
-
-        wp_add_dashboard_widget(
-            'mp-search-fail-stat-7',         // Widget slug.
-            'Fehlgeschlagene Suchanfragen 7 Tage',         // Title.
-            array( 'Materialpool_Dashboard', 'searchwp_failed_search_7_widget') // Display function.
-        );
-
-        wp_add_dashboard_widget(
-            'mp-search-fail-stat-30',         // Widget slug.
-            'Fehlgeschlagene Suchanfragen 30 Tage',         // Title.
-            array( 'Materialpool_Dashboard', 'searchwp_failed_search_30_widget') // Display function.
-        );
-        wp_add_dashboard_widget(
-            'mp-depublizierungen',         // Widget slug.
-            'Depublizierungen',         // Title.
-            array( 'Materialpool_Dashboard', 'depublizierungen') // Display function.
-        );
-        wp_add_dashboard_widget(
-            'mp-wiedervorlagen',         // Widget slug.
-            'Wiedervorlagen',         // Title.
-            array( 'Materialpool_Dashboard', 'wiedervorlage') // Display function.
-        );
-
-        wp_add_dashboard_widget(
-            'mp-material-7',         // Widget slug.
-            'Materialabrufe 7 Tage',         // Title.
-            array( 'Materialpool_Statistic', 'material7') // Display function.
-        );
-
-        wp_add_dashboard_widget(
-            'mp-thema-7',         // Widget slug.
-            'Themenseitenabrufe 7 Tage',         // Title.
-            array( 'Materialpool_Statistic', 'thema7') // Display function.
-        );
-
-        wp_add_dashboard_widget(
-            'mp-autoren-7',         // Widget slug.
-            'Autorenseitenabrufe 7 Tage',         // Title.
-            array( 'Materialpool_Statistic', 'autoren7') // Display function.
-        );
-
-        wp_add_dashboard_widget(
-            'mp-organisaion-7',         // Widget slug.
-            'Organisationsseitenabrufe 7 Tage',         // Title.
-            array( 'Materialpool_Statistic', 'organisationen7') // Display function.
-        );
-
-        wp_add_dashboard_widget(
-            'mp-material-wochentag',         // Widget slug.
-            'Materialabrufe nach Wochentag',         // Title.
-            array( 'Materialpool_Statistic', 'material_wochentag') // Display function.
-        );
-
-        wp_add_dashboard_widget(
-            'mp-material-monat',         // Widget slug.
-            'Materialabrufe nach Monat',         // Title.
-            array( 'Materialpool_Statistic', 'material_monate') // Display function.
-        );
-
-        wp_add_dashboard_widget(
-            'mp-notcomplete',         // Widget slug.
-            'Unvollständiges Material',         // Title.
-            array( 'Materialpool_Dashboard', 'not_complete') // Display function.
-        );
-
-		wp_add_dashboard_widget(
 			'mp-autor',         // Widget slug.
 			'Autorenaktivität',         // Title.
 			array( 'Materialpool_Dashboard', 'autor') // Display function.
 		);
+
+		wp_add_dashboard_widget(
+			'mp-notcomplete',         // Widget slug.
+			'Unvollständiges Material',         // Title.
+			array( 'Materialpool_Dashboard', 'not_complete') // Display function.
+		);
+
+		wp_add_dashboard_widget(
+			'mp-depublizierungen',         // Widget slug.
+			'Depublizierungen',         // Title.
+			array( 'Materialpool_Dashboard', 'depublizierungen') // Display function.
+		);
+
+		wp_add_dashboard_widget(
+			'mp-wiedervorlagen',         // Widget slug.
+			'Wiedervorlagen',         // Title.
+			array( 'Materialpool_Dashboard', 'wiedervorlage') // Display function.
+		);
+		wp_add_dashboard_widget(
+			'mp-search-stat-7',         // Widget slug.
+			'Suchanfragen 7 Tage',         // Title.
+			array( 'Materialpool_Dashboard', 'searchwp_poular_search_7_widget') // Display function.
+		);
+
+		/*
+				wp_add_dashboard_widget(
+					'mp-material-7',         // Widget slug.
+					'Materialabrufe 7 Tage',         // Title.
+					array( 'Materialpool_Statistic', 'material7') // Display function.
+				);
+
+
+
+
+				wp_add_dashboard_widget(
+					'mp-material-monat',         // Widget slug.
+					'Materialabrufe nach Monat',         // Title.
+					array( 'Materialpool_Statistic', 'material_monate') // Display function.
+				);
+
+
+
+				wp_add_dashboard_widget(
+					'mp-material-count',         // Widget slug.
+					'Materialien Anzahl',         // Title.
+					array( 'Materialpool_Dashboard', 'material_count') // Display function.
+				);
+				wp_add_dashboard_widget(
+					'mp-orga-count',         // Widget slug.
+					'Organisationen Anzahl',         // Title.
+					array( 'Materialpool_Dashboard', 'organisation_count') // Display function.
+				);
+
+				wp_add_dashboard_widget(
+					'mp-search-stat-1',         // Widget slug.
+					'Suchanfragen Heute',         // Title.
+					array( 'Materialpool_Dashboard', 'searchwp_poular_search_1_widget') // Display function.
+				);
+				wp_add_dashboard_widget(
+					'mp-search-stat-7',         // Widget slug.
+					'Suchanfragen 7 Tage',         // Title.
+					array( 'Materialpool_Dashboard', 'searchwp_poular_search_7_widget') // Display function.
+				);
+				wp_add_dashboard_widget(
+					'mp-search-stat-30',         // Widget slug.
+					'Suchanfragen 30 Tage',         // Title.
+					array( 'Materialpool_Dashboard', 'searchwp_poular_search_30_widget') // Display function.
+				);
+				wp_add_dashboard_widget(
+					'mp-search-fail-stat-1',         // Widget slug.
+					'Fehlgeschlagene Suchanfragen Heute',         // Title.
+					array( 'Materialpool_Dashboard', 'searchwp_failed_search_1_widget') // Display function.
+				);
+				wp_add_dashboard_widget(
+					'mp-autor-count',         // Widget slug.
+					'AutorInnen Anzahl',         // Title.
+					array( 'Materialpool_Dashboard', 'autor_count') // Display function.
+				);
+				wp_add_dashboard_widget(
+					'mp-search-fail-stat-7',         // Widget slug.
+					'Fehlgeschlagene Suchanfragen 7 Tage',         // Title.
+					array( 'Materialpool_Dashboard', 'searchwp_failed_search_7_widget') // Display function.
+				);
+
+				wp_add_dashboard_widget(
+					'mp-search-fail-stat-30',         // Widget slug.
+					'Fehlgeschlagene Suchanfragen 30 Tage',         // Title.
+					array( 'Materialpool_Dashboard', 'searchwp_failed_search_30_widget') // Display function.
+				);
+
+
+				wp_add_dashboard_widget(
+					'mp-thema-7',         // Widget slug.
+					'Themenseitenabrufe 7 Tage',         // Title.
+					array( 'Materialpool_Statistic', 'thema7') // Display function.
+				);
+
+				wp_add_dashboard_widget(
+					'mp-autoren-7',         // Widget slug.
+					'Autorenseitenabrufe 7 Tage',         // Title.
+					array( 'Materialpool_Statistic', 'autoren7') // Display function.
+				);
+
+				wp_add_dashboard_widget(
+					'mp-organisaion-7',         // Widget slug.
+					'Organisationsseitenabrufe 7 Tage',         // Title.
+					array( 'Materialpool_Statistic', 'organisationen7') // Display function.
+				);
+
+				wp_add_dashboard_widget(
+					'mp-material-wochentag',         // Widget slug.
+					'Materialabrufe nach Wochentag',         // Title.
+					array( 'Materialpool_Statistic', 'material_wochentag') // Display function.
+				);
+
+
+		*/
 
 
      //   wp_add_dashboard_widget(
