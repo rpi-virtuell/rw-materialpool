@@ -1,2 +1,7 @@
 .DS_Store
 /clients.log
+/.idea/.gitignore
+/.idea/modules.xml
+/.idea/php.xml
+/.idea/rw-materialpool.iml
+/.idea/vcs.xml
