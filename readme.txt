@@ -3,7 +3,7 @@ Contributors: f.staude
 Tags: materialpool
 Requires at least: 4.7
 Tested up to: 5.6.1
-Stable tag: 0.1.0
+Stable tag: 0.1.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -89,6 +89,22 @@ material-vorschlag
 
 
 == Installation ==
+
+
+== required plugins ==
+
+ - Advanced Custom Fields PRO
+ - Admin Columns Pro - Advanced Custom Fields (ACF)
+ - Admin Columns Pro
+ - FacetWP
+ - FacetWP - Star Rating
+ - FacetWP - Cache
+ - SearchWP
+ - SearchWP Boolean Query
+ - SearchWP Metrics
+ - WP Crontrol
+
+
 
 
 == Frequently Asked Questions ==

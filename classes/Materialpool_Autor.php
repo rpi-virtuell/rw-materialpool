@@ -19,119 +19,7 @@ class Materialpool_Autor {
 	 * @filters materialpool_autor_posttype_args
 	 *
 	 */
-	static public function register_post_type() {
-		$labels = array(
-			"name"          => __( 'Autoren', Materialpool::$textdomain ),
-			"singular_name" => __( 'Autor', 'twentyfourteen' ),
-		);
 
-		$args = array(
-			"label"               => __( 'Autoren', Materialpool::$textdomain ),
-			"labels"              => apply_filters( 'materialpool_autor_posttype_label', $labels ),
-			"description"         => "",
-			"public"              => true,
-			"publicly_queryable"  => true,
-			"show_ui"             => true,
-			"show_in_rest"        => false,
-			"rest_base"           => "",
-			"has_archive"         => 'autor',
-			"show_in_menu"        => true, //'materialpool',
-			"exclude_from_search" => false,
-			"capability_type"     => "post",
-			"map_meta_cap"        => true,
-			"hierarchical"        => false,
-			"rewrite"             => array( "slug" => "autor", "with_front" => true ),
-			"query_var"           => true,
-			"supports"            => false,
-		);
-		register_post_type( "autor", apply_filters( 'materialpool_autor_posttype_args', $args ) );
-
-	}
-
-	/**
-	 *
-	 * @since 0.0.1
-	 * @access    public
-	 * @filters materialpool_autor_meta_field
-	 *
-	 */
-	static public function register_meta_fields() {
-		$cmb_author = new_cmb2_box( array(
-			'id'           => 'cmb_autor',
-			'title'        => __( 'Autor', Materialpool::get_textdomain() ),
-			'object_types' => array( 'autor' ),
-			'context'      => 'normal',
-			'priority'     => 'core',
-			'show_names'   => true,
-			'cmb_styles'   => true,
-			'closed'       => false,
-		) );
-
-
-		$cmb_author->add_field( array(
-			'name'    => _x( 'Firstname', 'Author Editpage Fieldname', Materialpool::get_textdomain() ),
-			'desc'    => _x( 'firstname of author', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain() ),
-			'default' => '',
-			'id'      => 'autor_firstname',
-			'type'    => 'text',
-		) );
-
-		$cmb_author->add_field( array(
-			'name'    => _x( 'lastname', 'Author Editpage Fieldname', Materialpool::get_textdomain() ),
-			'desc'    => _x( 'lastname of author', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain() ),
-			'default' => '',
-			'id'      => 'autor_lastname',
-			'type'    => 'text',
-		) );
-
-		$cmb_author->add_field( array(
-			'name'    => _x( 'URL', 'Author Editpage Fieldname', Materialpool::get_textdomain() ),
-			'desc'    => _x( 'Website of author', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain() ),
-			'default' => '',
-			'id'      => 'autor_url',
-			'type'    => 'text_url',
-		) );
-
-		$cmb_author->add_field( array(
-			'name'    => _x( 'RPI BuddyPress Username', 'Author Editpage Fieldname', Materialpool::get_textdomain() ),
-			'desc'    => _x( 'username of author on rpi buddypress', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain() ),
-			'default' => '',
-			'id'      => 'autor_buddypress',
-			'type'    => 'text',
-		) );
-
-		$cmb_author->add_field( array(
-			'name'    => _x( 'Email', 'Author Editpage Fieldname', Materialpool::get_textdomain() ),
-			'desc'    => _x( 'email of author (for gravatar)', 'Organisation Editpage Fielddescription', Materialpool::get_textdomain() ),
-			'default' => '',
-			'id'      => 'autor_email',
-			'type'    => 'text_email',
-		) );
-
-		$cmb_author->add_field( array(
-			'name'    => _x( 'Picture URL', 'Author Editpage Fieldname', Materialpool::get_textdomain() ),
-			'desc'    => _x( 'URL of author picture', 'Author Editpage Fielddescription', Materialpool::get_textdomain() ),
-			'default' => '',
-			'id'      => 'autor_picture_url',
-			'type'    => 'text_url',
-		) );
-
-		$cmb_author->add_field( array(
-			'name' => 'Organisaion',
-			'desc' => 'Hier fehlt die zuordnung zu Organisationen',
-			'type' => 'title',
-			'id'   => 'autor_orga'
-		) );
-
-		$cmb_author->add_field( array(
-			'name' => 'Material',
-			'desc' => 'Hier fehlt die Auflistung von Materialien des Autors',
-			'type' => 'title',
-			'id'   => 'autor_material'
-		) );
-
-		$cmb_author = apply_filters( 'materialpool_autor_meta_field', $cmb_author );
-	}
 
 	/**
 	 *
@@ -190,19 +78,19 @@ class Materialpool_Autor {
 		unset( $columns );
 		$columns = array(
 			'autor-id'           => _x( 'ID', 'Autor list field', Materialpool::$textdomain ),
-			'autor_bild_url'     => _x( 'Picture', 'Autor list field', Materialpool::$textdomain ),
-			'autor_nachname'     => _x( 'Lastname', 'Autor list field', Materialpool::$textdomain ),
-			'autor_vorname'      => _x( 'Firstname', 'Autor list field', Materialpool::$textdomain ),
-			'autor_views'        => _x( 'Views', 'Autor list field', Materialpool::$textdomain ),
-			'material_views'     => _x( 'MaterialViews', 'Autor list field', Materialpool::$textdomain ),
-			'autor_buddypress'   => _x( 'BuddyPress', 'Autor list field', Materialpool::$textdomain ),
-			'autor_email'        => _x( 'Email', 'Autor list field', Materialpool::$textdomain ),
 			'autor_nachricht'    => _x( 'Emailbenachrichtigung', 'Autor list field', Materialpool::$textdomain ),
 			'date'               => __( 'Date' ),
-			'autor_organisation' => _x( 'Organisationen', 'Autor list field', Materialpool::$textdomain ),
-			'autor_material'     => _x( '#Material', 'Autor list field', Materialpool::$textdomain ),
-			'autor_owner'        => _x( 'Eintrager', 'Autor list field', Materialpool::$textdomain ),
 			'autor_einverstaendnis' => _x( 'Einverständnis', 'Autor list field', Materialpool::$textdomain ),
+//			'autor_bild_url'     => _x( 'Picture', 'Autor list field', Materialpool::$textdomain ),
+//			'autor_nachname'     => _x( 'Lastname', 'Autor list field', Materialpool::$textdomain ),
+//			'autor_vorname'      => _x( 'Firstname', 'Autor list field', Materialpool::$textdomain ),
+//			'autor_views'        => _x( 'Views', 'Autor list field', Materialpool::$textdomain ),
+//			'material_views'     => _x( 'MaterialViews', 'Autor list field', Materialpool::$textdomain ),
+//			'autor_buddypress'   => _x( 'BuddyPress', 'Autor list field', Materialpool::$textdomain ),
+//			'autor_email'        => _x( 'Email', 'Autor list field', Materialpool::$textdomain ),
+//			'autor_organisation' => _x( 'Organisationen', 'Autor list field', Materialpool::$textdomain ),
+//			'autor_material'     => _x( '#Material', 'Autor list field', Materialpool::$textdomain ),
+//			'autor_owner'        => _x( 'Eintrager', 'Autor list field', Materialpool::$textdomain ),
 		);
 
 		return $columns;
@@ -267,7 +155,7 @@ class Materialpool_Autor {
 		}
 
 		if ( $column_name == 'autor_organisation' ) {
-			$organisationen = get_metadata( 'post', $post_id, 'material_organisation' );
+			$organisationen = get_metadata( 'post', $post_id, 'autor_organisation' );
 			if ( is_array( $organisationen[0] )) {
 				foreach ( $organisationen[0] as $organisation ) {
 					$post = get_post( $organisation );
@@ -417,8 +305,11 @@ class Materialpool_Autor {
 			unset ( $autoren_ids );
 		}
 
-		// Organisationen suchen die mit diesem Autoren verbunden sind
-		$organisationen = $wpdb->get_col( $wpdb->prepare( "SELECT meta_value   FROM  $wpdb->postmeta WHERE meta_key = %s and post_id = %s", 'autor_organisation', $post_id ) );
+
+		$organisationen = get_post_meta($post_id,'autor_organisation', true);
+
+
+		//$organisationen = $wpdb->get_col( $wpdb->prepare( "SELECT meta_value   FROM  $wpdb->postmeta WHERE meta_key = %s and post_id = %s", 'autor_organisation', $post_id ) );
 
 		delete_post_meta( $post_id, 'autor_organisation_facet' );
 		foreach ( $organisationen as $organisationen_id ) {
@@ -426,13 +317,13 @@ class Materialpool_Autor {
 			$organisation_title = $organisation_meta->post_title;
 			add_post_meta( $post_id, 'autor_organisation_facet', $organisation_title );
 		}
+
 		if ( is_object( FWP() ) ) {
 			FWP()->indexer->save_post( $post_id );
 		}
 		if ( class_exists( 'FWP_Cache') ) {
 			FWP_Cache()->cleanup();
 		}
-
 	}
 
 
@@ -463,7 +354,7 @@ class Materialpool_Autor {
 					$content = str_replace( '%material_last_material%', Materialpool_Autor::last_material_name( $post_id ) , $content );
 					$content = str_replace( '%redakteur_name%', Materialpool_Autor::redaktuer_name($post_id ) , $content );
 					$content = str_replace( '%redakteur_reply_email%',  'redaktion@rpi-virtuell.de'  , $content ); //Materialpool_Autor::redakteur_email() , $content );
-					
+
 
 					$headers[] = 'From: Redaktion rpi-virtuell <redaktion@rpi-virtuell.de>';
 					$headers[] = 'Reply-To: Redaktion rpi-virtuell <redaktion@rpi-virtuell.de>';
@@ -730,7 +621,7 @@ class Materialpool_Autor {
     }
 
 	/**
-	 *
+	 * Organistionen eines Autors
 	 * @since 0.0.1
 	 * @access	public
 	 *
@@ -738,8 +629,23 @@ class Materialpool_Autor {
 	static public function get_organisationen() {
 		global $post;
 
-		return get_metadata( 'post', $post->ID, 'material_organisation', false );
+		return get_metadata( 'post', $post->ID, 'autor_organisation', true );
 	}
+	/**
+	 * ob es Organistionen eines Autors gibt
+	 * @since 0.1.0
+	 * @access	public
+	 *
+	 */
+	static public function has_organisationen() {
+	    if(is_array($o = self::get_organisationen())){
+	        if(count(get_organisationen)>0){
+	            return true;
+            }
+        }
+	    return false;
+	}
+
 
 	/**
 	 *
@@ -749,7 +655,7 @@ class Materialpool_Autor {
 	 */
 	static public function organisationen_html() {
 		$organistionen = Materialpool_Autor::get_organisationen();
-		foreach ( $organistionen[0] as $organisation ) {
+		foreach ( $organistionen as $organisation ) {
 			$url = get_permalink( $organisation );
 			$post = get_post( $organisation );
 			echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-volumes', 'materialpool-template-material-volumes' ) .'">' . $post->post_title . '</a><br>';
@@ -766,7 +672,7 @@ class Materialpool_Autor {
      */
     static public function organisation_html_cover () {
         $organistionen = Materialpool_Autor::get_organisationen();
-        foreach ( $organistionen[0] as $organisation ) {
+        foreach ( $organistionen as $organisation ) {
             $url = get_permalink( $organisation );
             $post = get_post( $organisation );
             $logo = get_metadata( 'post', $organisation, 'organisation_logo_url', true );
@@ -789,8 +695,8 @@ class Materialpool_Autor {
 	 */
 	static public function get_materialien() {
 		global $post;
+		return get_metadata( 'post', $post->ID, 'material_autoren', true );
 
-		return get_metadata( 'post', $post->ID, 'autor_material', false );
 	}
 
 	/**
@@ -861,13 +767,10 @@ class Materialpool_Autor {
      */
     static public function get_count_posts_per_autor ($autor_id = 0) {
 	    global $post;
-	    $autor_id = ($autor_id>0)?$autor_id:$post->ID;
-	    $autors = get_metadata( 'post', $autor_id, 'material_autoren' );
-	    $data = sizeof( $autors[0] );
+	    $autor_id = ( $autor_id > 0 ) ? $autor_id:$post->ID;
 
-
-        return $data;
-
+	    $counted = get_metadata( 'post', $autor_id, 'autor_material_count', true );
+	    return $counted;
     }
 
 	/**

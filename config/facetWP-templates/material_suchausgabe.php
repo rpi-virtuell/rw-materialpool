@@ -16,28 +16,28 @@ ob_start();
         </div>
         <div class="thema-description">
             <p class="thema-excerpt">
-                <?php the_excerpt(); ?>
+				<?php the_excerpt(); ?>
             </p>
         </div>
         <div class="clear"></div>
     </div>
 
 
-    <?php else: ?>
+	<?php else: ?>
 
     <div class="facet-treffer<?php echo (Materialpool_Material::is_alpika()) ? ' alpika' : ''; ?><?php echo (Materialpool_Material::is_special()) ? ' special' : ''; ?>">
         <div class="facet-treffer-mediatyps">
             <ul>
-                <?php $type = Materialpool_Material::get_mediatyps_root();
-                foreach ($type as $val) {
-                    ?>
+				<?php $type = Materialpool_Material::get_mediatyps_root();
+				foreach ($type as $val) {
+					?>
                     <li>
 							<span title="<?php echo $val['name']; ?>" class="fa-stack fa-2x">
 								<i class="fa fa-circle fa-stack-2x" style="color: <?php echo $val['farbe']; ?>"></i>
 								<i class="fa <?php echo $val['icon']; ?> fa-stack-1x icon-weiss"></i>
 							</span>
                     </li>
-                <?php } ?>
+				<?php } ?>
             </ul>
         </div>
         <div class="facet-treffer-content">
@@ -47,39 +47,39 @@ ob_start();
             </h2>
 
             <p class="search-head">
-                <?php if (Materialpool_Material::get_organisation()[0]) {
-                    echo Materialpool_Material::organisation_facet_html() . '<br>';
-                }
-                if (Materialpool_Material::get_autor()) {
-                    echo Materialpool_Material::autor_facet_html();
-                }
-                ?>
+				<?php if (Materialpool_Material::get_organisation()[0]) {
+					echo Materialpool_Material::organisation_facet_html() . '<br>';
+				}
+				if (Materialpool_Material::get_autor()) {
+					echo Materialpool_Material::autor_facet_html();
+				}
+				?>
             </p>
             <p class="search-description">
-                <?php echo Materialpool_Material::cover_facet_html(); ?>
+				<?php echo Materialpool_Material::cover_facet_html(); ?>
             <p class="material-shortdescription"><?php Materialpool_Material::shortdescription(); ?></p>
-            <?php echo wp_trim_words(wp_strip_all_tags(Materialpool_Material::get_description())); ?>
+			<?php echo wp_trim_words(wp_strip_all_tags(Materialpool_Material::get_description())); ?>
             </p>
             <p><?php
-                if ( Materialpool_Material::get_picture_source() != '' ) {
-                    if ( Materialpool_Material::get_picture_url() != '') {
-                        echo  "Bildquelle: <a href='". Materialpool_Material::get_picture_url() ."'>".Materialpool_Material::get_picture_source()."</a>";
-                    } else {
-                        echo  "Bildquelle: ".Materialpool_Material::get_picture_source();
-                    }
-                } else {
-                    if ( Materialpool_Material::get_picture_url() != '') {
-                        $host = parse_url(Materialpool_Material::get_picture_url() );
+				if ( Materialpool_Material::get_picture_source() != '' ) {
+					if ( Materialpool_Material::get_picture_url() != '') {
+						echo  "Bildquelle: <a href='". Materialpool_Material::get_picture_url() ."'>".Materialpool_Material::get_picture_source()."</a>";
+					} else {
+						echo  "Bildquelle: ".Materialpool_Material::get_picture_source();
+					}
+				} else {
+					if ( Materialpool_Material::get_picture_url() != '') {
+						$host = parse_url(Materialpool_Material::get_picture_url() );
 
-                        if ( $host[ 'host' ] )
-                            echo  "Bildquelle: <a href='". Materialpool_Material::get_picture_url() ."'>". $host[ 'host' ] ."</a>";
-                    }
-                }
-                ?>
+						if ( $host[ 'host' ] )
+							echo  "Bildquelle: <a href='". Materialpool_Material::get_picture_url() ."'>". $host[ 'host' ] ."</a>";
+					}
+				}
+				?>
             </p>
             <div class="facet-tags">
-                <?php echo Materialpool_Material::bildungsstufe_facet_html(); ?>
-                <?php echo Materialpool_Material::inklusion_facet_html(); ?>
+				<?php echo Materialpool_Material::bildungsstufe_facet_html(); ?>
+				<?php echo Materialpool_Material::inklusion_facet_html(); ?>
 
             </div>
             <div style="clear: both;"></div>
@@ -87,29 +87,29 @@ ob_start();
                 <strong>Schlagworte: </strong> <?php echo Materialpool_Material::get_schlagworte_html(); ?>
         </div>
 
-        <?php endif;
-        $buffer = ob_get_contents();
-        ob_end_clean();
-        echo $buffer;
-        set_transient( 'facet_serach2_entry-'.$post->ID, $buffer );
-        } else {
-            echo $transient;
-        }
-        ?>
-        <?php if (is_user_logged_in() ) { ?>
+		<?php endif;
+		$buffer = ob_get_contents();
+		ob_end_clean();
+		echo $buffer;
+		set_transient( 'facet_serach2_entry-'.$post->ID, $buffer );
+		} else {
+			echo $transient;
+		}
+		?>
+		<?php if (is_user_logged_in() ) { ?>
 
             <div style="float: right;">
 
                 <span id="themenseitenedit_<?php echo $post->ID; ?>" data-materialid="<?php echo $post->ID; ?>" data-materialtitel="<?php echo $post->post_title; ?>" data-materialurl="<?php echo get_permalink( $post->ID) ; ?>" class="themenseitenedit btn-neutral"><i class="fas fa-ellipsis-v"> </i></span>
             </div>
             <div style="clear: both;"></div>
-        <?php } ?>
+		<?php } ?>
         <div class="clear"></div>
 
     </div>
 
 
-    <?php endwhile; ?>
+	<?php endwhile; ?>
     <script>
         jQuery(document).ready(function(){
 

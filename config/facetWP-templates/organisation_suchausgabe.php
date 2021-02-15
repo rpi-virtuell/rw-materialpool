@@ -1,4 +1,4 @@
-
+<!-- unused -->
 <?php while ( have_posts() ) : the_post(); ?>
 	<div class="entry-content autor">
 		<div class="autor-left">

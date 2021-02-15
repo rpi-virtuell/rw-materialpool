@@ -13,7 +13,7 @@
  * Plugin Name:       RW Materialpool
  * Plugin URI:        https://github.com/rpi-virtuell/rw-materialpool
  * Description:       RPI Virtuell Materialpool
- * Version:           0.1.0
+ * Version:           0.1.1
  * Author:            Frank Neumann-Staude
  * Author URI:        https://staude.net
  * License:           GNU General Public License v2
@@ -34,7 +34,7 @@ class Materialpool {
 	 * @since   0.0.1
 	 * @access  public
 	 */
-	static public $version = "0.1.0";
+	static public $version = "0.1.1";
 
 	/**
 	 * Singleton object holder
@@ -113,6 +113,7 @@ class Materialpool {
 	 * @action  materialpool_init
 	 */
 	public function __construct () {
+
 		// set the textdomain variable
 		self::$textdomain = self::get_textdomain();
 
@@ -147,10 +148,12 @@ class Materialpool {
 
         // Add Filter & Actions for Material
         add_filter( 'template_include', array( 'Materialpool_Material', 'load_template' ) );
-        add_action( 'manage_material_posts_columns', array( 'Materialpool_Material', 'cpt_list_head') );
-        add_action( 'manage_material_posts_custom_column', array( 'Materialpool_Material', 'cpt_list_column'), 10,2 );
-        add_action( 'manage_edit-material_sortable_columns', array( 'Materialpool_Material', 'cpt_sort_column') );
-		add_action( 'save_post', array( 'Materialpool_Material', 'generate_title') );
+
+//        add_action( 'manage_material_posts_columns', array( 'Materialpool_Material', 'cpt_list_head') );
+//        add_action( 'manage_material_posts_custom_column', array( 'Materialpool_Material', 'cpt_list_column'), 10,2 );
+//        add_action( 'manage_edit-material_sortable_columns', array( 'Materialpool_Material', 'cpt_sort_column') );
+
+        add_action( 'save_post', array( 'Materialpool_Material', 'generate_title') );
         add_action( 'admin_menu' , array( 'Materialpool_Material', 'remove_post_custom_fields' ) );
         add_filter( 'posts_join', array( 'Materialpool_Material', 'material_list_post_join' ) );
         add_filter( 'posts_where', array( 'Materialpool_Material', 'material_list_post_where' ) );
@@ -165,7 +168,10 @@ class Materialpool {
         add_action( 'init', array( 'Materialpool', 'get_crossdomain_viewer_url' ) );
         add_action( 'mp_depublizierung', array( 'Materialpool_Material', 'depublizierung' ) );
 		add_action( 'mp_screenshot_generation', array( 'Materialpool', 'mp_screenshot_generation' ) );
-        add_filter('template_redirect', array( 'Materialpool_Material', 'check_404_old_material' ) );
+
+		add_action( 'mp_stats_material_meta_update', array( 'Materialpool_Statistic', 'material_meta_update' ) );
+
+		add_filter('template_redirect', array( 'Materialpool_Material', 'check_404_old_material' ) );
         add_action( 'restrict_manage_posts', array( 'Materialpool_Material', 'add_taxonomy_filters' ) );
         add_shortcode( 'material-vorschlag', array( 'Materialpool_Material', 'vorschlag_shortcode' ) );
         remove_shortcode( 'viewerjs', 'viewerjs_shortcode_handler');
@@ -187,7 +193,7 @@ class Materialpool {
         /*
          * Register as Class method throws an error
          */
-        add_action( 'pods_meta_groups',  'materialpool_pods_material_metaboxes', 10, 2 );
+        //add_action( 'pods_meta_groups',  'materialpool_pods_material_metaboxes', 10, 2 );
 		add_action( 'rest_api_init', 'register_mymaterial_rest_routes' );
 
 
@@ -225,7 +231,7 @@ class Materialpool {
         // Add Filter & Actions for Schlagworte
         add_filter( 'manage_edit-schlagwort_columns', array( 'Materialpool_Schlagworte', 'taxonomy_column' ) );
         add_filter( 'manage_schlagwort_custom_column', array( 'Materialpool_Schlagworte', 'taxonomy_column_data' ), 10, 3);
-		add_filter( 'pods_form_ui_field_pick_autocomplete_limit', array( 'Materialpool_Schlagworte', 'pods_form_ui_field_pick_autocomplete_limit' ), 10, 1);
+		//add_filter( 'pods_form_ui_field_pick_autocomplete_limit', array( 'Materialpool_Schlagworte', 'pods_form_ui_field_pick_autocomplete_limit' ), 10, 1);
 
 
         // Add Filter & Actions for Medientypem
@@ -289,8 +295,8 @@ class Materialpool {
 
         // Add Filter & Actions for 3Party Stuff
         add_action( 'rate_post',                            array( 'Materialpool_FacetWP', 'reindex_post_after_ajax_rating'),10, 2 );
-        add_action( 'pods_api_post_save_pod_item_material', array( 'Materialpool_FacetWP', 'reindex_post_after_pods_saveing'),10, 3 );
-        add_action( 'pods_api_post_save_pod_item_organisation', array( 'Materialpool_FacetWP', 'reindex_post_after_pods_saveing'),10, 3 );
+        //add_action( 'pods_api_post_save_pod_item_material', array( 'Materialpool_FacetWP', 'reindex_post_after_pods_saveing'),10, 3 );
+        //add_action( 'pods_api_post_save_pod_item_organisation', array( 'Materialpool_FacetWP', 'reindex_post_after_pods_saveing'),10, 3 );
         remove_filter('manage_posts_columns', 'add_postratings_column');
         remove_filter('manage_pages_columns', 'add_postratings_column');
         add_filter( 'manage_material_posts_columns', array( 'Materialpool_Ratings', 'page_column'), 9999 );
@@ -317,7 +323,7 @@ class Materialpool {
         add_action( 'wp_ajax_nopriv_mp_add_proposal',  array( 'Materialpool', 'my_action_callback_mp_add_proposal' ) );
         add_action( 'wp_ajax_mp_add_proposal',  array( 'Materialpool', 'my_action_callback_mp_add_proposal' ) );
 		add_action( 'wp_ajax_mp_synonym_list',  array( 'Materialpool', 'my_action_callback_mp_synonym_list' ) );
-        add_action( 'wp_ajax_convert2material',  array( 'Materialpool', 'my_action_callback_convert2material' ) );
+        //add_action( 'wp_ajax_convert2material',  array( 'Materialpool', 'my_action_callback_convert2material' ) );
 		add_action( 'wp_ajax_mp_edit_subscription',  array( 'Materialpool', 'my_action_callback_edit_subscription' ) );
 		add_action( 'wp_ajax_mp_check_autor_request',  array( 'Materialpool', 'my_action_callback_check_autor_request' ) );
 		add_action( 'wp_ajax_mp_check_autor_request2',  array( 'Materialpool', 'my_action_callback_check_autor_request2' ) );
@@ -340,7 +346,7 @@ class Materialpool {
 		add_filter( 'searchwp\query\per_page', array( 'Materialpool', 'my_searchwp_posts_per_page' ), 99999, 4 );
 
         // Register ImportPlugin End Action
-        add_action( 'import_end', array( 'Materialpool_Import_Check', 'check' ) );
+        //add_action( 'import_end', array( 'Materialpool_Import_Check', 'check' ) );
 
         // Embeds
         add_filter ( 'embed_site_title_html', array( 'Materialpool_Embeds','site_title_html') );
@@ -369,7 +375,12 @@ class Materialpool {
 		add_action( 'admin_menu', array( 'Materialpool_Contribute', 'settings_init' ) );
 		add_action( 'init',             array( 'Materialpool_Contribute_Clients', 'init'), 0 );
 
-        if ( defined ( 'WP_CLI' ) && WP_CLI ) {
+
+		/** Helper Cronjobs */
+        //repair relationships material_autor, material_orgnisation, autor_orgnisation
+		add_action( 'onetime_cronjob', array( 'Materialpool_Helper', 'repair_all' ) );
+
+		if ( defined ( 'WP_CLI' ) && WP_CLI ) {
             require_once( __DIR__ . '/classes/Materialpool_wp-cli_commands.php' );
         }
 
@@ -393,7 +404,7 @@ class Materialpool {
 
     public static function user_defaults( $user_id ) {
         update_user_meta($user_id, 'metaboxhidden_material', array("slugdiv","trackbacksdiv","commentstatusdiv","commentsdiv") );
-        update_user_meta($user_id, 'meta-box-order_material', array ( "side" => "submitdiv", "normal"=> "slugdiv,pods-meta-basis,pods-meta-eigentuemer,pods-meta-meta,pods-meta-erweiterte-metadaten,pods-meta-datum,pods-meta-verknuepfungen,pods-meta-titelbild", "advanced"=>"") );
+        //update_user_meta($user_id, 'meta-box-order_material', array ( "side" => "submitdiv", "normal"=> "slugdiv,pods-meta-basis,pods-meta-eigentuemer,pods-meta-meta,pods-meta-erweiterte-metadaten,pods-meta-datum,pods-meta-verknuepfungen,pods-meta-titelbild", "advanced"=>"") );
     }
 
     public static function custom_oembed_providers() {
@@ -638,6 +649,8 @@ class Materialpool {
 	 */
     public static function my_action_callback_check_subscription() {
 
+        if(!isset($_POST['autor'])) return '';
+
 	    $autor_id =  (int) $_POST['autor'];
 	    $user =  (int) $_POST['user'];
 
@@ -665,6 +678,8 @@ class Materialpool {
 	 * @access  public
 	 */
 	public static function my_action_callback_check_subscription2() {
+
+		if(!isset($_POST['user']) ) return '';
 
 		$user =  (int) $_POST['user'];
 
@@ -2466,8 +2481,7 @@ function acf_save_werk( $post_id ) {
 	if ( $band != '' ) {
 		if ( is_array( $band ) ) {
 			foreach ( $band as $key ) {
-			    var_dump( $key );
-				$wpdb->update($wpdb->posts, array('post_parent'=> $post_id ), array('ID' => $key));
+			    $wpdb->update($wpdb->posts, array('post_parent'=> $post_id ), array('ID' => $key));
 				$a = update_field( 'material_werk', $post_id, $key );
 			}
 		} else {
@@ -3281,3 +3295,112 @@ add_action('admin_menu', 'remove_posts_menu');
 function remove_posts_menu() {
     remove_menu_page('edit.php');
 }
+
+
+//************************************************************************************
+function bidirectional_acf_update_value( $value, $post_id, $field  ) {
+
+
+
+	// vars
+	$field_name = $field['name'];
+	$field_key = $field['key'];
+	$global_name = 'is_updating_' . $field_name;
+
+
+
+	// bail early if this filter was triggered from the update_field() function called within the loop below
+	// - this prevents an inifinte loop
+	if( !empty($GLOBALS[ $global_name ]) ) return $value;
+
+
+	// set global variable to avoid inifite loop
+	// - could also remove_filter() then add_filter() again, but this is simpler
+	$GLOBALS[ $global_name ] = 1;
+
+	// loop over selected posts and add this $post_id
+	if( is_array($value) ) {
+
+		foreach( $value as $post_id2 ) {
+
+			// load existing related posts
+			$value2 = get_field($field_name, $post_id2, false);
+
+
+			// allow for selected posts to not contain a value
+			if( empty($value2) ) {
+
+				$value2 = array();
+
+			}
+
+
+			// bail early if the current $post_id is already found in selected post's $value2
+			if( in_array($post_id, $value2) ) continue;
+
+
+			// append the current $post_id to the selected post's 'related_posts' value
+			$value2[] = $post_id;
+
+
+			// update the selected post's value (use field's key for performance)
+			update_field($field_key, $value2, $post_id2);
+
+		}
+
+	}
+
+
+	// find posts which have been removed
+	$old_value = get_field($field_name, $post_id, false);
+
+
+	if( is_array($old_value) ) {
+
+		foreach( $old_value as $post_id2 ) {
+
+			// bail early if this value has not been removed
+			if( is_array($value) && in_array($post_id2, $value) ) continue;
+
+
+			// load existing related posts
+			$value2 = get_field($field_name, $post_id2, false);
+
+
+			// bail early if no value
+			if( empty($value2) ) continue;
+
+			if(!is_array($value2)){
+				//var_dump( $value2 ); die();
+
+				$value2 = array($value2);
+
+			}
+
+
+			// find the position of $post_id within $value2 so we can remove it
+
+			$pos = array_search($post_id, $value2);
+
+			// remove
+			unset( $value2[ $pos] );
+
+			// update the un-selected post's value (use field's key for performance)
+			update_field($field_key, $value2, $post_id2);
+
+		}
+
+	}
+
+
+	// reset global varibale to allow this filter to function as per normal
+	$GLOBALS[ $global_name ] = 0;
+
+	// return
+	return $value;
+
+}
+
+add_filter('acf/update_value/name=material_autoren', 'bidirectional_acf_update_value', 10, 3);
+add_filter('acf/update_value/name=material_organisation', 'bidirectional_acf_update_value', 10, 3);
+add_filter('acf/update_value/name=autor_organisation', 'bidirectional_acf_update_value', 10, 3);

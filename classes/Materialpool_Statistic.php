@@ -419,5 +419,120 @@ class Materialpool_Statistic
     }
 
 
+	/**
+	 * cronjob
+     * calc material, autor und organiastion views
+     * write results into the wp_postmeta
+     */
+    static  public function material_meta_update(){
+
+        global $wpdb;
+	    $wpdb->mp_stats = $wpdb->prefix . 'mp_stats';
+
+	    $args = array(
+		    'post_type' => 'material',
+		    'post_status' => 'publish',
+		    'posts_per_page' => -1,
+	    );
+	    $posts = get_posts($args);
+	    foreach ($posts as $post){
+
+		    $query = $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->mp_stats} WHERE object = %d",
+			    $post->ID
+		    );
+		    $counted = $wpdb->get_var(  $query );
+
+		    update_post_meta($post->ID,'material_views',$counted);
+
+		    //var_dump($counted);
+
+	    }
+
+
+	    $args = array(
+		    'post_type' => 'autor',
+		    'post_status' => 'publish',
+		    'posts_per_page' => -1,
+	    );
+	    $autoren = get_posts($args);
+	    if(is_array($autoren)){
+		    foreach ($autoren as $autor){
+
+			    $as = array(
+				    'post_type' => 'material',
+				    'post_status' => 'publish',
+				    'posts_per_page' => -1,
+				    'meta_query' => array(
+					    array(
+						    'key' => 'material_autoren',
+						    'value' => '"'.$autor->ID.'"',
+						    'compare' => 'LIKE',
+					    )
+				    )
+			    );
+			    $mats = get_posts($as);
+			    if(is_array($mats)){
+				    update_post_meta($autor->ID, 'autor_material_count', count($mats));
+
+				    $counted = 0;
+				    foreach ($mats as $m){
+					    $counted = intval(get_post_meta($m->ID,'material_views', true )) + $counted;
+				    }
+				    update_post_meta($autor->ID, 'autor_material_views', $counted);
+
+				    $query = $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->mp_stats} WHERE object = %d",
+					    $autor->ID
+				    );
+				    $counted = $wpdb->get_var(  $query );
+				    update_post_meta($autor->ID, 'autor_views', $counted);
+			    }
+
+		    }
+	    }
+
+
+	    $args = array(
+		    'post_type' => 'organisation',
+		    'post_status' => 'publish',
+		    'posts_per_page' => -1,
+	    );
+	    $organisationen = get_posts($args);
+	    if(is_array($organisationen)){
+		    foreach ($organisationen as $organisation){
+
+			    $as = array(
+				    'post_type' => 'material',
+				    'post_status' => 'publish',
+				    'posts_per_page' => -1,
+				    'meta_query' => array(
+					    array(
+						    'key' => 'material_organisation',
+						    'value' => '"'.$organisation->ID.'"',
+						    'compare' => 'LIKE',
+					    )
+				    )
+			    );
+			    $mats = get_posts($as);
+			    if(is_array($mats)){
+				    update_post_meta($organisation->ID, 'organisation_material_count', count($mats));
+
+				    $counted = 0;
+				    foreach ($mats as $m){
+					    $counted = intval(get_post_meta($m->ID,'material_views', true )) + $counted;
+				    }
+				    update_post_meta($organisation->ID, 'organisation_material_views', $counted);
+
+				    $query = $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->mp_stats} WHERE object = %d",
+					    $organisation->ID
+				    );
+				    $counted = $wpdb->get_var(  $query );
+				    update_post_meta($organisation->ID, 'organisation_views', $counted);
+			    }
+
+		    }
+	    }
+
+
+    }
 
 }

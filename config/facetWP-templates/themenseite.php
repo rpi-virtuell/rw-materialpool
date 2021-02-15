@@ -1,3 +1,4 @@
+<!-- unused -->
 <?php
 return array(
     "post_type" => array(

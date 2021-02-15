@@ -157,6 +157,7 @@ class Materialpool_Installation {
          */
         wp_clear_scheduled_hook('mp_depublizierung');
 		wp_clear_scheduled_hook('mp_screenshot_generation');
+		wp_clear_scheduled_hook('mp_statistics');
 
 	}
 

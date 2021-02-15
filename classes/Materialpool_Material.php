@@ -113,7 +113,7 @@ class Materialpool_Material {
         global $typenow;
 
         // an array of all the taxonomyies you want to display. Use the taxonomy name or slug
-        $taxonomies = array('bildungsstufe', 'schlagwort', 'medientyp');
+        $taxonomies = array('bildungsstufe', 'schlagwort', 'medientyp', 'kompetenz', 'lizenz');
 
         // must set this to the post type you want the filter(s) displayed on
         if( $typenow == 'material' ){
@@ -269,6 +269,7 @@ class Materialpool_Material {
             'taxonomy-verfuegbarkeit' => 'taxonomy-verfuegbarkeit',
         ) );
     }
+
 
 
     /**
@@ -1433,14 +1434,16 @@ END;
      */
     static public function is_werk() {
         global $post;
-        global $wpdb;
-        $result = $wpdb->get_row( $wpdb->prepare("SELECT count(pm.post_id) as count FROM $wpdb->postmeta pm, $wpdb->posts p WHERE pm.meta_key = %s and pm.meta_value = %s and pm.post_id = p.ID and p.post_status = %s", 'material_werk', $post->ID , 'publish') );
-	    if ( is_object( $result)  && $result->count > 0 ) {
-
-            return true;
-        } else {
-            return false;
+        if(is_a($post,'WP_Post')){
+	        global $wpdb;
+	        $result = $wpdb->get_row( $wpdb->prepare("SELECT count(pm.post_id) as count FROM $wpdb->postmeta pm, $wpdb->posts p WHERE pm.meta_key = %s and pm.meta_value = %s and pm.post_id = p.ID and p.post_status = %s", 'material_werk', $post->ID , 'publish') );
+	        if ( is_object( $result)  && $result->count > 0 ) {
+		        return true;
+	        } else {
+		        return false;
+	        }
         }
+
     }
 
     /**
@@ -1452,13 +1455,16 @@ END;
      */
     static public function is_part_of_werk() {
         global $post;
-        global $wpdb;
-        $result = $wpdb->get_row( $wpdb->prepare("SELECT count(post_id) as count FROM $wpdb->postmeta WHERE meta_key = %s and meta_value != '' and post_id = %s", 'material_werk', $post->ID ) );
-        if ( is_object( $result)  && $result->count > 0 ) {
-            return true;
-        } else {
-            return false;
-        }
+	    if(is_a($post,'WP_Post')){
+		    global $wpdb;
+		    $result = $wpdb->get_row( $wpdb->prepare("SELECT count(post_id) as count FROM $wpdb->postmeta WHERE meta_key = %s and meta_value != '' and post_id = %s", 'material_werk', $post->ID ) );
+		    if ( is_object( $result)  && $result->count > 0 ) {
+			    return true;
+		    } else {
+			    return false;
+		    }
+	    }
+
     }
 
     /**

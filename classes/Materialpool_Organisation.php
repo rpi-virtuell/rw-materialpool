@@ -54,6 +54,8 @@ class Materialpool_Organisation {
 	 * @access	public
      * @filters materialpool_organisation_meta_field
 	 *
+	 * decrepated
+	 *
 	 */
 	static public function register_meta_fields() {
 		$cmb_organisation = new_cmb2_box( array(
@@ -183,19 +185,19 @@ class Materialpool_Organisation {
         unset( $columns );
         $columns = array(
             'organisation-id' => _x( 'ID', 'Organisation list field',  Materialpool::$textdomain ),
-            'organisation_title' => _x( 'Organisation', 'Organisation list field',  Materialpool::$textdomain ),
-            'organisation_logo_url' => _x( 'Logo', 'Organisation list field', Materialpool::$textdomain ),
-            'organisation_views' => _x( 'Views', 'Organisation list field', Materialpool::$textdomain ),
-            'material_views' => _x( 'MaterialViews', 'Organisation list field', Materialpool::$textdomain ),
-            'organisation_url' => _x( 'URL', 'Organisation list field', Materialpool::$textdomain ),
-            'organisation_email'        => _x( 'Email', 'Organisation list field', Materialpool::$textdomain ),
-            'organisation_nachricht'    => _x( 'Emailbenachrichtigung', 'Organisation list field', Materialpool::$textdomain ),
-            'organisation_konfession' => _x( 'Konfession', 'Organisation list field', Materialpool::$textdomain ),
-            'organisation_alpika' => _x( 'ALPIKA', 'Organisation list field', Materialpool::$textdomain ),
-            'date' => __('Date'),
-            'organisation_autoren' => _x( '#Autoren', 'Organisation list field', Materialpool::$textdomain ),
+           // 'organisation_title' => _x( 'Organisation', 'Organisation list field',  Materialpool::$textdomain ),
+           // 'organisation_logo_url' => _x( 'Logo', 'Organisation list field', Materialpool::$textdomain ),
+           // 'organisation_views' => _x( 'Views', 'Organisation list field', Materialpool::$textdomain ),
+           // 'material_views' => _x( 'MaterialViews', 'Organisation list field', Materialpool::$textdomain ),
+           // 'organisation_url' => _x( 'URL', 'Organisation list field', Materialpool::$textdomain ),
+	       //  'organisation_email'        => _x( 'Email', 'Organisation list field', Materialpool::$textdomain ),
+	        'organisation_nachricht'    => _x( 'Benachrichtigung', 'Organisation list field', Materialpool::$textdomain ),
+	       // 'organisation_konfession' => _x( 'Konfession', 'Organisation list field', Materialpool::$textdomain ),
+	       //  'organisation_alpika' => _x( 'ALPIKA', 'Organisation list field', Materialpool::$textdomain ),
+	         'date' => __('Date'),
+           // 'organisation_autoren' => _x( '#Autoren', 'Organisation list field', Materialpool::$textdomain ),
             'organisation_material' => _x( '#Material', 'Organisation list field', Materialpool::$textdomain ),
-            'organisation_owner' => _x( 'Eintrager', 'Organisation list field', Materialpool::$textdomain ),
+           // 'organisation_owner' => _x( 'Eintrager', 'Organisation list field', Materialpool::$textdomain ),
             'organisation_einverstaendnis' => _x( 'Einverständnis', 'Organisation list field', Materialpool::$textdomain ),
         );
         return $columns;
@@ -286,7 +288,7 @@ class Materialpool_Organisation {
 	        }
         }
         if ( $column_name == 'organisation_autoren' ) {
-	        $autors = get_metadata( 'post', $post_id, 'material_autoren' );
+	        $autors = get_metadata( 'post', $post_id, 'autor_organisation' );
 	        $data = sizeof( $autors[0] );
         }
         if ( $column_name == 'organisation_material' ) {
@@ -376,7 +378,7 @@ class Materialpool_Organisation {
 	        delete_transient( 'facet_serach2_entry-'.$material_id );
 	        delete_transient( 'facet_organisation_entry-'.$material_id );
 	        delete_transient( 'rss_material_entry-'.$material_id );
-	        	        
+
             delete_post_meta( $material_id, 'material_organisation_facet' );
             $organisationen = get_metadata( 'post', $material_id, 'material_organisation', false );
             if ( is_array( $organisationen ) ) {
@@ -718,7 +720,7 @@ class Materialpool_Organisation {
      */
     static public function autor_html_picture () {
         $verweise = Materialpool_Organisation::get_autor();
-        foreach ( $verweise[0] as $verweis ) {
+        foreach ( $verweise as $verweis ) {
             $url = get_permalink( $verweis );
             $post = get_post( $verweis );
             $logo = get_metadata( 'post', $verweis, 'autor_bild_url', true );
@@ -744,7 +746,7 @@ class Materialpool_Organisation {
     static public function get_autor() {
         global $post;
 
-        return get_metadata( 'post', $post->ID, 'material_autoren', false );
+        return get_metadata( 'post', $post->ID, 'autor_organisation', true );
     }
 
 
@@ -752,16 +754,16 @@ class Materialpool_Organisation {
 	 *
 	 * @since 0.0.1
 	 * @access public
-	 * @return number of materials from the current Autor
+	 * @return number of materials from the current Organisation
 	 */
 	static public function get_count_posts_per_organisation ($autor_id = 0) {
-		global $post,$wpdb;
+
+		global $post;
 
 		$autor_id = ($autor_id>0)?$autor_id:$post->ID;
-		$query = "select count(pod_id) from {$wpdb->prefix}podsrel where item_id = %d and field_id in ( select ID from wp_posts where post_type ='_pods_field' and post_name='organisation_material')" ;
-		$query = $wpdb->prepare($query, $autor_id);
-		$count = $wpdb->get_var($query);
-		return $count;
+
+		return get_post_meta($autor_id, 'organisation_material_count', true);
+
 	}
 
 	/**
