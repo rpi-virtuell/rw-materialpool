@@ -35,9 +35,18 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function get_items( $request ) {
+
+		$per_page = intval($request['per_page'])<>0?$request['per_page']:10;
+		$page = isset( $request['paged'] ) ? (int) $request['paged'] : false;
+		if(!$page){
+			$page = isset( $request['page'] ) ? (int) $request['page'] : 1;
+		}
 		$args = array(
 			'post_type'      => 'material',
-			'posts_per_page' => $request['per_page'],
+			'post_status' => 'publish',
+			'posts_per_page' =>  $per_page,
+			'order_by' => 'post_date',
+			'order' => 'DESC',
 			'paged'           => $request[ 'page' ],
 		);
 		if ( isset( $request[ 'suche' ] ) ) {
@@ -79,55 +88,102 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 		if ( isset ($request[ 'sprache' ]) and $request[ 'sprache' ] != '' ) {
 			$facets[ 'sprache']= explode( ',', $request[ 'sprache' ] );
 		}
-
-		$data = array(
-			'facets' => $facets,
-			'query_args' => array(
-				'post_type' => 'material',
-				'post_status' => 'publish',
-				'posts_per_page' => -1,
-				'paged' => -1,
-			),
-			'settings' => [
-				'first_load' => true
-			]
-		);
-
-		$url = 'https://material.rpi-virtuell.de/wp-json/facetwp/v1/fetch';
-		$response = wp_remote_post( $url, [
-			'body' => [ 'data' => json_encode( $data ) ]
-		]);
-		$ids = json_decode( $response[ 'body'] );
-
-
-		//$materials = get_posts( $args );
-		if ( ! empty( $args['s'] ) ) {
-			$materials = new SWP_Query( array( 's' => $args['s'], 'posts_per_page' => -1, 'post__in' => $ids->results,'engine'   => 'default') );
-		} else {
-			$materials = new WP_Query( array( 'post__in' => $ids->results, 'posts_per_page' => -1, 'post_type' => 'material') );
+		if ( isset ($request[ 'vorauswahl' ]) and $request[ 'vorauswahl' ] != '' ) {
+			$facets[ 'vorauswahl']= explode( ',', $request[ 'vorauswahl' ] );
 		}
-		// set max number of pages and total num of posts
 
-//		$query = new SWP_Query( array ( 's' => $request[ 'suche' ],  'post__in' => $ids->results, 'engine' => 'default' ) );
+		foreach ( $facets as $facet_name => $facet_value ) {
 
-//		view raw
-//		$max_pages = $query->max_num_pages;
-//		$total = $query->found_posts;
+
+			$facet = FWP()->helper->get_facet_by_name( $facet_name );
+			if ( false !== $facet ) {
+				$facet['selected_values'] = (array) $facet_value;
+				$valid_facets[ $facet_name ] = $facet;
+				FWP()->facet->facets[ $facet_name ] = $facet;
+			}
+		}
+
+        // Get bucket of post IDs
+        FWP()->facet->query_args = $args;
+        FWP()->facet->settings = array('first_load' => true);
+        $post_ids = FWP()->facet->get_filtered_post_ids();
+
+        // SQL WHERE used by facets
+        $where_clause = ' AND post_id IN (' . implode( ',', $post_ids ) . ')';
+
+        // Check if empty
+        if ( 0 === $post_ids[0] && 1 === count( $post_ids ) ) {
+            $post_ids = [];
+        }
+
+
+
+        // get_where_clause() needs "found_posts" (keep this BELOW the empty check)
+        FWP()->facet->query = (object) [ 'found_posts' => count( $post_ids ) ];
+
+        // Get valid facets and their values
+        foreach ( $facets as $facet_name => $facet ) {
+            $args = [
+                'facet' => $facet,
+                'where_clause' => $where_clause,
+                'selected_values' => $facet['selected_values'],
+            ];
+
+            $facet_data = [
+                'name'          => $facet['name'],
+                'label'         => $facet['label'],
+                'type'          => $facet['type'],
+                'selected'      => $facet['selected_values'],
+            ];
+
+        }
+
+        $total_rows = count( $post_ids );
+
+        // Paginate?
+        if ( 0 < $per_page ) {
+            $total_pages = ceil( $total_rows / $per_page );
+
+            if ( $page > $total_pages ) {
+                $post_ids = [];
+            }
+            else {
+                $offset = ( $per_page * ( $page - 1 ) );
+
+                $post_ids = array_slice( $post_ids, $offset, $per_page );
+
+            }
+        }
+        else {
+            $total_pages = ( 0 < $total_rows ) ? 1 : 0;
+        }
+		$total = count( $post_ids );
 
 		$data = array();
-		if ( $materials->posts ) {
-			foreach ( $materials->posts as $material ) :
-				$itemdata = $this->prepare_item_for_response( $material, $request );
-				$data[] = $this->prepare_response_for_collection( $itemdata );
-			endforeach;
+
+		if(count($post_ids)>0){
+			if ( ! empty( $args['s'] ) ) {
+				$materials = new SWP_Query( array( 's' => $args['s'], 'posts_per_page' => -1, 'post__in' => $post_ids,'engine'   => 'default') );
+			} else {
+				$materials = new WP_Query( array( 'post__in' => $post_ids,
+				                                  'post_type' => 'material',
+				                                  'posts_per_page' => -1
+					)
+				);
+			}
+			if ( $materials->posts ) {
+				foreach ( $materials->posts as $material ) :
+					$itemdata = $this->prepare_item_for_response( $material, $request );
+					$data[] = $this->prepare_response_for_collection( $itemdata );
+				endforeach;
+			}
 		}
 
-		//$data = rest_ensure_response( $data );
 
 		$response = new WP_REST_Response($data, 200);
 
 		$response->header( 'X-WP-Total', $total );
-		$response->header( 'X-WP-TotalPages', $max_pages );
+		$response->header( 'X-WP-TotalPages', $total_pages );
 
 		return $response;
 
@@ -264,24 +320,37 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 
 		// Autoren
 		$auArray = array();
-		$au =  get_post_meta( $item->ID, 'material_autor_facet', false );
+		$au =  get_post_meta( $item->ID, 'material_autoren', true );
+
 		if ( is_array( $au ) ) {
-			foreach ( $au[0] as $auitem ) {
+			foreach ( $au as $auitem ) {
+				$author = get_post_meta($auitem,'autor_vorname', true) . " " . get_post_meta($auitem,'autor_nachname', true);
 				$auArray[] = array(
-					'name' => $auitem,
+					'post_id' => $auitem,
+					'name' => $author,
 				);
 
 			}
 		} else {
+			$author = get_post_meta($au,'autor_vorname', true) . " " . get_post_meta($au,'autor_nachname', true);
 			$auArray[] = array(
-				'name' => $au,
+				'post_id' => $au,
+				'name' => $author,
 			);
+
 		}
 		$au =  get_post_meta( $item->ID, 'material_autor_interim', true );
 		if ( $au !=  '' ) {
 			$auArray[] = array(
 				'name' => $au,
 			);
+		}
+
+		$cover_id = get_post_meta( $item->ID, 'material_cover', true );
+		if($cover_id){
+			$thumbnail_url = get_the_guid($cover_id);
+		}else{
+			$thumbnail_url =get_post_meta( $item->ID, 'material_cover_url', true )?get_post_meta( $item->ID, 'material_cover_url', true ): get_post_meta( $item->ID, 'material_screenshot', true );
 		}
 
 		$data = array(
@@ -292,7 +361,7 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 			'material_beschreibung'    => get_post_meta( $item->ID, 'material_beschreibung', true ),
 			'material_kurzbeschreibung'  => get_post_meta( $item->ID, 'material_kurzbeschreibung', true ),
 			'material_url' => get_post_meta( $item->ID, 'material_url', true ),
-			'material_screenshot'   =>  get_post_meta( $item->ID, 'material_cover_url', true )?get_post_meta( $item->ID, 'material_cover_url', true ): get_post_meta( $item->ID, 'material_screenshot', true ),
+			'material_screenshot'   =>  $thumbnail_url,
 			'material_altersstufe'   => $asArray,
 			'material_medientyp'   => $mtArray,
 			'material_bildungsstufe'   => $bsArray,
