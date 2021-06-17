@@ -23,19 +23,15 @@ class Materialpool_Helper {
 		self::sync_material();
 		//self::sync_autoren();
 		self::sync_organisations_autoren();
-		self::repair_post_meta();
 
 
 	}
 
 
-	static function repair_post_meta(){
+	static function remove_post_meta_without_posts(){
 		global $wpdb;
-		$sql =  "DELETE from wp_postmeta where wp_postmeta.post_id NOT IN (select ID from wp_posts);";
-		$sql .= "DELETE from wp_postmeta where meta_value = '0' and meta_key = 'material_jahr'";
-
+		$sql = "DELETE from wp_postmeta where wp_postmeta.post_id NOT IN (select ID from wp_posts)";
 		$wpdb->get_results($sql);
-
 
 	}
 

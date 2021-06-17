@@ -49,12 +49,15 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 			'order' => 'DESC',
 			'paged'           => $request[ 'page' ],
 		);
+		$facets = array();
+		
 		if ( isset( $request[ 'suche' ] ) ) {
-			$args[ 's' ] = $request[ 'suche' ];
+			
+			//$args[ 's' ] = $request[ 'suche' ];
+		   $facets[ 'suche']=$request[ 'suche' ];
 		}
 
 		// ID Liste anhand Facetten holen.
-		$facets = array();
 		if ( isset ($request[ 'bildungsstufe' ]) and $request[ 'bildungsstufe' ] != '' ) {
 			$facets[ 'bildungsstufe']= explode( ',', $request[ 'bildungsstufe' ] );
 		}

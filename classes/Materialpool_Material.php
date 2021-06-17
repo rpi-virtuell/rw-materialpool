@@ -271,7 +271,6 @@ class Materialpool_Material {
     }
 
 
-
     /**
      *
      * @since 0.0.1
