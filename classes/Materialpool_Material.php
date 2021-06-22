@@ -477,6 +477,20 @@ class Materialpool_Material {
             'show_in_admin_status_list' => true,
             'label_count'               => _n_noop( 'Überprüfen <span class="count">(%s)</span>', 'Überprüfen <span class="count">(%s)</span>' )
         ) );
+	    register_post_status( 'broken', array(
+		    'label'                     => _x( 'BrokenLink', 'material' ),
+		    'public'                    => false,
+		    'show_in_admin_all_list'    => false,
+		    'show_in_admin_status_list' => true,
+		    'label_count'               => _n_noop( 'BrokenLink <span class="count">(%s)</span>', 'BrokenLinks <span class="count">(%s)</span>' ),
+	    ) );
+	    register_post_status( 'notbroken', array(
+		    'label'                     => _x( 'Not Broken', 'material' ),
+		    'public'                    => true,
+		    'show_in_admin_all_list'    => false,
+		    'show_in_admin_status_list' => true,
+		    'label_count'               => _n_noop( 'Not Broken <span class="count">(%s)</span>', 'Not Broken <span class="count">(%s)</span>' ),
+	    ) );
     }
 
 
@@ -488,35 +502,54 @@ class Materialpool_Material {
      */
     static public function append_post_status_list(){
         global $post;
-        $complete1 = '';
-        $label1 = '';
-        $complete2 = '';
-        $label2 = '';
-        if($post->post_type == 'material'){
-            if($post->post_status == 'vorschlag'){
-                $complete1 = ' selected=\"selected\"';
-                $label1 = '<span id=\"post-status-display\">Vorschlag</span>';
-            }
-            if($post->post_status == 'check'){
-                $complete2 = ' selected=\"selected\"';
-                $label2 = '<span id=\"post-status-display\">Überprüfen</span>';
-            }
+
+	    $complete1 = $complete2 = $complete3 = $complete4 = '';
+	    $setlabel = '';
+
+
+
+	    if($post->post_type == 'material'){
+	        switch ($post->post_status){
+
+		        case 'vorschlag':
+			        $complete1 = ' selected=\"selected\"';
+			        $setlabel = '$("#post-status-display").html("Vorschlag");';
+			        break;
+		        case 'check':
+			        $complete2 = ' selected=\"selected\"';
+			        $setlabel = '$("#post-status-display").html("Überptüfen");';
+			        break;
+		        case 'broken':
+			        $complete3 = ' selected=\"selected\"';
+			        $setlabel = '$("#post-status-display").html("Broken Link");';
+			        break;
+                case 'notbroken':
+			        $complete4 = ' selected=\"selected\"';
+			        $setlabel = '$("#post-status-display").html("Not Broken");';
+			        break;
+	        }
             echo '
           <script>
           jQuery(document).ready(function($){
                $("select#post_status").append("<option value=\"vorschlag\" '.$complete1.'>Vorschlag</option>");
-               $("select#post_status").append("<option value=\"check\" '.$complete2.'>Überprüfen</option>");';
-            if($post->post_status == 'vorschlag'){
-                echo '$(".misc-pub-section label").append("'.$label1.'");';
-            }
-            if($post->post_status == 'check') {
-                echo '$(".misc-pub-section label").append("' . $label2 . '");';
-            }
-            echo '
+               $("select#post_status").append("<option value=\"check\" '.$complete2.'>Überprüfen</option>");
+               $("select#post_status").append("<option value=\"broken\" '.$complete3.'>Broken Link</option>");
+               $("select#post_status").append("<option value=\"notbroken\" '.$complete4.'>Not-Broken Link</option>");';
+
+            echo $setlabel .'
+            
           });
           </script>
           ';
         }
+    }
+
+    public static function publish_on_not_broken_link($new_status, $old_status, WP_Post  $post){
+	    if ( 'notbroken' === $new_status  ){
+		    $post->post_status = 'publish';
+		    wp_update_post($post);
+		    update_post_meta($post->ID,'material_url_notbroken',1);
+	    }
     }
 
     /**
@@ -1630,8 +1663,11 @@ END;
     static public function get_verweise_ids () {
         $back = array();
         $verweise = Materialpool_Material::get_verweise();
-        foreach ( $verweise[0] as $verweis ) {
-            $back[] = (int) $verweis;
+        if(is_array($verweise) && $verweise[0]){
+	        foreach ( $verweise as $verweis ) {
+		        $back[] = (int) $verweis;
+	        }
+
         }
         return $back;
     }
@@ -1644,7 +1680,7 @@ END;
     static public function get_verweise() {
         global $post;
 
-        return get_metadata( 'post', $post->ID, 'material_verweise', false );
+        return get_metadata( 'post', $post->ID, 'material_verweise', true );
     }
 
     /**
@@ -1806,17 +1842,23 @@ END;
     static public function organisation_html_cover () {
         global $post;
         $verweise = Materialpool_Material::get_organisation();
-        foreach ( $verweise[0] as $verweisID ) {
-            $verweis = get_post( $verweisID, ARRAY_A );
-            $url = get_permalink( $verweis[ 'ID' ] );
-            $logo = get_metadata( 'post', $verweis[ 'ID' ], 'organisation_logo_url', true );
-            echo "<div class='materialpool-template-material-organisation'>";
-            if ( $logo != '') {
-                echo '<a href="' . $url . '" style="background-image:url(\'' . $logo . '\')" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-organisation-logo' ) .'"><img src="' . $logo . '"></a>';
-            }
-            echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-organisation' ) .'">' . $verweis[ 'post_title' ] . '</a>';
-            echo "</div>";
+        if($verweise && intval($verweise[0])>0){
+
+
+            foreach ( $verweise as $verweisID ) {
+		        if(!$verweisID) continue;
+		        $verweis = get_post( $verweisID, ARRAY_A );
+		        $url = get_permalink( $verweis[ 'ID' ] );
+		        $logo = get_metadata( 'post', $verweis[ 'ID' ], 'organisation_logo_url', true );
+		        echo "<div class='materialpool-template-material-organisation'>";
+		        if ( $logo != '') {
+			        echo '<a href="' . $url . '" style="background-image:url(\'' . $logo . '\')" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-organisation-logo' ) .'"><img src="' . $logo . '"></a>';
+		        }
+		        echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-organisation' ) .'">' . $verweis[ 'post_title' ] . '</a>';
+		        echo "</div>";
+	        }
         }
+
         $organisation = apply_filters( 'materialpool_material_description_interim_organisation', get_metadata( 'post', $post->ID, 'material_organisation_interim', true ) );
         if ( $organisation != '' ) {
             echo "<div class='materialpool-template-material-organisation'>";
@@ -1859,7 +1901,7 @@ END;
     static public function get_organisation() {
         global $post;
 
-        return get_metadata( 'post', $post->ID, 'material_organisation', false );
+        return get_metadata( 'post', $post->ID, 'material_organisation', true );
     }
 
     /**
@@ -1871,7 +1913,7 @@ END;
     static public function organisation_facet_html () {
         $organisationen = Materialpool_Material::get_organisation();
         $data = '';
-        foreach ( $organisationen[0] as $organisationID ) {
+        foreach ( $organisationen as $organisationID ) {
             $organisation = get_post( $organisationID, ARRAY_A );
             if ( $organisation != '' )
                 if ( $data != '') {
@@ -1977,19 +2019,22 @@ END;
     static public function autor_html_picture () {
         global $post;
         $verweise = Materialpool_Material::get_autor();
-        foreach ( $verweise[0] as $verweisID ) {
-            $verweis = get_post( $verweisID, ARRAY_A );
-            $url = get_permalink( $verweis[ 'ID' ] );
-            $logo = get_metadata( 'post', $verweis[ 'ID' ], 'autor_bild_url', true );
-            $vorname = get_post_meta($verweis[ 'ID' ], 'autor_vorname', true );
-            $nachname = get_post_meta($verweis[ 'ID' ], 'autor_nachname', true );
-            if ( $logo != '') {
-                //echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-autor-logo' ) .'"><img  class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-autor-logo' ) .'" src="' . $logo . '"></a>';
-                echo '<a href="' . $url . '" style="background-image:url(\'' . $logo . '\')" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-autor-logo' ) .'"><img  class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-autor-logo' ) .'" src="' . $logo . '"></a>';
-            }
-            echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-autor', 'materialpool-template-material-autor' ) .'">' . $vorname . ' '. $nachname . '</a>';
+        if($verweise && $verweise[0]!=''){
+	        foreach ( $verweise as $verweisID ) {
+		        $verweis = get_post( $verweisID, ARRAY_A );
+		        $url = get_permalink( $verweis[ 'ID' ] );
+		        $logo = get_metadata( 'post', $verweis[ 'ID' ], 'autor_bild_url', true );
+		        $vorname = get_post_meta($verweis[ 'ID' ], 'autor_vorname', true );
+		        $nachname = get_post_meta($verweis[ 'ID' ], 'autor_nachname', true );
+		        if ( $logo != '') {
+			        //echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-autor-logo' ) .'"><img  class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-autor-logo' ) .'" src="' . $logo . '"></a>';
+			        echo '<a href="' . $url . '" style="background-image:url(\'' . $logo . '\')" class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-autor-logo' ) .'"><img  class="'. apply_filters( 'materialpool-template-material-verweise', 'materialpool-template-material-autor-logo' ) .'" src="' . $logo . '"></a>';
+		        }
+		        echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-autor', 'materialpool-template-material-autor' ) .'">' . $vorname . ' '. $nachname . '</a>';
 
+	        }
         }
+
 
         // Output INterim Autor
         $autor = apply_filters( 'materialpool_material_description_interim_autor', get_metadata( 'post', $post->ID, 'material_autor_interim', true ) );
@@ -2008,7 +2053,7 @@ END;
     static public function autor_facet_html () {
         $verweise = Materialpool_Material::get_autor();
         $data = '';
-        foreach ( $verweise[0] as $verweis ) {
+        foreach ( $verweise as $verweis ) {
             if ( $verweis != '' )
                 if ( $data != '') {
                     $data .= ', ';
@@ -2108,7 +2153,7 @@ END;
     static public function get_autor() {
         global $post;
 
-        return get_metadata( 'post', $post->ID, 'material_autoren', false );
+        return get_metadata( 'post', $post->ID, 'material_autoren', true );
     }
 
     /**
@@ -2775,9 +2820,14 @@ END;
             return;
         }
         $autorn = Materialpool_Material::get_autor();
-        foreach ( $autorn as $autor ) {
-            $autor = strip_tags( $autor );
+        if(!is_array($autorn)) {
+	        $autorn = [$autorn];
         }
+
+	    foreach ( $autorn as $k => $autor ) {
+	        $a = get_post($autor);
+		    $autorn[ $k ] = strip_tags( $a->post_title );
+	    }
 
         $description = Materialpool_Material::get_description();
         if ( $description != '' ) {
@@ -2786,7 +2836,7 @@ END;
         ?>
         <meta name="keywords" content="<?php echo  strip_tags( Materialpool_Material::get_schlagworte() ) ; ?>">
         <meta name="description" content="<?php echo  $description ; ?>">
-        <meta name="author" content="<?php echo  $autor ; ?>">
+        <meta name="author" content="<?php echo  implode(',',$autorn) ; ?>">
         <meta property="og:title" content="<?php Materialpool_Material::title(); ?>" />
         <meta property="og:type" content="article" />
         <meta property="og:image" content="<?php echo Materialpool_Material::get_cover(); ?>" />
@@ -3356,7 +3406,25 @@ order by wp_posts.post_date  desc  ") ;
 			wp_redirect(admin_url('edit.php?post_status=published&post_type=material&msg=' . urlencode( 'Dieses Material kann nicht gelöscht werden, da es ein Werk ist und auf Bände verweist. Um das Material zu löschen, bitte erst die Band-Verweise entfernen.')));
 			exit();
 		}
-		return;
+
+	}
+
+	/**
+	 * @param $meta_id
+	 * @param $post_id
+	 * @param $meta_key
+	 * @param $meta_value
+     *
+     * If material_url is repaired after setting status to broken, the status will set to publish
+	 */
+	public static function after_post_meta($meta_id, $post_id, $meta_key, $meta_value ){
+	    if($meta_key == 'material_url'){
+	        $material = get_post($post_id);
+	        if($material->post_status == 'broken'){
+		        $material->post_status ='publish';
+		        wp_update_post($material);
+	        }
+	    }
 	}
 
 	/**
@@ -3373,6 +3441,188 @@ order by wp_posts.post_date  desc  ") ;
 		}
 
 	}
+	/**
+	 * mark_broken_links withs custum post status broken Link
+	 */
+	static function check_material_url($url, $post_id, $log = false){
+
+	    global $wpdb;
+
+		echo '<li><strong>'.$url.'</strong></li>';
+
+		$request_args = array(
+		        'headers' => array(),
+				'timeout'           =>  15,
+				'sslverify'         =>  false,
+				'redirection'       =>  10,
+				'user-agent'        =>  'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
+				'cookies'           =>  array( 'SSESS16815fd5c783ac7fb5ee431b6360307b'=>'qMAv3LfiPndvEDlDrlf9Nwtmjbi8dPuWXsABpUSI-Yw')
+		);
+
+		$request = wp_safe_remote_head(trim($url),$request_args);
+
+		if ( is_wp_error( $request ) || intval($request["response"]["code"])  < 200 || intval($request["response"]["code"]) > 308 ) {
+
+			if(strpos($url,'https:') === false){
+				$url = str_replace('http:','https:',$url);
+
+				$request = wp_safe_remote_head(trim($url),$request_args);
+
+				if(is_wp_error( $request )){
+					if($log) echo '<li>ERROR : '.$request->get_error_message().' | <a href="'.$url.'">'.$url.'</a></li>';
+					if($log) file_put_contents('/tmp/debug_dev.log', ''.$url.'|'.$request->get_error_message()."\n",FILE_APPEND);
+					update_post_meta($post_id, 'material_url_error',$request->get_error_message());
+
+				}elseif( intval($request["response"]["code"])  < 200 || intval($request["response"]["code"]) > 308){
+					if($log) echo '<li>'.$request["response"]["code"].': <a href="'.$url.'">' . $url . '</a></li>';
+					update_post_meta($post_id, 'material_url_code',$request["response"]["code"]);
+				}else{
+					if(isset($request["http_response"]->get_response_object()->history[0])){
+						$correct_url = $request["http_response"]->get_response_object()->history[0]->url;
+						if(strlen($correct_url)>10 && $correct_url != $url) {
+							update_post_meta( $post_id, 'material_url', $correct_url );
+							if($log) echo '<li>UPDATE: <a href="'.$correct_url.'">' . $correct_url . '</a></li>';
+						}
+					}
+					return;
+				}
+
+				$sql = "UPDATE {$wpdb->posts} SET post_status = 'broken' where ID = %d";
+				$query = $wpdb->prepare($sql,$post_id);
+				$wpdb->query($query);
+
+			}else{
+				if(is_wp_error( $request )){
+					if($log) echo '<li>ERROR : '.$request->get_error_message().' | <a href="'.$url.'">'.$url.'</a></li>';
+					if($log) file_put_contents('/tmp/debug_dev.log', ''.$url.'|'.$request->get_error_message()."\n",FILE_APPEND);
+					update_post_meta($post_id, 'material_url_error',$request->get_error_message());
+
+				}else{
+					if($log) echo '<li>'.$request["response"]["code"].': <a href="'.$url.'">' . $url . '</a></li>';
+					update_post_meta($post_id, 'material_url_code',$request["response"]["code"]);
+				}
+
+				$sql = "UPDATE {$wpdb->posts} SET post_status = 'broken' where ID = %d";
+				$query = $wpdb->prepare($sql,$post_id);
+				$wpdb->query($query);
+			}
+
+		}else{
+			//check redirected links
+            if(isset($request["http_response"]->get_response_object()->history[0])){
+	            $correct_url = $request["http_response"]->get_response_object()->history[0]->url;
+	            if(strlen($correct_url)>10 && $correct_url != $url) {
+		            update_post_meta( $post_id, 'material_url', $correct_url );
+		            if($log) echo '<li>UPDATE: <a href="'.$correct_url.'">' . $correct_url . '</a></li>';
+	            }
+            }
+
+
+		}
+	}
+
+	static function mark_broken_links(){
+
+		//file_put_contents('/tmp/debug_dev.log', '');
+		$limit = 10;
+
+		set_time_limit(120);
+
+		$offset = isset($_GET['N'])?intval($_GET['N']):0;
+
+		$ms = self::get_material_urls($limit, $offset);
+
+		if(count($ms)<1){
+			return;
+		}
+
+		//echo '<pre>';
+		foreach ($ms as $m){
+
+		    echo '<li><strong>'.$m->url.'</strong></li>'; ob_flush();
+
+			Materialpool_Material::check_material_url($m->url,$m->post_id, true);
+
+		}
+		if(isset($_GET['N'])){?>
+            <script>
+                location.href='https://dev-material.rpi-virtuell.de/mark_broken_links/?N=<?php echo $offset+$limit;?>';
+            </script><?php
+		}
+		die();
+	}
+
+	static function cron_check_broken_links($offset = 0){
+
+	    if($offset === 0){
+		    file_put_contents('/tmp/debug_dev.log','');
+	    }
+
+		$limit = 10;
+
+		set_time_limit(300);
+
+		$ms = self::get_material_urls($limit, $offset);
+
+		if(count($ms)<1){
+			return;
+		}
+
+		//echo '<pre>';
+		foreach ($ms as $m){
+
+			Materialpool_Material::check_material_url($m->url,$m->post_id);
+			file_put_contents('/tmp/debug_dev.log', "$offset | {$m->post_id}: {$m->url}\n", FILE_APPEND);
+
+		}
+		sleep(1);
+		self::cron_check_broken_links($offset+$limit);
+
+	}
+
+	static function get_material_urls($limit =10, $offset=0){
+
+		global $wpdb;
+		$sql = "select meta.post_id,meta.meta_value url from wp_postmeta meta
+                inner JOIN wp_postmeta spec ON meta.post_id =spec.post_id 
+                    and spec.meta_key='material_special' and spec.meta_value = 0
+                inner JOIN wp_posts p ON p.ID = meta.post_id 
+                    and post_type='material' and post_status = 'publish'
+                where meta.meta_key='material_url' 
+                    and p.ID NOT IN (
+                        select post_id from wp_postmeta meta 
+                            where meta_key='material_url_notbroken' and meta_value = 1
+                    ) LIMIT $offset,$limit";
+
+		$ms = $wpdb->get_results($sql);
+
+		return $ms;
+	}
+
+	/**
+	 * @param $atts
+     *
+     * Shortcode [broken_links type="server_error"]
+
+	 */
+    public static function display_broken_link_errors($atts){
+	    // "foo = {$atts['foo']}";
+
+        if($atts['type']=='server_error'){
+	        global $wpdb;
+	        $sql = "select p.ID post_id, m.meta_value url, e.meta_value error  from wp_posts p
+            INNER JOIN wp_postmeta m on p.ID = m.post_id and m.meta_key = 'material_url' 
+            INNER JOIN wp_postmeta e on p.ID = e.post_id and ((e.meta_key = 'material_url_code' and e.meta_value > 499)  OR e.meta_key = 'material_url_error') 
+            where post_status = 'broken'";
+        }
+	    $ms = $wpdb->get_results($sql);
+        foreach ($ms as $r){
+            $html[] = sprintf('<li><a href="%1$s">%1$s</a> [%2$s] <a class="ui-button button" href="/wp-admin/post.php?action=edit&post=%3$s">Bearbeiten</a></li>', $r->url,$r->error,$r->post_id);
+        }
+        return implode('', $html);
+    }
+
+	/*** end custum post status Broken Link*/
 }
 
 

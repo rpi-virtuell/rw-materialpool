@@ -639,7 +639,7 @@ class Materialpool_Autor {
 	 */
 	static public function has_organisationen() {
 	    if(is_array($o = self::get_organisationen())){
-	        if(count(get_organisationen)>0){
+	        if(count($o)>0){
 	            return true;
             }
         }

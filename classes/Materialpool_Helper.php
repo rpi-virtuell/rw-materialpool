@@ -11,6 +11,28 @@
 
 class Materialpool_Helper {
 
+	static public function ac_column_value_icons( $value, $id, AC\Column $column ) {
+
+	    if ( $column instanceof ACP\Column\Post\Status ) {
+
+		    $status = get_post_status($id);
+
+		    if($value == '&ndash;' &&  $status == 'broken'){
+			    $value = '<span class="dashicons dashicons-editor-unlink"></span>';
+		    }
+		    if($value == '&ndash;' && $status == 'vorschlag'){
+			    $value = '<span class="dashicons dashicons-plus-alt"></span>';
+		    }
+		    if($value == '&ndash;' && $status == 'check'){
+			    $value = '<span class="dashicons dashicons-plus-alt"></span>';
+		    }
+
+
+	    }
+
+	    return $value;
+    }
+
 
 	static function repair_all(){
 

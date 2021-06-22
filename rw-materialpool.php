@@ -160,6 +160,7 @@ class Materialpool {
         add_filter( 'posts_distinct', array( 'Materialpool_Material', 'material_list_post_distinct' ), 10,1  );
         add_action( 'add_meta_boxes',  array( 'Materialpool_Material', 'add_metaboxes' ) );
         add_action( 'init', array( 'Materialpool_Material', 'custom_post_status' ) );
+        add_action( 'admin_menu', array( 'Materialpool_Material', 'custom_post_status' ) );
         add_action( 'admin_footer-post.php', array( 'Materialpool_Material', 'append_post_status_list' ) );
         add_action( 'admin_footer-post.php', array( 'Materialpool_Material', 'write_javascript' ) );
         add_action( 'admin_footer-post-new.php', array( 'Materialpool_Material', 'append_post_status_list' ) );
@@ -379,10 +380,25 @@ class Materialpool {
 		/** Helper Cronjobs */
         //repair relationships material_autor, material_orgnisation, autor_orgnisation
 		add_action( 'onetime_cronjob', array( 'Materialpool_Helper', 'repair_all' ) );
+		add_action( 'rw_material_check_for_broken_links', array( 'Materialpool_Material', 'cron_check_broken_links' ) );
+
+		//
+		add_action( 'updated_post_meta', array('Materialpool_Material', 'after_post_meta'), 10, 4 );
+
 
 		if ( defined ( 'WP_CLI' ) && WP_CLI ) {
             require_once( __DIR__ . '/classes/Materialpool_wp-cli_commands.php' );
         }
+
+
+
+		add_shortcode( 'mark_broken_links',  array( 'Materialpool_Material', 'mark_broken_links' )  );
+		add_shortcode( 'broken_links',  array( 'Materialpool_Material', 'display_broken_link_errors' )  );
+
+		add_filter( 'ac/column/value', array( 'Materialpool_Helper', 'ac_column_value_icons'), 10, 3 );
+		add_action( 'transition_post_status', array('Materialpool_Material','publish_on_not_broken_link'), 10, 3 );
+
+
 
 		do_action( 'materialpool_init' );
 	}
@@ -443,6 +459,8 @@ class Materialpool {
 
 
     function wp_filter_pre_oembed_result( $result, $url, $args ) {
+
+	    global $post_id;
 
         $width = isset( $args['width'] ) ? $args['width'] : 0;
 
@@ -2421,7 +2439,10 @@ function ajax_add_term() {
 	if( is_taxonomy_hierarchical( $field['taxonomy'] ) ) {
 
 		$choices = array();
-		$response = $this->get_ajax_query($args);
+
+		$field_obj = get_field_object( $args['field_key']);
+
+		$response = $field_obj->get_ajax_query($args);
 
 		if( $response ) {
 

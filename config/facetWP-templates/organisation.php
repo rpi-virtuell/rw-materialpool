@@ -5,7 +5,6 @@
 			<h2><a href="<?php echo get_permalink( ); ?>"><?php Materialpool_Organisation::title();?></a></h2>
 			<?php
 			$anzahl = Materialpool_Organisation::get_count_posts_per_organisation();
-			var_dump($anzahl);
 			if ( $anzahl != '' && $anzahl != 0 ) {
 				echo "Anzahl Materialien: ".$anzahl."<br>";
 			}
