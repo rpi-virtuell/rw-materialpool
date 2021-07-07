@@ -11,6 +11,25 @@
 class Materialpool_Embeds
 {
 	/**
+     * uses apply_filters( 'oembed_default_width', int width)
+	 * @param $size
+	 * @param $url
+     *
+	 */
+    static public function rest_pre_echo_response($data,  $server,  WP_REST_Request  $request ){
+
+        $post = get_post(url_to_postid($request->get_param('url')));
+	    $data['width'] = 1000;
+	    $data['height'] = 700;
+	    $data['html'] = str_replace('<blockquote class="wp-embedded-content">',
+            '<blockquote class="wp-embedded-content" style="display: none;">',
+            get_post_embed_html(1000, 750, $post));
+
+        return $data;
+
+
+    }
+	/**
      *
      * @since 0.0.1
      * @access	public
@@ -42,7 +61,7 @@ class Materialpool_Embeds
 
         if ( $post->post_type == 'material' ) {
 
-        	$height = 49;
+        	$height = 52;
 
 	        $thumbnail_url = Materialpool_Material::get_cover();
 
@@ -56,7 +75,7 @@ class Materialpool_Embeds
 
 	        //$thumbnail_url ='#';
 
-	        $output  = '<div style="height:57vw; overflow:auto;max-width: 99vw">';
+	        $output  = '<div style="height:'.($height+8).'vw; overflow:auto;max-width: 99vw">';
 	        $output .= '<details><summary style="background-color: #dddddd; border:1px solid #c0c0c0; height:24px">';
 	        $output .= '<img width="24" height="24" src="'. Materialpool::$plugin_url .'/assets/rpi-logo-100-100.jpg" style="float:left; margin-right:10px">Infos zum Material';
 	        $output .= '</summary><div>';
@@ -72,7 +91,7 @@ class Materialpool_Embeds
 	        $output .= '</details>';
 
 	        $output .= '<a href="'.$material_url.'" target="_blank">';
-	        $output .= '<span style="display:block; width:100%; height:'.$height.'vw;background-image:url(\''.$thumbnail_url.'\'); background-repeat: no-repeat; background-position: center center; background-size: cover;overflow: hidden;"></span>';
+	        $output .= '<span style="display:block; width:100%; height:'.$height.'vw;background-image:url(\''.$thumbnail_url.'\'); background-repeat: no-repeat; background-position: left top; background-size: cover;overflow: hidden;"></span>';
 	        $output .= '</a>';
 	        $output .= '</div><style>.wp-embed-footer{margin-top: -15px;}</style>';
 	        //$output = '';
@@ -106,6 +125,7 @@ class Materialpool_Embeds
 
 
     }
+
     static public function embed_content() {
         global $post;
 
@@ -114,10 +134,6 @@ class Materialpool_Embeds
 
         	$url = Materialpool_Material::get_url();
 
-	        //echo "<img style='width:20%; padding-right: 10px; padding-bottom: 10px;  align: left; float: left;' src='". Materialpool_Material::get_picture_url() ."'>";
-
-        	//echo '<iframe src="https://www.br.de/mediathek/video/checker-tobi-der-islam-check-av:5f84378e1ef17d00141d6521" width="100%" height="450"></iframe>';
-
 
         }
     }
@@ -125,25 +141,27 @@ class Materialpool_Embeds
 
     	$output = '';
 
-		$medientypen = Materialpool_Material::get_mediatyps_root();
-		if (is_array( $medientypen ) ) {
-			$output .= "<strong>Medientype(n):</strong> ";
-			$counter = 0;
-			foreach ($medientypen as $medientyp) {
-				if ( $counter > 0 ) {
-					$output .= ", ";
-				}
-				$output .= $medientyp[ 'name' ];
-				$counter++;
-			}
-			$output .= "&nbsp;&nbsp;&nbsp;&nbsp;";
+
+
+    	$autor = Materialpool_Material::get_autor_html();
+
+    	if($autor){
+			    $output .= '<strong>Von: </strong> '.$autor;
+	    }
+
+		$medientypen = Materialpool_Material::get_medientypen();
+		if ( $medientypen ) {
+			$output .= "<strong>Medientype(n):</strong> ".$medientypen;
+		}
+		$bildungsstufen = Materialpool_Material::get_bildungsstufen();
+		if($bildungsstufen){
+			$output .= "<strong>Bildungsstufe(n):</strong> ";
+			$output .= $bildungsstufen;
+
 		}
 
-		$bildungsstufen = Materialpool_Material::get_bildungsstufen();
-		$output .= "<strong>Bildungsstufe(n):</strong> ";
-		$output .= $bildungsstufen;
-
 		return $output;
+
 	}
 
 	static public function print_embed_sharing_dialog(){
@@ -156,7 +174,7 @@ class Materialpool_Embeds
 				<div class="wp-embed-share-dialog-text">
 					<ul class="wp-embed-share-tabs" role="tablist">
 						<li class="wp-embed-share-tab-button wp-embed-share-tab-button-wordpress" role="presentation">
-							<button type="button" role="tab" aria-controls="wp-embed-share-tab-wordpress" aria-selected="true" tabindex="0"><?php esc_html_e( 'WordPress Embed' ); ?></button>
+							<button type="button" role="tab" aria-controls="wp-embed-share-tab-wordpress" aria-selected="true" tabindex="0"><?php esc_html_e( 'OEmbed' ); ?></button>
 						</li>
 						<li class="wp-embed-share-tab-button wp-embed-share-tab-button-html" role="presentation">
 							<button type="button" role="tab" aria-controls="wp-embed-share-tab-html" aria-selected="false" tabindex="-1"><?php esc_html_e( 'HTML Embed' ); ?></button>

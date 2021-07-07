@@ -1371,12 +1371,16 @@ END;
         if ( $id == null ) $id = $post->ID;
 
         $url = '';
-        // Prio 1: hochgeladenes Bild
+
         $pic  = Materialpool_Material::get_picture( $id );
-        if ( is_array( $pic ) ) {
+	    if ( $pic && !is_array( $pic )) {
+
+		    $url = wp_get_attachment_url( $pic );
+	    }elseif ( is_array( $pic ) ) {
             $url = wp_get_attachment_url( $pic[ 'ID' ] );
         }
-        // Prio 2, Cover URL
+
+	    // Prio 2, Cover URL
         if ( $url == '' ) {
             $url  = Materialpool_Material::get_picture_url( $id );
         }
@@ -2010,22 +2014,32 @@ END;
  * @filters materialpool-template-material-autor
  */
     static public function autor_html () {
-        global $post;
-        $verweise = Materialpool_Material::get_autor();
-        foreach ( $verweise as $verweis ) {
-            $url = get_permalink( $verweis[ 'ID' ] );
-            $vorname = get_post_meta($verweis[ 'ID' ], 'autor_vorname', true );
-            $nachname = get_post_meta($verweis[ 'ID' ], 'autor_nachname', true );
-            echo '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-autor', 'materialpool-template-material-autor' ) .'">' . $vorname .' '. $nachname . '</a><br>';
-
-        }
-        // Output INterim Autor
-        $autor = apply_filters( 'materialpool_material_description_interim_autor', get_metadata( 'post', $post->ID, 'material_autor_interim', true ) );
-        if ( $autor != '' ) {
-            echo   $autor ;
-        }
+        self::get_autor_html();
     }
 
+	static public function get_autor_html () {
+		global $post;
+		$verweise = Materialpool_Material::get_autor();
+		foreach ( $verweise as $verweis ) {
+
+		    $a = get_post($verweis);
+			$autoren .= '<a href="' . $a->guid . '" class="'. apply_filters( 'materialpool-template-material-autor', 'materialpool-template-material-autor' ) .'">' . $a->post_title . '</a><br>';
+
+			/*
+			$url = get_permalink( $verweis);
+			$vorname = get_post_meta($verweis, 'autor_vorname', true );
+			$nachname = get_post_meta($verweis, 'autor_nachname', true );
+			$autoren .= '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-autor', 'materialpool-template-material-autor' ) .'">' . $vorname .' '. $nachname . '</a><br>';
+			*/
+
+		}
+		// Output INterim Autor
+		$autor = apply_filters( 'materialpool_material_description_interim_autor', get_metadata( 'post', $post->ID, 'material_autor_interim', true ) );
+		if ( $autor != '' ) {
+			$autoren .= $autor ;
+		}
+		return $autoren;
+	}
     /**
      *
      * @since 0.0.1
@@ -2342,15 +2356,28 @@ END;
     static public function get_medientypen() {
         global $post;
 
-        $data = '';
+	    $data= array();
+
+	    $term_list = wp_get_post_terms( $post->ID, 'medientyp' );
+	    if  ( is_array( $term_list)) {
+		    foreach ( $term_list as $tax ) {
+			    if ( $tax->parent != 0 ) {
+				    $link = add_query_arg( 'fwp_medientyp', FWP()->helper->safe_value( $tax->slug ), home_url(). '/facettierte-suche/' );
+				    $data[] =  "<a href='$link'>{$tax->name}</a>";
+			    }
+		    }
+	    }
+
+	    /*$data = '';
         $term_list = wp_get_post_terms( $post->ID, 'medientyp' );
         if  ( is_array( $term_list)) {
             foreach ( $term_list as $tax ) {
                 if ( $data != '') $data .= ', ';
                 $data .= $tax->name;
             }
-        }
-        return $data;
+        }*/
+
+        return implode(', ',$data);
     }
 
     /**

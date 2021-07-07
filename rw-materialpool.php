@@ -351,6 +351,7 @@ class Materialpool {
         //add_action( 'import_end', array( 'Materialpool_Import_Check', 'check' ) );
 
         // Embeds
+        add_filter ( 'rest_pre_echo_response', array( 'Materialpool_Embeds','rest_pre_echo_response'), 10, 3);
         add_filter ( 'embed_site_title_html', array( 'Materialpool_Embeds','site_title_html') );
         add_filter ( 'the_excerpt_embed', array( 'Materialpool_Embeds', 'the_excerpt_embed' ) );
         add_action( 'embed_content', array( 'Materialpool_Embeds', 'embed_content' ) );
@@ -3298,6 +3299,8 @@ function cptui_register_my_taxes() {
 add_action( 'init', 'cptui_register_my_taxes' );
 
 add_action( 'wp_footer', function() {
+    if(!is_single()){
+
 	?>
     <script>
         (function(jQuery) {
@@ -3312,6 +3315,7 @@ add_action( 'wp_footer', function() {
         })(jQuery);
     </script>
 	<?php
+    }
 }, 100 );
 
 add_filter('acf/fields/relationship/query', 'my_acf_fields_relationship_query', 10, 3);
