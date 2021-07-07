@@ -149,6 +149,7 @@ class Materialpool {
         // Add Filter & Actions for Material
         add_filter( 'template_include', array( 'Materialpool_Material', 'load_template' ) );
 
+
 //        add_action( 'manage_material_posts_columns', array( 'Materialpool_Material', 'cpt_list_head') );
 //        add_action( 'manage_material_posts_custom_column', array( 'Materialpool_Material', 'cpt_list_column'), 10,2 );
 //        add_action( 'manage_edit-material_sortable_columns', array( 'Materialpool_Material', 'cpt_sort_column') );
@@ -353,6 +354,13 @@ class Materialpool {
         add_filter ( 'embed_site_title_html', array( 'Materialpool_Embeds','site_title_html') );
         add_filter ( 'the_excerpt_embed', array( 'Materialpool_Embeds', 'the_excerpt_embed' ) );
         add_action( 'embed_content', array( 'Materialpool_Embeds', 'embed_content' ) );
+        add_action( 'embed_content_meta', array( 'Materialpool_Embeds', 'embed_content_meta' ) );
+        add_action( 'the_permalink', array( 'Materialpool_Embeds', 'the_permalink' ) );
+
+		remove_action( 'embed_content_meta', 'print_embed_comments_button' );
+		//remove_action( 'embed_content_meta', 'print_embed_sharing_button' );
+		remove_action( 'embed_footer', 'print_embed_sharing_dialog' );
+		add_action( 'embed_footer', array( 'Materialpool_Embeds', 'print_embed_sharing_dialog') );
 
         //
         add_filter( 'post_row_actions', 'rw_mp_row_actions', 10, 2 );
@@ -399,8 +407,9 @@ class Materialpool {
 		add_action( 'transition_post_status', array('Materialpool_Material','publish_on_not_broken_link'), 10, 3 );
 
 
+		add_action('wp_head',  array('Materialpool_Material','redirect_materialpool_url'),2 );
 
-		do_action( 'materialpool_init' );
+		do_action( 'materialpool_init');
 	}
 
     public static function enqueue_our_required_stylesheets(){
@@ -462,7 +471,7 @@ class Materialpool {
 
 	    global $post_id;
 
-        $width = isset( $args['width'] ) ? $args['width'] : 0;
+	    $width = isset( $args['width'] ) ? $args['width'] : 0;
 
         $data = get_oembed_response_data( $post_id, $width );
         $data = _wp_oembed_get_object()->data2html( (object) $data, $url );
@@ -3425,3 +3434,4 @@ function bidirectional_acf_update_value( $value, $post_id, $field  ) {
 add_filter('acf/update_value/name=material_autoren', 'bidirectional_acf_update_value', 10, 3);
 add_filter('acf/update_value/name=material_organisation', 'bidirectional_acf_update_value', 10, 3);
 add_filter('acf/update_value/name=autor_organisation', 'bidirectional_acf_update_value', 10, 3);
+

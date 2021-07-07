@@ -66,7 +66,18 @@ class Materialpool_Material {
                 return $template_path;
             }
         }
-        return $template;
+/*	    if ($post->post_type == "material" && is_embed() ){
+		    if ( is_single() ) {
+			    if ( $theme_file = locate_template( array ( 'materialpool/material-embed-content.php' ) ) ) {
+				    $template_path = $theme_file;
+			    } else {
+				    $template_path = Materialpool::$plugin_base_dir . 'templates/material-embed-content.php';
+			    }
+			    return $template_path;
+		    }
+	    }*/
+
+	    return $template;
     }
 
     /**
@@ -1036,13 +1047,18 @@ END;
      * @filters materialpool_material_description
      *
      */
-    static public function get_description() {
+    static public function get_description($trim = false) {
         global $post;
         $autor = '';
         $organisation = '';
 
         $description = get_metadata( 'post', $post->ID, 'material_beschreibung', true );
         $description = apply_filters( 'materialpool_material_description', $description, $post );
+        if($trim){
+	        $more = '... <a href="' . get_permalink( $post ) . '" class="more-link">mehr lesen</a>';
+	        return wp_trim_words($description, $trim,$more);
+        }
+
         return $description ;
 
     }
@@ -2105,7 +2121,8 @@ END;
         if  ( is_array( $term_list)) {
             foreach ( $term_list as $tax ) {
                 if ( $tax->parent != 0 ) {
-                    $data[] =  $tax->name;
+	                $link = add_query_arg( 'fwp_bildungsstufe', FWP()->helper->safe_value( $tax->slug ), home_url(). '/facettierte-suche/' );
+	                $data[] =  "<a href='$link'>{$tax->name}</a>";
                 }
             }
         }
@@ -3623,6 +3640,21 @@ order by wp_posts.post_date  desc  ") ;
     }
 
 	/*** end custum post status Broken Link*/
+
+
+
+	public static function redirect_materialpool_url(){
+
+	    global $post;
+
+		if(is_single() && $post->post_type == 'material'){
+	        if (isset($_GET['direct'])){
+	            wp_redirect($_GET['direct']);
+	            die();
+	        }
+	    }
+
+	}
 }
 
 
