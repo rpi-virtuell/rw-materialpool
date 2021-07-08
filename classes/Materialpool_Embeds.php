@@ -146,7 +146,7 @@ class Materialpool_Embeds
     	$autor = Materialpool_Material::get_autor_html();
 
     	if($autor){
-			    $output .= '<strong>Von: </strong> '.$autor;
+			    $output .= '<strong>Von: </strong> '.$autor.'<br />';
 	    }
 
 		$medientypen = Materialpool_Material::get_medientypen();
@@ -155,7 +155,7 @@ class Materialpool_Embeds
 		}
 		$bildungsstufen = Materialpool_Material::get_bildungsstufen();
 		if($bildungsstufen){
-			$output .= "<strong>Bildungsstufe(n):</strong> ";
+			$output .= " · <strong>Bildungsstufe(n):</strong> ";
 			$output .= $bildungsstufen;
 
 		}
