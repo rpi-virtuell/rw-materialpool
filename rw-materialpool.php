@@ -134,7 +134,8 @@ class Materialpool {
 		// Load the textdomain
 		$this->load_plugin_textdomain();
 
-		// Register Stylesheets
+
+        // Register Stylesheets
         add_action( 'admin_enqueue_scripts', array( 'Materialpool', 'register_admin_plugin_styles' ) );
         if ( !is_admin() ) {
             add_action( 'wp_enqueue_scripts', array( 'Materialpool', 'register_frontend_plugin_styles' ) );
@@ -161,6 +162,7 @@ class Materialpool {
         add_filter( 'posts_distinct', array( 'Materialpool_Material', 'material_list_post_distinct' ), 10,1  );
         add_action( 'add_meta_boxes',  array( 'Materialpool_Material', 'add_metaboxes' ) );
         add_action( 'init', array( 'Materialpool_Material', 'custom_post_status' ) );
+
         add_action( 'admin_menu', array( 'Materialpool_Material', 'custom_post_status' ) );
         add_action( 'admin_footer-post.php', array( 'Materialpool_Material', 'append_post_status_list' ) );
         add_action( 'admin_footer-post.php', array( 'Materialpool_Material', 'write_javascript' ) );

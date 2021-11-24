@@ -3596,9 +3596,10 @@ order by wp_posts.post_date  desc  ") ;
 		die();
 	}
 
+
 	static function cron_check_broken_links($offset = 0){
 
-	    if($offset === 0){
+		if($offset === 0){
 		    file_put_contents('/tmp/debug_dev.log','');
 	    }
 
