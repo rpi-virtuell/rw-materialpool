@@ -2861,7 +2861,7 @@ function cptui_register_my_cpts() {
 		"hierarchical" => false,
 		"rewrite" => array( "slug" => "themenseite", "with_front" => true ),
 		"query_var" => true,
-		"supports" => array( "title", "editor" ),
+		"supports" => array( "title", "editor","thumbnail"),
 	);
 
 	register_post_type( "themenseite", $args );
