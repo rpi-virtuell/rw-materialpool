@@ -2181,10 +2181,10 @@ END;
      * @access  public
      *
      */
-    static public function get_autor() {
+    static public function get_autor(bool $single = false) {
         global $post;
 
-        return get_metadata( 'post', $post->ID, 'material_autoren', true );
+        return get_metadata( 'post', $post->ID, 'material_autoren', $single );
     }
 
     /**
