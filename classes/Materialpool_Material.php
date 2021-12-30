@@ -1962,10 +1962,22 @@ END;
         global $post;
         $verweise = Materialpool_Material::get_autor(false);
         $back = true;
-        if ( $verweise === false) {
-            $back = false;
+
+        if(!empty($verweise)){
+          foreach ($verweise as $verweis)
+          {
+              if (!empty($verweis))
+              {
+                  break;
+              }
+              else
+              {
+                  $back = false;
+              }
+          }
         }
-        if ( is_array( $verweise ) && $verweise[ 0 ] === false ) {
+        else
+        {
             $back = false;
         }
         $interim = get_metadata( 'post', $post->ID, 'material_autor_interim', true );
