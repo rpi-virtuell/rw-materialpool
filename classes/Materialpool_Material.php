@@ -2025,11 +2025,14 @@ END;
 	static public function get_autor_html () {
 		global $post;
 		$verweise = Materialpool_Material::get_autor(false);
+        $autoren = "";
 		foreach ( $verweise as $verweis ) {
 
 		    $a = get_post($verweis);
-			$autoren .= '<a href="' . $a->guid . '" class="'. apply_filters( 'materialpool-template-material-autor', 'materialpool-template-material-autor' ) .'">' . $a->post_title . '</a><br>';
-
+            if (is_object($a))
+            {
+                $autoren .= '<a href="' . $a->guid . '" class="'. apply_filters( 'materialpool-template-material-autor', 'materialpool-template-material-autor' ) .'">' . $a->post_title . '</a><br>';
+            }
 			/*
 			$url = get_permalink( $verweis);
 			$vorname = get_post_meta($verweis, 'autor_vorname', true );
