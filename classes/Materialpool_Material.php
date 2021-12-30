@@ -2027,7 +2027,8 @@ END;
 		$verweise = Materialpool_Material::get_autor(false);
         $autoren = "";
 		foreach ( $verweise as $verweis ) {
-
+            if (empty($verweis))
+                continue;
 		    $a = get_post($verweis);
             if (is_object($a))
             {
