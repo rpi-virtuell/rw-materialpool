@@ -1958,7 +1958,7 @@ END;
      * @access public
      *
      */
-    static public function has_autor () {
+    static public function has_autor() {
         global $post;
         $verweise = Materialpool_Material::get_autor(false);
         $back = true;
@@ -1981,7 +1981,7 @@ END;
             $back = false;
         }
         $interim = get_metadata( 'post', $post->ID, 'material_autor_interim', true );
-        if ($interim  || empty($interim) ) {
+        if (!empty($interim) ) {
             $back = true;
         }
 
