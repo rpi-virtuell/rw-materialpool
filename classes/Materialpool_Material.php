@@ -1790,11 +1790,14 @@ END;
         global $post;
 
         $id = get_field( 'material_werkzeug', $post->ID, ARRAY_A );
+        if (is_array($id))
+        {
         $vid = get_term( $id[0], 'werkzeug' ,  ARRAY_A );
         if ( is_array( $vid ) ) {
             return $vid[ 'name'];
         }
-
+        }
+        return false;
     }
 
     /**
@@ -1807,11 +1810,13 @@ END;
         global $post;
 
         $id = get_field( 'material_werkzeug', $post->ID, ARRAY_A );
+        if (is_array($id))
+        {
         $vid = get_term( $id[0], 'werkzeug' ,  ARRAY_A );
         if ( is_array( $vid ) ) {
             echo "<a href='/" . $vid['taxonomy'] . "/" . $vid['slug'] . "'>" . $vid['name'] . "</a>";
         }
-
+        }
     }
 
 
@@ -1955,7 +1960,7 @@ END;
      */
     static public function has_autor () {
         global $post;
-        $verweise = Materialpool_Material::get_autor();
+        $verweise = Materialpool_Material::get_autor(false);
         $back = true;
         if ( $verweise === false) {
             $back = false;
@@ -1964,7 +1969,7 @@ END;
             $back = false;
         }
         $interim = get_metadata( 'post', $post->ID, 'material_autor_interim', true );
-        if ( $interim != '' ) {
+        if ($interim  || empty($interim) ) {
             $back = true;
         }
 
@@ -1979,7 +1984,7 @@ END;
      *
      */
     static public function autor () {
-        $verweise = Materialpool_Material::get_autor();
+        $verweise = Materialpool_Material::get_autor(false);
         foreach ( $verweise as $verweis ) {
             $vorname = get_post_meta($verweis[ 'ID' ], 'autor_vorname', true );
             $nachname = get_post_meta($verweis[ 'ID' ], 'autor_nachname', true );
@@ -1995,7 +2000,7 @@ END;
      */
     static public function autor_list () {
         $count = 0;
-        $verweise = Materialpool_Material::get_autor();
+        $verweise = Materialpool_Material::get_autor(false);
         foreach ( $verweise as $verweis ) {
             if ($count > 0 ) {
                 echo ", ";
@@ -2019,7 +2024,7 @@ END;
 
 	static public function get_autor_html () {
 		global $post;
-		$verweise = Materialpool_Material::get_autor();
+		$verweise = Materialpool_Material::get_autor(false);
 		foreach ( $verweise as $verweis ) {
 
 		    $a = get_post($verweis);
@@ -2048,7 +2053,7 @@ END;
      */
     static public function autor_html_picture () {
         global $post;
-        $verweise = Materialpool_Material::get_autor();
+        $verweise = Materialpool_Material::get_autor(false);
         if($verweise && $verweise[0]!=''){
 	        foreach ( $verweise as $verweisID ) {
 		        $verweis = get_post( $verweisID, ARRAY_A );
@@ -2081,7 +2086,7 @@ END;
      * @filters materialpool-template-material-autor
      */
     static public function autor_facet_html () {
-        $verweise = Materialpool_Material::get_autor();
+        $verweise = Materialpool_Material::get_autor(false);
         $data = '';
         foreach ( $verweise as $verweis ) {
             if ( $verweis != '' )
@@ -2181,7 +2186,7 @@ END;
      * @access  public
      *
      */
-    static public function get_autor(bool $single = false) {
+    static public function get_autor(bool $single = true) {
         global $post;
 
         return get_metadata( 'post', $post->ID, 'material_autoren', $single );
@@ -2863,7 +2868,7 @@ END;
         if ( 'material' != $post->post_type ) {
             return;
         }
-        $autorn = Materialpool_Material::get_autor();
+        $autorn = Materialpool_Material::get_autor(false);
         if(!is_array($autorn)) {
 	        $autorn = [$autorn];
         }
