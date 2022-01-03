@@ -39,6 +39,7 @@ class Materialpool_Statistic
         $wpdb->mp_stats_autor = $wpdb->prefix . 'mp_stats_autor';
         $timestamp = time();
 
+        if(!empty($autor)){
         $wpdb->query( $wpdb->prepare( " 
             INSERT INTO $wpdb->mp_stats_autor 
             (  `object`, `day`, `hour`, `month`, `year`, `dayofweek`  )
@@ -51,6 +52,7 @@ class Materialpool_Statistic
             date( "Y", $timestamp ),
             date( "w", $timestamp )
         ));
+        }
     }
 
     /**

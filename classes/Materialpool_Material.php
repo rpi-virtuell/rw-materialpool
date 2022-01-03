@@ -2034,33 +2034,35 @@ END;
         self::get_autor_html();
     }
 
-	static public function get_autor_html () {
-		global $post;
-		$verweise = Materialpool_Material::get_autor(false);
+    static public function get_autor_html () {
+        global $post;
+        $verweise = Materialpool_Material::get_autor();
         $autoren = "";
-		foreach ( $verweise as $verweis ) {
-            if (empty($verweis))
-                continue;
-		    $a = get_post($verweis);
-            if (is_object($a))
-            {
-                $autoren .= '<a href="' . $a->guid . '" class="'. apply_filters( 'materialpool-template-material-autor', 'materialpool-template-material-autor' ) .'">' . $a->post_title . '</a><br>';
-            }
-			/*
-			$url = get_permalink( $verweis);
-			$vorname = get_post_meta($verweis, 'autor_vorname', true );
-			$nachname = get_post_meta($verweis, 'autor_nachname', true );
-			$autoren .= '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-autor', 'materialpool-template-material-autor' ) .'">' . $vorname .' '. $nachname . '</a><br>';
-			*/
+        if (!empty($verweise)){
+            foreach ( $verweise as $verweis ) {
+                if (empty($verweis))
+                    continue;
+                $a = get_post($verweis);
+                if (is_object($a))
+                {
+                    $autoren .= '<a href="' . $a->guid . '" class="'. apply_filters( 'materialpool-template-material-autor', 'materialpool-template-material-autor' ) .'">' . $a->post_title . '</a><br>';
+                }
+                /*
+                $url = get_permalink( $verweis);
+                $vorname = get_post_meta($verweis, 'autor_vorname', true );
+                $nachname = get_post_meta($verweis, 'autor_nachname', true );
+                $autoren .= '<a href="' . $url . '" class="'. apply_filters( 'materialpool-template-material-autor', 'materialpool-template-material-autor' ) .'">' . $vorname .' '. $nachname . '</a><br>';
+                */
 
-		}
-		// Output INterim Autor
-		$autor = apply_filters( 'materialpool_material_description_interim_autor', get_metadata( 'post', $post->ID, 'material_autor_interim', true ) );
-		if ( $autor != '' ) {
-			$autoren .= $autor ;
-		}
-		return $autoren;
-	}
+            }
+        }
+        // Output INterim Autor
+        $autor = apply_filters( 'materialpool_material_description_interim_autor', get_metadata( 'post', $post->ID, 'material_autor_interim', true ) );
+        if ( $autor != '' ) {
+            $autoren .= $autor ;
+        }
+        return $autoren;
+    }
     /**
      *
      * @since 0.0.1
@@ -2070,8 +2072,10 @@ END;
     static public function autor_html_picture () {
         global $post;
         $verweise = Materialpool_Material::get_autor(false);
-        if($verweise && $verweise[0]!=''){
+        if(!empty($verweis)){
 	        foreach ( $verweise as $verweisID ) {
+                if (empty($verweisID))
+                    continue;
 		        $verweis = get_post( $verweisID, ARRAY_A );
 		        $url = get_permalink( $verweis[ 'ID' ] );
 		        $logo = get_metadata( 'post', $verweis[ 'ID' ], 'autor_bild_url', true );
