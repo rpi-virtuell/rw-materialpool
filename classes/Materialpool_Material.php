@@ -1650,10 +1650,25 @@ END;
      *
      */
     static public function has_verweise () {
-        $back = false;
         $verweise = Materialpool_Material::get_verweise();
-        if ( is_array( $verweise ) && $verweise[0] ) {
-            $back = true;
+        $back = true;
+
+        if(!empty($verweise)){
+            foreach ($verweise as $verweis)
+            {
+                if (!empty($verweis))
+                {
+                    break;
+                }
+                else
+                {
+                    $back = false;
+                }
+            }
+        }
+        else
+        {
+            $back = false;
         }
         return $back;
     }
@@ -1901,17 +1916,28 @@ END;
      */
     static public function has_organisation () {
         global $post;
-
-        $verweise = Materialpool_Material::get_organisation();
+        $verweise = Materialpool_Material::get_organisation(false);
         $back = true;
-        if ( $verweise === false) {
-            $back = false;
+
+        if(!empty($verweise)){
+            foreach ($verweise as $verweis)
+            {
+                if (!empty($verweis))
+                {
+                    break;
+                }
+                else
+                {
+                    $back = false;
+                }
+            }
         }
-        if ( is_array( $verweise ) && $verweise[ 0 ] === false ) {
+        else
+        {
             $back = false;
         }
         $interim = get_metadata( 'post', $post->ID, 'material_organisation_interim', true );
-        if ( $interim != '' ) {
+        if ( empty($interim) ) {
             $back = true;
         }
         return $back;
@@ -1923,10 +1949,10 @@ END;
      * @access  public
      *
      */
-    static public function get_organisation() {
+    static public function get_organisation($single = true) {
         global $post;
 
-        return get_metadata( 'post', $post->ID, 'material_organisation', true );
+        return get_metadata( 'post', $post->ID, 'material_organisation', $single );
     }
 
     /**
