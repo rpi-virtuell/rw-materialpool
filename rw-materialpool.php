@@ -1900,13 +1900,19 @@ class Materialpool {
         global $wp_version;
 
         if(isset($_GET['vsviewer_url'])){
-            $url = urldecode( $_GET['vsviewer_url'] );
+            $url = base64_decode( $_GET['vsviewer_url'] );
 
             //@todo check url in materialpool
 
             $file_name=substr (strrchr ($url, "/"), 1);
 
-            $args = array(
+	        $url = str_replace($file_name,'',$url);
+	        $url .= rawurlencode($file_name);
+
+	        $file_name = str_replace(array('"', "'", ' ', ',',';'), '_', $file_name);
+
+
+	        $args = array(
                 'user-agent' => 'Mozilla/5.0 (compatible; Materialpool; )',
                 'timeout' => 30,
                 'sslverify' => false,
@@ -1914,7 +1920,7 @@ class Materialpool {
             $response = wp_remote_get( $url, $args );
             if( is_array($response) ) {
                 header("Content-type:application/pdf");
-                header("Content-Disposition:inline;filename='$file_name'");
+	            header("Content-Disposition:inline;filename='$file_name'");
                 print $response['body'];
                 die();
             }
@@ -1941,7 +1947,7 @@ class Materialpool {
         $host = $uri['host'];
         $doc = substr(strrchr($uri['path'], '/'),1);
 
-        $document_url = home_url().'/?vsviewer_url='.urlencode( $args[0] );
+        $document_url = home_url().'/?vsviewer_url='.base64_encode( $args[0] );
         $options = get_option('ViewerJS_PluginSettings');
         $iframe_width = $options['width'];
         $iframe_height = $options['height'];
