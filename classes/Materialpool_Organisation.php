@@ -656,7 +656,7 @@ class Materialpool_Organisation {
         global $post;
 
         $konfession = get_metadata( 'post', $post->ID, 'organisation_konfession', true );
-        if ( is_array( $konfession ) ) {
+        if ( is_array( $konfession ) && !empty($konfession['name'])) {
             return $konfession[ 'name'];
         }
     }
