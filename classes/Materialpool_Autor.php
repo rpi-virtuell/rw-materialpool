@@ -773,6 +773,21 @@ class Materialpool_Autor {
 	    return $counted;
     }
 
+
+    /**
+     * @since 0.1.0
+     * @access public
+     * @param int $autor_id
+     * @return array|false|mixed
+     */
+    static public function  get_post_views_per_autor($autor_id = 0) {
+        global $post;
+        $autor_id = ($autor_id > 0) ? $autor_id:$post->ID;
+
+        $counted = get_metadata( 'post', $autor_id, 'autor_material_views', true );
+        return $counted;
+    }
+
 	/**
 	 *
 	 * @since 0.0.1
