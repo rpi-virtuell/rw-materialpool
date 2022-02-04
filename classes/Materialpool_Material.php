@@ -1401,7 +1401,7 @@ END;
      * @access  public
      *
      */
-    static public function cover_facet_html_noallign( $id = null) {
+    static public function cover_facet_html_noallign( $id = null ,$placeholderURL = null) {
         global $post;
         if ( $id == null ) $id = $post->ID;
 
@@ -1421,8 +1421,13 @@ END;
             $url  = Materialpool_Material::get_screenshot( $id );
         }
         if ( $url != '' && trim( $url)  != '' ) {
-            $data = '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'materialpool-template-material-picture-facet' ) .'"/>';
-
+            if (empty($placeholderURL)){
+                $data = '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'materialpool-template-material-picture-facet' ) .'"/>';
+            }
+            else
+            {
+                $data = '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'materialpool-template-material-picture-facet' ) .'" onerror="this.onerror = null; this.src=\"'.$placeholderURL.'\"" />';
+            }
         }
 
         return $data;
@@ -1725,7 +1730,13 @@ END;
      *
      */
     static public function availability() {
-        echo Materialpool_Material::get_availability();
+        global $post;
+        $id = get_field( 'material_verfuegbarkeit', $post->ID, ARRAY_A );
+        $vid = get_term( $id, 'verfuegbarkeit' ,  ARRAY_A );
+        if  ( is_array( $vid)) {
+            $link = add_query_arg( 'fwp_verfuegbarkeit', FWP()->helper->safe_value( $vid[ 'slug'] ), home_url(). '/facettierte-suche/' );
+            echo "<a href='". $link ."'>".$vid[ 'name']."</a>";
+        }
     }
 
     /**
@@ -1777,7 +1788,13 @@ END;
      *
      */
     static public function lizenz() {
-        echo Materialpool_Material::get_lizenz();
+        global $post;
+        $id = get_field( 'material_lizenz', $post->ID, ARRAY_A );
+        $vid = get_term( $id, 'lizenz' ,  ARRAY_A );
+        if  ( is_array( $vid)) {
+                    $link = add_query_arg( 'fwp_lizenz', FWP()->helper->safe_value( $vid[ 'slug'] ), home_url(). '/facettierte-suche/' );
+                    echo "<a href='". $link ."'>".$vid[ 'name']."</a>";
+        }
     }
 
     /**
