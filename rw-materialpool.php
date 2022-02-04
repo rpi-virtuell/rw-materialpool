@@ -173,6 +173,7 @@ class Materialpool {
         add_action( 'mp_depublizierung', array( 'Materialpool_Material', 'depublizierung' ) );
 		add_action( 'mp_screenshot_generation', array( 'Materialpool', 'mp_screenshot_generation' ) );
 
+        //cronjob
 		add_action( 'mp_stats_material_meta_update', array( 'Materialpool_Statistic', 'material_meta_update' ) );
 
 		add_filter('template_redirect', array( 'Materialpool_Material', 'check_404_old_material' ) );
