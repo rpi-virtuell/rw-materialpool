@@ -2252,7 +2252,13 @@ END;
     static public function get_autor(bool $single = true) {
         global $post;
 
-        return get_metadata( 'post', $post->ID, 'material_autoren', $single );
+        if (!empty(get_metadata('post', $post->ID, 'material_autor_interim', $single)) && !$single) {
+            return array_merge(
+                get_metadata('post', $post->ID, 'material_autoren', $single),
+                get_metadata('post', $post->ID, 'material_autor_interim', $single));
+        } else {
+            return get_metadata('post', $post->ID, 'material_autoren', $single);
+        }
     }
 
     /**
