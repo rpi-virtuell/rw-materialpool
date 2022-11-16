@@ -23,6 +23,7 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 						'required' => false
 					),
 				),
+				'permission_callback' => '__return_true',
 			),
 		) );
 
@@ -50,9 +51,9 @@ class Materialpool_REST_MyMaterial extends WP_REST_Controller {
 			'paged'           => $request[ 'page' ],
 		);
 		$facets = array();
-		
+
 		if ( isset( $request[ 'suche' ] ) ) {
-			
+
 			//$args[ 's' ] = $request[ 'suche' ];
 		   $facets[ 'suche']=$request[ 'suche' ];
 		}
