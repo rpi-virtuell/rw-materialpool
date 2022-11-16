@@ -13,7 +13,7 @@
  * Plugin Name:       RW Materialpool
  * Plugin URI:        https://github.com/rpi-virtuell/rw-materialpool
  * Description:       RPI Virtuell Materialpool
- * Version:           0.1.1
+ * Version:           0.1.2
  * Author:            Frank Neumann-Staude
  * Author URI:        https://staude.net
  * License:           GNU General Public License v2
