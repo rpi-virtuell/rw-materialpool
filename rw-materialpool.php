@@ -170,11 +170,11 @@ class Materialpool {
         add_action( 'admin_footer-post-new.php', array( 'Materialpool_Material', 'write_javascript' ) );
         add_filter( 'tl_tplc_external_files', array( 'Materialpool_Material', 'add_template_check_external_files' ) );
         add_action( 'init', array( 'Materialpool', 'get_crossdomain_viewer_url' ) );
-        add_action( 'mp_depublizierung', array( 'Materialpool_Material', 'depublizierung' ) );
-		add_action( 'mp_screenshot_generation', array( 'Materialpool', 'mp_screenshot_generation' ) );
 
         //cronjob
 		add_action( 'mp_stats_material_meta_update', array( 'Materialpool_Statistic', 'material_meta_update' ) );
+		add_action( 'mp_depublizierung', array( 'Materialpool_Material', 'depublizierung' ) );
+		add_action( 'mp_screenshot_generation', array( 'Materialpool', 'mp_screenshot_generation' ) );
 
 		add_filter('template_redirect', array( 'Materialpool_Material', 'check_404_old_material' ) );
         add_action( 'restrict_manage_posts', array( 'Materialpool_Material', 'add_taxonomy_filters' ) );
@@ -200,7 +200,6 @@ class Materialpool {
          */
         //add_action( 'pods_meta_groups',  'materialpool_pods_material_metaboxes', 10, 2 );
 		add_action( 'rest_api_init', 'register_mymaterial_rest_routes' );
-
 
         // Add Filter & Actions for Organisation
         add_filter( 'template_include', array( 'Materialpool_Organisation', 'load_template' ) );
@@ -337,6 +336,7 @@ class Materialpool {
 		add_action( 'wp_ajax_mp_check_subscription2',  array( 'Materialpool', 'my_action_callback_check_subscription2' ) );
 		add_action( 'wp_ajax_mp_add_subscription',  array( 'Materialpool', 'my_action_callback_add_subscription' ) );
 		add_action( 'wp_ajax_mp_update_themenseite',  array( 'Materialpool', 'my_action_callback_update_themenseite' ) );
+
 		add_filter( 'rest_prepare_material', array( 'Materialpool_Statistic', 'log_api_request'), 10, 3 );
 		add_filter( 'cron_schedules', array( 'Materialpool', 'custom_cron_job_recurrence' ) );
 
@@ -354,7 +354,12 @@ class Materialpool {
         //add_action( 'import_end', array( 'Materialpool_Import_Check', 'check' ) );
 
         // Embeds
-        add_filter ( 'rest_pre_echo_response', array( 'Materialpool_Embeds','rest_pre_echo_response'), 10, 3);
+
+        // causes error in Gutenberg editor @Todo: Fix
+        // add_filter ( 'rest_pre_echo_response', array( 'Materialpool_Embeds','rest_pre_echo_response'), 10, 3);
+
+
+
         add_filter ( 'embed_site_title_html', array( 'Materialpool_Embeds','site_title_html') );
         add_filter ( 'the_excerpt_embed', array( 'Materialpool_Embeds', 'the_excerpt_embed' ) );
         add_action( 'embed_content', array( 'Materialpool_Embeds', 'embed_content' ) );
@@ -387,7 +392,6 @@ class Materialpool {
 		add_action( 'admin_menu', array( 'Materialpool_Contribute', 'options_page' ) );
 		add_action( 'admin_menu', array( 'Materialpool_Contribute', 'settings_init' ) );
 		add_action( 'init',             array( 'Materialpool_Contribute_Clients', 'init'), 0 );
-
 
 		/** Helper Cronjobs */
         //repair relationships material_autor, material_orgnisation, autor_orgnisation

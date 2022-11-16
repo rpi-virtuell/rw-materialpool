@@ -3570,7 +3570,7 @@ order by wp_posts.post_date  desc  ") ;
 
 		$request_args = array(
 		        'headers' => array(),
-				'timeout'           =>  15,
+				'timeout'           =>  20,
 				'sslverify'         =>  false,
 				'redirection'       =>  10,
 				'user-agent'        =>  'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
@@ -3590,6 +3590,8 @@ order by wp_posts.post_date  desc  ") ;
 					if($log) echo '<li>ERROR : '.$request->get_error_message().' | <a href="'.$url.'">'.$url.'</a></li>';
 					if($log) file_put_contents('/tmp/debug_dev.log', ''.$url.'|'.$request->get_error_message()."\n",FILE_APPEND);
 					update_post_meta($post_id, 'material_url_error',$request->get_error_message());
+					update_post_meta($post_id, 'material_url_code','504');
+
 
 				}elseif( intval($request["response"]["code"])  < 200 || intval($request["response"]["code"]) > 308){
 					if($log) echo '<li>'.$request["response"]["code"].': <a href="'.$url.'">' . $url . '</a></li>';
@@ -3635,6 +3637,11 @@ order by wp_posts.post_date  desc  ") ;
 	            }
             }
 
+			$sql = "UPDATE {$wpdb->posts} SET post_status = 'publish'  where post_status = 'broken'  AND ID = %d";
+			$query = $wpdb->prepare($sql,$post_id);
+			$wpdb->query($query);
+            delete_post_meta($post_id,'material_url_error');
+            delete_post_meta($post_id,'material_url_code');
 
 		}
 	}
@@ -3657,14 +3664,15 @@ order by wp_posts.post_date  desc  ") ;
 		//echo '<pre>';
 		foreach ($ms as $m){
 
-		    echo '<li><strong>'.$m->url.'</strong></li>'; ob_flush();
+		    echo '<li><strong>'.$m->url.'</strong></li>';// ob_flush();
 
 			Materialpool_Material::check_material_url($m->url,$m->post_id, true);
+			sleep( 1);
 
 		}
 		if(isset($_GET['N'])){?>
             <script>
-                location.href='https://dev-material.rpi-virtuell.de/mark_broken_links/?N=<?php echo $offset+$limit;?>';
+                location.href='https://material.rpi-virtuell.de/test/?N=<?php echo $offset+$limit;?>';
             </script><?php
 		}
 		die();
@@ -3694,7 +3702,7 @@ order by wp_posts.post_date  desc  ") ;
 			file_put_contents('/tmp/debug_dev.log', "$offset | {$m->post_id}: {$m->url}\n", FILE_APPEND);
 
 		}
-		sleep(1);
+		sleep(2);
 		self::cron_check_broken_links($offset+$limit);
 
 	}
@@ -3706,7 +3714,7 @@ order by wp_posts.post_date  desc  ") ;
                 inner JOIN wp_postmeta spec ON meta.post_id =spec.post_id 
                     and spec.meta_key='material_special' and spec.meta_value = 0
                 inner JOIN wp_posts p ON p.ID = meta.post_id 
-                    and post_type='material' and post_status = 'publish'
+                    and post_type='material' and (post_status = 'publish' or post_status = 'broken')
                 where meta.meta_key='material_url' 
                     and p.ID NOT IN (
                         select post_id from wp_postmeta meta 

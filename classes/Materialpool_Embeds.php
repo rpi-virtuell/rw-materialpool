@@ -17,15 +17,29 @@ class Materialpool_Embeds
      *
 	 */
     static public function rest_pre_echo_response($data,  $server,  WP_REST_Request  $request ){
+	    if( function_exists( 'get_current_screen')){
 
-        $post = get_post(url_to_postid($request->get_param('url')));
-	    $data['width'] = 1000;
-	    $data['height'] = 700;
-	    $data['html'] = str_replace('<blockquote class="wp-embedded-content">',
-            '<blockquote class="wp-embedded-content" style="display: none;">',
-            get_post_embed_html(1000, 750, $post));
+		    $current_screen = get_current_screen();
+		    if ( method_exists( $current_screen, 'is_block_editor' ) && $current_screen->is_block_editor() ) {
+			    $is_block_editor = true;
+		    }else{
+			    $is_block_editor = false;
+		    }
 
-        return $data;
+
+
+		    if($is_block_editor=== false){
+			    $post = get_post(url_to_postid($request->get_param('url')));
+			    $data['width'] = 1000;
+			    $data['height'] = 700;
+			    $data['html'] = str_replace('<blockquote class="wp-embedded-content">',
+				    '<blockquote class="wp-embedded-content" style="display: none;">',
+				    get_post_embed_html(1000, 750, $post));
+
+		    }
+
+	    }
+	    return $data;
 
 
     }
