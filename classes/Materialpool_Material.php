@@ -2249,13 +2249,12 @@ END;
      * @access  public
      *
      */
-    static public function get_autor(bool $single = true) {
+    static public function get_autor(bool $single = true)
+    {
         global $post;
 
-        if (!empty(get_metadata('post', $post->ID, 'material_autor_interim', $single)) && !$single) {
-            return array_merge(
-                get_metadata('post', $post->ID, 'material_autoren', $single),
-                get_metadata('post', $post->ID, 'material_autor_interim', $single));
+        if (empty(get_metadata('post', $post->ID, 'material_autoren', $single))) {
+            return get_metadata('post', $post->ID, 'material_autor_interim', $single);
         } else {
             return get_metadata('post', $post->ID, 'material_autoren', $single);
         }
