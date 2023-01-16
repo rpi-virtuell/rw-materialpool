@@ -1954,7 +1954,7 @@ END;
             $back = false;
         }
         $interim = get_metadata( 'post', $post->ID, 'material_organisation_interim', true );
-        if ( empty($interim) ) {
+        if (!empty($interim) ) {
             $back = true;
         }
         return $back;
