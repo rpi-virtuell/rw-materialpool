@@ -1351,7 +1351,7 @@ END;
         if ( $url == '' ) {
             $url  = Materialpool_Material::get_screenshot( $id );
         }
-        if ( $url != '' && trim( $url)  != '' ) {
+        if ( $url != '' && is_string($url) && trim( $url)  != '' ) {
             $data = '<img  src="' . $url . '" class="'. apply_filters( 'materialpool-template-material-picture', 'alignleft materialpool-template-material-picture-facet' ) .'"/>';
 
         }
@@ -1981,16 +1981,18 @@ END;
     static public function organisation_facet_html () {
         $organisationen = Materialpool_Material::get_organisation();
         $data = '';
-        foreach ( $organisationen as $organisationID ) {
-            $organisation = get_post( $organisationID, ARRAY_A );
-            if ( $organisation != '' )
-                if ( $data != '') {
-                    $data .= ', ';
-                }
+        if (is_array($organisationen))
+        {
+            foreach ( $organisationen as $organisationID ) {
+                $organisation = get_post( $organisationID, ARRAY_A );
+                if ( $organisation != '' )
+                    if ( $data != '') {
+                        $data .= ', ';
+                    }
                 $data .= $organisation[ 'post_title' ];
+            }
         }
-        $data = "<span class='search-organisation'>" . $data . "</span>";
-        return $data;
+        return "<span class='search-organisation'>" . $data . "</span>";
     }
 
 
@@ -2151,17 +2153,19 @@ END;
     static public function autor_facet_html () {
         $verweise = Materialpool_Material::get_autor(false);
         $data = '';
-        foreach ( $verweise as $verweis ) {
-            if ( $verweis != '' )
-                if ( $data != '') {
-                    $data .= ', ';
-                }
-            $vorname = get_post_meta($verweis, 'autor_vorname', true );
-            $nachname = get_post_meta($verweis, 'autor_nachname', true );
-            $data .=  $vorname .' '. $nachname;
+        if (is_array($verweise))
+        {
+            foreach ( $verweise as $verweis ) {
+                if ( $verweis != '' )
+                    if ( $data != '') {
+                        $data .= ', ';
+                    }
+                $vorname = get_post_meta($verweis, 'autor_vorname', true );
+                $nachname = get_post_meta($verweis, 'autor_nachname', true );
+                $data .=  $vorname .' '. $nachname;
+            }
         }
-        $data = "<span class='search-autor'>" . $data . "</span>";
-        return $data;
+        return "<span class='search-autor'>" . $data . "</span>";
     }
 
 
