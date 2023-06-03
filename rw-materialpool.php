@@ -343,6 +343,8 @@ class Materialpool {
         add_filter( 'facetwp_api_can_access', function() { return true;} );
         add_action( 'wp_head', array( 'Materialpool',  'promote_feeds' ) );
         remove_all_actions( 'do_feed_rss2' );
+
+        add_action( 'pre_get_posts', array( 'Materialpool', 'material_feed_pre_query') , 10, 1 );
         add_action( 'do_feed_rss2', array( 'Materialpool', 'material_feed_rss2') , 10, 1 );
         add_filter( 'request', array( 'Materialpool', 'exclude_entwurf' ) );
         add_action( 'init', array( 'Materialpool', 'custom_oembed_providers' ) , 10, 1 );
@@ -445,6 +447,13 @@ class Materialpool {
     }
 
 
+    public static function material_feed_pre_query( WP_Query $query ) {
+        if(is_feed()){
+            $query->set('orderby', 'post_date');
+            $query->set('arder', 'DESC');
+        }
+        return $query;
+    }
     public static function material_feed_rss2( $for_comments ) {
         if( get_query_var( 'post_type' ) == 'material' ) {
             $rss_template = Materialpool::$plugin_base_dir . 'templates/feed-material-rss2.php';

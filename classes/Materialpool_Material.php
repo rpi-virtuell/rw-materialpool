@@ -1303,10 +1303,32 @@ END;
      * @access  public
      *
      */
-    static public function get_picture_url( $id = null ) {
-        global $post;
-        if ( $id == null ) $id = $post->ID;
+    static public function get_cover_url( $id = null )
+    {
 
+        global $post;
+        if ($id == null) $id = $post->ID;
+
+        $pic = Materialpool_Material::get_picture($id);
+        $url = '';
+
+        if (is_array($pic)) {
+            $url = wp_get_attachment_url($pic['ID']);
+        }
+
+        if ($url == '') {
+            $url = Materialpool_Material::get_picture_url($id);
+        }
+        if ($url == '') {
+            $url = Materialpool_Material::get_screenshot($id);
+        }
+        if ($url == '') {
+            $url = plugin_dir_url(dirname(__DIR__)) . '/assets/dummy.jpg';
+        }
+
+        return $url;
+    }
+     static public function get_picture_url( $id = null ) {
         return get_metadata( 'post', $id, 'material_cover_url', true );
     }
 
@@ -1366,7 +1388,7 @@ END;
      * @access  public
      *
      */
-    static public function get_cover( $id = null) {
+    static public function  get_cover( $id = null) {
         global $post;
         if ( $id == null ) $id = $post->ID;
 
@@ -2056,17 +2078,29 @@ END;
      *
      */
     static public function autor_list () {
-        $count = 0;
-        $verweise = Materialpool_Material::get_autor(false);
-        foreach ( $verweise as $verweis ) {
-            if ($count > 0 ) {
-                echo ", ";
+
+
+        $verweise =  Materialpool_Material::get_autor(false);
+        if(!empty($verweise)&& !is_array($verweise)){
+
+            echo $verweise;
+
+        }elseif (is_array($verweise)){
+            foreach ( $verweise as $verweis ) {
+                if ($count > 0 ) {
+                    echo ", ";
+                }
+                if(isset($verweis[ 'ID' ])){
+                    $vorname = get_post_meta($verweis[ 'ID' ], 'autor_vorname', true );
+                    $nachname = get_post_meta($verweis[ 'ID' ], 'autor_nachname', true );
+                    echo $vorname . ' ' . $nachname;
+                    $count++;
+                }
+
             }
-            $vorname = get_post_meta($verweis[ 'ID' ], 'autor_vorname', true );
-            $nachname = get_post_meta($verweis[ 'ID' ], 'autor_nachname', true );
-            echo $vorname . ' ' . $nachname;
-            $count++;
         }
+
+
     }
 
     /**
@@ -2257,10 +2291,13 @@ END;
     {
         global $post;
 
-        if (empty(get_metadata('post', $post->ID, 'material_autoren', $single))) {
-            return get_metadata('post', $post->ID, 'material_autor_interim', $single);
+        $interim_autoren = get_metadata('post', $post->ID, 'material_autor_interim', $single);
+        $autoren = get_metadata('post', $post->ID, 'material_autoren', $single);
+
+        if (empty($autoren)) {
+            return $interim_autoren;
         } else {
-            return get_metadata('post', $post->ID, 'material_autoren', $single);
+            return $autoren;
         }
     }
 
@@ -3714,9 +3751,9 @@ order by wp_posts.post_date  desc  ") ;
 
 		global $wpdb;
 		$sql = "select meta.post_id,meta.meta_value url from wp_postmeta meta
-                inner JOIN wp_postmeta spec ON meta.post_id =spec.post_id 
+                inner JOIN {$wpdb->postmeta} AS spec ON meta.post_id =spec.post_id 
                     and spec.meta_key='material_special' and spec.meta_value = 0
-                inner JOIN wp_posts p ON p.ID = meta.post_id 
+                inner JOIN {$wpdb->posts} AS p ON p.ID = meta.post_id 
                     and post_type='material' and (post_status = 'publish' or post_status = 'broken')
                 where meta.meta_key='material_url' 
                     and p.ID NOT IN (
@@ -3740,9 +3777,9 @@ order by wp_posts.post_date  desc  ") ;
 
         if($atts['type']=='server_error'){
 	        global $wpdb;
-	        $sql = "select p.ID post_id, m.meta_value url, e.meta_value error  from wp_posts p
-            INNER JOIN wp_postmeta m on p.ID = m.post_id and m.meta_key = 'material_url' 
-            INNER JOIN wp_postmeta e on p.ID = e.post_id and ((e.meta_key = 'material_url_code' and e.meta_value > 499)  OR e.meta_key = 'material_url_error') 
+	        $sql = "select p.ID post_id, m.meta_value url, e.meta_value error  from {$wpdb->posts} p
+            INNER JOIN {$wpdb->postmeta} AS m on p.ID = m.post_id and m.meta_key = 'material_url' 
+            INNER JOIN {$wpdb->postmeta} AS e on p.ID = e.post_id and ((e.meta_key = 'material_url_code' and e.meta_value > 499)  OR e.meta_key = 'material_url_error') 
             where post_status = 'broken'";
         }
 	    $ms = $wpdb->get_results($sql);

@@ -77,10 +77,13 @@ do_action( 'rss_tag_pre', 'rss2' );
          */
         do_action( 'rss2_head');
 
+
+
         while( have_posts()) : the_post();
 
             if ( false === ( $transient = get_transient( 'rss_material_entry-'.$post->ID ) ) ) {
-            ob_start();
+
+                ob_start();
 
         ?>
 
@@ -96,7 +99,7 @@ do_action( 'rss_tag_pre', 'rss2' );
 
                 <guid isPermaLink="false"><?php the_guid(); ?></guid>
                 <?php if (get_option('rss_use_excerpt')) : ?>
-                    <description><![CDATA[<?php Materialpool_Material::shortdescription(); ?>]]></description>
+                    <description><![CDATA[<div class="rss-thumb"><?php Materialpool_Material::picture_html($post->ID);?></div><div class="rss-description"><?php Materialpool_Material::shortdescription(); ?></div>]]></description>
                 <?php else : ?>
                     <description><![CDATA[<?php Materialpool_Material::shortdescription(); ?>]]></description>
                     <?php $content = get_the_content_feed('rss2'); ?>
@@ -111,7 +114,8 @@ do_action( 'rss_tag_pre', 'rss2' );
                     <slash:comments><?php echo get_comments_number(); ?></slash:comments>
                 <?php endif; ?>
                 <?php
-                $url = Materialpool_Material::get_cover();
+                $url = Materialpool_Material::get_cover_url($post->ID);
+
                 $url = esc_url( htmlentities($url, ENT_XHTML) );
                 if ( $url != '' && false === strpos ( $url, '&')) { ?>
                     <enclosure  url="<?php echo  $url; ?>"   />
