@@ -2241,7 +2241,7 @@ END;
         if  ( is_array( $term_list)) {
             foreach ( $term_list as $tax ) {
                 if ( $tax->parent != 0 ) {
-	                $link = add_query_arg( 'fwp_bildungsstufe', FWP()->helper->safe_value( $tax->slug ), home_url(). '/facettierte-suche/' );
+	                $link = Materialpool_Material::add_preselect_filters_to_url('fwp_bildungsstufe',$tax->slug );
 	                $data[] =  "<a href='$link'>{$tax->name}</a>";
                 }
             }
@@ -2476,7 +2476,8 @@ END;
 	    if  ( is_array( $term_list)) {
 		    foreach ( $term_list as $tax ) {
 			    if ( $tax->parent != 0 ) {
-				    $link = add_query_arg( 'fwp_medientyp', FWP()->helper->safe_value( $tax->slug ), home_url(). '/facettierte-suche/' );
+
+                   $link =  Materialpool_Material::add_preselect_filters_to_url('fwp_medientyp', $tax->slug);
 				    $data[] =  "<a href='$link'>{$tax->name}</a>";
 			    }
 		    }
@@ -2546,7 +2547,7 @@ END;
         $term_list = wp_get_post_terms( $post->ID, 'schlagwort' );
         if  ( is_array( $term_list)) {
             foreach ( $term_list as $tax ) {
-                $link = "/facettierte-suche/?fwp_schlagworte=". $tax->slug;
+                $link = Materialpool_Material::add_preselect_filters_to_url('fwp_schlagworte', $tax->slug );
                 if ( $data != '' ) $data .= ', ';
                 $data .= '<a href="' . $link . '">' . $tax->name .'</a>';
             }
@@ -3805,6 +3806,38 @@ order by wp_posts.post_date  desc  ") ;
 	    }
 
 	}
+
+
+    /**
+     * @param string $add_filter
+     * @param $add_filter_value
+     * @return string
+     */
+    public static function add_preselect_filters_to_url(string $add_filter = '', $add_filter_value = ''): string
+    {
+        $filter_options = [
+            'fwp_bildungsstufe' => ''
+            //TODO: ADD additional preselects here
+        ];
+        foreach ($filter_options as $filter_option => $value) {
+            if (isset($_GET[$filter_option])) {
+                $filter_options[$filter_option] = FWP()->helper->safe_value($_GET[$filter_option]);
+            }
+            else{
+                unset($filter_options[$filter_option]);
+            }
+        }
+        if (!empty($add_filter) && !empty($add_filter_value)) {
+            if (!empty($filter_options[$add_filter]) && $filter_options[$add_filter] !=FWP()->helper->safe_value($add_filter_value) ) {
+                $filter_options[$add_filter] .= ',' . FWP()->helper->safe_value($add_filter_value);
+            } else {
+                $filter_options[$add_filter] = FWP()->helper->safe_value($add_filter_value);
+
+            }
+        }
+
+        return add_query_arg($filter_options, home_url() . '/facettierte-suche/');
+    }
 }
 
 
