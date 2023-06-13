@@ -3821,17 +3821,17 @@ order by wp_posts.post_date  desc  ") ;
         ];
         foreach ($filter_options as $filter_option => $value) {
             if (isset($_GET[$filter_option])) {
-                $filter_options[$filter_option] = FWP()->helper->safe_value($_GET[$filter_option]);
+                $filter_options[$filter_option] = $_GET[$filter_option];
             }
             else{
                 unset($filter_options[$filter_option]);
             }
         }
         if (!empty($add_filter) && !empty($add_filter_value)) {
-            if (!empty($filter_options[$add_filter]) && $filter_options[$add_filter] !=FWP()->helper->safe_value($add_filter_value) ) {
-                $filter_options[$add_filter] .= ',' . FWP()->helper->safe_value($add_filter_value);
+            if (!empty($filter_options[$add_filter]) && !str_contains($filter_options[$add_filter],$add_filter_value) ) {
+                $filter_options[$add_filter] .= '%2C' .$add_filter_value ;
             } else {
-                $filter_options[$add_filter] = FWP()->helper->safe_value($add_filter_value);
+                $filter_options[$add_filter] = $add_filter_value;
 
             }
         }
