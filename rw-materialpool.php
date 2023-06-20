@@ -339,6 +339,7 @@ class Materialpool {
 
 		add_filter( 'rest_prepare_material', array( 'Materialpool_Statistic', 'log_api_request'), 10, 3 );
 		add_filter( 'cron_schedules', array( 'Materialpool', 'custom_cron_job_recurrence' ) );
+		add_filter( 'admin_init', array( 'Materialpool_Themenseite', 'cron_repair_themenseiten_material_relations' ) );
 
         add_filter( 'facetwp_api_can_access', function() { return true;} );
         add_action( 'wp_head', array( 'Materialpool',  'promote_feeds' ) );
@@ -420,6 +421,10 @@ class Materialpool {
 		add_action('wp_head',  array('Materialpool_Material','redirect_materialpool_url'),2 );
 
 		do_action( 'materialpool_init');
+
+        //add_action( 'admin_menu', ['Materialpool_Material', 'save_material_to_themenseiten']);
+
+
 	}
 
     public static function enqueue_our_required_stylesheets(){
@@ -1972,7 +1977,7 @@ class Materialpool {
 					});
 					</script>";
 
-		
+
         return "<iframe class=\"viewerjs-frame\" src=\"$viewerjs_plugin_url" .
             '#' . $document_url .'" '.
             "width=\"$iframe_width\" ".

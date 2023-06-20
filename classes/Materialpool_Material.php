@@ -420,15 +420,18 @@ class Materialpool_Material {
         delete_metadata( 'post', $post_id, 'material_v2_screesnhot_url' );
         delete_metadata( 'post', $post_id, 'material_v2_screesnhot_gen' );
 
+
+
+
         // ggf Abhängige Themenseiten aus dem RocketCache entfernen
-        $themen = Materialpool_Material::get_themenseiten_for_material( $post_id );
-        if ( is_array( $themen ) &&  sizeof( $themen ) > 0 ) {
-            foreach ( $themen as $item ) {
-                if (  function_exists( 'rocket_clean_post' ) ) {
-                    rocket_clean_post( $item->id );
-                }
-            }
-        }
+        //        $themen = Materialpool_Material::get_themenseiten_for_material( $post_id );
+        //        if ( is_array( $themen ) &&  sizeof( $themen ) > 0 ) {
+        //            foreach ( $themen as $item ) {
+        //                if (  function_exists( 'rocket_clean_post' ) ) {
+        //                    rocket_clean_post( $item->id );
+        //                }
+        //            }
+        //        }
 
 	    // Für den Fall, das auf der Startseite Materialien aufgelistet werden, den Cache der Startseite ungültig machen.
 	    if (  function_exists( 'rocket_clean_post' ) ) {
@@ -443,6 +446,7 @@ class Materialpool_Material {
 		    FWP()->indexer->save_post( $post_id );
 	    }
         Materialpool_Material::set_createdate( $post_id );
+        Materialpool_Material::save_material_to_themenseiten($post_id);
     }
 
     /**
@@ -3167,14 +3171,23 @@ order by wp_posts.post_date  asc ") ;
      */
     static public function get_themenseiten_for_material( $material_id = 0 ) {
         global $post;
-        global $wpdb;
 
         $material_id = ($material_id>0)?$material_id:$post->ID;
-        $tablename = $wpdb->prefix . "pods_themenseitengruppen";
-        $query = "select id, post_title  from $wpdb->posts where id in ( select  pandarf_parent_post_id   from $tablename  where ( auswahl like '%,{$material_id},%' or auswahl like  '%,{$material_id}'  ) ) and post_status = 'publish'   and post_type= 'themenseite' order by post_title;";
 
-        $count = $wpdb->get_results($query);
-        return $count;
+        $themenseiten = get_field('material_themenseiten',$material_id);
+
+        $result = [];
+        foreach ($themenseiten as $themenseite){
+
+            $thema = get_post($themenseite['single_themenseite']);
+            if(is_a($thema, 'WP_Post')){
+                $thema->id = $thema->ID;
+                $result[] = $thema;
+            }
+        }
+
+        return $result;
+
     }
 
     /**
@@ -3838,6 +3851,51 @@ order by wp_posts.post_date  desc  ") ;
 
         return add_query_arg($filter_options, home_url() . '/facettierte-suche/');
     }
+
+    /**
+     * triggered from Material save action
+     * save meta values to post_type themenseite from acf repeaterfield  material_themenseiten
+     *
+     * @param $post_id
+     * @return void
+     */
+    static function save_material_to_themenseiten($post_id){
+
+        $themenseiten = get_field('material_themenseiten',$post_id);
+
+        foreach ($themenseiten as $themenseite){
+
+
+            $t_id   = $themenseite['single_themenseite'];
+            $group  = $themenseite['single_themengruppe'];
+
+
+            $themenseite_gruppen = get_field('themengruppen', $t_id);
+            foreach ($themenseite_gruppen as $k=>$grp){
+
+
+                if($grp['gruppe_von_materialien'] === $group){
+
+                    $mats = $grp['material_in_dieser_gruppe'];
+
+                    if(in_array($post_id,$mats)) {
+                        //allready exists
+                    }else{
+
+                        array_push($mats, $post_id);
+
+                        $post_meta_key = implode('_',['themengruppen', $k, 'material_in_dieser_gruppe']);
+
+                        update_post_meta($t_id,$post_meta_key,$mats);
+
+                    }
+                }
+
+            }
+        }
+
+    }
+
 }
 
 

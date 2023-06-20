@@ -247,19 +247,7 @@ class Materialpool_Themenseite {
 
     static function cron_repair_themenseiten_material_relations(){
 
-        $posts = get_posts(array(
-            'post_type' => 'material',
-            'posts_per_page' => -1,
-            'meta_key' => 'material_in_themenseite',
-            'meta_compare' => 'EXISTS'
-        ));
-
-        // Alle Postmeta-Einträge mit dem Meta-Key "material_in_themenseite" löschen
-        foreach ($posts as $post) {
-            delete_post_meta($post->ID, 'material_in_themenseite');
-        }
-
-
+       return;
 
         $themenseiten = get_posts([
             'post_type'=> 'themenseite',
@@ -271,21 +259,41 @@ class Materialpool_Themenseite {
 
         foreach ($themenseiten as $themenseite){
 
-            $t_materialien =[];
+            ini_set('display_errors', 1);
+            @error_reporting(E_ALL);
+
             $t_id = $themenseite->ID;
 
+            var_dump($t_id);
+
             $gruppen = self::get_gruppen($t_id);
-            foreach ($gruppen as $grp){
-                $t_materialien = array_merge( $t_materialien, $grp['auswahl']);
-                $gruppen_name = $grp['gruppe'];
-                $i = 0;
-                foreach ($grp['auswahl'] as $material_id){
-                    update_post_meta($material_id, 'material_themenseiten_'.strval($i).'_single_themenseite',$t_id );
-                    update_post_meta($material_id, 'material_themenseiten_'.strval($i).'_single_themengruppe',$gruppen_name );
-                    $i++;
-                    add_post_meta($material_id, 'material_in_themenseite',$t_id);
+            try {
+                if(is_array($gruppen)){
+                foreach ($gruppen as $grp){
+
+                    if(is_array($grp)){
+                        $gruppen_name = $grp['gruppe'];
+
+                        $i = 0;
+                        if(is_array($grp['auswahl'])) {
+                            foreach ($grp['auswahl'] as $material_id) {
+
+
+                                    update_post_meta($material_id, 'material_themenseiten_' . strval($i) . '_single_themenseite', $t_id);
+                                    update_post_meta($material_id, 'material_themenseiten_' . strval($i) . '_single_themengruppe', $gruppen_name);
+                                    $i++;
+
+
+
+                            }
+                        }
+                    }
+
                 }
 
+            }
+            } catch (Exception $e) {
+                echo $e->getCode();
             }
 
 
