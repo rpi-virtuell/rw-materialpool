@@ -1972,7 +1972,7 @@ class Materialpool {
 					});
 					</script>";
 
-
+		
         return "<iframe class=\"viewerjs-frame\" src=\"$viewerjs_plugin_url" .
             '#' . $document_url .'" '.
             "width=\"$iframe_width\" ".
