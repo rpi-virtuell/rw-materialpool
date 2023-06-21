@@ -247,7 +247,13 @@ class Materialpool_Themenseite {
 
     static function cron_repair_themenseiten_material_relations(){
 
-       return;
+
+        if(!is_user_logged_in() || !is_admin()){
+            return;
+        }
+        ini_set('display_errors', 1);
+        @error_reporting(E_ALL);
+
 
         $themenseiten = get_posts([
             'post_type'=> 'themenseite',
@@ -255,36 +261,50 @@ class Materialpool_Themenseite {
             'post_status'=> 'any'
         ]);
 
-
-
         foreach ($themenseiten as $themenseite){
 
-            ini_set('display_errors', 1);
-            @error_reporting(E_ALL);
 
             $t_id = $themenseite->ID;
 
-            var_dump($t_id);
-
             $gruppen = self::get_gruppen($t_id);
-            try {
-                if(is_array($gruppen)){
+            if(is_array($gruppen)){
+
                 foreach ($gruppen as $grp){
 
                     if(is_array($grp)){
                         $gruppen_name = $grp['gruppe'];
 
-                        $i = 0;
-                        if(is_array($grp['auswahl'])) {
-                            foreach ($grp['auswahl'] as $material_id) {
+
+                        if(is_array($grp['auswahl']) && count($grp['auswahl'])>0) {
+
+                            $repeater_key = 'field_648c329d06230';
+                            $entries =  array();
 
 
-                                    update_post_meta($material_id, 'material_themenseiten_' . strval($i) . '_single_themenseite', $t_id);
-                                    update_post_meta($material_id, 'material_themenseiten_' . strval($i) . '_single_themengruppe', $gruppen_name);
-                                    $i++;
+                            foreach ($grp['auswahl'] as $k=>$material_id) {
 
+                                var_dump('<pre>',$material_id);
 
+                                if( intval($t_id)>0 && !empty($gruppen_name)){
 
+                                    $m_ts = get_field('material_themenseiten', $material_id);
+                                    $m_ts_exists = false;
+                                    if(is_array($m_ts) && count($m_ts)>0){
+                                        foreach ($m_ts as $row){
+                                            if(intval($row['single_themenseite']) === $t_id){
+                                                $m_ts_exists = true;
+                                            }
+                                        }
+
+                                    }
+                                    if(!$m_ts_exists){
+                                        $m_ts[]=array(
+                                            'single_themenseite' => $t_id,
+                                            'single_themengruppe' => $gruppen_name
+                                        );
+                                    }
+                                    update_field($repeater_key, $m_ts, $material_id);
+                                }
                             }
                         }
                     }
@@ -292,10 +312,6 @@ class Materialpool_Themenseite {
                 }
 
             }
-            } catch (Exception $e) {
-                echo $e->getCode();
-            }
-
 
         }
 

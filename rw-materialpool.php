@@ -339,7 +339,7 @@ class Materialpool {
 
 		add_filter( 'rest_prepare_material', array( 'Materialpool_Statistic', 'log_api_request'), 10, 3 );
 		add_filter( 'cron_schedules', array( 'Materialpool', 'custom_cron_job_recurrence' ) );
-		add_filter( 'admin_init', array( 'Materialpool_Themenseite', 'cron_repair_themenseiten_material_relations' ) );
+		//add_filter( 'cron_schedules', array( 'Materialpool_Themenseite', 'cron_repair_themenseiten_material_relations' ) );
 
         add_filter( 'facetwp_api_can_access', function() { return true;} );
         add_action( 'wp_head', array( 'Materialpool',  'promote_feeds' ) );
