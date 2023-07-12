@@ -424,6 +424,12 @@ class Materialpool {
 
         //add_action( 'admin_menu', ['Materialpool_Material', 'save_material_to_themenseiten']);
 
+        /*
+         * ADD FILTER for share_on_mastodon
+         */
+        add_filter( 'share_on_mastodon_status',['Materialpool_Helper', 'share_on_mastodon_status'],10,2);
+        add_filter( 'share_on_mastodon_attached_images','__return_false');
+        add_filter( 'share_on_mastodon_featured_image','__return_false');
 
 	}
 

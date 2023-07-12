@@ -11,6 +11,73 @@
 
 class Materialpool_Helper {
 
+    static public function share_on_mastodon_status($status, WP_Post $post){
+        if('material' === $post->post_type){
+            global $post;
+
+            $map =[
+                'elementary' => '#Kita',
+                'church' => '#Kirche',
+                'youth' => '#Jugendarbeit',
+                'children' => '#kinder',
+                'adult-education' => '#Erwachsenenbildung',
+                'sunday-school' => '#Kindergottesdienst',
+                'confirmation-work' => '#Konfis',
+                'school' => '#ReligionEdu #FediLZ',
+                'professional' => '#Berufsschule',
+                'primary' => '#Grundschule',
+                'advanced' => '#Oberstufe',
+                'secondary' => '#Sekundarstufe',
+                'teachers' => '#Lehrerbildung #FediLZ',
+                'relpaed' => '#ReligionStudieren'
+            ];
+
+            $short          = Materialpool_Material::get_shortdescription().":\n";
+            $url            = Materialpool_Material::get_url()."\n";
+
+            $shortinfo = "\n".$short.$url;
+
+            $data=[];
+            $term_list = wp_get_post_terms( $post->ID, 'bildungsstufe' );
+            if  ( is_array( $term_list)) {
+                foreach ( $term_list as $tax ) {
+                       $data[] = $map[$tax->slug];
+                }
+            }
+            $zielgruppen    = implode(' ', $data);
+
+
+
+            $data=[];
+            $term_list = wp_get_post_terms( $post->ID, 'schlagwort' );
+            if  ( is_array( $term_list)) {
+                foreach ( $term_list as $tax ) {
+                    $data[] =  "#{$tax->slug}";
+                }
+            }
+            $tags    = implode(' ', $data);
+
+
+            if(strlen($status." \n" .$zielgruppen )<500){
+                $status .= " \n" .$zielgruppen ;
+            }
+
+            if(strlen($status." \n" .$shortinfo )<500){
+                $status .= " \n" .$shortinfo ;
+            }
+
+            if(strlen($status." \n" .$tags )<500){
+                $status .= " \n" .$tags ;
+            }
+
+
+
+
+        }
+
+        return $status;
+    }
+
 	static public function ac_column_value_icons( $value, $id, AC\Column $column ) {
 
 	    if ( $column instanceof ACP\Column\Post\Status ) {
