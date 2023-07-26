@@ -19,7 +19,7 @@ class Materialpool_Helper {
                 'elementary' => '#Kita',
                 'church' => '#Kirche',
                 'youth' => '#Jugendarbeit',
-                'children' => '#kinder',
+                'children' => '#Kinder',
                 'adult-education' => '#Erwachsenenbildung',
                 'sunday-school' => '#Kindergottesdienst',
                 'confirmation-work' => '#Konfis',
@@ -28,8 +28,13 @@ class Materialpool_Helper {
                 'primary' => '#Grundschule',
                 'advanced' => '#Oberstufe',
                 'secondary' => '#Sekundarstufe',
-                'teachers' => '#Lehrerbildung #FediLZ',
+                'teachers' => '#Lehrerbildung',
                 'relpaed' => '#ReligionStudieren'
+            ];
+
+            $words =[
+                'globales-lernen' => '#bne',
+                'Nachhaltigkeit' => '#bne',
             ];
 
             $short          = Materialpool_Material::get_shortdescription().":\n";
@@ -52,26 +57,29 @@ class Materialpool_Helper {
             $term_list = wp_get_post_terms( $post->ID, 'schlagwort' );
             if  ( is_array( $term_list)) {
                 foreach ( $term_list as $tax ) {
-                    $data[] =  "#{$tax->slug}";
+                    if(in_array($tax->slug, $words)){
+                        $data[]  = $words[$tax->slug];
+                    }else{
+                        $data[] =  "#{$tax->slug}";
+                    }
                 }
             }
+            $data = array_unique($data);
             $tags    = implode(' ', $data);
 
 
-            if(strlen($status." \n" .$zielgruppen )<500){
+            if(strlen($status." \n" .$zielgruppen )<450){
                 $status .= " \n" .$zielgruppen ;
             }
 
-            if(strlen($status." \n" .$shortinfo )<500){
+            if(strlen($status." \n" .$shortinfo )<300){
                 $status .= " \n" .$shortinfo ;
             }
 
-            if(strlen($status." \n" .$tags )<500){
-                $status .= " \n" .$tags ;
+            if(strlen($status." \n" .$tags )<450){
+                $status .= " \n" .wp_trim_words($tags,5) ;
             }
-
-
-
+            $status = self::truncate($status,500);
 
         }
 
@@ -508,4 +516,16 @@ class Materialpool_Helper {
 
 	}
 
+    static function truncate($string,$length=100,$append="")
+    {
+        $string = trim($string);
+
+        if (strlen($string) > $length) {
+            $string = wordwrap($string, $length);
+            $string = explode("\n", $string, 2);
+            $string = $string[0] . $append;
+        }
+
+        return $string;
+    }
 }
