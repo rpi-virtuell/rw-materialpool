@@ -176,7 +176,13 @@ class Materialpool {
 		add_action( 'mp_depublizierung', array( 'Materialpool_Material', 'depublizierung' ) );
 		add_action( 'mp_screenshot_generation', array( 'Materialpool', 'mp_screenshot_generation' ) );
 
-		add_filter('template_redirect', array( 'Materialpool_Material', 'check_404_old_material' ) );
+        /** Helper Cronjobs */
+        //repair relationships material_autor, material_orgnisation, autor_orgnisation
+        add_action( 'onetime_cronjob', array( 'Materialpool_Helper', 'repair_all' ) );
+        add_action( 'rw_material_check_for_broken_links', array( 'Materialpool_Material', 'cron_check_broken_links' ) );
+
+
+        add_filter('template_redirect', array( 'Materialpool_Material', 'check_404_old_material' ) );
         add_action( 'restrict_manage_posts', array( 'Materialpool_Material', 'add_taxonomy_filters' ) );
         add_shortcode( 'material-vorschlag', array( 'Materialpool_Material', 'vorschlag_shortcode' ) );
         remove_shortcode( 'viewerjs', 'viewerjs_shortcode_handler');
@@ -396,10 +402,6 @@ class Materialpool {
 		add_action( 'admin_menu', array( 'Materialpool_Contribute', 'settings_init' ) );
 		add_action( 'init',             array( 'Materialpool_Contribute_Clients', 'init'), 0 );
 
-		/** Helper Cronjobs */
-        //repair relationships material_autor, material_orgnisation, autor_orgnisation
-		add_action( 'onetime_cronjob', array( 'Materialpool_Helper', 'repair_all' ) );
-		add_action( 'rw_material_check_for_broken_links', array( 'Materialpool_Material', 'cron_check_broken_links' ) );
 
 		//
 		add_action( 'updated_post_meta', array('Materialpool_Material', 'after_post_meta'), 10, 4 );
