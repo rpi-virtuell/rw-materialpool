@@ -11,8 +11,21 @@
 
 class Materialpool_Helper {
 
+    static public function log($content){
+        if ( !is_string($content) && !is_float($content) ) {
+            $content = json_encode($content);
+        }
+        file_put_contents( realpath(__DIR__).'/mastodon.log' , $content ."\n",FILE_APPEND );
+    }
+
+
     static public function share_on_mastodon_status($status, WP_Post $post){
         if('material' === $post->post_type){
+
+            self::log(date('ymd h:i'));
+            self::log('incomming status:');
+            self::log($status);
+            self::log('-----------');
             global $post;
 
             $map =[
@@ -37,49 +50,48 @@ class Materialpool_Helper {
                 'Nachhaltigkeit' => '#bne',
             ];
 
-            $short          = Materialpool_Material::get_shortdescription().":\n";
-            $url            = Materialpool_Material::get_url()."\n";
+            $title          = Materialpool_Material::get_title();
+            $shortinfo      = Materialpool_Material::get_shortdescription();
+            $excerpt        = strip_tags(Materialpool_Material::get_description());
 
-            $shortinfo = "\n".$short.$url;
+            //$url            = Materialpool_Material::get_url()."\n";
+            $url            = get_permalink($post->ID);
 
-            $data=[];
+
+            $status = self::truncate($title."\n".$shortinfo.". ".$excerpt,300,$url);
+
+            self::log('truncate status:');
+            self::log($status);
+            self::log('-----------');
+
+
+            $zielgruppen=[];
             $term_list = wp_get_post_terms( $post->ID, 'bildungsstufe' );
             if  ( is_array( $term_list)) {
                 foreach ( $term_list as $tax ) {
-                       $data[] = $map[$tax->slug];
+                    $zielgruppen[] = $map[$tax->slug];
                 }
             }
-            $zielgruppen    = implode(' ', $data);
 
-
-
-            $data=[];
+            $tags=[];
             $term_list = wp_get_post_terms( $post->ID, 'schlagwort' );
             if  ( is_array( $term_list)) {
                 foreach ( $term_list as $tax ) {
                     if(in_array($tax->slug, $words)){
-                        $data[]  = $words[$tax->slug];
+                        $tags[]  = $words[$tax->slug];
                     }else{
-                        $data[] =  "#{$tax->slug}";
+                        $tags[] =  "#{$tax->slug}";
                     }
                 }
             }
-            $data = array_unique($data);
-            $tags    = implode(' ', $data);
+            $tags = array_unique($tags);
+            $data  = array_merge($zielgruppen, $tags);
 
+            $status = self::add_strings($data,$status);
+            self::log('all status:');
 
-            if(strlen($status." \n" .$zielgruppen )<450){
-                $status .= " \n" .$zielgruppen ;
-            }
+            self::log($status);
 
-            if(strlen($status." \n" .$shortinfo )<300){
-                $status .= " \n" .$shortinfo ;
-            }
-
-            if(strlen($status." \n" .$tags )<450){
-                $status .= " \n" .wp_trim_words($tags,5) ;
-            }
-            $status = self::truncate($status,500);
 
         }
 
@@ -516,16 +528,35 @@ class Materialpool_Helper {
 
 	}
 
-    static function truncate($string,$length=100,$append="")
+    static function truncate($string,$length=100,$append)
     {
+        $length -= strlen("\n".$append."\n")-3;
+
         $string = trim($string);
 
         if (strlen($string) > $length) {
-            $string = wordwrap($string, $length);
-            $string = explode("\n", $string, 2);
-            $string = $string[0] . $append;
+            $string = wp_html_excerpt($string, $length,'');
         }
+        $last = substr($string, strlen($string)-1);
+        if(!in_array($last, ['.',',',' ','!','?'])){
+
+            $string = substr($string,0,strrpos($string,' '));
+
+        }
+        $string .= "...\n".$append."\n";
 
         return $string;
     }
+
+    static function add_strings($strings_array,$string,$maxlength=500,$seperator=" "){
+        if(is_array($strings_array)){
+            foreach ($strings_array as $str){
+                if(strlen($string . trim($str). $seperator) < $maxlength){
+                    $string .=  trim($str) .$seperator;
+                }
+            }
+        }
+        return $string;
+    }
+
 }

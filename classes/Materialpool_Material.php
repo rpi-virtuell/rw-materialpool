@@ -2982,24 +2982,38 @@ END;
         if ( 'material' != $post->post_type ) {
             return;
         }
-        $autorn = Materialpool_Material::get_autor(false);
-        if(!is_array($autorn)) {
-	        $autorn = [$autorn];
-        }
 
-	    foreach ( $autorn as $k => $autor ) {
-	        $a = get_post($autor);
-		    $autorn[ $k ] = strip_tags( $a->post_title );
-	    }
+        $autorn = Materialpool_Material::get_autor(false);
+        if(is_array($autorn)) {
+
+
+            foreach ( $autorn as $k => $autor ) {
+                $a = get_post($autor);
+                if(is_a($a, 'WP_Post')){
+                    $title =  strip_tags( $a->post_title );
+                    if(is_string($title)){
+                        $autorn[ $k ] = $title;
+                    }
+
+                }
+
+            }
+
+        }else{
+            $autorn = array('');
+        }
+        $autorn = implode(',', (array) $autorn);
+
 
         $description = Materialpool_Material::get_description();
         if ( $description != '' ) {
             $description = strip_tags( $description );
         }
+
         ?>
         <meta name="keywords" content="<?php echo  strip_tags( Materialpool_Material::get_schlagworte() ) ; ?>">
         <meta name="description" content="<?php echo  $description ; ?>">
-        <meta name="author" content="<?php echo  implode(',',$autorn) ; ?>">
+        <meta name="author" content="<?php echo  $autorn ; ?>">
         <meta property="og:title" content="<?php Materialpool_Material::title(); ?>" />
         <meta property="og:type" content="article" />
         <meta property="og:image" content="<?php echo Materialpool_Material::get_cover(); ?>" />
