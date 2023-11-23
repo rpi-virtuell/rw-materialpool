@@ -26,7 +26,7 @@ class Materialpool_Helper {
             self::log('incomming status:');
             self::log($status);
             self::log('-----------');
-            global $post;
+            //global $post;
 
             $map =[
                 'elementary' => '#Kita',
@@ -50,9 +50,9 @@ class Materialpool_Helper {
                 'Nachhaltigkeit' => '#bne',
             ];
 
-            $title          = Materialpool_Material::get_title();
-            $shortinfo      = Materialpool_Material::get_shortdescription();
-            $excerpt        = strip_tags(Materialpool_Material::get_description());
+            $title          = get_the_title($post->ID);
+            $shortinfo      = get_metadata( 'post', $post->ID, 'material_kurzbeschreibung', true );
+            $excerpt = strip_tags(get_metadata( 'post', $post->ID, 'material_beschreibung', true ));
 
             //$url            = Materialpool_Material::get_url()."\n";
             $url            = get_permalink($post->ID);
@@ -72,6 +72,7 @@ class Materialpool_Helper {
                     $zielgruppen[] = $map[$tax->slug];
                 }
             }
+            self::log($zielgruppen);
 
             $tags=[];
             $term_list = wp_get_post_terms( $post->ID, 'schlagwort' );
@@ -84,15 +85,23 @@ class Materialpool_Helper {
                     }
                 }
             }
+            self::log($tags);
+
             $tags = array_unique($tags);
             $data  = array_merge($zielgruppen, $tags);
+
+            self::log($data);
 
             $status = self::add_strings($data,$status);
             self::log('all status:');
 
             self::log($status);
 
-
+            if(strlen($status)< 50){
+                self::log('Fehler: Statusmessage konnte nicht ermittelt werden');
+                //Do not share on mastodon!
+                wp_die('Statusmessage konnte nicht ermittelt werden');
+            }
         }
 
         return $status;
