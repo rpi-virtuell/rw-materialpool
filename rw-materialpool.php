@@ -529,7 +529,7 @@ class Materialpool {
         );
         $response =  wp_remote_get( $url, $args );
         if ( is_wp_error( $response) ) {
-            wp_die;
+            wp_die();
         }
         $body = $response['body'];
         libxml_use_internal_errors(true);
