@@ -2901,6 +2901,8 @@ function cptui_register_my_cpts() {
 		"capability_type" => "post",
 		"map_meta_cap" => true,
         'show_in_graphql' => true,
+        'graphql_single_name' => 'themenseite',
+        'graphql_plural_name' => 'themenseiten',
 		"hierarchical" => false,
 		"rewrite" => array( "slug" => "themenseite", "with_front" => true ),
 		"query_var" => true,
