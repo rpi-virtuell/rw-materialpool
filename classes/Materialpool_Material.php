@@ -3827,8 +3827,11 @@ order by wp_posts.post_date  desc  ") ;
 
 		if(is_single() && $post->post_type == 'material'){
 	        if (isset($_GET['direct'])){
-	            wp_redirect($_GET['direct']);
-	            die();
+                $material_url =  get_post_meta( $post->ID, 'material_url', true );
+                if($material_url == $_GET['direct']){
+                    wp_redirect($_GET['direct']);
+                    die();
+                }
 	        }
 	    }
 
