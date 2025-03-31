@@ -558,14 +558,14 @@ class Materialpool_Material {
           ';
         }
     }
-
-    public static function publish_on_not_broken_link($new_status, $old_status, WP_Post  $post){
-	    if ( 'notbroken' === $new_status  ){
-		    $post->post_status = 'publish';
-		    wp_update_post($post);
-		    update_post_meta($post->ID,'material_url_notbroken',1);
-	    }
-    }
+//
+//    public static function publish_on_not_broken_link($new_status, $old_status, WP_Post  $post){
+//	    if ( 'notbroken' === $new_status  ){
+//		    $post->post_status = 'publish';
+//		    wp_update_post($post);
+//		    update_post_meta($post->ID,'material_url_notbroken',1);
+//	    }
+//    }
 
     /**
      *
@@ -948,6 +948,10 @@ class Materialpool_Material {
     static public function vorschlag_shortcode( $args ) {
         $user = "";
         $email = "";
+        if (empty($title))
+        {
+            $title = "";
+        }
         if ( is_user_logged_in() ) {
             $current_user = wp_get_current_user();
             $user = $current_user->display_name;
@@ -2982,38 +2986,24 @@ END;
         if ( 'material' != $post->post_type ) {
             return;
         }
-
         $autorn = Materialpool_Material::get_autor(false);
-        if(is_array($autorn)) {
-
-
-            foreach ( $autorn as $k => $autor ) {
-                $a = get_post($autor);
-                if(is_a($a, 'WP_Post')){
-                    $title =  strip_tags( $a->post_title );
-                    if(is_string($title)){
-                        $autorn[ $k ] = $title;
-                    }
-
-                }
-
-            }
-
-        }else{
-            $autorn = array('');
+        if(!is_array($autorn)) {
+	        $autorn = [$autorn];
         }
-        $autorn = implode(',', (array) $autorn);
 
+	    foreach ( $autorn as $k => $autor ) {
+	        $a = get_post($autor);
+		    $autorn[ $k ] = strip_tags( $a->post_title );
+	    }
 
         $description = Materialpool_Material::get_description();
         if ( $description != '' ) {
             $description = strip_tags( $description );
         }
-
         ?>
         <meta name="keywords" content="<?php echo  strip_tags( Materialpool_Material::get_schlagworte() ) ; ?>">
         <meta name="description" content="<?php echo  $description ; ?>">
-        <meta name="author" content="<?php echo  $autorn ; ?>">
+        <meta name="author" content="<?php echo  implode(',',$autorn) ; ?>">
         <meta property="og:title" content="<?php Materialpool_Material::title(); ?>" />
         <meta property="og:type" content="article" />
         <meta property="og:image" content="<?php echo Materialpool_Material::get_cover(); ?>" />
@@ -3628,121 +3618,196 @@ order by wp_posts.post_date  desc  ") ;
 
 	}
 	/**
+	 * Überprüft, ob eine URL erreichbar ist (HTTP-Status 200-308).
+	 *
+	 * @param string $url Die zu prüfende URL.
+	 * @return bool True, wenn die URL erreichbar ist (Status 200-308), sonst false.
+	 */
+	static function is_url_reachable($url) {
+		// Sicherstellen, dass die URL gültig ist
+		if (empty($url) || !filter_var($url, FILTER_VALIDATE_URL)) {
+			return false;
+		}
+
+		// HTTP-Anfrage senden
+		$response = wp_remote_get($url, array(
+			'timeout' => 5, // Timeout in Sekunden
+			'redirection' => 5, // Maximale Anzahl von Weiterleitungen
+			'sslverify' => false // SSL-Zertifikat nicht überprüfen (optional)
+		));
+
+		// Überprüfen, ob die Anfrage erfolgreich war
+		if (is_wp_error($response)) {
+			return false;
+		}
+
+		// HTTP-Statuscode abrufen
+		$http_code = wp_remote_retrieve_response_code($response);
+
+		// Überprüfen, ob der Statuscode im Erfolgsbereich liegt (200-308)
+		return ($http_code >= 200 && $http_code <= 308);
+	}
+	
+	//Gibt http status code zurück
+	static function check_url_via_python($url) {
+		
+		try{
+			// URL für Sicherheit escapen (um Command-Injection zu verhindern)
+			$api_url = "http://localhost:5005/check-url?url=" . urlencode($url);
+			
+			$response = wp_remote_get( $api_url, ['timeout' => 26]);
+			
+			$out = new stdClass();
+			
+			$out->error = null;
+			
+			$out->final_url = $url;
+			
+			// Erfolgreiche Anfage an der checker-app siehe ./python-scrpts
+			if ( ! is_wp_error( $response ) ) {
+				
+				$http_code = wp_remote_retrieve_response_code( $response );
+				if($http_code == 200){
+					$body = wp_remote_retrieve_body( $response );
+					$out  = json_decode($body);
+				}else{
+					$error_obj = json_decode($response["body"]);
+					$out->error = $error_obj->error;
+					$out->status_code = $response["response"]["code"];
+				}
+			}else{
+				$out->status_code = 0;
+				$out->error = "api_error";
+			}
+			
+			return $out;
+		}catch (Exception $e){
+			echo "API FAILURE: ";
+			echo $e->getMessage();
+		}
+		
+	}
+
+	/**
 	 * mark_broken_links withs custum post status broken Link
 	 */
 	static function check_material_url($url, $post_id, $log = false){
-
+		
 	    global $wpdb;
-
-		echo '<li><strong>'.$url.'</strong></li>';
-
-		$request_args = array(
-		        'headers' => array(),
-				'timeout'           =>  20,
-				'sslverify'         =>  false,
-				'redirection'       =>  10,
-				'user-agent'        =>  'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
-				'cookies'           =>  array( 'SSESS16815fd5c783ac7fb5ee431b6360307b'=>'qMAv3LfiPndvEDlDrlf9Nwtmjbi8dPuWXsABpUSI-Yw')
-		);
-
-		$request = wp_safe_remote_head(trim($url),$request_args);
-
-		if ( is_wp_error( $request ) || intval($request["response"]["code"])  < 200 || intval($request["response"]["code"]) > 308 ) {
-
-			if(strpos($url,'https:') === false){
-				$url = str_replace('http:','https:',$url);
-
-				$request = wp_safe_remote_head(trim($url),$request_args);
-
-				if(is_wp_error( $request )){
-					if($log) echo '<li>ERROR : '.$request->get_error_message().' | <a href="'.$url.'">'.$url.'</a></li>';
-					if($log) file_put_contents('/tmp/debug_dev.log', ''.$url.'|'.$request->get_error_message()."\n",FILE_APPEND);
-					update_post_meta($post_id, 'material_url_error',$request->get_error_message());
-					update_post_meta($post_id, 'material_url_code','504');
-
-
-				}elseif( intval($request["response"]["code"])  < 200 || intval($request["response"]["code"]) > 308){
-					if($log) echo '<li>'.$request["response"]["code"].': <a href="'.$url.'">' . $url . '</a></li>';
-					update_post_meta($post_id, 'material_url_code',$request["response"]["code"]);
-				}else{
-					if(isset($request["http_response"]->get_response_object()->history[0])){
-						$correct_url = $request["http_response"]->get_response_object()->history[0]->url;
-						if(strlen($correct_url)>10 && $correct_url != $url) {
-							update_post_meta( $post_id, 'material_url', $correct_url );
-							if($log) echo '<li>UPDATE: <a href="'.$correct_url.'">' . $correct_url . '</a></li>';
-						}
-					}
-					return;
-				}
-
-				$sql = "UPDATE {$wpdb->posts} SET post_status = 'broken' where ID = %d";
-				$query = $wpdb->prepare($sql,$post_id);
-				$wpdb->query($query);
-
-			}else{
-				if(is_wp_error( $request )){
-					if($log) echo '<li>ERROR : '.$request->get_error_message().' | <a href="'.$url.'">'.$url.'</a></li>';
-					if($log) file_put_contents('/tmp/debug_dev.log', ''.$url.'|'.$request->get_error_message()."\n",FILE_APPEND);
-					update_post_meta($post_id, 'material_url_error',$request->get_error_message());
-
-				}else{
-					if($log) echo '<li>'.$request["response"]["code"].': <a href="'.$url.'">' . $url . '</a></li>';
-					update_post_meta($post_id, 'material_url_code',$request["response"]["code"]);
-				}
-
-				$sql = "UPDATE {$wpdb->posts} SET post_status = 'broken' where ID = %d";
-				$query = $wpdb->prepare($sql,$post_id);
-				$wpdb->query($query);
-			}
-
-		}else{
-			//check redirected links
-            if(isset($request["http_response"]->get_response_object()->history[0])){
-	            $correct_url = $request["http_response"]->get_response_object()->history[0]->url;
-	            if(strlen($correct_url)>10 && $correct_url != $url) {
-		            update_post_meta( $post_id, 'material_url', $correct_url );
-		            if($log) echo '<li>UPDATE: <a href="'.$correct_url.'">' . $correct_url . '</a></li>';
-	            }
-            }
-
+		
+		
+		
+		if(self::is_url_reachable($url)){
+			
+			echo '<li>200: '.$url.'</li>';// ob_flush();
+			
 			$sql = "UPDATE {$wpdb->posts} SET post_status = 'publish'  where post_status = 'broken'  AND ID = %d";
 			$query = $wpdb->prepare($sql,$post_id);
 			$wpdb->query($query);
             delete_post_meta($post_id,'material_url_error');
             delete_post_meta($post_id,'material_url_code');
-
+			return true;
+			
 		}
+		
+		$status = self::check_url_via_python($url);
+		
+		
+		if(isset($status->error) && $status->error == "api_error"){
+			echo "docker checker app ist down";
+			return false;
+		}
+		
+		$status_code = $status->status_code;
+		$status_final_url = $status->final_url;
+		$error = $status->error?$status->error:null;
+	
+		echo '<li>check: '.$url.' -> '.$status_code.'|'.$error.'</li>';
+		
+		
+		if( !is_int($status_code) ||  $status_code < 200 || $status_code > 308 ){
+			
+			
+			// Beim dritten mal mit dem gleichen Status nicht erreichbar -> löschen
+			$last_status_code = get_post_meta($post_id, 'material_url_code', true);
+			// wieder das gleiche
+			if(intVal($last_status_code) === $status_code){
+				//$status code auf 4040 setzen
+				// update_post_meta($post_id, 'material_url_code','4040');
+			}
+			if(intVal($last_status_code) === 4040){
+				// Materialpool eintrag löschen
+				//wp_delete_post( $post_id);
+				//return true;
+			}
+		
+			if(!is_int($status_code)){
+				update_post_meta($post_id, 'material_url_error',$error);
+				update_post_meta($post_id, 'material_url_code','504');
+
+			}elseif(  $status_code < 200 || $status_code > 308 ){
+				update_post_meta($post_id, 'material_url_code',$status_code);
+			}
+
+			$sql = "UPDATE {$wpdb->posts} SET post_status = 'broken' where ID = %d";
+			$query = $wpdb->prepare($sql,$post_id);
+			$wpdb->query($query);
+			
+			
+
+		}else{
+			if($status_final_url !== $url){
+	            update_post_meta( $post_id, 'material_url', $status_final_url );
+            }
+			
+			
+			$sql = "UPDATE {$wpdb->posts} SET post_status = 'publish'  where post_status = 'broken'  AND ID = %d";
+			$query = $wpdb->prepare($sql,$post_id);
+			$wpdb->query($query);
+            delete_post_meta($post_id,'material_url_error');
+            delete_post_meta($post_id,'material_url_code');
+		}
+		echo '<li><strong>'.$status_code.': </strong>'.$status_final_url.'</li>';// ob_flush();
+					
+		
+		return true;
 	}
 
 	static function mark_broken_links(){
-
+		
 		//file_put_contents('/tmp/debug_dev.log', '');
 		$limit = 10;
 
-		set_time_limit(120);
+		set_time_limit(250);
 
 		$offset = isset($_GET['N'])?intval($_GET['N']):0;
 
-		$ms = self::get_material_urls($limit, $offset);
-
+		if(isset($_GET['N'])){
+			$ms = self::get_broken_urls($limit, $offset);
+		}else{
+			$ms = self::get_material_urls($limit, $offset);
+		}
+		
 		if(count($ms)<1){
 			return;
 		}
 
 		//echo '<pre>';
 		foreach ($ms as $m){
-
-		    echo '<li><strong>'.$m->url.'</strong></li>';// ob_flush();
-
-			Materialpool_Material::check_material_url($m->url,$m->post_id, true);
+			if (!Materialpool_Material::check_material_url($m->url,$m->post_id, true)){
+				return;
+			}
 			sleep( 1);
 
 		}
+		
 		if(isset($_GET['N'])){?>
-            <script>
-                location.href='https://material.rpi-virtuell.de/test/?N=<?php echo $offset+$limit;?>';
-            </script><?php
+			<script>
+				location.href='https://material.rpi-virtuell.de/test/?N=<?php echo $offset+$limit;?>';
+			</script><?php
 		}
+		
+	
 		die();
 	}
 
@@ -3773,6 +3838,24 @@ order by wp_posts.post_date  desc  ") ;
 		sleep(2);
 		self::cron_check_broken_links($offset+$limit);
 
+	}
+	static function get_broken_urls($limit =10, $offset=0){
+
+		global $wpdb;
+		$sql = "select meta.post_id,meta.meta_value url from wp_postmeta meta
+                inner JOIN {$wpdb->postmeta} AS spec ON meta.post_id =spec.post_id 
+                    and spec.meta_key='material_special' and spec.meta_value = 0
+                inner JOIN {$wpdb->posts} AS p ON p.ID = meta.post_id 
+                    and post_type='material' and (post_status = 'broken')
+                where meta.meta_key='material_url' 
+                    and p.ID NOT IN (
+                        select post_id from wp_postmeta meta 
+                            where meta_key='material_url_notbroken' and meta_value = 1
+                    ) LIMIT $offset,$limit";
+
+		$ms = $wpdb->get_results($sql);
+
+		return $ms;
 	}
 
 	static function get_material_urls($limit =10, $offset=0){
@@ -3807,7 +3890,7 @@ order by wp_posts.post_date  desc  ") ;
 	        global $wpdb;
 	        $sql = "select p.ID post_id, m.meta_value url, e.meta_value error  from {$wpdb->posts} p
             INNER JOIN {$wpdb->postmeta} AS m on p.ID = m.post_id and m.meta_key = 'material_url' 
-            INNER JOIN {$wpdb->postmeta} AS e on p.ID = e.post_id and ((e.meta_key = 'material_url_code' and e.meta_value > 499)  OR e.meta_key = 'material_url_error') 
+            INNER JOIN {$wpdb->postmeta} AS e on p.ID = e.post_id and (e.meta_key = 'material_url_error') 
             where post_status = 'broken'";
         }
 	    $ms = $wpdb->get_results($sql);
@@ -3827,11 +3910,8 @@ order by wp_posts.post_date  desc  ") ;
 
 		if(is_single() && $post->post_type == 'material'){
 	        if (isset($_GET['direct'])){
-                $material_url =  get_post_meta( $post->ID, 'material_url', true );
-                if($material_url == $_GET['direct']){
-                    wp_redirect($_GET['direct']);
-                    die();
-                }
+	            wp_redirect($_GET['direct']);
+	            die();
 	        }
 	    }
 
@@ -3914,6 +3994,3 @@ order by wp_posts.post_date  desc  ") ;
     }
 
 }
-
-
-
