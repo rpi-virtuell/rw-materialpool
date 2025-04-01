@@ -3727,28 +3727,30 @@ order by wp_posts.post_date  desc  ") ;
 		
 		if( !is_int($status_code) ||  $status_code < 200 || $status_code > 308 ){
 			
-			
-			// Beim dritten mal mit dem gleichen Status nicht erreichbar -> löschen
-			$last_status_code = get_post_meta($post_id, 'material_url_code', true);
-			// wieder das gleiche
-			if(intVal($last_status_code) === $status_code){
-				//$status code auf 4040 setzen
-				// update_post_meta($post_id, 'material_url_code','4040');
-			}
 			if(intVal($last_status_code) === 4040){
 				// Materialpool eintrag löschen
 				//wp_delete_post( $post_id);
 				//return true;
 			}
 		
-			if(!is_int($status_code)){
-				update_post_meta($post_id, 'material_url_error',$error);
-				update_post_meta($post_id, 'material_url_code','504');
+			
+			// Beim dritten mal mit dem gleichen Status nicht erreichbar -> löschen
+			$last_status_code = get_post_meta($post_id, 'material_url_code', true);
+			// wieder das gleiche
+			if(intVal($last_status_code) === $status_code){
+				//status code auf 4040 setzen
+				update_post_meta($post_id, 'material_url_code','4040');
+			}else{
+				
+				
+				if(!is_int($status_code)){
+					update_post_meta($post_id, 'material_url_error',$error);
+					update_post_meta($post_id, 'material_url_code','504');
 
-			}elseif(  $status_code < 200 || $status_code > 308 ){
-				update_post_meta($post_id, 'material_url_code',$status_code);
+				}elseif(  $status_code < 200 || $status_code > 308 ){
+					update_post_meta($post_id, 'material_url_code',$status_code);
+				}
 			}
-
 			$sql = "UPDATE {$wpdb->posts} SET post_status = 'broken' where ID = %d";
 			$query = $wpdb->prepare($sql,$post_id);
 			$wpdb->query($query);
