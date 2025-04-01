@@ -3884,20 +3884,90 @@ order by wp_posts.post_date  desc  ") ;
 
 	 */
     public static function display_broken_link_errors($atts){
-	    // "foo = {$atts['foo']}";
+		
+		if(!is_user_logged_in()){
+			return "<p>Du must angemeldet sein, um die Hinweise zu sehen!</p>";
+		}
+		
+		ob_start();
+		
+		
+		global $wpdb;
 
+		$sql = "
+		SELECT
+			SUBSTRING_INDEX(SUBSTRING_INDEX(meta.meta_value, '//', -1), '/', 1) AS domain_name,
+			COUNT(*) AS broken_count
+		FROM
+			{$wpdb->postmeta} meta
+		INNER JOIN {$wpdb->postmeta} AS spec ON meta.post_id = spec.post_id
+			AND spec.meta_key = 'material_special' AND spec.meta_value = 0
+		INNER JOIN {$wpdb->posts} AS p ON p.ID = meta.post_id
+			AND p.post_type = 'material' AND p.post_status = 'broken'
+		WHERE
+			meta.meta_key = 'material_url'
+			AND p.ID NOT IN (
+				SELECT post_id FROM {$wpdb->postmeta} sub_meta
+				WHERE sub_meta.meta_key = 'material_url_notbroken' AND sub_meta.meta_value = 1
+			)
+			AND meta.meta_value IS NOT NULL AND meta.meta_value != '' AND meta.meta_value LIKE '%//%'
+		GROUP BY
+			domain_name
+		ORDER BY
+			broken_count DESC
+		LIMIT 10 -- Optional: Wenn du nur die Top-Domains willst
+		";
+
+		// Führe das Query aus
+		$domain_results = $wpdb->get_results($sql);
+		
+		
+		//https://material.rpi-virtuell.de/wp-admin/edit.php?s=www.waxmann.com&post_status=broken&post_type=material
+		// Verarbeite die Ergebnisse
+		if ($domain_results) {
+			echo "<h2>Top Domains nicht erreichbarer Materialien mit 'broken' Material-URLs:</h2>";
+			echo "<ol>";
+			foreach ($domain_results as $result) {
+				// Vorsicht bei der Ausgabe: domain_name könnte theoretisch unerwünschten Code enthalten
+				echo '<li><a href="https://material.rpi-virtuell.de/wp-admin/edit.php?s='.esc_html($result->domain_name).'&post_status=broken&post_type=material">' . esc_html($result->domain_name) . "</a>: " . intval($result->broken_count) . " broken</li>";
+			}
+			echo "</ol>";
+		} else {
+			echo "<p>Keine betroffenen Domains gefunden oder Fehler beim Abfragen.</p>";
+			// Optional: Zeige den letzten DB-Fehler an (nur für Debugging!)
+			// $wpdb->print_error();
+		}
+		
+	    // "foo = {$atts['foo']}";
+		$sql = "select p.ID post_id, m.meta_value url, e.meta_value  from {$wpdb->posts} p
+		INNER JOIN {$wpdb->postmeta} AS m on p.ID = m.post_id and m.meta_key = 'material_url' 
+		INNER JOIN {$wpdb->postmeta} AS e on p.ID = e.post_id and (e.meta_key = 'material_url_code') 
+		where post_status = 'broken' and e.meta_value = '4040'";
+		$rs = $wpdb->get_results($sql);
+		if($rs){
+			echo "<h2>Löschwarnung</h2><p><strong>Materialien, die bei der nächsten Prüfung automatisch gelöscht werden</strong></p>";
+			foreach ($rs as $r){
+				echo sprintf('<li><a href="%1$s">%1$s</a> <a class="ui-button secondary-button" href="/wp-admin/post.php?action=edit&post=%2$s">Bearbeiten</a></li>', $r->url,$r->post_id);
+			}
+		}
+		
+				
         if($atts['type']=='server_error'){
-	        global $wpdb;
 	        $sql = "select p.ID post_id, m.meta_value url, e.meta_value error  from {$wpdb->posts} p
             INNER JOIN {$wpdb->postmeta} AS m on p.ID = m.post_id and m.meta_key = 'material_url' 
             INNER JOIN {$wpdb->postmeta} AS e on p.ID = e.post_id and (e.meta_key = 'material_url_error') 
             where post_status = 'broken'";
         }
 	    $ms = $wpdb->get_results($sql);
-        foreach ($ms as $r){
-            $html[] = sprintf('<li><a href="%1$s">%1$s</a> [%2$s] <a class="ui-button button" href="/wp-admin/post.php?action=edit&post=%3$s">Bearbeiten</a></li>', $r->url,$r->error,$r->post_id);
-        }
-        return implode('', $html);
+		if($ms){
+			echo "<h2>Prüffehler</h2><p><strong>Einzelne Materialien, für die unübliche Fehlermeldungen vorliegen</strong></p>";
+			foreach ($ms as $r){
+				echo sprintf('<li><a href="%1$s">%1$s</a> [%2$s] <a class="ui-button secondary-button" href="/wp-admin/post.php?action=edit&post=%3$s">Bearbeiten</a></li>', $r->url,$r->error,$r->post_id);
+			}
+		}
+		
+		
+        return ob_get_clean();
     }
 
 	/*** end custum post status Broken Link*/
