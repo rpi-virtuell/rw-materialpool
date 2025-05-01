@@ -3647,25 +3647,25 @@ order by wp_posts.post_date  desc  ") ;
 		// Überprüfen, ob der Statuscode im Erfolgsbereich liegt (200-308)
 		return ($http_code >= 200 && $http_code <= 308);
 	}
-	
+
 	//Gibt http status code zurück
 	static function check_url_via_python($url) {
-		
+
 		try{
 			// URL für Sicherheit escapen (um Command-Injection zu verhindern)
 			$api_url = "http://localhost:5005/check-url?url=" . urlencode($url);
-			
+
 			$response = wp_remote_get( $api_url, ['timeout' => 26]);
-			
+
 			$out = new stdClass();
-			
+
 			$out->error = null;
-			
+
 			$out->final_url = $url;
-			
+
 			// Erfolgreiche Anfage an der checker-app siehe ./python-scrpts
 			if ( ! is_wp_error( $response ) ) {
-				
+
 				$http_code = wp_remote_retrieve_response_code( $response );
 				if($http_code == 200){
 					$body = wp_remote_retrieve_body( $response );
@@ -3673,67 +3673,74 @@ order by wp_posts.post_date  desc  ") ;
 				}else{
 					$error_obj = json_decode($response["body"]);
 					$out->error = $error_obj->error;
-					$out->status_code = $response["response"]["code"];
+                    if (empty($http_code))
+                    {
+                        $out->status_code = $response["response"]["code"];
+                    }
+                    else{
+                        $out->status_code = $http_code;
+
+                    }
 				}
 			}else{
 				$out->status_code = 0;
 				$out->error = "api_error";
 			}
-			
+
 			return $out;
 		}catch (Exception $e){
 			echo "API FAILURE: ";
 			echo $e->getMessage();
 		}
-		
+
 	}
 
 	/**
 	 * mark_broken_links withs custum post status broken Link
 	 */
 	static function check_material_url($url, $post_id, $log = false){
-		
+
 	    global $wpdb;
-		
-		
-		
+
+
+
 		if(self::is_url_reachable($url)){
-			
+
 			echo '<li>200: '.$url.'</li>';// ob_flush();
-			
+
 			$sql = "UPDATE {$wpdb->posts} SET post_status = 'publish'  where post_status = 'broken'  AND ID = %d";
 			$query = $wpdb->prepare($sql,$post_id);
 			$wpdb->query($query);
             delete_post_meta($post_id,'material_url_error');
             delete_post_meta($post_id,'material_url_code');
 			return true;
-			
+
 		}
-		
+
 		$status = self::check_url_via_python($url);
-		
-		
+
+
 		if(isset($status->error) && $status->error == "api_error"){
 			echo "docker checker app ist down";
 			return false;
 		}
-		
-		$status_code = $status->status_code;
+
+		$status_code = intval($status->status_code);
 		$status_final_url = $status->final_url;
 		$error = $status->error?$status->error:null;
-	
+
 		echo '<li>check: '.$url.' -> '.$status_code.'|'.$error.'</li>';
-		
-		
-		if( !is_int($status_code) ||  $status_code < 200 || $status_code > 308 ){
-			
-			if(intVal($last_status_code) === 4040){
-				// Materialpool eintrag löschen
-				//wp_delete_post( $post_id);
-				//return true;
-			}
-		
-			
+
+
+		if(  $status_code >= 200 && $status_code <= 308 ){
+
+//			if(intVal($last_status_code) === 4040){
+//				// Materialpool eintrag löschen
+//				//wp_delete_post( $post_id);
+//				//return true;
+//			}
+
+
 			// Beim dritten mal mit dem gleichen Status nicht erreichbar -> löschen
 			$last_status_code = get_post_meta($post_id, 'material_url_code', true);
 			// wieder das gleiche
@@ -3741,28 +3748,28 @@ order by wp_posts.post_date  desc  ") ;
 				//status code auf 4040 setzen
 				update_post_meta($post_id, 'material_url_code','4040');
 			}else{
-				
-				
-				if(!is_int($status_code)){
-					update_post_meta($post_id, 'material_url_error',$error);
-					update_post_meta($post_id, 'material_url_code','504');
 
-				}elseif(  $status_code < 200 || $status_code > 308 ){
+//
+//				if(!is_int($status_code)){
+//					update_post_meta($post_id, 'material_url_error',$error);
+//					update_post_meta($post_id, 'material_url_code','504');
+//
+//				}else{
 					update_post_meta($post_id, 'material_url_code',$status_code);
-				}
+//				}
 			}
 			$sql = "UPDATE {$wpdb->posts} SET post_status = 'broken' where ID = %d";
 			$query = $wpdb->prepare($sql,$post_id);
 			$wpdb->query($query);
-			
-			
+
+
 
 		}else{
 			if($status_final_url !== $url){
 	            update_post_meta( $post_id, 'material_url', $status_final_url );
             }
-			
-			
+
+
 			$sql = "UPDATE {$wpdb->posts} SET post_status = 'publish'  where post_status = 'broken'  AND ID = %d";
 			$query = $wpdb->prepare($sql,$post_id);
 			$wpdb->query($query);
@@ -3770,13 +3777,13 @@ order by wp_posts.post_date  desc  ") ;
             delete_post_meta($post_id,'material_url_code');
 		}
 		echo '<li><strong>'.$status_code.': </strong>'.$status_final_url.'</li>';// ob_flush();
-					
-		
+
+
 		return true;
 	}
 
 	static function mark_broken_links(){
-		
+
 		//file_put_contents('/tmp/debug_dev.log', '');
 		$limit = 10;
 
@@ -3789,7 +3796,7 @@ order by wp_posts.post_date  desc  ") ;
 		}else{
 			$ms = self::get_material_urls($limit, $offset);
 		}
-		
+
 		if(count($ms)<1){
 			return;
 		}
@@ -3802,14 +3809,14 @@ order by wp_posts.post_date  desc  ") ;
 			sleep( 1);
 
 		}
-		
+
 		if(isset($_GET['N'])){?>
 			<script>
 				location.href='https://material.rpi-virtuell.de/test/?N=<?php echo $offset+$limit;?>';
 			</script><?php
 		}
-		
-	
+
+
 		die();
 	}
 
@@ -3886,14 +3893,14 @@ order by wp_posts.post_date  desc  ") ;
 
 	 */
     public static function display_broken_link_errors($atts){
-		
+
 		if(!is_user_logged_in()){
 			return "<p>Du must angemeldet sein, um die Hinweise zu sehen!</p>";
 		}
-		
+
 		ob_start();
-		
-		
+
+
 		global $wpdb;
 
 		$sql = "
@@ -3922,8 +3929,8 @@ order by wp_posts.post_date  desc  ") ;
 
 		// Führe das Query aus
 		$domain_results = $wpdb->get_results($sql);
-		
-		
+
+
 		//https://material.rpi-virtuell.de/wp-admin/edit.php?s=www.waxmann.com&post_status=broken&post_type=material
 		// Verarbeite die Ergebnisse
 		if ($domain_results) {
@@ -3939,7 +3946,7 @@ order by wp_posts.post_date  desc  ") ;
 			// Optional: Zeige den letzten DB-Fehler an (nur für Debugging!)
 			// $wpdb->print_error();
 		}
-		
+
 	    // "foo = {$atts['foo']}";
 		$sql = "select p.ID post_id, m.meta_value url, e.meta_value  from {$wpdb->posts} p
 		INNER JOIN {$wpdb->postmeta} AS m on p.ID = m.post_id and m.meta_key = 'material_url' 
@@ -3952,8 +3959,8 @@ order by wp_posts.post_date  desc  ") ;
 				echo sprintf('<li><a href="%1$s">%1$s</a> <a class="ui-button secondary-button" href="/wp-admin/post.php?action=edit&post=%2$s">Bearbeiten</a></li>', $r->url,$r->post_id);
 			}
 		}
-		
-				
+
+
         if($atts['type']=='server_error'){
 	        $sql = "select p.ID post_id, m.meta_value url, e.meta_value error  from {$wpdb->posts} p
             INNER JOIN {$wpdb->postmeta} AS m on p.ID = m.post_id and m.meta_key = 'material_url' 
@@ -3967,8 +3974,8 @@ order by wp_posts.post_date  desc  ") ;
 				echo sprintf('<li><a href="%1$s">%1$s</a> [%2$s] <a class="ui-button secondary-button" href="/wp-admin/post.php?action=edit&post=%3$s">Bearbeiten</a></li>', $r->url,$r->error,$r->post_id);
 			}
 		}
-		
-		
+
+
         return ob_get_clean();
     }
 
