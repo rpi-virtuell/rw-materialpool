@@ -3653,7 +3653,7 @@ order by wp_posts.post_date  desc  ") ;
 
 		try{
 			// URL für Sicherheit escapen (um Command-Injection zu verhindern)
-			$api_url = "http://localhost:5005/check-url?url=" . urlencode($url);
+			$api_url = "http://localhost:5005/api/check-url?url=" . urlencode($url);
 
 			$response = wp_remote_get( $api_url, ['timeout' => 26]);
 
