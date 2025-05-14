@@ -3623,29 +3623,53 @@ order by wp_posts.post_date  desc  ") ;
 	 * @param string $url Die zu prüfende URL.
 	 * @return bool True, wenn die URL erreichbar ist (Status 200-308), sonst false.
 	 */
-	static function is_url_reachable($url) {
-		// Sicherstellen, dass die URL gültig ist
-		if (empty($url) || !filter_var($url, FILTER_VALIDATE_URL)) {
-			return false;
-		}
+	static function     is_url_reachable($url) {
 
-		// HTTP-Anfrage senden
-		$response = wp_remote_get($url, array(
-			'timeout' => 5, // Timeout in Sekunden
-			'redirection' => 5, // Maximale Anzahl von Weiterleitungen
-			'sslverify' => false // SSL-Zertifikat nicht überprüfen (optional)
-		));
+            // Basic syntax+scheme validation
+            if (
+                empty( $url ) ||
+                ! filter_var( $url, FILTER_VALIDATE_URL ) ||
+                ! in_array( parse_url( $url, PHP_URL_SCHEME ), [ 'http', 'https' ], true )
+            ) {
+                return false;
+            }
 
-		// Überprüfen, ob die Anfrage erfolgreich war
-		if (is_wp_error($response)) {
-			return false;
-		}
+            // HEAD request instead of GET; SSL verified by default
+            $response = wp_remote_head( $url, [
+                'timeout'     => 15,
+                'redirection' => 5,
+                'sslverify' => false, // default is true
+                'user-agent' => 'Mozilla/5.0'
+            ] );
 
-		// HTTP-Statuscode abrufen
-		$http_code = wp_remote_retrieve_response_code($response);
+            if ( is_wp_error( $response ) ) {
+                // You may want to inspect $response->get_error_message() here
+                return false;
+            }
 
-		// Überprüfen, ob der Statuscode im Erfolgsbereich liegt (200-308)
-		return ($http_code >= 200 && $http_code <= 308);
+            $code = wp_remote_retrieve_response_code( $response );
+            // Only treat 2xx as reachable
+        if ($code >= 200 && $code < 308 )
+            return true;
+        else{
+
+            unset($response, $code);
+            $response = wp_remote_get( $url, [
+                'timeout'     => 15,
+                'redirection' => 5,
+                'sslverify' => false, // default is true#
+                'user-agent' => 'Mozilla/5.0'
+            ] );
+
+            if ( is_wp_error( $response ) ) {
+                // You may want to inspect $response->get_error_message() here
+                return false;
+            }
+
+            $code = wp_remote_retrieve_response_code( $response );
+            return ($code >= 200 && $code < 308);
+            // Only treat 2xx as reachable
+        }
 	}
 
 	//Gibt http status code zurück
