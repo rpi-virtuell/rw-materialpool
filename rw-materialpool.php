@@ -2794,7 +2794,7 @@ function cptui_register_my_cpts() {
 		"rewrite" => array( "slug" => "material", "with_front" => true ),
 		"query_var" => true,
 		"supports" => array( "comments", "revisions" ),
-		"taxonomies" => array( "schlagwort", "bildungsstufe", "altersstufe", "medientyp", "sprache", "vorauswahl", "inklusion", "verfuegbarkeit", "zugaenglichkeit", "lizenz", "werkzeug", "rubrik" ),
+		"taxonomies" => array( "schlagwort", "bildungsstufe",'jahrgangsstufe', "altersstufe", "medientyp", "sprache", "vorauswahl", "inklusion", "verfuegbarkeit", "zugaenglichkeit", "lizenz", "werkzeug", "rubrik" ),
 	);
 
 	register_post_type( "material", $args );
