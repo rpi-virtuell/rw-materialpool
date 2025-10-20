@@ -3624,53 +3624,58 @@ order by wp_posts.post_date  desc  ") ;
 	 * @return bool True, wenn die URL erreichbar ist (Status 200-308), sonst false.
 	 */
 	static function     is_url_reachable($url) {
+        // 1) Grundprüfung
 
-            // Basic syntax+scheme validation
-            if (
-                empty( $url ) ||
-                ! filter_var( $url, FILTER_VALIDATE_URL ) ||
-                ! in_array( parse_url( $url, PHP_URL_SCHEME ), [ 'http', 'https' ], true )
-            ) {
-                return false;
-            }
-
-            // HEAD request instead of GET; SSL verified by default
-            $response = wp_remote_head( $url, [
-                'timeout'     => 15,
-                'redirection' => 5,
-                'sslverify' => false, // default is true
-                'user-agent' => 'Mozilla/5.0'
-            ] );
-
-            if ( is_wp_error( $response ) ) {
-                // You may want to inspect $response->get_error_message() here
-                return false;
-            }
-
-            $code = wp_remote_retrieve_response_code( $response );
-            // Only treat 2xx as reachable
-        if ($code >= 200 && $code < 308 )
-            return true;
-        else{
-
-            unset($response, $code);
-            $response = wp_remote_get( $url, [
-                'timeout'     => 15,
-                'redirection' => 5,
-                'sslverify' => false, // default is true#
-                'user-agent' => 'Mozilla/5.0'
-            ] );
-
-            if ( is_wp_error( $response ) ) {
-                // You may want to inspect $response->get_error_message() here
-                return false;
-            }
-
-            $code = wp_remote_retrieve_response_code( $response );
-            return ($code >= 200 && $code < 308);
-            // Only treat 2xx as reachable
+        if (empty($url) || !filter_var($url, FILTER_VALIDATE_URL)) {
+            return false;
         }
-	}
+        $scheme = parse_url($url, PHP_URL_SCHEME);
+        if (!in_array($scheme, ['http', 'https'], true)) {
+            return false;
+        }
+
+        $args = [
+            'timeout'     => 15,
+            'redirection' => 5,
+            'sslverify'   => false, // wichtig: Zertifikate prüfen
+            'user-agent'  => 'Mozilla/5.0 (compatible; ReachabilityCheck/1.0)'
+        ];
+
+        // Hilfsfunktion für Statusauswertung
+        $is_ok = function($code) use ($accept_redirects) {
+            if (!is_int($code) || $code <= 0) {
+                return false;
+            }
+            return $accept_redirects
+                ? ($code >= 200 && $code < 400)   // 2xx + 3xx
+                : ($code >= 200 && $code < 300);  // nur 2xx
+        };
+
+        // 2) HEAD versuchen
+        $response = wp_remote_head($url, $args);
+
+        if (!is_wp_error($response)) {
+            $code = wp_remote_retrieve_response_code($response);
+
+            // HEAD nicht erlaubt? Dann direkt GET versuchen.
+            if ($code === 405 || $code === 501) {
+                $response = new WP_Error('head_not_allowed');
+            } elseif ($is_ok($code)) {
+                return true;
+            }
+            // Ansonsten fällt es unten auf GET zurück
+        }
+
+        // 3) Fallback: GET
+        $response = wp_remote_get($url, $args);
+        if (is_wp_error($response)) {
+            return false;
+        }
+
+        $code = wp_remote_retrieve_response_code($response);
+        return $is_ok($code);
+
+    }
 
 	//Gibt http status code zurück
 	static function check_url_via_python($url) {
