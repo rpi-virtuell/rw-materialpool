@@ -224,7 +224,7 @@ class Materialpool {
         add_action( 'save_post', array( 'Materialpool_Autor', 'generate_title') );
         add_filter( 'tl_tplc_external_files', array( 'Materialpool_Autor', 'add_template_check_external_files' ) );
         add_filter( 'bulk_actions-edit-autor', array( 'Materialpool_Material','remove_from_bulk_actions' ) );
-		add_shortcode( 'autor_register', array( 'Materialpool_Autor', 'shortcode_register_autor' ) );
+//		add_shortcode( 'autor_register', array( 'Materialpool_Autor', 'shortcode_register_autor' ) );
 
         // Add Filter & Actions for Sprache
         add_filter( 'manage_edit-sprache_columns', array( 'Materialpool_Sprache', 'taxonomy_column' ) );
