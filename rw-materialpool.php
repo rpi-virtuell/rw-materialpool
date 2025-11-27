@@ -226,6 +226,7 @@ class Materialpool {
         add_filter( 'bulk_actions-edit-autor', array( 'Materialpool_Material','remove_from_bulk_actions' ) );
 //		add_shortcode( 'autor_register', array( 'Materialpool_Autor', 'shortcode_register_autor' ) );
 
+
         // Add Filter & Actions for Sprache
         add_filter( 'manage_edit-sprache_columns', array( 'Materialpool_Sprache', 'taxonomy_column' ) );
         add_filter( 'manage_sprache_custom_column', array( 'Materialpool_Sprache', 'taxonomy_column_data' ), 10, 3);
@@ -417,7 +418,7 @@ class Materialpool {
 		add_shortcode( 'broken_links',  array( 'Materialpool_Material', 'display_broken_link_errors' )  );
 
 		add_filter( 'ac/column/value', array( 'Materialpool_Helper', 'ac_column_value_icons'), 10, 3 );
-		add_action( 'transition_post_status', array('Materialpool_Material','publish_on_not_broken_link'), 10, 3 );
+//		add_action( 'transition_post_status', array('Materialpool_Material','publish_on_not_broken_link'), 10, 3 );
 
 
 		add_action('wp_head',  array('Materialpool_Material','redirect_materialpool_url'),2 );
